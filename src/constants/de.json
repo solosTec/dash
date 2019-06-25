@@ -1,0 +1,18 @@
+{
+    "welcome": "Willkommen (german)",
+    "language": "Sprache",
+    "nav-home": "Startseite",
+    "nav-config": "Konfiguration",
+    "nav-system": "System",
+    "nav-devices": "Geräte",
+    "nav-gateways": "Gateways",
+    "nav-meter": "Meter",
+    "nav-LoRa": "LoRa",
+    "nav-upload": "Upload",
+    "nav-download": "Download",
+    "nav-status": "Status",
+    "nav-monitoring": "Monitoring",
+    "nav-tasks": "Tasks",
+    "header-dashboard": "SMF Dashboard",
+    "lead-dashboard": "Managen Sie Ihr Smart Metering Framework."
+}

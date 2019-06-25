@@ -1,0 +1,18 @@
+{
+    "welcome": "Welcome (english)",
+    "language": "Language",
+    "nav-home": "Home",
+    "nav-config": "Configuration",
+    "nav-system": "System",
+    "nav-devices": "Devices",
+    "nav-gateways": "Gateways",
+    "nav-meter": "Meter",
+    "nav-LoRa": "LoRa",
+    "nav-upload": "Upload",
+    "nav-download": "Download",
+    "nav-status": "Status",
+    "nav-monitoring": "Monitoring",
+    "nav-tasks": "Tasks",
+    "header-dashboard": "Your SMF dashboard",
+    "lead-dashboard": "Start managing your Smart Metering Framework"
+}

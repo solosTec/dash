@@ -1,0 +1,18 @@
+{
+    "welcome": "Добро пожаловать (russia)",
+    "language": "Язык",
+    "nav-home": "Главная",
+    "nav-config": "Конфигурация",
+    "nav-system": "Система",
+    "nav-devices": "Устройства",
+    "nav-gateways": "Шлюзы",
+    "nav-meter": "Измеритель",
+    "nav-LoRa": "ЛоРа",
+    "nav-upload": "Загрузить",
+    "nav-download": "Скачать",
+    "nav-status": "Статус",
+    "nav-monitoring": "Мониторинг",
+    "nav-tasks": "Задачи",
+    "header-dashboard": "приборная панель SMF",
+    "lead-dashboard": "Начните управлять системой Smart Metering Framework (Система интеллектуальных измерений)"
+}

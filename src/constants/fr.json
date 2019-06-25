@@ -1,0 +1,18 @@
+{
+    "welcome": "Bienvenue (france)",
+    "language": "Langue",
+    "nav-home": "Accueil",
+    "nav-config": "Configuration",
+    "nav-system": "Système",
+    "nav-devices": "Appareils",
+    "nav-gateways": "Passerelles",
+    "nav-meter": "Compteur",
+    "nav-LoRa": "LoRa",
+    "nav-upload": "Chargement",
+    "nav-download": "Télécharger",
+    "nav-status": "Statut",
+    "nav-monitoring": "Surveillance",
+    "nav-tasks": "Tâches",
+    "header-dashboard": "Tableau de bord SMF",
+    "lead-dashboard": "Commencez à gérer votre Smart Metering Framework"
+}

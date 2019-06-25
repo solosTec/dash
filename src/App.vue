@@ -1,28 +1,23 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <SMFNavigation brand="solos::Tec" logo="logo.svg" />
+    <router-view/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import SMFNavigation from '@/components/smf-navigation.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    SMFNavigation
+  },
+  mounted () {
+    console.log('NODE_ENV: ' + process.env.NODE_ENV)
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
