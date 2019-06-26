@@ -30,22 +30,22 @@
                 </b-nav-item-dropdown>
 
                 <b-nav-item-dropdown :text="$t('nav-status')">
-                    <b-dropdown-item to="/status/sessions">Sessions</b-dropdown-item>
-                    <b-dropdown-item to="/status/targets">Targets</b-dropdown-item>
-                    <b-dropdown-item to="/status/connections">Connections</b-dropdown-item>
+                    <b-dropdown-item to="/status/sessions">{{ $t('nav-sessions') }}</b-dropdown-item>
+                    <b-dropdown-item to="/status/targets">{{ $t('nav-targets') }}</b-dropdown-item>
+                    <b-dropdown-item to="/status/connections">{{ $t('nav-connections') }}</b-dropdown-item>
                 </b-nav-item-dropdown>
 
                 <b-nav-item-dropdown :text="$t('nav-monitoring')">
-                    <b-dropdown-item to="/monitor/system">System</b-dropdown-item>
-                    <b-dropdown-item to="/monitor/messages">Messages</b-dropdown-item>
-                    <b-dropdown-item to="/monitor/tsdb">Time Series</b-dropdown-item>
-                    <b-dropdown-item to="/monitor/lora">LoRa Uplink</b-dropdown-item>
+                    <b-dropdown-item to="/monitor/system">{{ $t('nav-system') }}</b-dropdown-item>
+                    <b-dropdown-item to="/monitor/messages">{{ $t('nav-messages') }}</b-dropdown-item>
+                    <b-dropdown-item to="/monitor/tsdb">{{ $t('nav-tsdb') }}</b-dropdown-item>
+                    <b-dropdown-item to="/monitor/lora">{{ $t('nav-lora-uplink') }}</b-dropdown-item>
                 </b-nav-item-dropdown>
 
                 <b-nav-item-dropdown :text="$t('nav-tasks')">
                     <b-dropdown-item to="/task/csv">CSV</b-dropdown-item>
-                    <b-dropdown-item to="/task/tsdb">Time Series</b-dropdown-item>
-                    <b-dropdown-item to="/task/plausibility">Plausibility</b-dropdown-item>
+                    <b-dropdown-item to="/task/tsdb">{{ $t('nav-tsdb') }}</b-dropdown-item>
+                    <b-dropdown-item to="/task/plausibility">{{ $t('nav-plausibility') }}</b-dropdown-item>
                 </b-nav-item-dropdown>
 
 

@@ -19,7 +19,8 @@ export const webSocket = {
             sx: 0,
             path: "",
             timer: null,
-            host: location.host
+            host: location.host,
+            state: "none"
         };
     },
 
@@ -40,7 +41,8 @@ export const webSocket = {
                 // eslint-disable-next-line no-console
                 console.log("websocket open: " + this.url);
                 self.ws_on_open(this.url);
-                self.ws_emit_event_state("online");
+                self.state = self.$t('state-online');
+                self.ws_emit_event_state(self.state);
             };
             this.ws.onmessage = function(e) {
                 // console.log('websocket received data (' + e.data.length + ')');
@@ -106,7 +108,8 @@ export const webSocket = {
                 default:
                 break;
             }
-            this.ws_emit_event_state("offline");
+            this.state = this.$t('state-offline')
+            this.ws_emit_event_state(this.state);
         },
 
         ws_subscribe(channel) {

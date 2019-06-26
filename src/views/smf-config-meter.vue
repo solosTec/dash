@@ -12,7 +12,7 @@
         </div>
     </template>
 
-    <b-jumbotron fluid header="Meter Management" :lead="meters.length + ' meters at a glance'" />
+    <b-jumbotron fluid :header="$t('header-meter')" :lead="$t('lead-meter', {count: this.meters.length})" />
 
     <b-container fluid>
       <b-row>

@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable no-console */
 <template lang="html">
 
   <section class="smf-config-system">
@@ -14,7 +13,7 @@
             </div>
         </template>
 
-    <b-jumbotron fluid :header="'Configure your System ' + cfg.version" :lead="cfg.hostname + ' is the current master node'">
+    <b-jumbotron fluid :header="$t('header-system', {version: this.cfg.version })" :lead="$t('lead-system', {node: this.cfg.hostname})">
         <p class="text-muted">Data channel: {{ ws_get_url() }}</p>
     </b-jumbotron>
 

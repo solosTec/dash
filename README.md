@@ -49,9 +49,16 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## install plugins
 
+```
 $ vue add bootstrap-vue 
 $ npm i vue-headful
 $ npm install i18n --save
+$ npm i vue-analytics
+$ npm i vue-resource
+$ npm i vue-router
+$ npm i vue-toasted
+```
+
 
 
 

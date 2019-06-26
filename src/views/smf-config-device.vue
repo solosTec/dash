@@ -11,7 +11,7 @@
             </div>
         </template>
 
-        <b-jumbotron fluid header="Device Management" :lead="devices.length + ' devices at a glance'" />
+        <b-jumbotron fluid :header="$t('header-device')" :lead="$t('lead-device', {count: this.devices.length})" />
 
         <b-container fluid>
             <b-row>

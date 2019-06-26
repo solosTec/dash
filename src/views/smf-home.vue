@@ -20,20 +20,20 @@
             <b-card title="Configure Devices" class="shadow">
                <b-card-text>Managing the device pool.</b-card-text>
                <b-button to="/config/device" href="#" variant="primary">Devices</b-button>
-               <div slot="footer"><small class="text-muted">{{deviceCount}} device(s) configured</small></div>
+               <div slot="footer"><small class="text-muted">{{ deviceCount }} device(s) configured</small></div>
             </b-card>
 
             <b-card title="Configure Gateways" class="shadow">
                <b-card-text>Special support for gateways.</b-card-text>
                <b-button to="/config/gateway" href="#" variant="primary">Gateways</b-button>
-               <div slot="footer"><small class="text-muted">{{gatewayCount}} gateway(s) available</small></div>
+               <div slot="footer"><small class="text-muted">{{ gatewayCount }} gateway(s) available</small></div>
             </b-card>
 
             <!-- <b-card title="Configure Meter" img-src="electric-meter.svg" img-height="100px"> -->
             <b-card title="Configure Meter" class="shadow">
                <b-card-text>Meter overview</b-card-text>
                <b-button to="/config/meter" href="#" variant="primary">Meter</b-button>
-               <div slot="footer"><small class="text-muted">{{meterCount}} meter(s) configured</small></div>
+               <div slot="footer"><small class="text-muted">{{ meterCount }} meter(s) configured</small></div>
             </b-card>
 
         </b-card-group>

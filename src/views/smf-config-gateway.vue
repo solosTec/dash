@@ -2,7 +2,7 @@
 
   <section class="smf-config-gateway">
 
-        <!-- <template>
+        <template>
             <div>
                 <vue-headful
                     title="smf :: config gateways"
@@ -10,9 +10,9 @@
                     keywords="SMF, solosTec"
                 />
             </div>
-        </template> -->
+        </template>
 
-    <b-jumbotron fluid header="Gateway Management" :lead="gateways.length + ' gateways at a glance'" />
+    <b-jumbotron fluid :header="$t('header-gateway')" :lead="$t('lead-gateway', {count: this.gateways.length})" />
 
     <b-container fluid>
         <b-row>
