@@ -34,8 +34,8 @@ export const webSocket = {
             this.path = path;
             var self = this; //  save context
             // this.ws_emit_event_state("connecting " + location.host);
-            //this.ws = new WebSocket('ws://' + location.host + path, ['SMF']);
-            this.ws = new WebSocket("ws://192.168.1.21:8080" + path, ["SMF"]);
+            this.ws = new WebSocket('ws://' + location.host + path, ['SMF']);
+            //this.ws = new WebSocket("ws://192.168.1.21:8082" + path, ["SMF"]);
             this.ws.onopen = function() {
                 //  subscribe system status
                 // eslint-disable-next-line no-console
