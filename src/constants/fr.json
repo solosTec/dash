@@ -35,8 +35,8 @@
   "lead-meter": "%{count} mètres en un coup d'œil",
   "header-LoRa": "Gestion de la passerelle LoRa",
   "lead-LoRa": "%{count} Passerelles LoRa en un coup d'œil",
-  "header-upload": "Upload Configuration Files",
-  "lead-upload": "Restore or enlarge the system configuration",
-  "header-download": "Download Configuration Files",
-  "lead-download": "Backup or transfer the system configuration"
+  "header-upload": "Télécharger les fichiers de configuration",
+  "lead-upload": "Restaurer ou agrandir la configuration du système",
+  "header-download": "Télécharger les fichiers de configuration",
+  "lead-download": "Sauvegarde ou transfert de la configuration du système"
 }

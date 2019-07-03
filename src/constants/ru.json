@@ -35,8 +35,8 @@
   "lead-meter": "%{count} метров с первого взгляда",
   "header-LoRa": "правление шлюзами LoRa",
   "lead-LoRa": "%{count} Шлюзы LoRa с первого взгляда",
-  "header-upload": "Upload Configuration Files",
-  "lead-upload": "Restore or enlarge the system configuration",
-  "header-download": "Download Configuration Files",
-  "lead-download": "Backup or transfer the system configuration"
+  "header-upload": "Загрузить файлы конфигурации",
+  "lead-upload": "Восстановление или расширение конфигурации системы",
+  "header-download": "Загрузить файлы конфигурации",
+  "lead-download": "Резервное копирование или передача конфигурации системы"
 }
