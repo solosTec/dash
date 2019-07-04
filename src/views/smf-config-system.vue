@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+﻿/* eslint-disable no-console */
 <template lang="html">
 
   <section class="smf-config-system">
@@ -13,9 +13,7 @@
             </div>
         </template>
 
-    <b-jumbotron fluid :header="$t('header-system', {version: this.cfg.version })" :lead="$t('lead-system', {node: this.cfg.hostname})">
-        <p class="text-muted">Data channel: {{ ws_get_url() }}</p>
-    </b-jumbotron>
+    <b-jumbotron fluid :header="$t('header-system', {version: this.cfg.version })" :lead="$t('lead-system', {node: this.cfg.hostname})" />
 
     <b-container fluid>
 
@@ -147,7 +145,7 @@ export default  {
     mixins: [webSocket],
 
     mounted() {
-        this.ws_open("/smf/api/system/v0.7");
+        this.ws_open("/smf/api/system/v0.8");
     },
 
     beforeDestroy() {
@@ -167,7 +165,7 @@ export default  {
                 catch_meters: false,
                 catch_lora: false,
                 hostname: location.hostname,
-                version: 'v0.7',
+                version: 'v0.0',
                 countryCode: '',
                 languageCode: '',
                 def: {
@@ -197,9 +195,10 @@ export default  {
             language : {
                 options: [
                     { value: 'EN', text: 'english'},
-                    { value: 'DE', text: 'german'},
-                    { value: 'ES', text: 'spanish'},
-                    { value: 'FR', text: 'french'},
+                    { value: 'DE', text: 'deutsch'},
+                    { value: 'ES', text: 'español'},
+                    { value: 'FR', text: 'français'},
+                    { value: 'RU', text: 'русский'},
                 ]
             }
         }
@@ -334,15 +333,6 @@ export default  {
             });
 
         }
-
-        // changeCountryCode(evt) {
-        //   console.log('changeCountryCode ' + this.cfg.countryCode);
-        //     this.ws_submit_record("modify", "config.system", {
-        //         key: { name: "country-code" },
-        //         data: { value: this.cfg.countryCode }
-        //     });
-
-        // }
     },
 
     computed: {

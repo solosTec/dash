@@ -37,7 +37,6 @@
     <Content Include="services\web-socket.js" />
     <Content Include="src\App.vue" />
     <Content Include="src\assets\logo.png" />
-    <Content Include="src\components\HelloWorld.vue" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="src\plugins\bootstrap-vue.js" />
@@ -50,6 +49,7 @@
     <Content Include="src\views\smf-config-meter.vue" />
     <Content Include="src\views\smf-config-system.vue" />
     <Content Include="src\views\smf-config-upload.vue" />
+    <Content Include="src\views\smf-config-web.vue" />
     <Content Include="src\views\smf-home.vue" />
     <Content Include="src\views\smf-monitor-lora.vue" />
     <Content Include="src\views\smf-monitor-messages.vue" />

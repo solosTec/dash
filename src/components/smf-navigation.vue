@@ -18,8 +18,6 @@
                 </li>
 
                 <b-nav-item-dropdown :text="$t('nav-config')">
-                    <b-dropdown-item to="/config/system">{{ $t('nav-system') }}</b-dropdown-item>
-                    <div class="dropdown-divider"></div>
                     <b-dropdown-item to="/config/device">{{ $t('nav-devices') }}</b-dropdown-item>
                     <b-dropdown-item to="/config/gateway">{{ $t('nav-gateways') }}</b-dropdown-item>
                     <b-dropdown-item to="/config/meter">{{ $t('nav-meter') }}</b-dropdown-item>
@@ -27,6 +25,9 @@
                     <div class="dropdown-divider"></div>
                     <b-dropdown-item to="/config/upload">{{ $t('nav-upload') }}</b-dropdown-item>
                     <b-dropdown-item to="/config/download">{{ $t('nav-download') }}</b-dropdown-item>
+                    <div class="dropdown-divider"></div>
+                    <b-dropdown-item to="/config/system">{{ $t('nav-system') }}</b-dropdown-item>
+                    <b-dropdown-item to="/config/web">Web-UI</b-dropdown-item>
                 </b-nav-item-dropdown>
 
                 <b-nav-item-dropdown :text="$t('nav-status')">
