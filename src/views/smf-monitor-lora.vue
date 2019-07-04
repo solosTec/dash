@@ -11,7 +11,9 @@
             </div>
         </template>
 
-    <b-jumbotron fluid header="LoRa Uplink" :lead="uplinks.length + ' uplinks stored'" />
+    <!-- <b-jumbotron fluid header="LoRa Uplink" :lead="uplinks.length + ' uplinks stored'" /> -->
+    <b-jumbotron fluid :header="$t('header-monitor-lora')" :lead="$t('lead-monitor-lora', {count: this.uplinks.length})" />
+
 
     <b-container fluid>
       <b-row>
@@ -19,17 +21,17 @@
           <!-- table -->
           <b-table
             ref="uplinkTable"
-            bordered 
-            striped 
+            bordered
+            striped
             small
-            hover 
+            hover
             show-empty
             stacked="md"
             selectable
             select-mode="range"
             selectedVariant="info"
             @row-selected="rowSelected"
-            :fields="fields" 
+            :fields="fields"
             :items="uplinks"
             :busy="isBusy"
             :current-page="currentPage"
@@ -68,7 +70,7 @@
 <script lang="js">
 
 import {webSocket} from '../../services/web-socket.js'
-  
+
 export default  {
     name: 'smfMonitorLora',
     props: [],
@@ -172,16 +174,16 @@ export default  {
                 if (obj.cmd == 'insert') {
                     var ts = new Date(obj.rec.data.ts.substring(0, 19));
                     // var rowNode = table_msg.row.add([obj.rec.key.id, ts, obj.rec.data.DevEUI, obj.rec.data.FPort, obj.rec.data.FCntUp, obj.rec.data.ADRbit, obj.rec.data.MType, obj.rec.data.FCntDn, obj.rec.data.CustomerID, payload]).draw().node();
-                    var rec = { 
-                        id: obj.rec.key.id, 
-                        ts: ts, 
+                    var rec = {
+                        id: obj.rec.key.id,
+                        ts: ts,
                         DevEUI: obj.rec.data.DevEUI,
-                        FPort: obj.rec.data.FPort, 
-                        FCntUp: obj.rec.data.FCntUp, 
-                        ADRbit: obj.rec.data.ADRbit, 
-                        MType: obj.rec.data.MType, 
-                        FCntDn: obj.rec.data.FCntDn, 
-                        CustomerID: obj.rec.data.CustomerID, 
+                        FPort: obj.rec.data.FPort,
+                        FCntUp: obj.rec.data.FCntUp,
+                        ADRbit: obj.rec.data.ADRbit,
+                        MType: obj.rec.data.MType,
+                        FCntDn: obj.rec.data.FCntDn,
+                        CustomerID: obj.rec.data.CustomerID,
                         payload: obj.rec.data.Payload};
                     this.uplinks.push(rec);
 

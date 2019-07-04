@@ -38,5 +38,25 @@
   "header-upload": "Upload Configuration Files",
   "lead-upload": "Restore or enlarge the system configuration",
   "header-download": "Download Configuration Files",
-  "lead-download": "Backup or transfer the system configuration"
+  "lead-download": "Backup or transfer the system configuration",
+  "header-status-session": "All subscribers that are online",
+  "lead-status-session": "%{count} sessions so far",
+  "header-status-targets": "Registered push targets",
+  "lead-status-targets": "%{count} targets registered",
+  "header-status-connections": "Running dial-up connections",
+  "lead-status-connections": "%{count} connection(s) so far",
+  "header-monitor-system": "System Status",
+  "lead-monitor-system": "%{count} nodes online",
+  "header-monitor-messages":"System Messages",
+  "lead-monitor-messages":"%{count} messages logged",
+  "header-monitor-tsdb":"Time Series",
+  "header-monitor-lora":"LoRa Uplink",
+  "lead-monitor-lora":"%{count} uplinks stored",
+  "header-task-csv":"Generate CSV reports",
+  "lead-task-csv-0":"no CSV reporter ",
+  "lead-task-csv-1":"There is one node that creates CSV reports",
+  "header-task-tsdb":"Bridge to Time Series Databases",
+  "lead-task-tsdb":"%{count} time series databases online",
+  "header-task-plausibility":"Test plausibility"
+
 }
