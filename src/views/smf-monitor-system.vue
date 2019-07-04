@@ -12,7 +12,8 @@
             </div>
         </template>
 
-    <b-jumbotron fluid header="System Status" :lead="nodes.length + ' nodes online'" />
+    <!-- <b-jumbotron fluid header="System Status" :lead="nodes.length + ' nodes online'" /> --> -->
+    <b-jumbotron fluid :header="$t('header-monitor-system')" :lead="$t('lead-monitor-system', {count: this.nodes.length})" />
 
     <b-container fluid>
       <b-row>
@@ -50,20 +51,20 @@
       <br />
 
       <b-row>
-        <b-col md="12">      
+        <b-col md="12">
           <b-table
             ref="sysTable"
-            bordered 
-            striped 
+            bordered
+            striped
             small
-            hover 
+            hover
             show-empty
             stacked="md"
             selectable
             select-mode="range"
             selectedVariant="info"
             @row-selected="rowSelected"
-            :fields="fields" 
+            :fields="fields"
             :items="nodes"
             :busy="isBusy"
             primary-key="key"
@@ -90,7 +91,7 @@
             <!-- <template slot="empty" slot-scope="scope">
               <p>{{ scope.emptyText }}</p>
             </template> -->
-          </b-table> 
+          </b-table>
         </b-col>
       </b-row>
     </b-container>
@@ -223,7 +224,7 @@ export default  {
             // this.onSysTimer();
         },
 
-        ws_on_data(obj) {      
+        ws_on_data(obj) {
             if (obj.cmd != null) {
                 console.log(this.$options.name + ' websocket received ' + obj.cmd + ' [' + obj.channel + ']');
                 if (obj.cmd == 'update') {
@@ -269,12 +270,12 @@ export default  {
                 }
                 else if (obj.cmd == 'insert') {
                     if (obj.channel == 'status.cluster') {
-                        var rec = { key: obj.rec.key.tag, 
-                            class: obj.rec.data.class, 
+                        var rec = { key: obj.rec.key.tag,
+                            class: obj.rec.data.class,
                             version: obj.rec.data.version,
-                            clients: obj.rec.data.clients, 
-                            loginTime: obj.rec.data.loginTime, 
-                            ping: obj.rec.data.ping, 
+                            clients: obj.rec.data.clients,
+                            loginTime: obj.rec.data.loginTime,
+                            ping: obj.rec.data.ping,
                             ep: obj.rec.data.ep,
                             pid: obj.rec.data.pid };
                         this.nodes.push(rec);
@@ -321,7 +322,7 @@ export default  {
             this.ws_update("sys.cpu.usage.total");
 
             //  restart
-            this.sysTimer = setTimeout(this.onSysTimer, 5000);            
+            this.sysTimer = setTimeout(this.onSysTimer, 5000);
         }
     },
     computed: {

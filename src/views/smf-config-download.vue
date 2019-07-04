@@ -23,9 +23,9 @@
                             <b-form-radio value="JSON">JSON</b-form-radio>
                             <b-form-radio value="CSV">CSV</b-form-radio>
                         </b-form-radio-group>
-                        <b-form-radio-group v-model="dev.version" name="smf-download-config-device-version" class="mt-3">
+                        <b-form-radio-group v-model="dev.version" name="smf-download-config-device-version">
                             <b-form-radio :disabled="dev.fmt != 'XML'" value="v32">Version 3.2</b-form-radio>
-                            <b-form-radio disabled value="v40">Version 4.0</b-form-radio>
+                            <b-form-radio :disabled="dev.fmt != 'XML'" value="v40">Version 4.0</b-form-radio>
                             <b-form-radio :disabled="dev.fmt != 'XML'" value="v50">Version 5.0</b-form-radio>
                         </b-form-radio-group>
                         <input type="hidden" id="smf-procedure" name="smf-procedure" value="cfg.download.devices" />
@@ -206,6 +206,10 @@
             onSubmitDevices(evt) {
                 evt.preventDefault()
                 // alert(JSON.stringify(this.dev))
+                //var formData = new FormData();
+                //formData.append("smf-download-device-format", "XML");
+                //formData.append("smf-download-config-device-version", "v0.5");
+                //formData.append("smf-procedure", "cfg.download.devices");
                 this.$http.post("download.devices", this.dev, {
                     headers: {
                         'Accept': 'application/xml,application/json,application/csv,*/*'
@@ -213,7 +217,7 @@
                     responseType: 'blob',
                     progress(e) {
                         if (e.lengthComputable) {
-                            console.log((e.loaded / e.total * 100) + '%');
+                            console.log(e.loaded / e.total * 100);
                         }
                     }
                 }).then(res => {
@@ -274,7 +278,9 @@
                         }
                     }
                 }).then(res => {
-                    this.saveOrOpenBlob(res.body, "meters." + this.meter.fmt.toLowerCase());
+                    console.log("response: " + res)
+                    console.log("response-body: " + res.body)
+                    saveOrOpenBlob(res.body, "file.txt");
                 }, res => {
                     console.log("error: " + res)
                 });

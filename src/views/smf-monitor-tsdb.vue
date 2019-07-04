@@ -11,8 +11,8 @@
             </div>
         </template>
 
-        <b-jumbotron fluid header="Time Series" />
-
+        <!-- <b-jumbotron fluid header="Time Series" /> -->
+        <b-jumbotron fluid :header="$t('header-monitor-tsdb')"/>
         <b-container fluid>
 
             <b-row>
@@ -27,26 +27,26 @@
                 </b-form-group>
             </b-col>
 
-            <b-col md="6">    
+            <b-col md="6">
                 <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
             </b-col>
             </b-row>
 
             <b-row>
-                <b-col md="12">      
+                <b-col md="12">
                     <b-table
                     ref="timeSeriesTable"
-                    bordered 
-                    striped 
+                    bordered
+                    striped
                     small
-                    hover 
+                    hover
                     show-empty
                     stacked="md"
                     selectable
                     select-mode="range"
                     selectedVariant="info"
                     @row-selected="rowSelected"
-                    :fields="fields" 
+                    :fields="fields"
                     :items="timeSeries"
                     :busy="isBusy"
                     primary-key="id"
@@ -70,7 +70,7 @@
                     <!-- <template slot="empty" slot-scope="scope">
                     <p>{{ scope.emptyText }}</p>
                     </template> -->
-                </b-table> 
+                </b-table>
             </b-col>
             </b-row>
 
@@ -146,7 +146,7 @@ export default  {
             this.ws_subscribe("monitor.tsdb");
 
         },
-        ws_on_data(obj) {      
+        ws_on_data(obj) {
             if (obj.cmd != null) {
                 console.log(this.$options.name + ' websocket received ' + obj.cmd);
                 if (obj.cmd == 'update') {
@@ -156,11 +156,11 @@ export default  {
                 }
                 else if (obj.cmd == 'insert') {
                     var ts = new Date(obj.rec.data.ts.substring(0, 19));
-                    var rec = { 
-                        id: obj.rec.key.id, 
-                        account: obj.rec.data.account, 
-                        evt: obj.rec.data.evt, 
-                        obj: obj.rec.data.obj, 
+                    var rec = {
+                        id: obj.rec.key.id,
+                        account: obj.rec.data.account,
+                        evt: obj.rec.data.evt,
+                        obj: obj.rec.data.obj,
                         ts: ts };
 
                     if (obj.rec.data.evt == 'login') {

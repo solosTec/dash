@@ -12,13 +12,14 @@
             </div>
         </template>
 
-    <b-jumbotron fluid header="System Messages" :lead="msgCount + ' messages logged'">
+    <!-- <b-jumbotron fluid header="System Messages" :lead="msgCount + ' messages logged'"> -->
+    <b-jumbotron fluid :header="$t('header-monitor-messages')" :lead="$t('lead-monitor-messages', {count: this.messages.length})" />
     </b-jumbotron>
 
     <b-container fluid>
 
       <b-row>
-        <b-col md="12">      
+        <b-col md="12">
           <b-progress class="mt-2 shadow" :max="msgCount" show-value height="1.5rem">
             <b-progress-bar :value="stat.trace + stat.debug" variant="info" />
             <b-progress-bar :value="stat.info" variant="success" />
@@ -32,20 +33,20 @@
       <br />
 
       <b-row>
-        <b-col md="12">      
+        <b-col md="12">
           <b-table
             ref="msgTable"
-            bordered 
-            striped 
+            bordered
+            striped
             small
-            hover 
+            hover
             show-empty
             stacked="md"
             selectable
             select-mode="range"
             selectedVariant="info"
             @row-selected="rowSelected"
-            :fields="fields" 
+            :fields="fields"
             :items="messages"
             :busy="isBusy"
             primary-key="id"
@@ -67,7 +68,7 @@
             <!-- <template slot="empty" slot-scope="scope">
               <p>{{ scope.emptyText }}</p>
             </template> -->
-          </b-table> 
+          </b-table>
         </b-col>
       </b-row>
 
@@ -78,27 +79,27 @@
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               TRACE
               <b-badge variant="info" pill>{{stat.trace}}</b-badge>
-            </b-list-group-item>            
+            </b-list-group-item>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               DEBUG
               <b-badge variant="info" pill>{{stat.debug}}</b-badge>
-            </b-list-group-item>            
+            </b-list-group-item>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               INFO
               <b-badge variant="success" pill>{{stat.info}}</b-badge>
-            </b-list-group-item>            
+            </b-list-group-item>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               WARN
               <b-badge variant="secondary" pill>{{stat.warn}}</b-badge>
-            </b-list-group-item>            
+            </b-list-group-item>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               ERROR
               <b-badge variant="warning" pill>{{stat.error}}</b-badge>
-            </b-list-group-item>            
+            </b-list-group-item>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               FATAL
               <b-badge variant="danger" pill>{{stat.fatal}}</b-badge>
-            </b-list-group-item>            
+            </b-list-group-item>
           </b-list-group>
         </b-col>
 
@@ -118,11 +119,11 @@
     </b-container>
 
 
-  </section>  
+  </section>
 </template>
 
 <script lang="js">
-  
+
 import {webSocket} from '../../services/web-socket.js'
 
 export default  {
@@ -204,7 +205,7 @@ export default  {
     beforeDestroy() {
         this.ws_close();
     },
-    
+
     methods: {
         rowSelected(items) {
         },
@@ -216,7 +217,7 @@ export default  {
             this.ws_subscribe("table.msg.count");
         },
 
-      ws_on_data(obj) {      
+      ws_on_data(obj) {
         if (obj.cmd != null) {
           console.log('websocket received ' + obj.cmd);
           if (obj.cmd == 'update') {
@@ -238,19 +239,19 @@ export default  {
                 case 2:
                   this.stat.debug++;
                   break;
-                case 3: 
+                case 3:
                   this.stat.info++;
                   rec["_rowVariant"] = 'success';
                   break;
-                case 4: 
+                case 4:
                   this.stat.warn++;
                   rec["_rowVariant"] = 'secondary';
                   break;
-                case 5: 
+                case 5:
                   this.stat.error++;
                   rec["_rowVariant"] = 'warning';
                   break;
-                case 6: 
+                case 6:
                   this.stat.fatal++;
                   rec["_rowVariant"] = 'danger';
                   break;

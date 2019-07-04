@@ -12,7 +12,8 @@
             </div>
         </template>
 
-    <b-jumbotron fluid header="All subscribers that are online" :lead="sessions.length + ' sessions so far'">
+    <!-- <b-jumbotron fluid header="All subscribers that are online" :lead="sessions.length + ' sessions so far'"> -->
+    <b-jumbotron fluid :header="$t('header-status-session')" :lead="$t('lead-status-session', {count: this.sessions.length})" />
         <b-progress class="mt-2" height="1.2rem" :max="deviceCount" show-value>
             <b-progress-bar :value="sessions.length" variant="success" />
             <b-progress-bar :value="deviceCount - sessions.length" variant="warning" />
@@ -43,17 +44,17 @@
           <!-- table -->
           <b-table
             ref="sessionTable"
-            bordered 
-            striped 
+            bordered
+            striped
             small
-            hover 
+            hover
             show-empty
             stacked="md"
             selectable
             select-mode="range"
             selectedVariant="info"
             @row-selected="rowSelected"
-            :fields="fields" 
+            :fields="fields"
             :items="sessions"
             :busy="isBusy"
             :current-page="currentPage"
@@ -92,7 +93,7 @@
 
       <b-row>
         <b-col md="12">
-            <b-form v-on:submit.prevent class="p-3 shadow"> 
+            <b-form v-on:submit.prevent class="p-3 shadow">
                 <b-input-group class="pt-3">
                     <b-button type="submit" variant="danger" :disabled="!isRecordSelected" v-on:click.stop="onSessionStop">{{btnStopTitle}}</b-button>
                 </b-input-group>
@@ -155,7 +156,7 @@
             label: 'SX',
             sortable: true,
             class: 'text-right',
-            formatter: (value, key, item) => { 
+            formatter: (value, key, item) => {
                 return this.ws_format_bytes(value);
             },
           },
@@ -227,15 +228,15 @@
                 console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                 if (obj.cmd == 'insert') {
                     var loginTime = new Date(obj.rec.data.loginTime.substring(0, 19));
-                    var rec = { 
-                        pk: obj.rec.key.tag, 
-                        name: obj.rec.data.name, 
+                    var rec = {
+                        pk: obj.rec.key.tag,
+                        name: obj.rec.data.name,
                         source: obj.rec.data.source,
-                        protocol: obj.rec.data.layer, 
-                        rx: obj.rec.data.rx, 
-                        sx: obj.rec.data.sx, 
-                        px: obj.rec.data.px, 
-                        login: loginTime, 
+                        protocol: obj.rec.data.layer,
+                        rx: obj.rec.data.rx,
+                        sx: obj.rec.data.sx,
+                        px: obj.rec.data.px,
+                        login: loginTime,
                         lastSeen: loginTime };
                     this.sessions.push(rec);
                 }

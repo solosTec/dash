@@ -12,18 +12,18 @@
             </div>
         </template>
 
-    <b-jumbotron fluid header="Registered push targets." :lead="targets.length + ' targets registered'"/>
-
+    <!-- <b-jumbotron fluid header="Registered push targets." :lead="targets.length + ' targets registered'"/> -->
+    <b-jumbotron fluid :header="$t('header-status-targets')" :lead="$t('lead-status-targets', {count: this.targets.length})" />
     <b-container fluid>
       <b-row>
         <b-col md="12">
           <!-- table -->
           <b-table
             ref="targetTable"
-            bordered 
-            striped 
+            bordered
+            striped
             small
-            hover 
+            hover
             show-empty
             stacked="md"
             selectable
@@ -31,7 +31,7 @@
             selectedVariant="info"
             @row-selected="rowSelected"
             :fields="fields"
-            primary_key="channel" 
+            primary_key="channel"
             :items="targets"
             :busy="isBusy"
             :current-page="currentPage"
@@ -170,12 +170,12 @@ export default  {
                 console.log('websocket received ' + obj.cmd);
                 if (obj.cmd == 'insert') {
                     var regTime = new Date(obj.rec.data.regTime.substring(0, 19));
-                    var rec = { 
-                        channel: obj.rec.key.channel, 
+                    var rec = {
+                        channel: obj.rec.key.channel,
                         name: obj.rec.data.name,
                         device: obj.rec.data.device,
-                        account: obj.rec.data.account, 
-                        px: obj.rec.data.px, 
+                        account: obj.rec.data.account,
+                        px: obj.rec.data.px,
                         counter: obj.rec.data.counter,
                         regTime: regTime };
                     this.targets.push(rec);
