@@ -12,7 +12,8 @@
             </div>
         </template>
 
-        <b-jumbotron fluid header="Test plausibility" lead="ToDo" />
+        <!-- <b-jumbotron fluid header="Test plausibility" lead="ToDo" /> -->
+        <b-jumbotron fluid :header="$t('header-task-plausibility')"/>
     </section>
 
 </template>

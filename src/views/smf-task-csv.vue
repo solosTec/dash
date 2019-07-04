@@ -12,7 +12,8 @@
             </div>
         </template>
 
-    <b-jumbotron fluid header="Generate CSV reports" :lead="jumboLead" />
+    <!-- <b-jumbotron fluid header="Generate CSV reports" :lead="jumboLead" /> -->
+    <b-jumbotron fluid :header="$t('header-task-csv')" :lead="jumboLead" />
 
     <b-container fluid>
       <b-row>
@@ -20,17 +21,17 @@
           <!-- table -->
           <b-table
             ref="csvTable"
-            bordered 
-            striped 
+            bordered
+            striped
             small
-            hover 
+            hover
             show-empty
             stacked="md"
             selectable
             select-mode="range"
             selectedVariant="info"
             @row-selected="rowSelected"
-            :fields="fields" 
+            :fields="fields"
             :items="csv"
             :busy="isBusy"
             :current-page="currentPage"
@@ -94,50 +95,50 @@ export default  {
             {
                 key: 'cfg',
                 label: 'Configuration'
-            }, 
+            },
             {
                 key: 'format',
                 label: 'Format'
-            }, 
+            },
             {
                 key: 'offset',
                 label: 'Offset'
-            }, 
+            },
             {
                 key: 'frame',
                 label: 'Frame'
-            }, 
+            },
             {
                 key: 'start15min',
                 label: 'Last run (15min)',
                 formatter: (value, key, item) => {
                     return value.toUTCString();
                 }
-            }, 
+            },
             {
                 key: 'start60min',
                 label: 'Last run (60min)',
                 formatter: (value, key, item) => {
                     return value.toUTCString();
                 }
-            }, 
+            },
             {
                 key: 'start24h',
                 label: 'Last run (24h)',
                 formatter: (value, key, item) => {
                     return value.toUTCString();
                 }
-            }, 
+            },
             {
                 key: 'srvCount15min',
                 label: 'Server Count (15min)',
                 class: 'text-right'
-            }, 
+            },
             {
                 key: 'srvCount60min',
                 label: 'Server Count (60min)',
                 class: 'text-right'
-            }, 
+            },
             {
                 key: 'srvCount24h',
                 label: 'Server Count (24h)',
@@ -162,11 +163,11 @@ export default  {
                 console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                 if (obj.cmd == 'insert') {
                     if (obj.channel == 'task.csv') {
-                        var rec = { 
+                        var rec = {
                             pk: obj.rec.key.tag,
-                            cfg: obj.rec.data.config, 
-                            format: obj.rec.data.format, 
-                            offset: obj.rec.data.offset, 
+                            cfg: obj.rec.data.config,
+                            format: obj.rec.data.format,
+                            offset: obj.rec.data.offset,
                             frame: obj.rec.data.frame,
                             start15min: new Date(obj.rec.data.start15min.substring(0, 19)),
                             start60min: new Date(obj.rec.data.start60min.substring(0, 19)),
@@ -230,8 +231,8 @@ export default  {
     computed: {
         jumboLead: function() {
             switch (this.csv.length ) {
-                case 0: return "No CSV reporter online";
-                case 1: return "There is one node that creates CSV reports";
+                case 0: return this.$t('lead-task-csv-0');
+                case 1: return this.$t('lead-task-csv-1');
                 default:
                 break;
             }

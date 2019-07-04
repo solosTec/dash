@@ -12,7 +12,8 @@
             </div>
         </template>
 
-    <b-jumbotron fluid header="Running dial-up connections." :lead="connections.length + ' connection(s) so far'"/>
+    <!-- <b-jumbotron fluid header="Running dial-up connections." :lead="connections.length + ' connection(s) so far'"/> -->
+    <b-jumbotron fluid :header="$t('header-status-connections')" :lead="$t('lead-status-connections', {count: this.connections.length})" />
 
     <b-container fluid>
       <b-row>
@@ -20,19 +21,19 @@
           <!-- table -->
           <b-table
             ref="connectionTable"
-            bordered 
-            striped 
+            bordered
+            striped
             small
-            hover 
+            hover
             show-empty
             stacked="md"
             selectable
             select-mode="range"
             selectedVariant="info"
             @row-selected="rowSelected"
-            :fields="fields" 
+            :fields="fields"
             :items="connections"
-            primary_key="pk1 + pk2" 
+            primary_key="pk1 + pk2"
             :busy="isBusy"
             :current-page="currentPage"
             :per-page="perPage"
@@ -110,7 +111,7 @@ export default  {
                     sortable: true,
                     formatter: (value, key, item) => {
                         return value ? "local" : "remote";
-                    }                    
+                    }
                 },
                 {
                     key: 'aLayer',
@@ -163,15 +164,15 @@ export default  {
                 console.log('websocket received ' + obj.cmd);
                 if (obj.cmd == 'insert') {
                     var start = new Date(obj.rec.data.start.substring(0, 19));
-                    var rec = { 
-                        pk1: obj.rec.key.first, 
-                        pk2: obj.rec.key.second, 
-                        caller: obj.rec.data.aName, 
+                    var rec = {
+                        pk1: obj.rec.key.first,
+                        pk2: obj.rec.key.second,
+                        caller: obj.rec.data.aName,
                         callee: obj.rec.data.bName,
-                        aLayer: obj.rec.data.aLayer, 
-                        bLayer: obj.rec.data.bLayer, 
+                        aLayer: obj.rec.data.aLayer,
+                        bLayer: obj.rec.data.bLayer,
                         local: obj.rec.data.local,
-                        throughput: obj.rec.data.throughput, 
+                        throughput: obj.rec.data.throughput,
                         start: start };
                     this.connections.push(rec);
                 }

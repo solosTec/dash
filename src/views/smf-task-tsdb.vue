@@ -12,7 +12,8 @@
             </div>
         </template>
 
-        <b-jumbotron fluid header="Bridge to Time Series Databases" :lead="tsdbs.length + ' time series databases online'" />
+        <!-- <b-jumbotron fluid header="Bridge to Time Series Databases" :lead="tsdbs.length + ' time series databases online'" /> -->
+        <b-jumbotron fluid :header="$t('header-task-tsdb')" :lead="$t('lead-task-tsdb', {count: this.tsdbs.length})" />
 
         <b-container fluid>
             <b-row>
@@ -20,17 +21,17 @@
                 <!-- table -->
                 <b-table
                     ref="tsdbTable"
-                    bordered 
-                    striped 
+                    bordered
+                    striped
                     small
-                    hover 
+                    hover
                     show-empty
                     stacked="md"
                     selectable
                     select-mode="range"
                     selectedVariant="info"
                     @row-selected="rowSelected"
-                    :fields="fields" 
+                    :fields="fields"
                     :items="tsdbs"
                     :busy="isBusy"
                     :current-page="currentPage"
@@ -128,17 +129,17 @@
                 <!-- table -->
                 <b-table
                     ref="monitorTable"
-                    bordered 
-                    striped 
+                    bordered
+                    striped
                     small
-                    hover 
+                    hover
                     show-empty
                     stacked="md"
                     selectable
                     select-mode="single"
                     selectedVariant="info"
                     @row-selected="ruleSelected"
-                    :fields="monitor.fields" 
+                    :fields="monitor.fields"
                     :items="monitor.rules"
                     :busy="monitor.isBusy"
                     :sort-by.sync="monitor.sortBy"
@@ -188,7 +189,7 @@
                                 id="smf-task-tsdb-limit"
                                 type="number"
                                 v-model.number="monitor.form.limit"
-                                min="0" 
+                                min="0"
                                 max="6000"
                                 step="10"
                                 placeholder="<Threshold>" />
@@ -287,7 +288,7 @@ export default  {
             {
                 key: 'index',
                 class: 'text-right small text-muted'
-            },            
+            },
             {
                 key: 'version',
                 label: 'Version',
@@ -344,7 +345,7 @@ export default  {
                 {
                     key: 'index',
                     class: 'text-right small text-muted'
-                },            
+                },
                 {
                     key: 'name',
                     label: 'Name',
@@ -411,9 +412,9 @@ export default  {
                 if (obj.cmd == 'insert') {
                     if (obj.channel == 'status.cluster') {
                         if (obj.rec.data.class == 'tsdb') {
-                            var rec = { key: obj.rec.key.tag, 
+                            var rec = { key: obj.rec.key.tag,
                                 version: obj.rec.data.version,
-                                ping: obj.rec.data.ping, 
+                                ping: obj.rec.data.ping,
                                 ep: obj.rec.data.ep,
                                 pid: obj.rec.data.pid };
                             this.tsdbs.push(rec);
