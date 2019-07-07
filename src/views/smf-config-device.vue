@@ -68,8 +68,8 @@
 
                         <!-- A custom formatted column descr -->
                         <template slot="descr" slot-scope="data">
-  <span v-b-popover.hover="data.value" :title="data.item.name">{{ formatDescription(data.value) }}</span>
-</template>
+                            <span v-b-popover.hover="data.value" :title="data.item.name">{{ formatDescription(data.value) }}</span>
+                        </template>
 
                         <!-- caption slot -->
                         <template slot="table-caption">{{ tableCaption }}</template>

@@ -27,7 +27,7 @@
                     <b-dropdown-item to="/config/download">{{ $t('nav-download') }}</b-dropdown-item>
                     <div class="dropdown-divider"></div>
                     <b-dropdown-item to="/config/system">{{ $t('nav-system') }}</b-dropdown-item>
-                    <b-dropdown-item to="/config/web">Web-UI</b-dropdown-item>
+                    <b-dropdown-item to="/config/web">Web</b-dropdown-item>
                 </b-nav-item-dropdown>
 
                 <b-nav-item-dropdown :text="$t('nav-status')">
