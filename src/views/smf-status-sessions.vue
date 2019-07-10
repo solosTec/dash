@@ -18,7 +18,7 @@
             <b-progress-bar :value="sessions.length" variant="success" />
             <b-progress-bar :value="deviceCount - sessions.length" variant="warning" />
         </b-progress>
-    </b-jumbotron>
+    <b-jumbotron />
 
 
     <b-container fluid>
@@ -42,52 +42,47 @@
       <b-row>
         <b-col md="12">
           <!-- table -->
-          <b-table
-            ref="sessionTable"
-            bordered
-            striped
-            small
-            hover
-            show-empty
-            stacked="md"
-            selectable
-            select-mode="range"
-            selectedVariant="info"
-            @row-selected="rowSelected"
-            :fields="fields"
-            :items="sessions"
-            :busy="isBusy"
-            :current-page="currentPage"
-            :per-page="perPage"
-            :filter="filter"
-            primary-key="pk"
-            :sort-by.sync="sortBy"
-            :sort-desc.sync="sortDesc"
-            :sort-direction="sortDirection"
-            class="shadow"
-            >
+            <b-table ref="sessionTable"
+                     bordered
+                     striped
+                     small
+                     hover
+                     show-empty
+                     stacked="md"
+                     selectable
+                     select-mode="range"
+                     selectedVariant="info"
+                     @row-selected="rowSelected"
+                     :fields="fields"
+                     :items="sessions"
+                     :busy="isBusy"
+                     :current-page="currentPage"
+                     :per-page="perPage"
+                     :filter="filter"
+                     primary-key="pk"
+                     :sort-by.sync="sortBy"
+                     :sort-desc.sync="sortDesc"
+                     :sort-direction="sortDirection"
+                     class="shadow">
 
-            <!-- caption slot -->
-            <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
+                <!-- A virtual column -->
+                <template slot="index" slot-scope="data">
+                    {{ data.index + 1 + (perPage * (currentPage - 1)) }}
+                </template>
 
-            <!-- A virtual column -->
-            <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
+                <template slot="stop" slot-scope="row">
+                    <b-button size="sm"
+                              variant="warning"
+                              class="shadow"
+                              @click="onSessionAction(row.item, row.index, $event.target)">Stop</b-button>
+                </template>
 
-                    <template slot="stop" slot-scope="row">
-  <b-button
-    size="sm"
-    variant="warning"
-    class="shadow"
-    @click="onSessionAction(row.item, row.index, $event.target)"
-  >Stop</b-button>
-</template>
+                <!-- loading slot -->
+                <div slot="table-busy" class="text-center text-danger">
+                    <strong>Loading... {{busyLevel}}%</strong>
+                </div>
 
-            <!-- loading slot -->
-            <div slot="table-busy" class="text-center text-danger">
-              <strong>Loading... {{busyLevel}}%</strong>
-            </div>
-
-          </b-table>
+            </b-table>
         </b-col>
       </b-row>
 

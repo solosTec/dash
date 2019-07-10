@@ -64,7 +64,7 @@
                     >
 
                         <!-- A virtual column -->
-                        <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
+                        <template slot="index" slot-scope="data">{{ data.index + 1 + (perPage * (currentPage - 1)) }}</template>
 
                         <!-- A custom formatted column descr -->
                         <template slot="descr" slot-scope="data">
