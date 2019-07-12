@@ -39,6 +39,7 @@
     <Content Include="src\assets\logo.png" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="src\components\smf-table-data-mirror.vue" />
     <Content Include="src\plugins\bootstrap-vue.js" />
     <Content Include="src\plugins\i18n.js" />
     <Content Include="src\router.js" />

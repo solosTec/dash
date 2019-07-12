@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <SMFNavigation brand="solos::Tec" logo="logo.svg" />
+    <SMFNavigation brand="solos::Tec" logo="/logo.svg" />
     <router-view/>
   </div>
 </template>

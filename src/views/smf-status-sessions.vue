@@ -13,12 +13,12 @@
         </template>
 
     <!-- <b-jumbotron fluid header="All subscribers that are online" :lead="sessions.length + ' sessions so far'"> -->
-    <b-jumbotron fluid :header="$t('header-status-session')" :lead="$t('lead-status-session', {count: this.sessions.length})" />
+    <b-jumbotron fluid :header="$t('header-status-session')" :lead="$t('lead-status-session', {count: this.sessions.length})" >
         <b-progress class="mt-2" height="1.2rem" :max="deviceCount" show-value>
             <b-progress-bar :value="sessions.length" variant="success" />
             <b-progress-bar :value="deviceCount - sessions.length" variant="warning" />
         </b-progress>
-    <b-jumbotron />
+    </b-jumbotron>
 
 
     <b-container fluid>

@@ -833,15 +833,16 @@
 
 <script lang="js">
 
-  import {webSocket} from '../../services/web-socket.js'
+import {webSocket} from '../../services/web-socket.js'
 
-  export default  {
+export default  {
     name: 'smfConfigGateway',
     props: [],
     mixins: [webSocket],
 
     mounted() {
-      this.ws_open("/smf/api/gw/v0.7");
+        this.ws_open("/smf/api/gw/v0.7");
+        //this.options.selected = process.env.NODE_ENV !== 'production';
     },
 
     data() {
@@ -851,7 +852,7 @@
             currentPage: 1,
             perPage: 10,
             mode: process.env.NODE_ENV,
-        fields: [
+            fields: [
           {
             key: 'index',
             class: 'text-right small text-muted'
@@ -949,7 +950,7 @@
               { text: 'IEC', value: 'iec' }
               ],
           selected: [],
-          allSelected: process.env.NODE_ENV !== 'production',
+          allSelected: false,
           indeterminate: false
         },
 
