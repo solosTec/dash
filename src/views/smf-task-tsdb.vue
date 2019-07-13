@@ -61,7 +61,7 @@
             <!-- details -->
             <b-row>
                 <b-col md="12" class="p-3 shadow">
-                <b-tabs card v-model="tabIndex">
+                <b-tabs pills card v-model="tabIndex">
 
                 <b-tab title="Single File" active>
                     <b-row>

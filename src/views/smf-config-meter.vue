@@ -79,7 +79,7 @@
             <!-- details -->
             <b-row>
                 <b-col md="12" class="p-3 shadow">
-                    <b-tabs card v-model="tabIndex">
+                    <b-tabs pills card v-model="tabIndex">
                         <b-tab title="Configuration" active>
                             <b-form v-on:submit.prevent>
                                 <b-row>
@@ -398,6 +398,16 @@
                                 <b-spinner v-if="spinner.push" type="grow" small />
                             </template>
                             <b-form v-on:submit.prevent class="p-3">
+                                <b-row>
+                                    <b-col md="6">
+                                        <pushTargets ref="pushTargets" :items="tabPush.data.items" />
+                                    </b-col>
+                                    <b-col md="6">
+                                        <b-form-group label="Refresh data">
+                                            <b-button type="submit" variant="success" v-on:click.stop="onPushTargetQuery">Query</b-button>
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
                             </b-form>
                         </b-tab>
 
@@ -409,7 +419,7 @@
                             <b-form v-on:submit.prevent class="p-3">
                                 <b-row>
                                     <b-col md="6">
-                                        <dataMirror ref="dataMirror" :items="tabPush.data.items" />
+                                        <dataMirror ref="dataMirror" :items="tabDataMirror.data.items" />
                                     </b-col>
                                     <b-col md="6">
                                         <b-form-group label="Refresh data">
@@ -443,13 +453,14 @@
 
     import { webSocket } from '../../services/web-socket.js';
     import dataMirror from '@/components/smf-table-data-mirror.vue'
+    import pushTargets from '@/components/smf-table-push-targets.vue'
 
     export default {
         name: 'smfConfigMeter',
         props: [],
         mixins: [webSocket],
         components: {
-            dataMirror
+            dataMirror, pushTargets
         },
 
         mounted() {
@@ -624,11 +635,14 @@
                 },
                 tabPush: {
                     data: {
-                        items: [{nr:1, active: true, entries: 101, OBIS:'77', name:'name'}]
+                        items: [{nr:1, interval: 15, delay: 101, OBIS:'8181c78611ff', name:'water@solosTec'}]
                     }
                 },
                 tabDataMirror: {
-                    data: {}
+                    data: {
+                        items: []
+                        //items: [{nr:1, active: true, entries: 101, period: 3, OBIS:'8181c78614ff', name:'name'}]
+                    }
                 },
                 //  loading state of SML data
                 spinner: {
@@ -842,6 +856,21 @@
                                 };
 
                                 //  insert into table
+                                this.tabDataMirror.data.items.push(rec);
+
+                            }
+                            else if (obj.section == 'root-push-ops') {
+                                this.spinner.push = false;
+                                var rec = {
+                                    nr: obj.rec.values.idx,
+                                    interval: obj.rec.values.interval,
+                                    delay: obj.rec.values.delay,
+                                    name: obj.rec.values.target,
+                                    OBIS: obj.rec.values.service,
+                                    source: obj.rec.values.source
+                                };
+
+                                //  insert into table
                                 this.tabPush.data.items.push(rec);
 
                             }
@@ -928,13 +957,25 @@
                 event.preventDefault();
                 //console.log('onDataMirrorQuery: ' + this.form.ident);
                 this.spinner.mirror = true;
-                this.tabPush.data.items = [];
+                this.tabDataMirror.data.items = [];
                 //  81 81 C7 86 20 FF
                 this.ws_submit_command("com:sml",
                     "get.proc.param",
                     [this.form.gwKey],
                     [this.form.ident],
                     ["root-data-prop"]);
+            },
+            onPushTargetQuery(event) {
+                event.preventDefault();
+                //console.log('onDataMirrorQuery: ' + this.form.ident);
+                this.spinner.push = true;
+                this.tabPush.data.items = [];
+                //  81 81 C7 86 20 FF
+                this.ws_submit_command("com:sml",
+                    "get.proc.param",
+                    [this.form.gwKey],
+                    [this.form.ident],
+                    ["root-push-ops"]);    
             },
             handleDeleteMeterOk(event) {
                 event.preventDefault();

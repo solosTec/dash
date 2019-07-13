@@ -79,7 +79,7 @@
             <!-- details -->
             <b-row>
                 <b-col md="10" class="p-3 shadow">
-                    <b-tabs card v-model="tabIndex">
+                    <b-tabs pills card v-model="tabIndex">
 
                         <b-tab title="Configuration" active>
                             <b-form v-on:submit.prevent>

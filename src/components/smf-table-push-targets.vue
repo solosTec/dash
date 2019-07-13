@@ -1,7 +1,7 @@
 <template lang="html">
 
-    <section class="smf-table-data-mirror">
-        <b-table ref="tableDataMirror"
+    <section class="smf-table-push-targets">
+        <b-table ref="tablePushTargets"
                  bordered
                  striped
                  small
@@ -20,16 +20,8 @@
                  :sort-direction="sortDirection"
                  class="shadow">
 
-            <!--:current-page="currentPage"
-    @row-selected="rowSelected"
-    :per-page="perPage"
-    :filter="filter"
-    @filtered="onFiltered"-->
 
             <template slot="details" slot-scope="row">
-                <!--<b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
-            Info modal
-        </b-button>-->
                 <b-button size="sm" @click="row.toggleDetails">
                     {{ row.detailsShowing ? 'Hide' : 'Show' }} Register
                 </b-button>
@@ -52,7 +44,7 @@
 
 
     export default {
-        name: 'smf-table-data-mirror',
+        name: 'smf-table-push-targets',
         props: {
             items: Array,
         },
@@ -70,22 +62,32 @@
                         sortable: true
                     },
                     {
-                        key: 'active',
-                        label: 'Active',
+                        key: 'interval',
+                        label: 'Interval',
+                        sortable: true,
+                        formatter: (value, key, item) => {
+                            if (value > 60*60) return (value / (60*60)) + " h";
+                            if (value > 60) return (value / 60) + " min";
+                            return value + " sec";
+                        },
+                        class: 'text-right'
+                    },
+                    {
+                        key: 'delay',
+                        label: 'Delay',
+                        sortable: true,
+                        formatter: (value, key, item) => {
+                            if (value > 60*60) return (value / (60*60)) + " h";
+                            if (value > 60) return (value / 60) + " min";
+                            if (value === 0) return "-";
+                            return value + " sec";
+                        },
+                        class: 'text-right'
+                    },
+                    {
+                        key: 'name',
+                        label: 'Push Target',
                         sortable: true
-                    },
-                    {
-                        key: 'entries',
-                        label: 'Entries',
-                        sortable: true,
-                        class: 'text-right'
-                    },
-                    {
-                        // register period
-                        key: 'period',
-                        label: 'Period (sec)',
-                        sortable: true,
-                        class: 'text-right'
                     },
                     {
                         key: 'OBIS',
@@ -105,16 +107,13 @@
                             return value.toUpperCase();
                         }
                     },
+                    //service: "8181c78a21ff"??
+                    //source: "8181c78a42ff"??
                     {
                         key: 'details',
                         label: 'Show Details',
                         class: 'text-center'
                     }
-                    //{
-                    //    key: 'name',
-                    //    label: 'Profile',
-                    //    sortable: true
-                    //}
                 ],
                 //items: [{nr:1, active: true, entries: 101, OBIS:'77', name:'name'}],
                 sortBy: 'nr',
@@ -125,7 +124,7 @@
         methods: {
             getRegisterName(reg) {
                 var name = reg.toUpperCase();
-                if (name === '8181C78203FF') return name + " - Hersteller-Identifikation";
+                if (name === '8181C78203FF') return name + " - Hersteller-Identifikation";  //  Manufacturer
                 else if (name === '8181C78205FF') return name + " - öffentlicher Schlüssel";
                 else if (name === '810000090B00') return name + " - Sekundenindex"; //  second index from meter
                 else if (name === '0100000009FF') return name + " - Geräteeinzelidentifikation";
