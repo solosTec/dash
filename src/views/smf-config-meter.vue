@@ -260,17 +260,14 @@
                             </template>
 
                             <b-form v-on:submit.prevent class="p-3 shadow">
-
                                 <b-row>
-                                    <b-col md="6">
+                                    <b-col md="9">
                                         <b-form-group label="Public Key" label-for="smf-form-meter-pubkey">
                                             <b-form-input id="smf-form-meter-pubkey"
                                                           type="text"
                                                           v-model="tabMeter.data.pubKey"
                                                           placeholder="<Public Key>" />
                                         </b-form-group>
-                                    </b-col>
-                                    <b-col md="6">
                                         <b-form-group label="AES Key" label-for="smf-form-meter-aeskey">
                                             <b-form-input id="smf-form-meter-aeskey"
                                                           type="text"
@@ -287,19 +284,12 @@
                                             </b-form-valid-feedback>
 
                                         </b-form-group>
-                                    </b-col>
-                                </b-row>
-
-                                <b-row>
-                                    <b-col md="3">
                                         <b-form-group label="User Name" label-for="smf-form-meter-user">
                                             <b-form-input id="smf-form-meter-user"
                                                           type="text"
                                                           v-model="tabMeter.data.user"
                                                           placeholder="<User Name>" />
                                         </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
                                         <b-form-group label="Password" label-for="smf-form-meter-last-pwd">
                                             <b-input-group>
                                                 <b-form-input id="smf-form-meter-last-pwd"
@@ -307,23 +297,20 @@
                                                               v-model="tabMeter.data.pwd"
                                                               placeholder="<Password>" />
                                                 <b-input-group-append>
-                                                    <b-button variant="info" v-on:click.stop="generatePassword">&#x21ba;</b-button>
+                                                    <b-button variant="info" v-on:click.stop="generatePassword" v-b-tooltip.hover title="Generate password">&#x21ba;</b-button>
                                                 </b-input-group-append>
                                             </b-input-group>
                                         </b-form-group>
                                     </b-col>
                                     <b-col md="3">
-                                        <b-form-group label="Refresh meter parameters" label-for="smf-form-meter-refresh">
-                                            <b-button type="submit" id="smf-form-meter-refresh" variant="success" v-on:click.stop="onParameterRefresh">{{btnRefreshTitle}}</b-button>
+                                        <b-form-group>
+                                            <b-button type="submit" variant="success" :disabled="!isOnline" v-on:click.stop="onParameterRefresh">{{btnRefreshTitle}}</b-button>
                                         </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group label="Update meter parameters" label-for="smf-form-meter-update">
-                                            <b-button type="submit" id="smf-form-meter-update" variant="info" v-on:click.stop="onParameterUpdate">{{btnUpdateTitle}}</b-button>
+                                        <b-form-group>
+                                            <b-button type="submit" variant="info" :disabled="!isOnline" v-on:click.stop="onParameterUpdate">{{btnUpdateTitle}}</b-button>
                                         </b-form-group>
                                     </b-col>
                                 </b-row>
-
                             </b-form>
 
                             <b-form v-on:submit.prevent class="p-3">
@@ -404,7 +391,7 @@
                                     </b-col>
                                     <b-col md="6">
                                         <b-form-group label="Refresh data">
-                                            <b-button type="submit" variant="success" v-on:click.stop="onPushTargetQuery">Query</b-button>
+                                            <b-button type="submit" variant="success" :disabled="!isOnline" v-on:click.stop="onPushTargetQuery">Query</b-button>
                                         </b-form-group>
                                     </b-col>
                                 </b-row>
@@ -423,7 +410,7 @@
                                     </b-col>
                                     <b-col md="6">
                                         <b-form-group label="Refresh data">
-                                            <b-button type="submit" variant="success" v-on:click.stop="onDataMirrorQuery">Query</b-button>
+                                            <b-button type="submit" variant="success" :disabled="!isOnline" v-on:click.stop="onDataMirrorQuery">Query</b-button>
                                         </b-form-group>
                                     </b-col>
                                 </b-row>
@@ -567,7 +554,6 @@
                     mClass: '---',
                     serverId: '',
                     gwKey: ''
-
                 },
                 readout: {
                     values: [],
@@ -1039,6 +1025,18 @@
                 if (this.tabMeter.data.aesKey.length == 0) return true;
                 var rex = /[0-9A-Fa-f]{32}/g;   //  test for hexadecimal string
                 return rex.test(this.tabMeter.data.aesKey);
+            },
+            isOnline() {
+                if (this.selected.length == 0) return false;
+
+                var self = this;
+                var rec = this.meters.find(function (rec) {
+                    //console.log(rec.pk + ' ? ' + self.form.pk);
+                    if (rec.pk == self.form.pk) return true;
+                });
+                //console.log(rec.pk + ' - ' + rec.ident + ' - ' + rec.online);
+                //  online state == 1
+                return (rec == null) ? true : (rec.online == 1);
             }
         }
     }

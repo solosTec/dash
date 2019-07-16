@@ -118,7 +118,7 @@
                         required
                         placeholder="<Password>"/>
                         <b-input-group-append>
-                        <b-button variant="info" v-on:click.stop="generatePassword">&#x21ba;</b-button>
+                        <b-button variant="info" v-on:click.stop="generatePassword" v-b-tooltip.hover title="Generate password">&#x21ba;</b-button>
                         </b-input-group-append>
                     </b-input-group>
                     </b-form-group>

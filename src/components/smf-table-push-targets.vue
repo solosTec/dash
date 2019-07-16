@@ -1,4 +1,4 @@
-<template lang="html">
+ï»¿<template lang="html">
 
     <section class="smf-table-push-targets">
         <b-table ref="tablePushTargets"
@@ -9,7 +9,7 @@
                  show-empty
                  stacked="md"
                  selectable
-                 select-mode="range"
+                 select-mode="single"
                  selectedVariant="info"
                  :fields="fields"
                  :items="items"
@@ -125,11 +125,12 @@
             getRegisterName(reg) {
                 var name = reg.toUpperCase();
                 if (name === '8181C78203FF') return name + " - Hersteller-Identifikation";  //  Manufacturer
-                else if (name === '8181C78205FF') return name + " - öffentlicher Schlüssel";
+                else if (name === '8181C78205FF') return name + " - Ã¶ffentlicher SchlÃ¼ssel";
                 else if (name === '810000090B00') return name + " - Sekundenindex"; //  second index from meter
-                else if (name === '0100000009FF') return name + " - Geräteeinzelidentifikation";
+                else if (name === '0100000009FF') return name + " - GerÃ¤teeinzelidentifikation";
                 else if (name === '0100000000FF') return name + " - Identifikationsnummer 1.0 ServerId -> Seriennummer";
                 else if (name === '0000600100FF') return name + " - Identifikationsnummer 2.1 Seriennummer";
+                else if (name === '0000601000FF') return name + " - Geraetename";
                 else if (name === '0000616100FF') return name + " - Fehlerregister";
                 else if (name === '0100010800FF') return name + " - Zaehlerstand Totalregister";
                 else if (name === '0100010801FF') return name + " - Zaehlerstand Tarif 1";
@@ -152,6 +153,7 @@
                 else if (name === '0100470700FF') return name + " - Strom L3";
                 else if (name === '0100480700FF') return name + " - Spannung L3";
                 else if (name === '010000090B00') return name + " - Zeitstempel (UTC)";
+                else if (name === '0700030000FF') return name + " - Verbrauch in mÂ³ (nicht korrigiert)";
 
                 return reg.toUpperCase();
             }
