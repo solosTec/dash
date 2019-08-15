@@ -4,7 +4,7 @@ export const webSocket = {
 
     created() {
         // eslint-disable-next-line no-console
-        console.log(this.$options.name + " created");
+        console.log(this.$options.name + " created with env " + process.env.NODE_ENV);
     },
 
     mounted() {
@@ -33,9 +33,12 @@ export const webSocket = {
         ws_open: function(path) {
             this.path = path;
             var self = this; //  save context
-            // this.ws_emit_event_state("connecting " + location.host);
-            this.ws = new WebSocket('ws://' + location.host + path, ['SMF']);
-            //this.ws = new WebSocket("ws://192.168.1.21:8082" + path, ["SMF"]);
+            if (process.env.NODE_ENV === 'production') {
+                this.ws = new WebSocket('ws://' + location.host + path, ['SMF']);
+            }
+            else {
+                this.ws = new WebSocket("ws://192.168.1.21:8082" + path, ["SMF"]);
+            }
             this.ws.onopen = function() {
                 //  subscribe system status
                 // eslint-disable-next-line no-console

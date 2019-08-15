@@ -64,12 +64,12 @@
                     >
 
                         <!-- A virtual column -->
-                        <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
+                        <template slot="index" slot-scope="data">{{ data.index + 1 + (perPage * (currentPage - 1)) }}</template>
 
                         <!-- A custom formatted column descr -->
                         <template slot="descr" slot-scope="data">
-  <span v-b-popover.hover="data.value" :title="data.item.name">{{ formatDescription(data.value) }}</span>
-</template>
+                            <span v-b-popover.hover="data.value" :title="data.item.name">{{ formatDescription(data.value) }}</span>
+                        </template>
 
                         <!-- caption slot -->
                         <template slot="table-caption">{{ tableCaption }}</template>
@@ -118,7 +118,7 @@
                         required
                         placeholder="<Password>"/>
                         <b-input-group-append>
-                        <b-button variant="info" v-on:click.stop="generatePassword">&#x21ba;</b-button>
+                        <b-button variant="info" v-on:click.stop="generatePassword" v-b-tooltip.hover title="Generate password">&#x21ba;</b-button>
                         </b-input-group-append>
                     </b-input-group>
                     </b-form-group>

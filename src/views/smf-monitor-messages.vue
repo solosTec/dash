@@ -13,24 +13,18 @@
         </template>
 
     <!-- <b-jumbotron fluid header="System Messages" :lead="msgCount + ' messages logged'"> -->
-    <b-jumbotron fluid :header="$t('header-monitor-messages')" :lead="$t('lead-monitor-messages', {count: this.messages.length})" />
-    </b-jumbotron>
+        <b-jumbotron fluid :header="$t('header-monitor-messages')" :lead="$t('lead-monitor-messages', {count: this.messages.length})">
+            <b-progress class="mt-2 shadow" :max="msgCount" show-value height="1.5rem">
+                <b-progress-bar :value="stat.trace + stat.debug" variant="info" />
+                <b-progress-bar :value="stat.info" variant="success" />
+                <b-progress-bar :value="stat.warn" variant="secondary" />
+                <b-progress-bar :value="stat.error" variant="warning" />
+                <b-progress-bar :value="stat.fatal" variant="danger" />
+            </b-progress>
+
+        </b-jumbotron>
 
     <b-container fluid>
-
-      <b-row>
-        <b-col md="12">
-          <b-progress class="mt-2 shadow" :max="msgCount" show-value height="1.5rem">
-            <b-progress-bar :value="stat.trace + stat.debug" variant="info" />
-            <b-progress-bar :value="stat.info" variant="success" />
-            <b-progress-bar :value="stat.warn" variant="secondary" />
-            <b-progress-bar :value="stat.error" variant="warning" />
-            <b-progress-bar :value="stat.fatal" variant="danger" />
-          </b-progress>
-        </b-col>
-      </b-row>
-
-      <br />
 
       <b-row>
         <b-col md="12">

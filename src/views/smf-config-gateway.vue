@@ -1,900 +1,858 @@
 <template lang="html">
 
-  <section class="smf-config-gateway">
+    <section class="smf-config-gateway">
 
         <template>
             <div>
-                <vue-headful
-                    title="smf :: config gateways"
-                    description="SMF dashboard"
-                    keywords="SMF, solosTec"
-                />
+                <vue-headful title="smf :: config gateways"
+                             description="SMF dashboard"
+                             keywords="SMF, solosTec" />
             </div>
         </template>
 
-    <b-jumbotron fluid :header="$t('header-gateway')" :lead="$t('lead-gateway', {count: this.gateways.length})" />
+        <b-jumbotron fluid :header="$t('header-gateway')" :lead="$t('lead-gateway', {count: this.gateways.length})" />
 
-    <b-container fluid>
-        <b-row>
-            <b-col md="6">
-                <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
-                    <b-input-group>
-                        <b-form-input v-model="filter" placeholder="Type to Search" />
-                        <b-input-group-append>
-                        <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-                </b-form-group>
-            </b-col>
-
-            <b-col md="6">
-                <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
-            </b-col>
-        </b-row>
-
-      <b-row>
-        <b-col md="12">
-          <!-- table -->
-          <b-table
-            ref="gwTable"
-            bordered
-            striped
-            small
-            hover
-            show-empty
-            stacked="md"
-            selectable
-            select-mode="range"
-            selectedVariant="info"
-            @row-selected="rowSelected"
-            :fields="fields"
-            :items="gateways"
-            :busy="isBusy"
-            :current-page="currentPage"
-            :per-page="perPage"
-            primary-key="pk"
-            :sort-by.sync="sortBy"
-            :sort-desc.sync="sortDesc"
-            :sort-direction="sortDirection"
-            class="shadow"
-            >
-
-            <!-- caption slot -->
-            <template slot="table-caption">{{ tableCaption }}</template>
-
-            <!-- A virtual column -->
-            <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
-
-            <!-- loading slot -->
-            <div slot="table-busy" class="text-center text-danger">
-              <strong>Loading... {{busyLevel}}%</strong>
-            </div>
-
-          </b-table>
-        </b-col>
-      </b-row>
-
-      <!-- details -->
-      <b-row>
-        <b-col md="10" class="p-3 shadow">
-          <b-tabs card v-model="tabIndex">
-
-            <b-tab title="Configuration" active>
-              <b-form v-on:submit.prevent>
-
-                <b-row>
-                  <b-col md="10" class="shadow">
-
-                    <b-row>
-                    <b-col md="6">
-                        <b-form-group label="Server ID" label-for="smf-form-gw-server">
-                        <b-form-input
-                            id="smf-form-gw-server"
-                            type="text"
-                            v-model="form.serverId"
-                            :state="serverIdValidation"
-                            required
-                            placeholder="<Server ID>"
-                            maxlength="14"/>
-                            <b-form-invalid-feedback :state="serverIdValidation">
-                                A server ID must be 14 characters long hexadecimal string
-                            </b-form-invalid-feedback>
-                            <b-form-valid-feedback :state="serverIdValidation">
-                                OK
-                            </b-form-valid-feedback>                        
-                        </b-form-group>
-                    </b-col>
-                    <b-col md="6">
-                        <b-form-group label="Manufacturer" label-for="smf-form-gw-manufacturer">
-                        <b-form-input
-                            id="smf-form-gw-manufacturer"
-                            type="text"
-                            v-model="form.manufacturer"
-                            required
-                            placeholder="<Manufacturer>"/>
-                        </b-form-group>
-                    </b-col>
-                    </b-row>
-
-                    <b-row>
-                    <b-col md="6">
-                        <b-form-group label="User" label-for="smf-form-gw-server">
-                        <b-form-input
-                            id="smf-form-gw-user"
-                            type="text"
-                            v-model="form.userName"
-                            required
-                            placeholder="<User Name>"
-                            maxlength="14"/>
-                        </b-form-group>
-                    </b-col>
-                    <b-col md="6">
-                        <b-form-group label="Password" label-for="smf-form-gw-pwd">
+        <b-container fluid>
+            <b-row>
+                <b-col md="6">
+                    <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
                         <b-input-group>
-                            <b-form-input
-                            id="smf-form-gw-pwd"
-                            type="text"
-                            v-model="form.userPwd"
-                            required
-                            placeholder="<User Password>"/>
+                            <b-form-input v-model="filter" placeholder="Type to Search" />
                             <b-input-group-append>
-                            <b-button variant="info" v-on:click.stop="generatePassword">&#x21ba;</b-button>
+                                <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
                             </b-input-group-append>
                         </b-input-group>
+                    </b-form-group>
+                </b-col>
+
+                <b-col md="6">
+                    <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
+                </b-col>
+            </b-row>
+
+            <b-row>
+                <b-col md="12">
+                    <!-- table -->
+                    <b-table ref="gwTable"
+                             bordered
+                             striped
+                             small
+                             hover
+                             show-empty
+                             stacked="md"
+                             selectable
+                             select-mode="range"
+                             selectedVariant="info"
+                             @row-selected="rowSelected"
+                             :fields="fields"
+                             :items="gateways"
+                             :busy="isBusy"
+                             :current-page="currentPage"
+                             :per-page="perPage"
+                             :filter="filter"
+                             @filtered="onFiltered"
+                             primary-key="pk"
+                             :sort-by.sync="sortBy"
+                             :sort-desc.sync="sortDesc"
+                             :sort-direction="sortDirection"
+                             class="shadow">
+
+                        <!-- caption slot -->
+                        <template slot="table-caption">
+                            {{ tableCaption }}
+                        </template>
+
+                        <!-- A virtual column -->
+                        <template slot="index" slot-scope="data">
+                            {{ data.index + 1 + (perPage * (currentPage - 1)) }}
+                        </template>
+
+                        <!-- loading slot -->
+                        <div slot="table-busy" class="text-center text-danger">
+                            <strong>Loading... {{busyLevel}}%</strong>
+                        </div>
+
+                    </b-table>
+                </b-col>
+            </b-row>
+
+            <!-- details -->
+            <b-row>
+                <b-col md="10" class="p-3 shadow">
+                    <b-tabs pills card v-model="tabIndex">
+
+                        <b-tab title="Configuration" active>
+                            <b-form v-on:submit.prevent>
+
+                                <b-row>
+                                    <b-col md="10" class="shadow">
+
+                                        <b-row>
+                                            <b-col md="6">
+                                                <b-form-group label="Server ID" label-for="smf-form-gw-server">
+                                                    <b-form-input id="smf-form-gw-server"
+                                                                  type="text"
+                                                                  v-model="form.serverId"
+                                                                  :state="serverIdValidation"
+                                                                  required
+                                                                  placeholder="<Server ID>"
+                                                                  maxlength="14" />
+                                                    <b-form-invalid-feedback :state="serverIdValidation">
+                                                        A server ID must be 14 characters long hexadecimal string
+                                                    </b-form-invalid-feedback>
+                                                    <b-form-valid-feedback :state="serverIdValidation">
+                                                        OK
+                                                    </b-form-valid-feedback>
+                                                </b-form-group>
+                                            </b-col>
+                                            <b-col md="6">
+                                                <b-form-group label="Manufacturer" label-for="smf-form-gw-manufacturer">
+                                                    <b-form-input id="smf-form-gw-manufacturer"
+                                                                  type="text"
+                                                                  v-model="form.manufacturer"
+                                                                  required
+                                                                  placeholder="<Manufacturer>" />
+                                                </b-form-group>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col md="6">
+                                                <b-form-group label="User" label-for="smf-form-gw-server">
+                                                    <b-form-input id="smf-form-gw-user"
+                                                                  type="text"
+                                                                  v-model="form.userName"
+                                                                  required
+                                                                  placeholder="<User Name>"
+                                                                  maxlength="14" />
+                                                </b-form-group>
+                                            </b-col>
+                                            <b-col md="6">
+                                                <b-form-group label="Password" label-for="smf-form-gw-pwd">
+                                                    <b-input-group>
+                                                        <b-form-input id="smf-form-gw-pwd"
+                                                                      type="text"
+                                                                      v-model="form.userPwd"
+                                                                      required
+                                                                      placeholder="<User Password>" />
+                                                        <b-input-group-append>
+                                                            <b-button variant="info" v-on:click.stop="generatePassword">&#x21ba;</b-button>
+                                                        </b-input-group-append>
+                                                    </b-input-group>
+                                                </b-form-group>
+                                            </b-col>
+                                        </b-row>
+
+
+                                    </b-col>
+                                    <b-col md="2">
+
+                                        <b-row class="p-3">
+                                            <b-col md="12">
+                                                <b-button type="submit" variant="primary" v-on:click.stop="onGatewayUpdate">{{btnUpdateTitle}}</b-button>&nbsp;
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row class="p-3">
+                                            <b-col md="12">
+                                                <b-button type="submit" variant="warning" v-on:click.stop="onGatewayReboot" v-b-popover.hover="'Connection will be lost during reboot!'" :title="btnRebootTitle">{{btnRebootTitle}}</b-button>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row class="p-3">
+                                            <b-col md="12">
+                                                <b-button type="submit" variant="danger" v-on:click.stop="onGatewayDelete">{{btnDeleteTitle}}</b-button>
+                                            </b-col>
+                                        </b-row>
+
+                                    </b-col>
+                                </b-row>
+
+
+                            </b-form>
+                        </b-tab>
+
+                        <b-tab no-body>
+                            <template slot="title">
+                                Status
+                                <b-spinner v-if="spinner.status" type="grow" small />
+                            </template>
+                            <b-list-group>
+                                <template v-for="state in gw.status">
+                                    <b-list-group-item :variant="state.variant" :key="state.variant">{{state.value}}</b-list-group-item>
+                                </template>
+                            </b-list-group>
+                        </b-tab>
+
+                        <b-tab>
+                            <template slot="title">
+                                IP-T
+                                <b-spinner v-if="spinner.ipt" type="grow" small />
+                            </template>
+                            <b-form v-on:submit.prevent>
+
+                                <b-row>
+                                    <b-col md="6" class="border">
+
+                                        <b-row>
+                                            <b-col md="12" class="d-flex justify-content-start">
+                                                <h2>&#9312;</h2>
+                                            </b-col>
+                                            <b-col md="6">
+                                                <b-form-group label="Host" label-for="smf-gw-ipt-host-0">
+                                                    <b-form-input id="smf-gw-ipt-host-0"
+                                                                  type="text"
+                                                                  v-model="ipt.param[0].host"
+                                                                  required
+                                                                  v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Primary IP-T Master"
+                                                                  placeholder="<IP-T Master>" />
+                                                </b-form-group>
+                                            </b-col>
+                                            <b-col md="6">
+                                                <b-form-group label="Name" label-for="smf-gw-ipt-name-0">
+                                                    <b-form-input id="smf-gw-ipt-name-0"
+                                                                  type="text"
+                                                                  v-model="ipt.param[0].user"
+                                                                  required
+                                                                  placeholder="<IP-T Name>" />
+                                                </b-form-group>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col md="6">
+                                                <b-form-group label="Port" label-for="smf-gw-ipt-port-0">
+                                                    <b-input-group>
+                                                        <b-form-input id="smf-gw-ipt-port-0"
+                                                                      type="number"
+                                                                      v-model.number="ipt.param[0].port"
+                                                                      required
+                                                                      min="1024"
+                                                                      max="‭65535‬"
+                                                                      placeholder="<IP Port>" />
+                                                        <b-input-group-append>
+                                                            <b-button variant="info" v-on:click.stop="ipt.param[0].port = 26862">Default</b-button>
+                                                        </b-input-group-append>
+                                                    </b-input-group>
+                                                </b-form-group>
+                                            </b-col>
+                                            <b-col md="6">
+                                                <b-form-group label="Password" label-for="smf-gw-ipt-pwd-0">
+                                                    <b-input-group>
+                                                        <b-form-input id="smf-gw-ipt-pwd-0"
+                                                                      type="text"
+                                                                      v-model="ipt.param[0].pwd"
+                                                                      required
+                                                                      placeholder="<Password>" />
+                                                        <b-input-group-append>
+                                                            <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 0)">&#x21ba;</b-button>
+                                                        </b-input-group-append>
+                                                    </b-input-group>
+                                                </b-form-group>
+                                            </b-col>
+                                        </b-row>
+
+                                    </b-col>
+                                    <b-col md="6" class="border">
+
+                                        <b-row>
+                                            <b-col md="12" class="d-flex justify-content-end">
+                                                <h2>&#9313;</h2>
+                                            </b-col>
+                                            <b-col md="6">
+                                                <b-form-group label="Host" label-for="smf-gw-ipt-host-1">
+                                                    <b-form-input id="smf-gw-ipt-host-1"
+                                                                  type="text"
+                                                                  v-model="ipt.param[1].host"
+                                                                  required
+                                                                  v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Secondary IP-T Master"
+                                                                  placeholder="<IP-T Master>" />
+                                                </b-form-group>
+                                            </b-col>
+                                            <b-col md="6">
+                                                <b-form-group label="Name" label-for="smf-gw-ipt-name-1">
+                                                    <b-form-input id="smf-gw-ipt-name-1"
+                                                                  type="text"
+                                                                  v-model="ipt.param[1].user"
+                                                                  required
+                                                                  placeholder="<IP-T Name>" />
+                                                </b-form-group>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col md="6">
+                                                <b-form-group label="Port" label-for="smf-gw-ipt-port-1">
+                                                    <b-input-group>
+                                                        <b-form-input id="smf-gw-ipt-port-1"
+                                                                      type="number"
+                                                                      v-model.number="ipt.param[1].port"
+                                                                      required
+                                                                      min="1024"
+                                                                      max="‭65535‬"
+                                                                      placeholder="<IP Port>" />
+                                                        <b-input-group-append>
+                                                            <b-button variant="info" v-on:click.stop="ipt.param[1].port = 26863">Default</b-button>
+                                                        </b-input-group-append>
+                                                    </b-input-group>
+                                                </b-form-group>
+                                            </b-col>
+                                            <b-col md="6">
+                                                <b-form-group label="Password" label-for="smf-gw-ipt-pwd-1">
+                                                    <b-input-group>
+                                                        <b-form-input id="smf-gw-ipt-pwd-1"
+                                                                      type="text"
+                                                                      v-model="ipt.param[1].pwd"
+                                                                      required
+                                                                      placeholder="<Password>" />
+                                                        <b-input-group-append>
+                                                            <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 1)">&#x21ba;</b-button>
+                                                        </b-input-group-append>
+                                                    </b-input-group>
+                                                </b-form-group>
+                                            </b-col>
+                                        </b-row>
+
+                                    </b-col>
+                                </b-row>
+
+                                <b-row class="pt-4">
+                                    <b-col md="2">
+                                        <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onIPTUpdate">{{btnUpdateTitle}}</b-button>
+                                    </b-col>
+                                    <b-col md="10">
+                                        <b-alert variant="warning" show dismissible>
+                                            <span style="font-weight: bold">Note:</span> Changing the IP-T configuration can lead to connection breakdown.
+                                        </b-alert>
+                                    </b-col>
+                                </b-row>
+
+                                <b-row class="border">
+                                    <b-col md="6">
+                                        <b-form-group label="Host" label-for="smf-gw-ipt-host">
+                                            <b-form-input id="smf-gw-ipt-host"
+                                                          type="text"
+                                                          v-model="ipt.status.host"
+                                                          v-b-popover.hover="'Current IP address'" title="Hostname" placement="top"
+                                                          readonly
+                                                          placeholder="<IP-T Master>" />
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col md="3">
+                                        <b-form-group label="Local Port" label-for="smf-gw-ipt-port-local">
+                                            <b-form-input id="smf-gw-ipt-port-local"
+                                                          type="number"
+                                                          v-model.number="ipt.status.local"
+                                                          readonly
+                                                          min="1024"
+                                                          max="‭65535‬"
+                                                          placeholder="<IP Port>" />
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col md="3">
+                                        <b-form-group label="Remote Port" label-for="smf-gw-ipt-port-remote">
+                                            <b-form-input id="smf-gw-ipt-port-remote"
+                                                          type="number"
+                                                          v-model.number="ipt.status.remote"
+                                                          readonly
+                                                          min="1024"
+                                                          max="‭65535‬"
+                                                          placeholder="<IP Port>" />
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+
+                            </b-form>
+                        </b-tab>
+
+                        <!-- Firmware -->
+                        <b-tab no-body>
+                            <template slot="title">
+                                Firmware
+                                <b-spinner v-if="spinner.firmware" type="grow" small />
+                            </template>
+                            <!-- table -->
+                            <b-table ref="firmwareTable"
+                                     bordered
+                                     striped
+                                     small
+                                     hover
+                                     show-empty
+                                     stacked="md"
+                                     selectable
+                                     select-mode="single"
+                                     selectedVariant="info"
+                                     :fields="fw.fields"
+                                     :items="fw.values"
+                                     primary-key="ident"
+                                     :sort-by.sync="fw.sortBy"
+                                     :sort-desc.sync="fw.sortDesc"
+                                     :sort-direction="fw.sortDirection"
+                                     class="shadow">
+                                <!-- :busy="isBusy"
+                                :current-page="meters.currentPage"
+                                :per-page="meters.perPage" -->
+                                <!-- <template slot="active" slot-scope="row">
+                                    <b-button size="sm" @click="onMeterActivate(row.item, row.index, $event.target)">
+                                        {{ row.item.active ? '✔ Deactivate' : '✖ Activate' }}
+                                    </b-button>
+                                </template> -->
+                            </b-table>
+                        </b-tab>
+
+                        <!-- Memory -->
+                        <b-tab title="">
+                            <template slot="title">
+                                Memory
+                                <b-spinner v-if="spinner.memory" type="grow" small />
+                            </template>
+                            <b-row>
+                                <b-col md="6">
+                                    <b-card-text>Memory (mirror)</b-card-text>
+                                    <b-progress class="mt-2" height="2rem" :value="gw.memory.mirror" show-value />
+                                </b-col>
+                                <b-col md="6">
+                                    <b-card-text>Memory (temp)</b-card-text>
+                                    <b-progress class="mt-2" height="2rem" :value="gw.memory.tmp" show-value />
+                                </b-col>
+                            </b-row>
+                        </b-tab>
+
+                        <!-- Meters -->
+                        <b-tab no-body>
+                            <template slot="title">
+                                Meters
+                                <b-spinner v-if="spinner.meters" type="grow" small />
+                            </template>
+
+                            <!-- table -->
+                            <b-table ref="meterTable"
+                                     bordered
+                                     striped
+                                     small
+                                     hover
+                                     show-empty
+                                     stacked="md"
+                                     selectable
+                                     select-mode="single"
+                                     selectedVariant="info"
+                                     @row-selected="meterSelected"
+                                     :fields="meters.fields"
+                                     :items="meters.values"
+                                     primary-key="ident"
+                                     :sort-by.sync="meters.sortBy"
+                                     :sort-desc.sync="meters.sortDesc"
+                                     :sort-direction="meters.sortDirection"
+                                     class="shadow">
+
+                                <template slot="visible" slot-scope="row">
+                                    <b-button size="sm"
+                                              v-if="row.item.visible"
+                                              @click="onMeterDelete(row.item, row.index, $event.target)">✔ Delete</b-button>
+                                </template>
+
+                                <template slot="active" slot-scope="row">
+                                    <b-button size="sm"
+                                              @click="onMeterActivate(row.item, row.index, $event.target)">{{ row.item.active ? '✔ Deactivate' : '✖ Activate' }}</b-button>
+                                </template>
+                            </b-table>
+                            <div>
+                                <b-link :href="meters.csv" download="meters.csv" type="text/csv">{{linkMeterDownloadTitle}}</b-link>
+                            </div>
+                        </b-tab>
+
+                        <!-- wireless M-Bus -->
+                        <b-tab no-body>
+                            <template slot="title">
+                                wireless M-Bus
+                                <b-spinner v-if="spinner.wmbus" type="grow" small />
+                            </template>
+
+                            <b-form v-on:submit.prevent class="p-3 shadow">
+
+                                <b-row>
+
+                                    <b-col md="3" class="d-flex justify-content-center">
+                                        <b-form-group label="Radio Protocol">
+                                            <b-form-radio-group id="smf-gw-wmbus-protocol"
+                                                                buttons
+                                                                button-variant="outline-primary"
+                                                                stacked
+                                                                v-model="wmbus.protocol"
+                                                                name="smf-gw-wmbus-protocol">
+                                                <b-form-radio value="T">T2-Mode</b-form-radio>
+                                                <b-form-radio value="S">S2-Mode</b-form-radio>
+                                                <b-form-radio value="A" v-b-popover.hover="'Alternating Mode - requires to specify receiving timer parameters'" title="T2/S2 Automatic">T2/S2 Automatic</b-form-radio>
+                                                <b-form-radio value="P">Parallel</b-form-radio>
+                                            </b-form-radio-group>
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Installation Mode" label-for="smf-gw-wmbus-active">
+                                            <b-form-checkbox switch v-model="wmbus.active" name="smf-gw-wmbus-active">
+                                                {{ wmbus.active ? "Active" : "Inactive" }}
+                                            </b-form-checkbox>
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Automatic Reboot (sec)" label-for="smf-gw-wmbus-reboot">
+                                            <b-input-group :prepend="wmbusRebootPrep">
+                                                <b-form-input id="smf-gw-wmbus-reboot"
+                                                              type="number"
+                                                              v-model.number="wmbus.reboot"
+                                                              min="0"
+                                                              max="‭60000"
+                                                              step="60"
+                                                              placeholder="<Reboot>" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="wmbus.reboot = 86400">Default</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+
+                                        <b-form-group label="Transmission Power" label-for="smf-gw-wmbus-power">
+                                            <b-form-select v-model="wmbus.power" class="mb-3" disabled>
+                                                <option value="low">Low</option>
+                                                <option value="basic">Basic</option>
+                                                <option value="avg">Average</option>
+                                                <option value="strong">Strong</option>
+                                            </b-form-select>
+                                        </b-form-group>
+
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Receiving Time S2 Mode (sec)" label-for="smf-gw-wmbus-smode">
+                                            <b-input-group>
+                                                <b-form-input :disabled="wmbus.protocol != 'A'"
+                                                              id="smf-gw-wmbus-smode"
+                                                              type="number"
+                                                              v-model.number="wmbus.sMode"
+                                                              min="0"
+                                                              max="6000"
+                                                              step="10"
+                                                              placeholder="<Receiving Time S2 Mode>" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="wmbus.sMode = 30">Default</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+
+                                        <b-form-group label="Receiving Time T2 Mode (sec)" label-for="smf-gw-wmbus-tmode">
+                                            <b-input-group>
+                                                <b-form-input :disabled="wmbus.protocol != 'A'"
+                                                              id="smf-gw-wmbus-tmode"
+                                                              type="number"
+                                                              v-model.number="wmbus.tMode"
+                                                              min="0"
+                                                              max="6000"
+                                                              step="10"
+                                                              placeholder="<Receiving Time T2 Mode>" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="wmbus.tMode = 20">Default</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+
+                                    </b-col>
+
+                                </b-row>
+
+                                <b-row class="p-3">
+                                    <b-col md="12">
+                                        <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onWMbusUpdate">Submit</b-button>
+                                    </b-col>
+                                </b-row>
+
+                            </b-form>
+
+                            <b-form class="p-3">
+                                <b-row>
+                                    <b-col md="3">
+                                        <b-form-group label="Adapter Type / Manufacturer" label-for="smf-gw-wmbus-type">
+                                            <b-form-input id="smf-gw-wmbus-type"
+                                                          type="text"
+                                                          v-model="wmbus.type"
+                                                          readonly
+                                                          placeholder="<Adapter Type>" />
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Adapter ID" label-for="smf-gw-wmbus-id">
+                                            <b-form-input id="smf-gw-wmbus-id"
+                                                          type="text"
+                                                          v-model="wmbus.id"
+                                                          readonly
+                                                          placeholder="<Adapter ID>" />
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Firmware Version" label-for="smf-gw-wmbus-host">
+                                            <b-form-input id="smf-gw-wmbus-host"
+                                                          type="text"
+                                                          v-model="wmbus.firmware"
+                                                          readonly
+                                                          placeholder="<Firmware>" />
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Hardware Version" label-for="smf-gw-wmbus-hardware">
+                                            <b-form-input id="smf-gw-wmbus-hardware"
+                                                          type="text"
+                                                          v-model="wmbus.hardware"
+                                                          readonly
+                                                          placeholder="<Hardware>" />
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+                            </b-form>
+                        </b-tab>
+
+                        <!-- IEC -->
+                        <b-tab no-body>
+                            <template slot="title">
+                                IEC
+                                <b-spinner v-if="spinner.iec" type="grow" small />
+                            </template>
+
+                            <b-form v-on:submit.prevent v-bind:class="{ 'bg-warning' : !iec.params.active }">
+
+                                <b-row class="p-3">
+                                    <b-col md="3">
+                                        <b-form-group label="Enabled" label-for="smf-gw-iec-active">
+                                            <b-form-checkbox switch v-model="iec.params.active" name="smf-gw-iec-active">
+                                                {{ iec.params.active ? "On" : "Off" }}
+                                            </b-form-checkbox>
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Data Readout Period (sec)" label-for="smf-gw-iec-period">
+                                            <b-input-group :prepend="iec.params.loopTime / 60 + ' min'">
+                                                <b-form-input id="smf-gw-iec-period"
+                                                              type="number"
+                                                              v-model.number="iec.params.loopTime"
+                                                              min="60"
+                                                              max="‭50000"
+                                                              step="60"
+                                                              placeholder="<Data Readout Period>" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="iec.params.loopTime = 60">Default</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Maximum Data Rate" label-for="smf-gw-iec-data-rate">
+                                            <b-input-group>
+                                                <b-form-input id="smf-gw-iec-data-rate"
+                                                              type="number"
+                                                              v-model.number="iec.params.maxDataRate"
+                                                              min="60"
+                                                              max="‭50000"
+                                                              step="10"
+                                                              placeholder="<Maximum Data Rate>" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="iec.params.maxDataRate = 10240">Default</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Min. Timeout (msec)" label-for="smf-gw-iec-min-timeout">
+                                            <b-input-group :prepend="(iec.params.minTimeout / 60).toFixed(2) + ' min'">
+                                                <b-form-input id="smf-gw-iec-min-timeout"
+                                                              type="number"
+                                                              v-model.number="iec.params.minTimeout"
+                                                              min="10"
+                                                              max="‭60000"
+                                                              step="10"
+                                                              placeholder="<Data Readout Period>" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="iec.params.minTimeout = 200">Default</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+                                    </b-col>
+
+                                </b-row>
+
+                                <b-row class="p-3">
+
+                                    <b-col md="3">
+                                        <b-form-group label="Automatic Activation" label-for="smf-gw-iec-auto-active">
+                                            <b-form-checkbox switch v-model="iec.params.autoActivation" name="smf-gw-iec-auto-active">
+                                                {{ iec.params.autoActivation ? "On" : "Off" }}
+                                            </b-form-checkbox>
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Retries" label-for="smf-gw-iec-retries">
+                                            <b-input-group>
+                                                <b-form-input id="smf-gw-iec-retries"
+                                                              type="number"
+                                                              v-model.number="iec.params.retries"
+                                                              min="0"
+                                                              max="‭128"
+                                                              step="1"
+                                                              placeholder="<Retries>" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="iec.params.retries = 3">Default</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Protocol" label-for="smf-gw-iec-protocol">
+                                            <b-form-select v-model="iec.params.protocolMode" class="mb-3" disabled>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="C">C</option>
+                                                <option value="D">D</option>
+                                            </b-form-select>
+                                        </b-form-group>
+                                    </b-col>
+
+                                    <b-col md="3">
+                                        <b-form-group label="Max. Timeout (msec)" label-for="smf-gw-iec-max-timeout">
+                                            <b-input-group :prepend="(iec.params.maxTimeout / 60).toFixed(2) + ' min'">
+                                                <b-form-input id="smf-gw-iec-max-timeout"
+                                                              type="number"
+                                                              v-model.number="iec.params.maxTimeout"
+                                                              min="60"
+                                                              max="‭60000"
+                                                              step="10"
+                                                              placeholder="<Data Readout Period>" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="iec.params.maxTimeout = 5000">Default</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+                                    </b-col>
+
+                                </b-row>
+
+                                <b-row class="p-3">
+                                    <b-table ref="iecDeviceTable"
+                                             bordered
+                                             striped
+                                             small
+                                             hover
+                                             show-empty
+                                             stacked="md"
+                                             selectable
+                                             select-mode="single"
+                                             selectedVariant="info"
+                                             :fields="iec.fields"
+                                             :items="iec.params.devices"
+                                             primary-key="8181C7930AFF"
+                                             :sort-by.sync="iec.sortBy"
+                                             :sort-desc.sync="iec.sortDesc"
+                                             :sort-direction="iec.sortDirection"
+                                             class="shadow">
+                                        <!-- A virtual column -->
+                                        <template slot="index" slot-scope="data">
+                                            {{ data.index + 1 }}
+                                        </template>
+
+                                    </b-table>
+                                </b-row>
+
+                                <b-row class="p-3">
+                                    <b-col md="12">
+                                        <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onIECUpdate">Submit</b-button>
+                                    </b-col>
+                                </b-row>
+
+                            </b-form>
+                        </b-tab>
+
+                    </b-tabs>
+                </b-col>
+
+                <b-col md="2" class="p-3 bg-light">
+                    <b-form v-on:submit.prevent>
+                        <!-- bg-warning -->
+                        <b-alert show dismissible class="bg-warning" v-if="mode === 'production'">
+                            <span style="font-weight: bold">Note:</span> No other IP-T connection can be active during the execution of the requests below.
+                        </b-alert>
+
+
+                        <b-form-group label="LABEL" label-for="smf-form-dev-enabled">
+
+                            <template slot="label">
+                                <b-form-checkbox v-model="options.allSelected"
+                                                 :indeterminate="options.indeterminate"
+                                                 @change="toggleAll">{{ options.allSelected ? 'Un-select All' : 'Select All' }}</b-form-checkbox>
+                            </template>
+
+                            <b-form-checkbox-group id="options"
+                                                   stacked
+                                                   v-model="options.selected"
+                                                   name="smf-form-gw-channels"
+                                                   :options="options.channels"
+                                                   class="ml-4"
+                                                   aria-label="Individual flavours" />
+
                         </b-form-group>
-                    </b-col>
-                    </b-row>
-                      
 
-                  </b-col>
-                  <b-col md="2">
-                      
-                        <b-row class="p-3">
-                            <b-col md="12">
-                                <b-button type="submit" variant="primary" v-on:click.stop="onGatewayUpdate">{{btnUpdateTitle}}</b-button>&nbsp;
-                            </b-col>
-                        </b-row>
-
-                        <b-row class="p-3">
-                            <b-col md="12">
-                                <b-button type="submit" variant="warning" v-on:click.stop="onGatewayReboot" v-b-popover.hover="'Connection will be lost during reboot!'" :title="btnRebootTitle">{{btnRebootTitle}}</b-button>
-                            </b-col>
-                        </b-row>
-
-                        <b-row class="p-3">
-                            <b-col md="12">
-                                <b-button type="submit" variant="danger" v-on:click.stop="onGatewayDelete">{{btnDeleteTitle}}</b-button>
-                            </b-col>
-                        </b-row>
-
-                  </b-col>
-                </b-row>
-
-
-              </b-form>
-            </b-tab>
-
-            <b-tab no-body>
-                <template slot="title">
-  Status
-  <b-spinner v-if="spinner.status" type="grow" small/>
-</template>
-              <b-list-group>
-                <template v-for="state in gw.status">
-  <b-list-group-item :variant="state.variant" :key="state.variant">{{state.value}}</b-list-group-item>
-</template>
-              </b-list-group>
-            </b-tab>
-
-            <b-tab>
-                <template slot="title">
-  IP-T
-  <b-spinner v-if="spinner.ipt" type="grow" small/>
-</template>
-              <b-form v-on:submit.prevent>
-
-                <b-row>
-                <b-col md="6" class="border">
-
-                    <b-row>
-                    <b-col md="12" class="d-flex justify-content-start">
-                        <h2>&#9312;</h2>
-                    </b-col>
-                    <b-col md="6">
-                        <b-form-group label="Host" label-for="smf-gw-ipt-host-0">
-                        <b-form-input
-                            id="smf-gw-ipt-host-0"
-                            type="text"
-                            v-model="ipt.param[0].host"
-                            required
-                            v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Primary IP-T Master"
-                            placeholder="<IP-T Master>"/>
-                        </b-form-group>
-                    </b-col>
-                    <b-col md="6">
-                        <b-form-group label="Name" label-for="smf-gw-ipt-name-0">
-                        <b-form-input
-                            id="smf-gw-ipt-name-0"
-                            type="text"
-                            v-model="ipt.param[0].user"
-                            required
-                            placeholder="<IP-T Name>" />
-                        </b-form-group>
-                    </b-col>
-                    </b-row>
-
-                    <b-row>
-                    <b-col md="6">
-                        <b-form-group label="Port" label-for="smf-gw-ipt-port-0">
-                        <b-input-group>
-                            <b-form-input
-                            id="smf-gw-ipt-port-0"
-                            type="number"
-                            v-model.number="ipt.param[0].port"
-                            required
-                            min="1024" 
-                            max="‭65535‬"
-                            placeholder="<IP Port>" />
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="ipt.param[0].port = 26862">Default</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-                    </b-col>
-                    <b-col md="6">
-                        <b-form-group label="Password" label-for="smf-gw-ipt-pwd-0">
-                        <b-input-group>
-                            <b-form-input
-                            id="smf-gw-ipt-pwd-0"
-                            type="text"
-                            v-model="ipt.param[0].pwd"
-                            required
-                            placeholder="<Password>"/>
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 0)">&#x21ba;</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-                    </b-col>
-                    </b-row>
+                    </b-form>
 
                 </b-col>
-                <b-col md="6" class="border">
+            </b-row>
 
-                    <b-row>
-                    <b-col md="12" class="d-flex justify-content-end">
-                        <h2>&#9313;</h2>
-                    </b-col>
-                    <b-col md="6">
-                        <b-form-group label="Host" label-for="smf-gw-ipt-host-1">
-                        <b-form-input
-                            id="smf-gw-ipt-host-1"
-                            type="text"
-                            v-model="ipt.param[1].host"
-                            required
-                            v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Secondary IP-T Master"
-                            placeholder="<IP-T Master>"/>
-                        </b-form-group>
-                    </b-col>
-                    <b-col md="6">
-                        <b-form-group label="Name" label-for="smf-gw-ipt-name-1">
-                        <b-form-input
-                            id="smf-gw-ipt-name-1"
-                            type="text"
-                            v-model="ipt.param[1].user"
-                            required
-                            placeholder="<IP-T Name>" />
-                        </b-form-group>
-                    </b-col>
-                    </b-row>
+        </b-container>
 
-                    <b-row>
-                    <b-col md="6">
-                        <b-form-group label="Port" label-for="smf-gw-ipt-port-1">
-                        <b-input-group>
-                            <b-form-input
-                            id="smf-gw-ipt-port-1"
-                            type="number"
-                            v-model.number="ipt.param[1].port"
-                            required
-                            min="1024" 
-                            max="‭65535‬"
-                            placeholder="<IP Port>" />
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="ipt.param[1].port = 26863">Default</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-                    </b-col>
-                    <b-col md="6">
-                        <b-form-group label="Password" label-for="smf-gw-ipt-pwd-1">
-                        <b-input-group>
-                            <b-form-input
-                            id="smf-gw-ipt-pwd-1"
-                            type="text"
-                            v-model="ipt.param[1].pwd"
-                            required
-                            placeholder="<Password>"/>
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 1)">&#x21ba;</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-                    </b-col>
-                    </b-row>
+        <!-- Modal Components -->
+        <b-modal ref="dlgDeleteGateway"
+                 :title=btnDeleteTitle
+                 @ok="handleDeleteGatewayOk"
+                 header-bg-variant="danger">
+            <p>Proceed?</p>
+        </b-modal>
 
-                </b-col>
-                </b-row>
+        <b-modal ref="dlgRebootGateway"
+                 :title=btnRebootTitle
+                 @ok="handleRebootGatewayOk"
+                 header-bg-variant="warning">
+            <p>Proceed?</p>
+        </b-modal>
 
-                <b-row class="pt-4">
-                    <b-col md="2" >
-                        <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onIPTUpdate">{{btnUpdateTitle}}</b-button>
-                    </b-col>
-                    <b-col md="10">
-                        <b-alert variant="warning" show dismissible >
-                            <span style="font-weight: bold">Note:</span> Changing the IP-T configuration can lead to connection breakdown.
-                        </b-alert>                    
-                    </b-col>
-                </b-row>
-
-                <b-row class="border">
-                    <b-col md="6">
-                        <b-form-group label="Host" label-for="smf-gw-ipt-host">
-                        <b-form-input
-                            id="smf-gw-ipt-host"
-                            type="text"
-                            v-model="ipt.status.host"
-                            v-b-popover.hover="'Current IP address'" title="Hostname" placement="top"
-                            readonly
-                            placeholder="<IP-T Master>"/>
-                        </b-form-group>
-                    </b-col>
-                    <b-col md="3">
-                        <b-form-group label="Local Port" label-for="smf-gw-ipt-port-local">
-                            <b-form-input
-                            id="smf-gw-ipt-port-local"
-                            type="number"
-                            v-model.number="ipt.status.local"
-                            readonly
-                            min="1024" 
-                            max="‭65535‬"
-                            placeholder="<IP Port>" />
-                        </b-form-group>
-                    </b-col>
-                    <b-col md="3">
-                        <b-form-group label="Remote Port" label-for="smf-gw-ipt-port-remote">
-                            <b-form-input
-                            id="smf-gw-ipt-port-remote"
-                            type="number"
-                            v-model.number="ipt.status.remote"
-                            readonly
-                            min="1024" 
-                            max="‭65535‬"
-                            placeholder="<IP Port>" />
-                        </b-form-group>
-                  </b-col>
-                </b-row>
-
-              </b-form>
-            </b-tab>
-
-            <!-- Firmware -->
-            <b-tab no-body>
-                <template slot="title">
-  Firmware
-  <b-spinner v-if="spinner.firmware" type="grow" small/>
-</template>
-                <!-- table -->
-                <b-table
-                    ref="firmwareTable"
-                    bordered 
-                    striped 
-                    small
-                    hover 
-                    show-empty
-                    stacked="md"
-                    selectable
-                    select-mode="single"
-                    selectedVariant="info"
-                     :fields="fw.fields" 
-                    :items="fw.values"
-                    primary-key="ident"
-                    :sort-by.sync="fw.sortBy"
-                    :sort-desc.sync="fw.sortDesc"
-                    :sort-direction="fw.sortDirection"
-                    class="shadow"
-                    >
-                    <!-- :busy="isBusy"
-                    :current-page="meters.currentPage"
-                    :per-page="meters.perPage" -->
-                    <!-- <template slot="active" slot-scope="row">
-                        <b-button size="sm" @click="onMeterActivate(row.item, row.index, $event.target)">                           
-                            {{ row.item.active ? '✔ Deactivate' : '✖ Activate' }}
-                        </b-button>
-                    </template> -->
-                </b-table>
-            </b-tab>
-
-            <!-- Memory -->
-            <b-tab title="">
-                <template slot="title">
-  Memory
-  <b-spinner v-if="spinner.memory" type="grow" small/>
-</template>
-                <b-row>
-                     <b-col md="6">
-                        <b-card-text>Memory (mirror)</b-card-text>
-                        <b-progress class="mt-2" height="2rem" :value="gw.memory.mirror" show-value />
-                     </b-col>
-                     <b-col md="6">
-                        <b-card-text>Memory (temp)</b-card-text>
-                        <b-progress class="mt-2" height="2rem" :value="gw.memory.tmp"  show-value />
-                     </b-col>
-                </b-row>
-            </b-tab>
-
-            <!-- Meters -->
-            <b-tab no-body>
-                <template slot="title">
-  Meters
-  <b-spinner v-if="spinner.meters" type="grow" small/>
-</template>
-
-                <!-- table -->
-                <b-table
-                    ref="meterTable"
-                    bordered 
-                    striped 
-                    small
-                    hover 
-                    show-empty
-                    stacked="md"
-                    selectable
-                    select-mode="single"
-                    selectedVariant="info"
-                    @row-selected="meterSelected"
-                    :fields="meters.fields" 
-                    :items="meters.values"
-                    primary-key="ident"
-                    :sort-by.sync="meters.sortBy"
-                    :sort-desc.sync="meters.sortDesc"
-                    :sort-direction="meters.sortDirection"
-                    class="shadow"
-                    >
-                    <!-- :current-page="currentPage"
-                    :per-page="perPage"
-                    :filter="filter"
-                    @filtered="onFiltered" -->
-                    <template slot="visible" slot-scope="row">
-  <b-button
-    size="sm"
-    v-if="row.item.visible"
-    @click="onMeterDelete(row.item, row.index, $event.target)"
-  >✔ Delete</b-button>
-</template>
-                    <template slot="active" slot-scope="row">
-  <b-button
-    size="sm"
-    @click="onMeterActivate(row.item, row.index, $event.target)"
-  >{{ row.item.active ? '✔ Deactivate' : '✖ Activate' }}</b-button>
-</template>
-                </b-table>
-                <div>
-                <b-link :href="meters.csv" download="meters.csv" type="text/csv">{{linkMeterDownloadTitle}}</b-link>                
-                </div>
-            </b-tab>
-
-            <!-- wireless M-Bus -->
-            <b-tab no-body>
-                <template slot="title">
-  wireless M-Bus
-  <b-spinner v-if="spinner.wmbus" type="grow" small/>
-</template>
-
-                <b-form v-on:submit.prevent class="p-3 shadow">
-
-                <b-row>
-
-                    <b-col md="3" class="d-flex justify-content-center">
-                        <b-form-group label="Radio Protocol">
-                            <b-form-radio-group
-                                id="smf-gw-wmbus-protocol"
-                                buttons
-                                 button-variant="outline-primary"
-                                stacked
-                                v-model="wmbus.protocol"
-                                name="smf-gw-wmbus-protocol">
-                            <b-form-radio value="T">T2-Mode</b-form-radio>
-                            <b-form-radio value="S">S2-Mode</b-form-radio>
-                            <b-form-radio value="A" v-b-popover.hover="'Alternating Mode - requires to specify receiving timer parameters'" title="T2/S2 Automatic">T2/S2 Automatic</b-form-radio>
-                            <b-form-radio value="P">Parallel</b-form-radio>
-                            </b-form-radio-group>
-                        </b-form-group>                        
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Installation Mode" label-for="smf-gw-wmbus-active">
-                            <b-form-checkbox switch v-model="wmbus.active"  name="smf-gw-wmbus-active">
-                                {{ wmbus.active ? "Active" : "Inactive" }}
-                            </b-form-checkbox>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Automatic Reboot (sec)" label-for="smf-gw-wmbus-reboot">
-                        <b-input-group :prepend="wmbusRebootPrep">
-                            <b-form-input
-                            id="smf-gw-wmbus-reboot"
-                            type="number"
-                            v-model.number="wmbus.reboot"
-                            min="0" 
-                            max="‭60000"
-                            step="60"
-                            placeholder="<Reboot>" />
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="wmbus.reboot = 86400">Default</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-
-                        <b-form-group label="Transmission Power" label-for="smf-gw-wmbus-power">
-                            <b-form-select v-model="wmbus.power" class="mb-3" disabled>
-                                <option value="low">Low</option>
-                                <option value="basic">Basic</option>
-                                <option value="avg">Average</option>
-                                <option value="strong">Strong</option>
-                            </b-form-select>
-                        </b-form-group>
-
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Receiving Time S2 Mode (sec)" label-for="smf-gw-wmbus-smode">
-                        <b-input-group>
-                            <b-form-input
-                            :disabled="wmbus.protocol != 'A'"
-                            id="smf-gw-wmbus-smode"
-                            type="number"
-                            v-model.number="wmbus.sMode"
-                            min="0" 
-                            max="6000"
-                            step="10"
-                            placeholder="<Receiving Time S2 Mode>" />
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="wmbus.sMode = 30">Default</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-
-                        <b-form-group label="Receiving Time T2 Mode (sec)" label-for="smf-gw-wmbus-tmode">
-                        <b-input-group>
-                            <b-form-input
-                            :disabled="wmbus.protocol != 'A'"
-                            id="smf-gw-wmbus-tmode"
-                            type="number"
-                            v-model.number="wmbus.tMode"
-                            min="0" 
-                            max="6000"
-                            step="10"
-                            placeholder="<Receiving Time T2 Mode>" />
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="wmbus.tMode = 20">Default</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-
-                    </b-col>
-
-                </b-row>
-
-                <b-row class="p-3">
-                    <b-col md="12" >
-                        <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onWMbusUpdate">Submit</b-button>
-                    </b-col>
-                </b-row>
-
-                </b-form>
-
-                <b-form class="p-3">
-                <b-row>
-                    <b-col md="3">
-                        <b-form-group label="Adapter Type / Manufacturer" label-for="smf-gw-wmbus-type">
-                        <b-form-input
-                            id="smf-gw-wmbus-type"
-                            type="text"
-                            v-model="wmbus.type"
-                            readonly
-                            placeholder="<Adapter Type>"/>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Adapter ID" label-for="smf-gw-wmbus-id">
-                        <b-form-input
-                            id="smf-gw-wmbus-id"
-                            type="text"
-                            v-model="wmbus.id"
-                            readonly
-                            placeholder="<Adapter ID>"/>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Firmware Version" label-for="smf-gw-wmbus-host">
-                        <b-form-input
-                            id="smf-gw-wmbus-host"
-                            type="text"
-                            v-model="wmbus.firmware"
-                            readonly
-                            placeholder="<Firmware>"/>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Hardware Version" label-for="smf-gw-wmbus-hardware">
-                        <b-form-input
-                            id="smf-gw-wmbus-hardware"
-                            type="text"
-                            v-model="wmbus.hardware"
-                            readonly
-                            placeholder="<Hardware>"/>
-                        </b-form-group>
-                    </b-col>
-                </b-row>
-                </b-form>
-            </b-tab>
-
-            <!-- IEC -->
-            <b-tab no-body>
-                <template slot="title">
-  IEC
-  <b-spinner v-if="spinner.iec" type="grow" small/>
-</template>
-
-                <b-form v-on:submit.prevent v-bind:class="{ 'bg-warning' : !iec.params.active }">
-
-                <b-row class="p-3">
-                     <b-col md="3">
-                        <b-form-group label="Enabled" label-for="smf-gw-iec-active">
-                            <b-form-checkbox switch v-model="iec.params.active"  name="smf-gw-iec-active">
-                                {{ iec.params.active ? "On" : "Off" }}
-                            </b-form-checkbox>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Data Readout Period (sec)" label-for="smf-gw-iec-period">
-                        <b-input-group :prepend="iec.params.loopTime / 60 + ' min'">
-                            <b-form-input
-                            id="smf-gw-iec-period"
-                            type="number"
-                            v-model.number="iec.params.loopTime"
-                            min="60" 
-                            max="‭50000"
-                            step="60"
-                            placeholder="<Data Readout Period>" />
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="iec.params.loopTime = 60">Default</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Maximum Data Rate" label-for="smf-gw-iec-data-rate">
-                        <b-input-group>
-                            <b-form-input
-                            id="smf-gw-iec-data-rate"
-                            type="number"
-                            v-model.number="iec.params.maxDataRate"
-                            min="60" 
-                            max="‭50000"
-                            step="10"
-                            placeholder="<Maximum Data Rate>" />
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="iec.params.maxDataRate = 10240">Default</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Min. Timeout (msec)" label-for="smf-gw-iec-min-timeout">
-                        <b-input-group :prepend="(iec.params.minTimeout / 60).toFixed(2) + ' min'">
-                            <b-form-input
-                            id="smf-gw-iec-min-timeout"
-                            type="number"
-                            v-model.number="iec.params.minTimeout"
-                            min="10" 
-                            max="‭60000"
-                            step="10"
-                            placeholder="<Data Readout Period>" />
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="iec.params.minTimeout = 200">Default</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-                    </b-col>
-
-                </b-row>
-
-                <b-row class="p-3">
-
-                    <b-col md="3">
-                        <b-form-group label="Automatic Activation" label-for="smf-gw-iec-auto-active">
-                            <b-form-checkbox switch v-model="iec.params.autoActivation"  name="smf-gw-iec-auto-active">
-                                {{ iec.params.autoActivation ? "On" : "Off" }}
-                            </b-form-checkbox>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Retries" label-for="smf-gw-iec-retries">
-                        <b-input-group>
-                            <b-form-input
-                            id="smf-gw-iec-retries"
-                            type="number"
-                            v-model.number="iec.params.retries"
-                            min="0" 
-                            max="‭128"
-                            step="1"
-                            placeholder="<Retries>" />
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="iec.params.retries = 3">Default</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Protocol" label-for="smf-gw-iec-protocol">
-                            <b-form-select v-model="iec.params.protocolMode" class="mb-3" disabled>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                                <option value="D">D</option>
-                            </b-form-select>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col md="3">
-                        <b-form-group label="Max. Timeout (msec)" label-for="smf-gw-iec-max-timeout">
-                        <b-input-group :prepend="(iec.params.maxTimeout / 60).toFixed(2) + ' min'">
-                            <b-form-input
-                            id="smf-gw-iec-max-timeout"
-                            type="number"
-                            v-model.number="iec.params.maxTimeout"
-                            min="60" 
-                            max="‭60000"
-                            step="10"
-                            placeholder="<Data Readout Period>" />
-                            <b-input-group-append>
-                                <b-button variant="info" v-on:click.stop="iec.params.maxTimeout = 5000">Default</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                        </b-form-group>
-                    </b-col>
-
-                </b-row>
-
-                <b-row class="p-3">
-                <b-table
-                    ref="iecDeviceTable"
-                    bordered 
-                    striped 
-                    small
-                    hover 
-                    show-empty
-                    stacked="md"
-                    selectable
-                    select-mode="single"
-                    selectedVariant="info"
-                    :fields="iec.fields" 
-                    :items="iec.params.devices"
-                    primary-key="8181C7930AFF"
-                    :sort-by.sync="iec.sortBy"
-                    :sort-desc.sync="iec.sortDesc"
-                    :sort-direction="iec.sortDirection"
-                    class="shadow"
-                    >
-                    <!-- A virtual column -->
-                    <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
-
-                </b-table>
-                </b-row>
-
-                <b-row class="p-3">
-                    <b-col md="12" >
-                        <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onIECUpdate">Submit</b-button>
-                    </b-col>
-                </b-row>
-
-                </b-form>
-            </b-tab>
-
-          </b-tabs>
-        </b-col>
-
-        <b-col md="2" class="p-3 bg-light">
-          <b-form v-on:submit.prevent>
-               <!-- bg-warning -->
-            <b-alert show dismissible class="bg-warning">
-                <span style="font-weight: bold">Note:</span> No other IP-T connection can be active during the execution of the requests below.
-            </b-alert>                    
-
-
-            <b-form-group label="LABEL" label-for="smf-form-dev-enabled">
-
-              <template slot="label">
-  <b-form-checkbox
-    v-model="options.allSelected"
-    :indeterminate="options.indeterminate"
-    @change="toggleAll"
-  >{{ options.allSelected ? 'Un-select All' : 'Select All' }}</b-form-checkbox>
-</template>
-
-              <b-form-checkbox-group
-                  id="options"
-                  stacked
-                  v-model="options.selected"
-                  name="smf-form-gw-channels"
-                  :options="options.channels"
-                  class="ml-4"
-                  aria-label="Individual flavours"
-                />
-
-            </b-form-group>
-
-          </b-form>
-
-        </b-col>
-      </b-row>
-
-    </b-container>
-
-    <!-- Modal Components -->
-    <b-modal
-      ref="dlgDeleteGateway"
-      :title=btnDeleteTitle
-      @ok="handleDeleteGatewayOk"
-      header-bg-variant="danger"
-      >
-      <p>Proceed?</p>
-    </b-modal>
-
-    <b-modal
-      ref="dlgRebootGateway"
-      :title=btnRebootTitle
-      @ok="handleRebootGatewayOk"
-      header-bg-variant="warning"
-      >
-      <p>Proceed?</p>
-    </b-modal>
-
-  </section>
+    </section>
 
 </template>
 
 <script lang="js">
 
-  import {webSocket} from '../../services/web-socket.js'
+import {webSocket} from '../../services/web-socket.js'
 
-  export default  {
+export default  {
     name: 'smfConfigGateway',
     props: [],
     mixins: [webSocket],
 
     mounted() {
-      this.ws_open("/smf/api/gw/v0.7");
+        this.ws_open("/smf/api/gw/v0.7");
+        //this.options.selected = process.env.NODE_ENV !== 'production';
     },
 
     data() {
-      return {
-        isBusy: false,
-        busyLevel: 0,
-        currentPage: 1,
-        perPage: 10,
-        fields: [
+        return {
+            isBusy: false,
+            busyLevel: 0,
+            currentPage: 1,
+            perPage: 10,
+            mode: process.env.NODE_ENV,
+            fields: [
           {
             key: 'index',
             class: 'text-right small text-muted'
@@ -983,11 +941,11 @@
         //  gw options
         options: {
           channels: [
-              { text: 'Status Word', value: 'status-word' }, 
-              { text: 'IP-Telemetry', value: 'ipt' }, 
-              { text: 'Firmware', value: 'firmware' }, 
-              { text: 'Memory', value: 'memory-usage' }, 
-              { text: 'Meters', value: 'devices' }, 
+              { text: 'Status Word', value: 'status-word' },
+              { text: 'IP-Telemetry', value: 'ipt' },
+              { text: 'Firmware', value: 'firmware' },
+              { text: 'Memory', value: 'memory-usage' },
+              { text: 'Meters', value: 'devices' },
               { text: 'wireless M-Bus', value: 'w-MBus' },
               { text: 'IEC', value: 'iec' }
               ],
@@ -1014,7 +972,7 @@
                         port: 26862,
                         user: '',
                         pwd: ''
-                }, 
+                },
                 {
                         host: '',
                         port: 26862,
@@ -1286,7 +1244,7 @@
                                 }
                                 else {
                                     this.gw.status.push({ value: 'no PLC interface', variant: null });
-                                }                    
+                                }
 
                                 if (obj.rec.values.word.NO_TIMEBASE) {
                                     this.gw.status.push({ value: 'uncertain timebase', variant: "dark" });
@@ -1295,7 +1253,7 @@
                                     this.gw.status.push({ value: 'NTP is running', variant: "success" });
                                 }
                                 //  hide loading spinner
-                                this.spinner.status = false;    
+                                this.spinner.status = false;
                             }
                             else if (obj.section == 'root-visible-devices') {
                                 // console.log('visible device: ' + obj.rec.values.ident);
@@ -1355,27 +1313,27 @@
                                 }
                                 //  hide loading spinner
                                 this.spinner.meters = false;
-                                this.meterTableComplete(); 
+                                this.meterTableComplete();
                             }
                             else if (obj.section == 'root-device-id') {
                                 //  firmware
                                 var rec = {
                                     nr: obj.rec.values.number,
-                                    name: obj.rec.values.firmware, 
-                                    version: obj.rec.values.version, 
-                                    active: obj.rec.values.active, 
+                                    name: obj.rec.values.firmware,
+                                    version: obj.rec.values.version,
+                                    active: obj.rec.values.active,
                                     srv: obj.rec.srv};
                                 this.fw.values.push(rec);
 
                                 //  hide loading spinner
-                                this.spinner.firmware = false;    
+                                this.spinner.firmware = false;
                             }
                             else if (obj.section == 'root-memory-usage') {
                                 this.gw.memory.mirror = obj.rec.values.mirror;
                                 this.gw.memory.tmp = obj.rec.values.tmp;
 
                                 //  hide loading spinner
-                                this.spinner.memory = false;    
+                                this.spinner.memory = false;
                             }
                             else if (obj.section == 'root-wMBus-status') {
                                 this.wmbus.type = obj.rec.values.manufacturer;
@@ -1401,7 +1359,7 @@
                                 this.wmbus.tMode = obj.rec.values.tMode;
 
                                 //  hide loading spinner
-                                this.spinner.wmbus = false;    
+                                this.spinner.wmbus = false;
                             }
                             else if (obj.section == 'root-ipt-state') {
                                 this.ipt.status.host = obj.rec.values.address;
@@ -1414,7 +1372,7 @@
                                 this.ipt.param[obj.rec.values.idx - 1].user = obj.rec.values.name;
                                 this.ipt.param[obj.rec.values.idx - 1].pwd = obj.rec.values.pwd;
                                 //  hide loading spinner
-                                this.spinner.ipt = false;    
+                                this.spinner.ipt = false;
                             }
                             else if (obj.section == 'IF-IEC-62505-21') {
                                 this.iec.params.active = obj.rec.values.active;
@@ -1432,7 +1390,7 @@
                                 this.iec.params.devices = obj.rec.values.devices;
 
                                 //  hide loading spinner
-                                this.spinner.iec = false;    
+                                this.spinner.iec = false;
                             }
                             else {
                                 console.log('update channel ' + obj.channel + ' with unknown section ' + obj.section);
@@ -1451,26 +1409,26 @@
                                 this.$toasted.global.sml_attention_error(obj.rec.srv + ": " + obj.rec.values);
                             }
                             //  hide loading spinner
-                            this.spinner.status = false;    
-                            this.spinner.ipt = false;    
-                            this.spinner.firmware = false;    
-                            this.spinner.meters = false;    
-                            this.spinner.wmbus = false;    
-                            this.spinner.iec = false;    
+                            this.spinner.status = false;
+                            this.spinner.ipt = false;
+                            this.spinner.firmware = false;
+                            this.spinner.meters = false;
+                            this.spinner.wmbus = false;
+                            this.spinner.iec = false;
                         }
                     }
                 }
                 else if (obj.cmd == 'insert') {
-                    var rec = { 
-                        pk: obj.rec.key.pk, 
-                        serverId: obj.rec.data.serverId, 
-                        manufacturer: obj.rec.data.manufacturer, 
-                        descr: obj.rec.data.descr, 
-                        name: obj.rec.data.name, 
-                        model: obj.rec.data.model, 
-                        vFirmware: obj.rec.data.vFirmware, 
-                        userName: obj.rec.data.userName, 
-                        userPwd: obj.rec.data.userPwd, 
+                    var rec = {
+                        pk: obj.rec.key.pk,
+                        serverId: obj.rec.data.serverId,
+                        manufacturer: obj.rec.data.manufacturer,
+                        descr: obj.rec.data.descr,
+                        name: obj.rec.data.name,
+                        model: obj.rec.data.model,
+                        vFirmware: obj.rec.data.vFirmware,
+                        userName: obj.rec.data.userName,
+                        userPwd: obj.rec.data.userPwd,
                         online: obj.rec.data.online };
 
                     if (obj.rec.data.online == 1) {
@@ -1539,9 +1497,9 @@
                     }
                 }
                 else {
-                    console.log('websocket received unknown command ' + obj.cmd);                
+                    console.log('websocket received unknown command ' + obj.cmd);
                 }
-                
+
                 //    update pagination
                 this.visibleRows = this.gateways.length;
             }
@@ -1718,62 +1676,62 @@
         onIPTUpdate(event)   {
             event.preventDefault();
             // console.log('onIPTUpdate: ' + this.form.name);
-            this.ws_submit_command("com:sml", 
-                "set.proc.param", 
-                [this.form.pk], 
-                [{ ipt: this.ipt.param }], 
+            this.ws_submit_command("com:sml",
+                "set.proc.param",
+                [this.form.pk],
+                [{ ipt: this.ipt.param }],
                 ["root-ipt-param"]);
         },
         onMeterDelete(item, index, button) {
             // alert("delete: " + item.ident);
-            this.ws_submit_command("com:sml", 
-                "set.proc.param", 
-                [this.form.pk], 
-                [   
-                    { nr: item.nr }, 
+            this.ws_submit_command("com:sml",
+                "set.proc.param",
+                [this.form.pk],
+                [
+                    { nr: item.nr },
                     { meter: item.meter },
                     { meterId: item.meterId }
-                ], 
+                ],
                 ["delete"]);
         },
         onMeterActivate(item, index, button) {
             if (item.active) {
-                this.ws_submit_command("com:sml", 
-                    "set.proc.param", 
-                    [this.form.pk], 
-                    [   
-                        { nr: item.nr }, 
+                this.ws_submit_command("com:sml",
+                    "set.proc.param",
+                    [this.form.pk],
+                    [
+                        { nr: item.nr },
                         { meter: item.meter },
                         { meterId: item.meterId }
-                    ], 
+                    ],
                     ["deactivate"]);
             }
             else {
-                this.ws_submit_command("com:sml", 
-                    "set.proc.param", 
-                    [this.form.pk], 
-                    [   
-                        { nr: item.nr }, 
+                this.ws_submit_command("com:sml",
+                    "set.proc.param",
+                    [this.form.pk],
+                    [
+                        { nr: item.nr },
                         { meter: item.meter },
                         { meterId: item.meterId }
-                    ], 
+                    ],
                     ["activate"]);
             }
         },
         onWMbusUpdate() {
-            this.ws_submit_command("com:sml", 
-                "set.proc.param", 
-                [this.form.pk], 
-                [{ wmbus: this.wmbus }], 
+            this.ws_submit_command("com:sml",
+                "set.proc.param",
+                [this.form.pk],
+                [{ wmbus: this.wmbus }],
                 ["IF-wireless-mbus"]);
 
         },
         onIECUpdate() {
             // alert("onIECUpdate: " + this.form.serverId);
-            this.ws_submit_command("com:sml", 
-                "set.proc.param", 
-                [this.form.pk], 
-                [{ iec: this.iec.params }], 
+            this.ws_submit_command("com:sml",
+                "set.proc.param",
+                [this.form.pk],
+                [{ iec: this.iec.params }],
                 ["IF-IEC-62505-21"]);
         },
 
@@ -1859,7 +1817,7 @@
             } else if (newVal.length === this.options.channels.length) {
                 this.options.indeterminate = false
                 this.options.allSelected = true
-            } 
+            }
             else {
                 this.options.indeterminate = true
                 this.options.allSelected = false
