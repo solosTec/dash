@@ -81,6 +81,7 @@
                 <b-col md="10" class="p-3 shadow">
                     <b-tabs pills card v-model="tabIndex">
 
+                        <!-- Configuration -->
                         <b-tab title="Configuration" active>
                             <b-form v-on:submit.prevent>
 
@@ -98,7 +99,7 @@
                                                                   placeholder="<Server ID>"
                                                                   maxlength="14" />
                                                     <b-form-invalid-feedback :state="serverIdValidation">
-                                                        A server ID must be 14 characters long hexadecimal string
+                                                        A server ID must be a 14 characters long hexadecimal string
                                                     </b-form-invalid-feedback>
                                                     <b-form-valid-feedback :state="serverIdValidation">
                                                         OK
@@ -172,6 +173,7 @@
                             </b-form>
                         </b-tab>
 
+                        <!-- Status -->
                         <b-tab no-body>
                             <template slot="title">
                                 Status
@@ -394,7 +396,7 @@
                                 :per-page="meters.perPage" -->
                                 <!-- <template slot="active" slot-scope="row">
                                     <b-button size="sm" @click="onMeterActivate(row.item, row.index, $event.target)">
-                                        {{ row.item.active ? '✔ Deactivate' : '✖ Activate' }}
+                                        {{ row.item.active ? '✖ Deactivate' : '✔ Activate' }}
                                     </b-button>
                                 </template> -->
                             </b-table>
@@ -453,11 +455,19 @@
 
                                 <template slot="active" slot-scope="row">
                                     <b-button size="sm"
-                                              @click="onMeterActivate(row.item, row.index, $event.target)">{{ row.item.active ? '✔ Deactivate' : '✖ Activate' }}</b-button>
+                                              @click="onMeterActivate(row.item, row.index, $event.target)">{{ row.item.active ? '✖ Deactivate' : '✔ Activate' }}</b-button>
+                                </template>
+                                <template slot="edit" slot-scope="row">
+                                    <!--:disabled="!Boolean(row.item.mc)"-->
+                                    <b-button size="sm"
+                                              variant="info"
+                                              v-b-tooltip.hover :title="'meter code: ' + row.item.mc"
+                                              :disabled="btnEditStatus(row.item.mc)"
+                                              @click="onMeterEdit(row.item, row.index, $event.target)">{{ btnEdit }}</b-button>
                                 </template>
                             </b-table>
                             <div>
-                                <b-link :href="meters.csv" download="meters.csv" type="text/csv">{{linkMeterDownloadTitle}}</b-link>
+                                <b-link :href="meters.csv" download="meters.csv" type="text/csv">{{ linkMeterDownloadTitle }}</b-link>
                             </div>
                         </b-tab>
 
@@ -776,6 +786,33 @@
                             </b-form>
                         </b-tab>
 
+                        <!-- logs -->
+                        <b-tab no-body title="Log">
+                            <b-form v-on:submit.prevent class="p-3">
+                                <b-row>
+                                    <b-col md="12">
+                                        <b-form-group label="Select the time range">
+                                            <b-form-radio-group buttons
+                                                                button-variant="outline-primary"
+                                                                size="lg"
+                                                                v-model="tabOpLog.form.select">
+                                                <b-form-radio value="1">-1d</b-form-radio>
+                                                <b-form-radio value="2">-2d</b-form-radio>
+                                                <b-form-radio value="3">-3d</b-form-radio>
+                                                <b-form-radio value="4">-4d</b-form-radio>
+                                                <b-form-radio value="5">-5d</b-form-radio>
+                                                <b-form-radio value="6">-6d</b-form-radio>
+                                                <b-form-radio value="7">-7d</b-form-radio>
+                                                <b-form-radio value="365">All</b-form-radio>
+                                            </b-form-radio-group>
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col md="12">
+                                        <opLog ref="opLog" :items="tabOpLog.data.items" />
+                                    </b-col>
+                                </b-row>
+                            </b-form>
+                        </b-tab>
                     </b-tabs>
                 </b-col>
 
@@ -833,16 +870,21 @@
 
 <script lang="js">
 
-import {webSocket} from '../../services/web-socket.js'
+    import {webSocket} from '../../services/web-socket.js'
+    import opLog from '@/components/smf-table-op-log.vue'
+    import { MESSAGE_TYPES } from '@/constants/msgTypes.js'
+    import { SML_CODES } from '@/constants/rootCodes.js'
 
 export default  {
     name: 'smfConfigGateway',
     props: [],
     mixins: [webSocket],
+    components: {
+        opLog, MESSAGE_TYPES, SML_CODES
+    },
 
     mounted() {
         this.ws_open("/smf/api/gw/v0.7");
-        //this.options.selected = process.env.NODE_ENV !== 'production';
     },
 
     data() {
@@ -925,7 +967,8 @@ export default  {
             memory: false,
             meters: false,
             wmbus: false,
-            iec: false
+            iec: false,
+            log: false
         },
         form: {
             pk: '',
@@ -947,7 +990,8 @@ export default  {
               { text: 'Memory', value: 'memory-usage' },
               { text: 'Meters', value: 'devices' },
               { text: 'wireless M-Bus', value: 'w-MBus' },
-              { text: 'IEC', value: 'iec' }
+              { text: 'IEC', value: 'iec' },
+              { text: 'Operation Log', value: 'log' }
               ],
           selected: [],
           allSelected: false,
@@ -1018,7 +1062,10 @@ export default  {
                 {
                     key: 'maker',
                     label: 'Maker',
-                    sortable: true
+                    sortable: true,
+                    formatter: (value, key, item) => {
+                        return (value) ? value : '-';
+                    }
                 },
                 {
                     key: 'lastSeen',
@@ -1034,20 +1081,22 @@ export default  {
                     sortable: true,
                     formatter: (value, key, item) => {
                         switch (value) {
-                            case 0: return "wM-Bus";
-                            case 1: return "serial";
-                            case 2: return "gateway";
-                            case 3: return "BCD";
-                            case 4: return "EON";
-                            case 5: return "DKE-1";
-                            case 6: return "IMEI";
-                            case 7: return "RWE";
-                            case 8: return "DKE-2";
-                            case 9: return "wM-Bus";
+                            case 0: return "M-Bus (wired)";
+                            case 1: return "M-Bus (radio)";
+                            case 2: return "wM-Bus";
+                            case 3: return "Serial";
+                            case 4: return "Gateway";
+                            case 5: return "BCD";
+                            case 6: return "EON";
+                            case 7: return "DKE-1";
+                            case 8: return "IMEI";
+                            case 9: return "RWE";
+                            case 10: return "DKE-2";
+                            case 11: return "Switch";
                             default:
                                 break;
                         }
-                        return "other";
+                        return "Other";
                     }
                 },
                 {
@@ -1058,11 +1107,17 @@ export default  {
                     key: 'active',
                     label: 'Active'
                 },
-                // { key: 'actions', label: 'Actions' },
                 {
                     key: 'serverId',
                     label: 'Server ID',
                     sortable: true
+                    //formatter: (value, key, item) => {
+                    //    return item.pk;
+                    //}
+                },
+                {
+                    key: 'edit',
+                    label: 'Edit'
                 }
             ],
             sortBy: 'meter',
@@ -1172,8 +1227,17 @@ export default  {
             sortBy: '8181C7930AFF',
             sortDesc: false,
             sortDirection: 'desc'
+            },
+            tabOpLog: {
+                data: {
+                    items: []
+                    //items: [{nr:1, active: true, entries: 101, period: 3, OBIS:'8181c78614ff', name:'name'}]
+                },
+                form: {
+                      select: "1"
+                }
+            },
         }
-      }
     },
 
     beforeDestroy() {
@@ -1193,7 +1257,7 @@ export default  {
                 if (obj.cmd == 'update') {
                     if (obj.channel != null) {
                         // console.log('update channel ' + obj.channel);
-                        if (obj.channel == 'get.proc.param') {
+                        if (obj.channel == MESSAGE_TYPES.getProcParameter) {
                             if (obj.section == 'op-log-status-word') {
                                 this.gw.status = [];
                                 // state.variant">{{state.value}
@@ -1280,10 +1344,12 @@ export default  {
                                 this.meters.values.push(recVisible);
                             }
                             else if (obj.section == 'root-active-devices') {
-                                // console.log('active device: ' + obj.rec.values.ident + ' #' + obj.rec.values.number);
+                                //console.log('active device: ' + obj.rec.values.ident + ' pk: ' + obj.rec.values.pk[0]);
                                 var recActive = this.meters.values.find(meter => {
                                     if (meter.ident == obj.rec.values.ident) {
                                         meter.active = true;
+                                        meter.pk = obj.rec.values.pk;
+                                        meter.mc = obj.rec.values.mc;
                                         return true;
                                     }
                                     return false;
@@ -1303,7 +1369,9 @@ export default  {
                                         type: obj.rec.values.type,
                                         visible: false,
                                         active: true,
-                                        serverId: obj.rec.srv };
+                                        serverId: obj.rec.srv,
+                                        pk: obj.rec.values.pk,
+                                        mc: obj.rec.values.mc};
 
                                     if (obj.rec.values.type < 2) {
                                         recActive["_rowVariant"] = "success";
@@ -1391,6 +1459,15 @@ export default  {
 
                                 //  hide loading spinner
                                 this.spinner.iec = false;
+                            }
+                            else if (obj.section == 'device-class') {
+                                console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
+                            }
+                            else if (obj.section == 'manufacturer') {
+                                console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
+                            }
+                            else if (obj.section == 'server-id-visible') {
+                                console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
                             }
                             else {
                                 console.log('update channel ' + obj.channel + ' with unknown section ' + obj.section);
@@ -1480,6 +1557,7 @@ export default  {
                 else if (obj.cmd == 'clear') {
                     //  clear table
                     this.gateways = [];
+                    this.meters.values = [];
                 }
                 else if (obj.cmd == 'delete') {
                     var idx = this.gateways.findIndex(rec => rec.pk == obj.key);
@@ -1523,56 +1601,68 @@ export default  {
                 this.form.pk = items[0].pk;
 
                 //    collect gateway requests
-                console.log(this.options.selected.length + ' options selected ');
+                //console.log(this.options.selected.length + ' options selected ');
 
-                var gw_req_vec = [];
-                var self = this;
-                this.options.selected.forEach(option => {
-                    //  channels: ['Status Word', 'Meters', 'Firmware', 'Memory', 'wireless M-Bus', 'IP-Telemtry', 'IEC'],
-                    console.log('option: ' + option);
-                    if (option == 'status-word') {
-                        gw_req_vec.push("op-log-status-word");
-                        self.spinner.status = true;
-                    }
-                    else if (option == 'devices') {
-                        gw_req_vec.push("root-visible-devices");
-                        gw_req_vec.push("root-active-devices");
-                        //  clear meter table
-                        this.meters.values = [];
-                        self.spinner.meters = true;
-                    }
-                    else if (option == 'firmware') {
-                        gw_req_vec.push("root-device-id");
-                        this.fw.values = [];
-                        self.spinner.firmware = true;
-                    }
-                    else if (option == 'memory-usage') {
-                        gw_req_vec.push("root-memory-usage");
-                        self.spinner.memory = true;
-                    }
-                    else if (option == 'w-MBus') {
-                        gw_req_vec.push("root-wMBus-status");
-                        gw_req_vec.push("IF-wireless-mbus");
-                        self.spinner.wmbus = true;
-                    }
-                    else if (option == 'ipt') {
-                        gw_req_vec.push("root-ipt-state");
-                        gw_req_vec.push("root-ipt-param");
-                        self.spinner.ipt = true;
-                    }
-                    else if (option == 'iec') {
-                        //  81 81 C7 93 00 FF
-                        gw_req_vec.push("IF-IEC-62505-21");
-                        // gw_req_vec.push("root-iec-param");
-                        self.spinner.iec = true;
-                    }
-                });
-
-
-                //  send request to gateway(s)
-                if (gw_req_vec.length > 0) {
-                    items.forEach(item => {
-                        this.ws_submit_command("com:sml", "get.proc.param", [item.pk], [], gw_req_vec);
+                //
+                //  1 gateway selected
+                //
+                if (items.length == 1) {
+                    //var gw_req_vec = [];
+                    var self = this;
+                    this.options.selected.forEach(option => {
+                        //  channels: ['Status Word', 'Meters', 'Firmware', 'Memory', 'wireless M-Bus', 'IP-Telemtry', 'IEC'],
+                        console.log('option: ' + option);
+                        if (option == 'status-word') {
+                            //  810060050000
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CLASS_OP_LOG_STATUS_WORD, [items[0].pk]);
+                            self.spinner.status = true;
+                        }
+                        else if (option == 'devices') {
+                            //gw_req_vec.push("root-visible-devices");
+                            //gw_req_vec.push("root-active-devices");
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_VISIBLE_DEVICES, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ACTIVATE_DEVICE, [items[0].pk]);
+                            //  clear meter table
+                            self.meters.values = []; 
+                            self.spinner.meters = true;
+                        }
+                        else if (option == 'firmware') {
+                            //gw_req_vec.push("root-device-id");
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_DEVICE_IDENT, [items[0].pk]);
+                            self.fw.values = []; // ? self
+                            self.spinner.firmware = true;
+                        }
+                        else if (option == 'memory-usage') {
+                            //gw_req_vec.push("root-memory-usage");
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_MEMORY_USAGE, [items[0].pk]);
+                            self.spinner.memory = true;
+                        }
+                        else if (option == 'w-MBus') {
+                            //gw_req_vec.push("root-wMBus-status");
+                            //gw_req_vec.push("IF-wireless-mbus");
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_W_MBUS_STATUS, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_IF_wMBUS, [items[0].pk]);
+                            self.spinner.wmbus = true;
+                        }
+                        else if (option == 'ipt') {
+                            //gw_req_vec.push("root-ipt-state");
+                            //gw_req_vec.push("root-ipt-param");
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_IPT_PARAM, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_IPT_STATE, [items[0].pk]);
+                            self.spinner.ipt = true;
+                        }
+                        else if (option == 'iec') {
+                            //gw_req_vec.push("IF-IEC-62505-21");
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_IF_1107, [items[0].pk]);
+                            self.spinner.iec = true;
+                        }
+                        else if (option == 'log') {
+                            //   SML_GetProfileList_Req
+                            //  request operation log: 81 81 C7 89 E1 FF (OBIS_CLASS_OP_LOG)
+                            //"class-operation-log"
+                            self.ws_submit_request(MESSAGE_TYPES.getProfileList, SML_CODES.CLASS_OP_LOG, [items[0].pk]);
+                            self.spinner.log = true;
+                        }
                     });
                 }
             }
@@ -1639,7 +1729,9 @@ export default  {
         handleRebootGatewayOk(event) {
             event.preventDefault();
             this.selected.forEach(element => {
-                this.ws_submit_command("com:sml", "set.proc.param", [element.pk], [], ["reboot"]);
+                //this.ws_submit_command("com:sml", "set.proc.param", [element.pk], [], ["reboot"]);
+                console.log('ws_submit_request: ' + MESSAGE_TYPES.setProcParameter + ' gateway:' + element.pk);
+                this.ws_submit_request(MESSAGE_TYPES.setProcParameter, SML_CODES.CODE_REBOOT, [element.pk]);
             });
             this.$nextTick(() => {
                 // Wrapped in $nextTick to ensure DOM is rendered before closing
@@ -1676,75 +1768,110 @@ export default  {
         onIPTUpdate(event)   {
             event.preventDefault();
             // console.log('onIPTUpdate: ' + this.form.name);
-            this.ws_submit_command("com:sml",
-                "set.proc.param",
+            //this.ws_submit_command("com:sml",
+            //    "set.proc.param",
+            //    [this.form.pk],
+            //    [{ ipt: this.ipt.param }],
+            //    ["root-ipt-param"]);
+            this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+                SML_CODES.CODE_ROOT_IPT_PARAM,
                 [this.form.pk],
-                [{ ipt: this.ipt.param }],
-                ["root-ipt-param"]);
+                { ipt: this.ipt.param });
         },
         onMeterDelete(item, index, button) {
             // alert("delete: " + item.ident);
-            this.ws_submit_command("com:sml",
-                "set.proc.param",
+            //this.ws_submit_command("com:sml",
+            //    "set.proc.param",
+            //    [this.form.pk],
+            //    [
+            //        { nr: item.nr },
+            //        { meter: item.meter },
+            //        { meterId: item.meterId }
+            //    ],
+            //    ["delete"]);
+            this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+                SML_CODES.CODE_DELETE_DEVICE,
                 [this.form.pk],
-                [
-                    { nr: item.nr },
-                    { meter: item.meter },
-                    { meterId: item.meterId }
-                ],
-                ["delete"]);
+                { nr: item.nr, meter: item.ident });
         },
         onMeterActivate(item, index, button) {
             if (item.active) {
-                this.ws_submit_command("com:sml",
-                    "set.proc.param",
+                //this.ws_submit_command("com:sml",
+                //    "set.proc.param",
+                //    [this.form.pk],
+                //    [
+                //        { nr: item.nr },
+                //        { meter: item.meter },
+                //        { meterId: item.meterId }
+                //    ],
+                //    ["deactivate"]);
+                this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+                    SML_CODES.CODE_DEACTIVATE_DEVICE,
                     [this.form.pk],
-                    [
-                        { nr: item.nr },
-                        { meter: item.meter },
-                        { meterId: item.meterId }
-                    ],
-                    ["deactivate"]);
+                    { nr: item.nr, meter: item.ident });
             }
             else {
-                this.ws_submit_command("com:sml",
-                    "set.proc.param",
+                //this.ws_submit_command("com:sml",
+                //    "set.proc.param",
+                //    [this.form.pk],
+                //    [
+                //        { nr: item.nr },
+                //        { meter: item.meter },
+                //        { meterId: item.meterId }
+                //    ],
+                //    ["activate"]);
+                this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+                    SML_CODES.CODE_ACTIVATE_DEVICE,
                     [this.form.pk],
-                    [
-                        { nr: item.nr },
-                        { meter: item.meter },
-                        { meterId: item.meterId }
-                    ],
-                    ["activate"]);
+                    { nr: item.nr, meter: item.ident });
             }
         },
+        onMeterEdit(item, index, button) {
+            console.log("onMeterEdit " + item.pk + " : " + item.serverId);
+            //  route to meter configuration
+            this.$router.push({ name: 'smfConfigMeter' });
+        },
         onWMbusUpdate() {
-            this.ws_submit_command("com:sml",
-                "set.proc.param",
+            //this.ws_submit_command("com:sml",
+            //    "set.proc.param",
+            //    [this.form.pk],
+            //    [{ wmbus: this.wmbus }],
+            //    ["IF-wireless-mbus"]);
+            this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+                SML_CODES.CODE_IF_wMBUS,
                 [this.form.pk],
-                [{ wmbus: this.wmbus }],
-                ["IF-wireless-mbus"]);
+                { wmbus: this.wmbus });
 
         },
         onIECUpdate() {
-            // alert("onIECUpdate: " + this.form.serverId);
-            this.ws_submit_command("com:sml",
-                "set.proc.param",
+            //alert("onIECUpdate: " + this.form.serverId);
+            //this.ws_submit_command("com:sml",
+            //    "set.proc.param",
+            //    [this.form.pk],
+            //    [{ iec: this.iec.params }],
+            //    ["IF-IEC-62505-21"]);
+            this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+                SML_CODES.CODE_IF_1107,
                 [this.form.pk],
-                [{ iec: this.iec.params }],
-                ["IF-IEC-62505-21"]);
+                { iec: this.iec.params });
         },
 
         meterTableComplete() {
             var csv = 'Ident;Meter;Maker;ServerId\n';
             this.meters.values.forEach(function(row) {
-                console.log(row.ident);
+                //console.log(row.ident);
                 csv += row.ident + ';' + row.meter + ';' + row.maker + ';' + row.serverId + '\n';
             });
             var data = new Blob([csv]);
             this.meters.csv = URL.createObjectURL(data);
+        },
+        btnEditStatus(mc) {
+            //console.log("btnEditStatus " + mc);
+            if (typeof mc == 'undefined') return true;
+            if ((mc.length > 2) && mc.startsWith("MC")) return true;
+            return false;
         }
-    },
+   },
 
     computed: {
         tableCaption() {
@@ -1773,6 +1900,9 @@ export default  {
                 return "Reboot " + this.selected[0].name;
             }
             return "Reboot " + this.selected.length + " gateway(s)";
+        },
+        btnEdit() {
+            return "Edit";
         },
         isRecordSelected() {
             return this.selected.length != 0;
@@ -1810,7 +1940,7 @@ export default  {
 
     watch: {
         'options.selected'(newVal, oldVal) {
-            console.log('selected ' + newVal + ", " + oldVal);
+            //console.log('selected ' + newVal + ", " + oldVal);
             if (newVal.length === 0) {
                 this.options.indeterminate = false
                 this.options.allSelected = false

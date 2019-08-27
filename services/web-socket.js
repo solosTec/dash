@@ -1,4 +1,5 @@
 import { EventBus } from './event-bus.js'
+//import msgTypes from '@/constants/msgTypes'
 
 export const webSocket = {
 
@@ -165,6 +166,27 @@ export const webSocket = {
                 key: key,
                 params: params,
                 section: section
+            });
+            this.ws.send(msg);
+            this.sx += msg.length;
+            this.ws_emit_event_sx();
+        },
+        //
+        //  msgType: getProfileList, getProcParameter, getList, getProfilePack
+        //  see: msgTypes.js
+        //  root: OBIS code
+        //  pk_gw: primary key of selected object (gateway, meter)
+        //  pk_meter: primary key of selected object (gateway, meter)
+        //  params: optional parameters
+        //
+        ws_submit_request(msgType, root, pk_gw, params = { params: null }) {
+            if (!this.ws_is_open()) return;
+            var msg = JSON.stringify({
+                cmd: "com:sml",
+                msgType: msgType,
+                channel: root,
+                gw: pk_gw,
+                params
             });
             this.ws.send(msg);
             this.sx += msg.length;
