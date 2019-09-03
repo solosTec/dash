@@ -19,27 +19,30 @@
 
       <b-card-group deck>
 
-          <b-card 
-          title="Auto Login" 
+          <b-card
+          :title="$t('config-sys-01')"
           class="shadow">
             <b-form-checkbox switch v-model="cfg.auto_login" name="check-button">
-              Accept unknown devices and transfer the login data to the configuration database (not recommended).
-            </b-form-checkbox>              
-            <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.auto_login}}</b></small></div>
+              {{ $t('config-sys-02') }}
+              <!-- Accept unknown devices and transfer the login data to the configuration database (not recommended). -->
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-02-1') }}<b>{{cfg.def.auto_login}}</b></small></div>
           </b-card>
 
-          <b-card title="Auto Enabled" class="shadow">
+          <b-card
+          :title="$t('config-sys-03')">
             <b-form-checkbox switch v-model="cfg.auto_enabled" name="check-button">
-              Set automatically configured devices as enabled.
-            </b-form-checkbox>              
-            <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.auto_enabled}}</b></small></div>
+              {{ $t('config-sys-04') }}
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-04-1') }}<b>{{cfg.def.auto_enabled}}</b></small></div>
           </b-card>
 
-          <b-card title="Supersede" class="shadow">
+          <b-card :title="$t('config-sys-05')" class="shadow">
             <b-form-checkbox switch v-model="cfg.supersede" name="check-button">
-              New login terminates running session with same credentials (recommended).
-            </b-form-checkbox>              
-            <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.supersede}}</b></small></div>
+              {{ $t('config-sys-06') }}
+              <!-- New login terminates running session with same credentials (recommended). -->
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-06-1') }}<b>{{cfg.def.supersede}}</b></small></div>
           </b-card>
 
       </b-card-group>
@@ -47,51 +50,52 @@
       <br />
 
       <b-card-group deck>
-          <b-card title="Country Code" class="shadow">
+          <b-card :title="$t('config-sys-07')" class="shadow">
             <b-input-group class="mt-3">
                 <b-form-select v-model="cfg.countryCode" :options="country.options" />
             </b-input-group>
 
              <!-- Maximum number of messages to be displayed. -->
-            <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.countryCode}}</b></small></div>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-07-1') }}<b>{{cfg.def.countryCode}}</b></small></div>
           </b-card>
-          <b-card title="Language Code" class="shadow">
+          <b-card :title="$t('config-sys-08')" class="shadow">
+            <!-- Language Code -->
             <b-input-group class="mt-3">
                 <b-form-select v-model="cfg.languageCode" :options="language.options" />
             </b-input-group>
 
              <!-- Maximum number of messages to be displayed. -->
-            <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.languageCode}}</b></small></div>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-08-1') }}<b>{{cfg.def.languageCode}}</b></small></div>
           </b-card>
       </b-card-group>
 
       <br />
 
       <b-card-group deck>
-          <b-card title="System Messages" class="shadow">
+          <b-card :title="$t('config-sys-09')" class="shadow">
             <b-input-group prepend="max." class="mt-3">
               <b-form-input v-model.number="cfg.maxMessages" type="number" min="10" max="10000" step="10" placeholder="<max. Messages>" />
               <b-input-group-append>
-                <b-button variant="secondary" @click="cfg.maxMessages = cfg.def.maxMessages">Default</b-button>
-                <b-button variant="success" @click="changeMaxMessages">Commit</b-button>
+                <b-button variant="secondary" @click="cfg.maxMessages = cfg.def.maxMessages">{{ $t('config-sys-09-1') }}</b-button>
+                <b-button variant="success" @click="changeMaxMessages">{{ $t('config-sys-09-2') }}</b-button>
               </b-input-group-append>
             </b-input-group>
 
              <!-- Maximum number of messages to be displayed. -->
-            <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.maxMessages}}</b></small></div>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-09-3') }}<b>{{cfg.def.maxMessages}}</b></small></div>
           </b-card>
 
-          <b-card title="System Events" class="shadow">
+          <b-card :title="$t('config-sys-10')" class="shadow">
             <b-input-group prepend="max." class="mt-3">
               <b-form-input v-model.number="cfg.maxEvents" type="number" min="10" max="10000" step="10" placeholder="<max. Events>" />
               <b-input-group-append>
-                <b-button variant="secondary" @click="cfg.maxEvents = cfg.def.maxEvents">Default</b-button>
-                <b-button variant="success" @click="changeMaxEvents">Commit</b-button>
+                <b-button variant="secondary" @click="cfg.maxEvents = cfg.def.maxEvents">{{ $t('config-sys-10-1') }}</b-button>
+                <b-button variant="success" @click="changeMaxEvents">{{ $t('config-sys-10-2') }}</b-button>
               </b-input-group-append>
             </b-input-group>
 
              <!-- Maximum number of events to be displayed. -->
-            <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.maxEvents}}</b></small></div>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-10-3') }}<b>{{cfg.def.maxEvents}}</b></small></div>
           </b-card>
       </b-card-group>
 
@@ -99,11 +103,11 @@
 
       <b-card-group deck>
 
-          <b-card title="Generate Time-Series" class="shadow">
+          <b-card :title="$t('config-sys-11')" class="shadow">
             <b-form-checkbox switch v-model="cfg.tsdb" name="check-button">
-              Write statistics into <b>{{cfg.tsdb_dir}}</b> (This may have a performance impact).
-            </b-form-checkbox>              
-            <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.tsdb}}</b></small></div>
+              {{ $t('config-sys-12') }}<b>{{cfg.tsdb_dir}}</b> {{ $t('config-sys-13') }}
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-13-1') }}<b>{{cfg.def.tsdb}}</b></small></div>
           </b-card>
 
       </b-card-group>
@@ -112,18 +116,18 @@
 
       <b-card-group deck>
 
-          <b-card title="Catch new Meters" class="shadow">
+          <b-card :title="$t('config-sys-14')" class="shadow">
             <b-form-checkbox switch v-model="cfg.catch_meters" name="check-button">
-              Catch new meters during gateway configuration.
-            </b-form-checkbox>              
-            <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.catch_meters}}</b></small></div>
+              {{ $t('config-sys-15') }}
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-15-1') }}<b>{{cfg.def.catch_meters}}</b></small></div>
           </b-card>
 
-          <b-card title="Catch new LoRa Devices" class="shadow">
+          <b-card :title="$t('config-sys-16')" class="shadow">
             <b-form-checkbox switch v-model="cfg.catch_lora" name="check-button">
-              Insert unkown LoRa devices automatically
-            </b-form-checkbox>              
-            <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.catch_lora}}</b></small></div>
+              {{ $t('config-sys-17') }}
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-17-1') }}<b>{{cfg.def.catch_lora}}</b></small></div>
           </b-card>
 
       </b-card-group>
@@ -208,7 +212,7 @@ export default  {
         ws_on_open() {
             this.ws_subscribe("config.system");
         },
-        ws_on_data(obj) {      
+        ws_on_data(obj) {
             if (obj.cmd != null) {
                 // console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                 if (obj.cmd == 'insert') {

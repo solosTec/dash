@@ -21,35 +21,35 @@
                     <b-col md="6">
                         <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
                             <b-input-group>
-                                <b-form-input v-model="filter" placeholder="Type to Search" />
+                                <b-form-input v-model="filter" :placeholder="$t('config-gateway-02')" />
                                 <b-input-group-append>
-                                <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                                <b-button :disabled="!filter" @click="filter = ''">{{ $t('config-gateway-03') }}</b-button>
                                 </b-input-group-append>
                             </b-input-group>
                         </b-form-group>
                     </b-col>
 
-                    <b-col md="6">    
+                    <b-col md="6">
                         <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
                     </b-col>
                     </b-row>
 
                     <b-row>
-                    <b-col md="12">    
+                    <b-col md="12">
                     <!-- table -->
                     <b-table
                         ref="devTable"
-                        bordered 
-                        striped 
+                        bordered
+                        striped
                         small
-                        hover 
+                        hover
                         show-empty
                         stacked="md"
                         selectable
                         select-mode="range"
                         selectedVariant="info"
                         @row-selected="rowSelected"
-                        :fields="fields" 
+                        :fields="fields"
                         :items="devices"
                         :busy="isBusy"
                         primary-key="pk"
@@ -73,7 +73,7 @@
 
                         <!-- caption slot -->
                         <template slot="table-caption">{{ tableCaption }}</template>
-                        
+
 
                         <!-- loading slot -->
                         <div slot="table-busy" class="text-center text-danger">
@@ -81,7 +81,7 @@
                         </div>
 
                     </b-table>
-                    </b-col>    
+                    </b-col>
                     </b-row>
 
                 </b-col>
@@ -89,15 +89,15 @@
                 <b-col md="3">
 
                 <!-- form -->
-                <b-form v-on:submit.prevent class="p-3 shadow"> 
+                <b-form v-on:submit.prevent class="p-3 shadow">
 
-                    <b-form-group label="Device Name" label-for="smf-form-dev-name">
+                    <b-form-group :label="$t('config-device-01')" label-for="smf-form-dev-name">
                     <b-form-input
                         id="smf-form-dev-name"
                         type="text"
                         v-model="form.name"
                         required
-                        placeholder="<Device Name>" />
+                        :placeholder="$t('config-device-01-01')" />
                     </b-form-group>
 
                     <b-form-group label="MSISDN" label-for="smf-form-dev-msisdn">
@@ -109,31 +109,31 @@
                         placeholder="<MSISDN>" />
                     </b-form-group>
 
-                    <b-form-group label="Password" label-for="smf-form-dev-pwd">
+                    <b-form-group :label="$t('config-device-02')" label-for="smf-form-dev-pwd">
                     <b-input-group>
                         <b-form-input
                         id="smf-form-dev-pwd"
                         type="text"
                         v-model="form.pwd"
                         required
-                        placeholder="<Password>"/>
+                        :placeholder="$t('config-device-02-02')"/>
                         <b-input-group-append>
                         <b-button variant="info" v-on:click.stop="generatePassword" v-b-tooltip.hover title="Generate password">&#x21ba;</b-button>
                         </b-input-group-append>
                     </b-input-group>
                     </b-form-group>
 
-                    <b-form-group label="Description" label-for="smf-form-dev-descr">
+                    <b-form-group :label="$t('config-device-03')" label-for="smf-form-dev-descr">
                     <b-form-input
                         id="smf-form-dev-descr"
                         type="text"
                         v-model="form.descr"
-                        placeholder="<Description>" />
+                        :placeholder="$t('config-device-03-03')" />
                     </b-form-group>
 
                     <b-form-group label="" label-for="smf-form-dev-enabled">
                     <b-form-checkbox switch v-model="form.enabled" :disabled="!isRecordSelected" name="smf-form-dev-enabled">
-                        {{ form.enabled ? "Active" : "Inactive" }}
+                        {{ form.enabled ? $t('config-device-04') : $t('config-device-05') }}
                     </b-form-checkbox>
                     </b-form-group>
 
@@ -154,15 +154,15 @@
     </b-container>
 
     <!-- Modal Component -->
-    <b-modal 
-        ref="dlgDeleteDevice" 
-        :title=btnDeleteTitle 
+    <b-modal
+        ref="dlgDeleteDevice"
+        :title=btnDeleteTitle
         @ok="handleDeleteDeviceOk"
         header-bg-variant="danger"
-        centered 
+        centered
         >
         <p>Proceed?</p>
-    </b-modal>  
+    </b-modal>
 
     </section>
 </template>
@@ -177,7 +177,7 @@
     props: [],
     mixins: [webSocket],
     // components: {
-    //     smfConfigDeviceProps        
+    //     smfConfigDeviceProps
     // },
 
     mounted() {
@@ -199,31 +199,31 @@
             key: 'name',
             label: 'Name',
             sortable: true
-          }, 
-          { 
+          },
+          {
             key: 'msisdn',
             label: 'MSISDN',
             sortable: true
-          }, 
+          },
           {
             key: 'pwd',
             label: 'Password'
-          }, 
+          },
           {
             key: 'descr',
             label: 'Description',
             sortable: true
-          }, 
-          { 
+          },
+          {
             key: 'id',
             label: 'Model',
             sortable: true
-          }, 
+          },
           {
             key: 'vFirmware',
             label: 'Firmware',
             sortable: true
-          }, 
+          },
           {
             key: 'enabled',
             label: 'Enabled',
@@ -233,7 +233,7 @@
                 return '✖';
             },
             class: 'text-center'
-          }, 
+          },
           {
             key: 'age',
             label: 'Created',
@@ -271,7 +271,7 @@
         ws_on_open() {
             //  clear table
             this.devices = [];
-            this.ws_subscribe("config.device"); 
+            this.ws_subscribe("config.device");
         },
 
         ws_on_data(obj) {
@@ -288,17 +288,17 @@
                 }
                 else if (obj.cmd == 'insert') {
                     var created = new Date(obj.rec.data.creationTime.substring(0, 19));
-                    var rec = { 
-                        pk: obj.rec.key.pk, 
-                        age: created, 
-                        descr: obj.rec.data.descr, 
-                        enabled: obj.rec.data.enabled, 
-                        id: obj.rec.data.id, 
-                        msisdn: obj.rec.data.msisdn, 
-                        name: obj.rec.data.name, 
-                        pwd: obj.rec.data.pwd, 
+                    var rec = {
+                        pk: obj.rec.key.pk,
+                        age: created,
+                        descr: obj.rec.data.descr,
+                        enabled: obj.rec.data.enabled,
+                        id: obj.rec.data.id,
+                        msisdn: obj.rec.data.msisdn,
+                        name: obj.rec.data.name,
+                        pwd: obj.rec.data.pwd,
                         vFirmware: obj.rec.data.vFirmware };
-                        
+
                     if (!obj.rec.data.enabled) {
                         rec["_rowVariant"] = "warning";
                     }
@@ -412,13 +412,13 @@
         onDeviceUpdate(event) {
             event.preventDefault();
             // console.log('onDeviceUpdate: ' + this.form.name);
-            this.ws_submit_record("modify", "config.device", { 
-            key: [this.form.pk], 
-            data: { 
-                name: this.form.name, 
-                msisdn: this.form.msisdn, 
-                descr: this.form.descr, 
-                pwd: this.form.pwd, 
+            this.ws_submit_record("modify", "config.device", {
+            key: [this.form.pk],
+            data: {
+                name: this.form.name,
+                msisdn: this.form.msisdn,
+                descr: this.form.descr,
+                pwd: this.form.pwd,
                 enabled: this.form.enabled }
             });
         },
@@ -436,14 +436,14 @@
             this.$nextTick(() => {
                 // Wrapped in $nextTick to ensure DOM is rendered before closing
                 this.$refs.dlgDeleteDevice.hide();
-            })        
+            })
         },
         onDeviceInsert(event) {
             event.preventDefault();
             // eslint-disable-next-line
             console.log('onDeviceInsert: ' + event);
-            this.ws_submit_record("insert", "config.device", { 
-            key: [this.form.pk], 
+            this.ws_submit_record("insert", "config.device", {
+            key: [this.form.pk],
             data: { name: this.form.name, msisdn: this.form.msisdn, descr: this.form.descr, pwd: this.form.pwd, enabled: this.form.enabled, age: new Date() }
             });
         },
@@ -453,7 +453,7 @@
             this.form.pwd = "";
             for(let idx = 0; idx < 12; idx++) {
             this.form.pwd += charSet.charAt(Math.floor(Math.random() * charSet.length));
-            }        
+            }
         },
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
@@ -461,8 +461,8 @@
             this.currentPage = 1
         },
         formatDescription(str) {
-            if (str.length > 24)  return str.substring(0, 24) + '...'; 
-            return str;        
+            if (str.length > 24)  return str.substring(0, 24) + '...';
+            return str;
         }
     },
 
@@ -472,21 +472,21 @@
       },
       btnUpdateTitle() {
         if(this.selected.length > 0) {
-          return "Update " + this.selected[0].name;
+          return this.$t('config-device-06') + this.selected[0].name;
         }
-        return "Update";
+        return this.$t('config-device-06');
       },
       btnDeleteTitle() {
         if (this.selected.length == 0)  {
-          return "Delete";
+          return this.$t('config-device-07');
         }
         else if(this.selected.length == 1) {
-          return "Delete " + this.selected[0].name;
+          return this.$t('config-device-07') + this.selected[0].name;
         }
-        return "Delete " + this.selected.length + " record(s)";
+        return this.$t('config-device-07') + this.selected.length + " record(s)";
       },
       btnInsertTitle() {
-        return "Insert " + this.form.name;
+        return this.$t('config-device-08') + this.form.name;
       },
       isRecordSelected() {
         return this.selected.length != 0;
