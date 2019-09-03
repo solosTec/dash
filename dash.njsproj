@@ -40,7 +40,10 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="src\components\smf-table-data-mirror.vue" />
+    <Content Include="src\components\smf-table-op-log.vue" />
     <Content Include="src\components\smf-table-push-targets.vue" />
+    <Content Include="src\constants\msgTypes.js" />
+    <Content Include="src\constants\rootCodes.js" />
     <Content Include="src\plugins\bootstrap-vue.js" />
     <Content Include="src\plugins\i18n.js" />
     <Content Include="src\router.js" />
