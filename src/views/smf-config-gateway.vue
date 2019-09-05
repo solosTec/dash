@@ -1,4 +1,4 @@
-<template lang="html">
+﻿<template lang="html">
 
     <section class="smf-config-gateway">
 
@@ -794,7 +794,6 @@
                                         <b-form-group label="Select the time range">
                                             <b-form-radio-group buttons
                                                                 button-variant="outline-primary"
-                                                                size="lg"
                                                                 v-model="tabOpLog.form.select">
                                                 <b-form-radio value="1">-1d</b-form-radio>
                                                 <b-form-radio value="2">-2d</b-form-radio>
@@ -1346,6 +1345,7 @@ export default  {
                             else if (obj.section == 'root-active-devices') {
                                 //console.log('active device: ' + obj.rec.values.ident + ' pk: ' + obj.rec.values.pk[0]);
                                 var recActive = this.meters.values.find(meter => {
+                                    console.log('active device: compare ' + meter.ident + ' <> ' + obj.rec.values.ident);
                                     if (meter.ident == obj.rec.values.ident) {
                                         meter.active = true;
                                         meter.pk = obj.rec.values.pk;
@@ -1354,7 +1354,7 @@ export default  {
                                     }
                                     return false;
                                 });
-                                // console.log('found: ' + recActive);
+                                console.log('found: ' + recActive);
                                 if (recActive === undefined) {
                                     var lastSeenActive = (obj.rec.values.timestamp != null)
                                                 ? new Date(obj.rec.values.timestamp.substring(0, 19))
