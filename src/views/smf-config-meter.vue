@@ -652,7 +652,7 @@
             },
             ws_on_data(obj) {
                 if (obj.cmd != null) {
-                    console.log('websocket received command ' + obj.cmd);
+                    //console.log('websocket received command ' + obj.cmd);
                     if (obj.cmd == 'insert') {
                         var tom = new Date(obj.rec.data.tom.substring(0, 19));
                         var rec = {
@@ -777,27 +777,29 @@
                             this.spinner.mirror = false;
                         }
                         else if (obj.channel == MESSAGE_TYPES.getList) {
+                            //console.log(obj.rec.values);
+                            //  hide spinner
+                            this.spinner.readout = false;
                             // clear table
                             this.readout.values = [];
                             this.$toasted.global.sml_attention_ok(obj.rec.srv + " sent " + Object.keys(obj.rec.values).length + " values", "info");
-                            Object.keys(obj.rec.values).forEach(key => {
-                                // console.log('item ' + key);
-                                // console.log('value ' + obj.rec.values[key].value);
+                            Object.keys(obj.rec.values.values).forEach((key, idx, a) => {
+                                //console.log(key);
+                                //console.log(obj.rec.values.values[key]);
                                 var rec = {
                                     obis: key,
-                                    value: obj.rec.values[key].value,
-                                    unit: obj.rec.values[key].unit,
-                                    time: obj.rec.values[key].valTime,
+                                    value: obj.rec.values.values[key].value,
+                                    unit: obj.rec.values.values[key].unit,
+                                    time: obj.rec.values.values[key].valTime,
                                     server: obj.rec.srv
                                 };
                                 this.readout.values.push(rec);
                             });
-                            //  hide spinner
-                            this.spinner.readout = false;
                         }
                         else if (obj.channel == MESSAGE_TYPES.getProcParameter) {
                             console.log(MESSAGE_TYPES.getProcParameter + ': ' + obj.section);
-                            if (obj.section == 'root-sensor-prop') {
+                            console.log(obj.rec.values);
+                            if (obj.section == SML_CODES.CODE_ROOT_SENSOR_PARAMS) {
                                 this.spinner.meter = false;
                                 // aesKey: null
                                 // bitMask: "3030"
@@ -809,11 +811,11 @@
                                 // pwd: "707764"
                                 // statusWord: 0
                                 // user: "75736572"
-                                this.tabMeter.data.devClass = obj.rec.values.devClass;
-                                this.tabMeter.data.maker = obj.rec.values.maker;
-                                this.tabMeter.data.status = obj.rec.values.status;
-                                this.tabMeter.data.bitmask = obj.rec.values.bitMask;
-                                this.tabMeter.data.interval = obj.rec.values.interval;
+                                this.tabMeter.data.devClass = obj.rec.values["8181C78202FF"];
+                                this.tabMeter.data.maker = obj.rec.values["8181C78203FF"];
+                                this.tabMeter.data.status = obj.rec.values["810060050000"];
+                                this.tabMeter.data.bitmask = obj.rec.values["8181C78601FF"];
+                                this.tabMeter.data.interval = obj.rec.values["8181C78602FF"];
                                 if (obj.rec.values.lastRecord != null) {
                                     // var tp = obj.rec.values.lastRecord.subString(0, 19);
                                     this.tabMeter.data.lastRecord = obj.rec.values.lastRecord.substring(0, 19);
@@ -821,10 +823,10 @@
                                 else {
                                     this.tabMeter.data.lastRecord = null;
                                 }
-                                this.tabMeter.data.pubKey = obj.rec.values.pubKey;
-                                this.tabMeter.data.aesKey = obj.rec.values.aesKey;
-                                this.tabMeter.data.user = obj.rec.values.user;
-                                this.tabMeter.data.pwd = obj.rec.values.pwd;
+                                this.tabMeter.data.pubKey = obj.rec.values["8181C78205FF"];
+                                this.tabMeter.data.aesKey = obj.rec.values["8181C78603FF"];
+                                this.tabMeter.data.user = obj.rec.values["8181613C01FF"];
+                                this.tabMeter.data.pwd = obj.rec.values["8181613C02FF"];
                             }
                             else if (obj.section == 'root-data-prop') {
                                 this.spinner.mirror = false;

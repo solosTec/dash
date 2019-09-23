@@ -1054,7 +1054,7 @@ export default  {
                     label: 'Meter',
                     sortable: true,
                     formatter: (value, key, item) => {
-                        return value.toUpperCase();
+                        return Boolean(value) ? value.toUpperCase() : '?';
                     }
                 },
                 {
@@ -1201,7 +1201,7 @@ export default  {
             selected: [],
             fields: [
                 {
-                    key: 'index',
+                    key: 'nr',
                     label: 'Nr',
                     sortable: true,
                     class: 'text-right small'
@@ -1220,6 +1220,24 @@ export default  {
                     key: '8181C7930CFF',
                     label: 'Address',
                     sortable: true
+                },
+                {
+                    key: '8181C7930DFF',
+                    label: 'P1',
+                    sortable: false,
+                    formatter: (value, key, item) => {
+                        if (value)  return value;
+                        return '-';
+                    }
+                },
+                {
+                    key: '8181C7930EFF',
+                    label: 'W5',
+                    sortable: false,
+                    formatter: (value, key, item) => {
+                        if (value)  return value;
+                        return '-';
+                    }
                 }
             ],
             sortBy: '8181C7930AFF',
@@ -1256,7 +1274,9 @@ export default  {
                     if (obj.channel != null) {
                         // console.log('update channel ' + obj.channel);
                         if (obj.channel == MESSAGE_TYPES.getProcParameter) {
-                            if (obj.section == 'op-log-status-word') {
+                            console.log("section :::" + obj.section + ":::");
+                            console.log(obj.rec.values);
+                            if (obj.section == SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
                                 this.gw.status = [];
                                 // state.variant">{{state.value}
                                 if (obj.rec.values.word.FATAL_ERROR) {
@@ -1317,147 +1337,176 @@ export default  {
                                 //  hide loading spinner
                                 this.spinner.status = false;
                             }
-                            else if (obj.section == 'root-visible-devices') {
-                                // console.log('visible device: ' + obj.rec.values.ident);
-                                var lastSeenVisible = (obj.rec.values.timestamp != null)
-                                            ? new Date(obj.rec.values.timestamp.substring(0, 19))
-                                            : new Date();
-                                //  obj.rec.values.number, obj.rec.values.ident, obj.rec.values.meterId, obj.rec.values.meter, obj.rec.values.maker, lastSeen, obj.rec.values.class, obj.rec.srv, obj.rec.values.type, true, false, obj.rec.gw
-                                var recVisible = {
-                                    nr: obj.rec.values.number,
-                                    ident: obj.rec.values.ident,
-                                    meterId: obj.rec.values.meterId,
-                                    meter: obj.rec.values.meter,
-                                    maker: obj.rec.values.maker,
-                                    lastSeen: lastSeenVisible,
-                                    type: obj.rec.values.type,
-                                    visible: true,
-                                    active: false,
-                                    serverId: obj.rec.srv };
+                            else if (obj.section == SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
+                                Object.values(obj.rec.values).forEach((e, idx, a) => {
+                                    //console.log(e);
+                                    var lastSeenVisible = (e[SML_CODES.CURRENT_UTC] != null)
+                                        ? new Date(e[SML_CODES.CURRENT_UTC].substring(0, 19))
+                                        : new Date();
 
-                                if (obj.rec.values.type < 2) {
-                                    recVisible["_rowVariant"] = "success";
-                                }
-
-                                this.meters.values.push(recVisible);
-                            }
-                            else if (obj.section == 'root-active-devices') {
-                                //console.log('active device: ' + obj.rec.values.ident + ' pk: ' + obj.rec.values.pk[0]);
-                                var recActive = this.meters.values.find(meter => {
-                                    console.log('active device: compare ' + meter.ident + ' <> ' + obj.rec.values.ident);
-                                    if (meter.ident == obj.rec.values.ident) {
-                                        meter.active = true;
-                                        meter.pk = obj.rec.values.pk;
-                                        meter.mc = obj.rec.values.mc;
-                                        return true;
-                                    }
-                                    return false;
-                                });
-                                console.log('found: ' + recActive);
-                                if (recActive === undefined) {
-                                    var lastSeenActive = (obj.rec.values.timestamp != null)
-                                                ? new Date(obj.rec.values.timestamp.substring(0, 19))
-                                                : new Date();
-                                    recActive = {
-                                        nr: obj.rec.values.number,
-                                        ident: obj.rec.values.ident,
-                                        meterId: obj.rec.values.meterId,
-                                        meter: obj.rec.values.meter,
-                                        maker: obj.rec.values.maker,
-                                        lastSeen: lastSeenActive,
-                                        type: obj.rec.values.type,
-                                        visible: false,
-                                        active: true,
-                                        serverId: obj.rec.srv,
-                                        pk: obj.rec.values.pk,
-                                        mc: obj.rec.values.mc};
+                                    var recVisible = {
+                                        nr: e.nr,
+                                        ident: e[SML_CODES.CODE_SERVER_ID],
+                                        meter: e.serial,
+                                        maker: e.maker,
+                                        lastSeen: lastSeenVisible,
+                                        type: e.type,
+                                        visible: true,
+                                        active: false,
+                                        serverId: obj.rec.srv };
 
                                     if (obj.rec.values.type < 2) {
-                                        recActive["_rowVariant"] = "success";
+                                        recVisible["_rowVariant"] = "success";
                                     }
+                                    this.meters.values.push(recVisible);
 
-                                    this.meters.values.push(recActive);
-                                }
+                                });
+                            }
+                            else if (obj.section == SML_CODES.CODE_ROOT_ACTIVE_DEVICES) {
                                 //  hide loading spinner
                                 this.spinner.meters = false;
+
+                                Object.values(obj.rec.values).forEach((e, idx, a) => {
+                                    //console.log(e);
+                                    var recActive = this.meters.values.find(meter => {
+                                        //console.log('active device: compare ' + meter.ident + ' <> ' + e[SML_CODES.CODE_SERVER_ID]);
+                                        if (meter.ident == e[SML_CODES.CODE_SERVER_ID]) {
+                                            meter.active = true;
+                                            meter.pk = obj.rec.values.pk;
+                                            meter.mc = obj.rec.values.mc;
+                                            return true;
+                                        }
+                                        return false;
+                                    });
+
+                                    //
+                                    //  this meter is only active and not visible,
+                                    //  therefore a new record have to be inserted
+                                    //
+                                    if (recActive === undefined) {
+                                        var lastSeenVisible = (e[SML_CODES.CURRENT_UTC] != null)
+                                            ? new Date(e[SML_CODES.CURRENT_UTC].substring(0, 19))
+                                            : new Date();
+                                        recActive = {
+                                            nr: e.nr,
+                                            ident: e[SML_CODES.CODE_SERVER_ID],
+                                            meter: e.serial,
+                                            maker: e.maker,
+                                            lastSeen: lastSeenVisible,
+                                            type: e.type,
+                                            visible: false,
+                                            active: true,
+                                            serverId: obj.rec.srv,
+                                            pk: e.pk,
+                                            mc: e.mc
+                                        };
+
+                                        if (obj.rec.values.type < 2) {
+                                            recActive["_rowVariant"] = "success";
+                                        }
+
+                                        this.meters.values.push(recActive);
+                                    }
+
+                                });
+
+                                //
+                                //  update download link
+                                //
                                 this.meterTableComplete();
                             }
-                            else if (obj.section == 'root-device-id') {
-                                //  firmware
-                                var rec = {
-                                    nr: obj.rec.values.number,
-                                    name: obj.rec.values.firmware,
-                                    version: obj.rec.values.version,
-                                    active: obj.rec.values.active,
-                                    srv: obj.rec.srv};
-                                this.fw.values.push(rec);
-
+                            else if (obj.section == SML_CODES.CODE_ROOT_DEVICE_IDENT) {
                                 //  hide loading spinner
                                 this.spinner.firmware = false;
+                                //  firmware
+                                //  iterate over 8181C78206FF
+                                //  this is an array of objects
+                                const srv = obj.rec.values['8181C78204FF'];
+                                const values = Object.values(obj.rec.values['8181C78206FF']);
+                                //console.log(values);
+                                values.forEach((e, idx, a) => {
+                                    //console.log(e);
+                                    var rec = {
+                                        nr: idx,
+                                        name: e['8181C78208FF'],
+                                        version: e['818100020000'],
+                                        active: e['8181C7820EFF'],
+                                        srv: srv};
+                                    this.fw.values.push(rec);
+                                });
                             }
-                            else if (obj.section == 'root-memory-usage') {
-                                this.gw.memory.mirror = obj.rec.values.mirror;
-                                this.gw.memory.tmp = obj.rec.values.tmp;
-
+                            else if (obj.section == SML_CODES.CODE_ROOT_MEMORY_USAGE) {
                                 //  hide loading spinner
                                 this.spinner.memory = false;
+                                this.gw.memory.mirror = obj.rec.values['0080800011FF'];
+                                this.gw.memory.tmp = obj.rec.values['0080800012FF'];
                             }
-                            else if (obj.section == 'root-wMBus-status') {
-                                this.wmbus.type = obj.rec.values.manufacturer;
-                                this.wmbus.id = obj.rec.values.id;
-                                this.wmbus.firmware = obj.rec.values.firmware;
-                                this.wmbus.hardware = obj.rec.values.hardware;
+                            else if (obj.section == SML_CODES.CODE_ROOT_W_MBUS_STATUS) {
+                                this.wmbus.type = obj.rec.values['810600000100'];
+                                this.wmbus.id = obj.rec.values['810600000300']
+                                this.wmbus.firmware = obj.rec.values['810600020000'];
+                                this.wmbus.hardware = obj.rec.values['8106000203FF'];
                             }
-                            else if (obj.section == 'IF-wireless-mbus') {
-                                switch (obj.rec.values.protocol) {
+                            else if (obj.section == SML_CODES.CODE_IF_wMBUS) {
+                                //  hide loading spinner
+                                this.spinner.wmbus = false;
+
+                                //  radio protocol (T-mode, S-mode, S/T automatic, S/T parallel)
+                                switch (obj.rec.values['8106190701FF']) {
                                     case 0: this.wmbus.protocol = 'T'; break;
                                     case 1: this.wmbus.protocol = 'S'; break;
                                     case 2: this.wmbus.protocol = 'A'; break;
                                     case 3: this.wmbus.protocol = 'P'; break;
                                     default: break;
                                 }
-                                switch (obj.rec.values.power) {
+                                switch (obj.rec.values['8106190704FF']) {
                                     case 0: this.wmbus.power = 'low'; break;
                                     default: this.wmbus.power = 'basic'; break;
                                 }
-                                this.wmbus.reboot = obj.rec.values.reboot;
-                                this.wmbus.active = (obj.rec.values.installMode != 0);
-                                this.wmbus.sMode = obj.rec.values.sMode;
-                                this.wmbus.tMode = obj.rec.values.tMode;
-
-                                //  hide loading spinner
-                                this.spinner.wmbus = false;
+                                this.wmbus.reboot = obj.rec.values['8106190711FF'];
+                                //  install mode
+                                this.wmbus.active = (obj.rec.values['8106190711FF'] != 0);
+                                this.wmbus.sMode = obj.rec.values['8106190702FF'];
+                                this.wmbus.tMode = obj.rec.values['8106190703FF'];
                             }
-                            else if (obj.section == 'root-ipt-state') {
-                                this.ipt.status.host = obj.rec.values.address;
-                                this.ipt.status.local = obj.rec.values.local;
-                                this.ipt.status.remote = obj.rec.values.remote;
+                            else if (obj.section == SML_CODES.CODE_ROOT_IPT_STATE) {
+                                this.ipt.status.host = obj.rec.values['814917070000'];
+                                this.ipt.status.local = obj.rec.values['81491A070000'];
+                                this.ipt.status.remote = obj.rec.values['814919070000'];
                             }
-                            else if (obj.section == 'root-ipt-param') {
-                                this.ipt.param[obj.rec.values.idx - 1].host = obj.rec.values.address;
-                                this.ipt.param[obj.rec.values.idx - 1].port = obj.rec.values.local;
-                                this.ipt.param[obj.rec.values.idx - 1].user = obj.rec.values.name;
-                                this.ipt.param[obj.rec.values.idx - 1].pwd = obj.rec.values.pwd;
+                            else if (obj.section == SML_CODES.CODE_ROOT_IPT_PARAM) {
+                                //console.log(obj.rec.values);
                                 //  hide loading spinner
                                 this.spinner.ipt = false;
-                            }
-                            else if (obj.section == 'IF-IEC-62505-21') {
-                                this.iec.params.active = obj.rec.values.active;
-                                this.iec.params.autoActivation = obj.rec.values.autoActivation;
-                                this.iec.params.loopTime = obj.rec.values.loopTime;
-                                this.iec.params.maxDataRate = obj.rec.values.maxDataRate;
-                                this.iec.params.maxTimeout = obj.rec.values.maxTimeout;
-                                this.iec.params.maxVar = obj.rec.values.maxVar;
-                                this.iec.params.minTimeout = obj.rec.values.minTimeout;
-                                this.iec.params.protocolMode = obj.rec.values.protocolMode;
-                                this.iec.params.retries = obj.rec.values.retries;
-                                this.iec.params.rs485 = obj.rec.values.rs485;
-                                this.iec.params.timeGrid = obj.rec.values.timeGrid;
-                                this.iec.params.timeSync = obj.rec.values.timeSync;
-                                this.iec.params.devices = obj.rec.values.devices;
+                                this.ipt.param[0].host = obj.rec.values['81490D070001']['814917070001'];
+                                this.ipt.param[0].port = obj.rec.values['81490D070001']['81491A070001'];
+                                this.ipt.param[0].user = obj.rec.values['81490D070001']['8149633C0101'];
+                                this.ipt.param[0].pwd = obj.rec.values['81490D070001']['8149633C0201'];
 
+                                this.ipt.param[1].host = obj.rec.values['81490D070002']['814917070002'];
+                                this.ipt.param[1].port = obj.rec.values['81490D070002']['81491A070002'];
+                                this.ipt.param[1].user = obj.rec.values['81490D070002']['8149633C0102'];
+                                this.ipt.param[1].pwd = obj.rec.values['81490D070002']['8149633C0202'];
+                            }
+                            else if (obj.section == SML_CODES.CODE_IF_1107) {
                                 //  hide loading spinner
                                 this.spinner.iec = false;
+
+                                this.iec.params.active = obj.rec.values['8181C79301FF'];
+                                this.iec.params.loopTime = obj.rec.values['8181C79302FF'];
+                                this.iec.params.retries = obj.rec.values['8181C79303FF'];
+                                this.iec.params.minTimeout = obj.rec.values['8181C79304FF'];
+                                this.iec.params.maxTimeout = obj.rec.values['8181C79305FF'];
+                                this.iec.params.maxDataRate = obj.rec.values['8181C79306F'];
+                                this.iec.params.rs485 = Boolean(obj.rec.values['8181C79307FF']);
+                                this.iec.params.protocolMode = obj.rec.values['8181C79308FF'];
+                                this.iec.params.autoActivation = obj.rec.values['8181C79310FF'];
+                                this.iec.params.timeGrid = obj.rec.values['8181C79311FF'];
+                                this.iec.params.timeSync = obj.rec.values['8181C79313FF'];
+                                this.iec.params.maxVar = obj.rec.values['8181C79314FF'];
+                                //  object
+                                this.iec.params.devices = Array.from(obj.rec.values['8181C79309FF']);
+
                             }
                             else if (obj.section == 'device-class') {
                                 console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
@@ -1539,13 +1588,14 @@ export default  {
                             else if (obj.value.online != null) {
                                 rec.online = obj.value.online;
                                 if (obj.value.online == 1) {
-                                    rec._rowVariant = 'success';
+                                    //  cause possibly an update problem
+                                    rec["_rowVariant"] = 'success';
                                 }
                                 else if (obj.value.online == 2) {
-                                    rec._rowVariant = 'warning';
+                                    rec["_rowVariant"] = 'warning';
                                 }
                                 else {
-                                    rec._rowVariant = null;
+                                    rec["_rowVariant"]  = null;
                                 }
                                 //  force refresh: https://github.com/bootstrap-vue/bootstrap-vue/issues/1529
                                 // this.$refs.devTable.refresh();
@@ -1585,7 +1635,7 @@ export default  {
         rowSelected(items) {
             this.selected = items
             if (items.length > 0) {
-                // console.log('selected ' + items[0].serverId);
+                console.log('selected ' + items[0].serverId);
                 // console.log(items.length + ' rows selected ');
 
                 this.form.serverId = items[0].serverId;
@@ -1610,7 +1660,7 @@ export default  {
                     var self = this;
                     this.options.selected.forEach(option => {
                         //  channels: ['Status Word', 'Meters', 'Firmware', 'Memory', 'wireless M-Bus', 'IP-Telemtry', 'IEC'],
-                        console.log('option: ' + option);
+                        //console.log('option: ' + option);
                         if (option == 'status-word') {
                             //  810060050000
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CLASS_OP_LOG_STATUS_WORD, [items[0].pk]);
@@ -1620,7 +1670,7 @@ export default  {
                             //gw_req_vec.push("root-visible-devices");
                             //gw_req_vec.push("root-active-devices");
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_VISIBLE_DEVICES, [items[0].pk]);
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ACTIVATE_DEVICE, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, [items[0].pk]);
                             //  clear meter table
                             self.meters.values = [];
                             self.spinner.meters = true;
