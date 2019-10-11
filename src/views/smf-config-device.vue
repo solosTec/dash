@@ -425,7 +425,7 @@
         onDeviceDelete(event) {
             event.preventDefault();
             // eslint-disable-next-line
-            console.log('onDeviceDelete: ' + this.selected.length + ' devices');
+            //console.log('onDeviceDelete: ' + this.selected.length + ' devices');
             this.$refs.dlgDeleteDevice.show();
         },
         handleDeleteDeviceOk(event) {

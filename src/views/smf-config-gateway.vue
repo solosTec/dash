@@ -179,8 +179,8 @@
                                 <b-spinner v-if="spinner.status" type="grow" small />
                             </template>
                             <b-list-group>
-                                <template v-for="state in gw.status">
-                                    <b-list-group-item :variant="state.variant" :key="state.variant">{{state.value}}</b-list-group-item>
+                                <template v-for="(state, index) in gw.status">
+                                    <b-list-group-item :variant="state.variant" :key="index">{{state.value}}</b-list-group-item>
                                 </template>
                             </b-list-group>
                         </b-tab>
@@ -390,14 +390,6 @@
                                      :sort-desc.sync="fw.sortDesc"
                                      :sort-direction="fw.sortDirection"
                                      class="shadow">
-                                <!-- :busy="isBusy"
-                                :current-page="meters.currentPage"
-                                :per-page="meters.perPage" -->
-                                <!-- <template slot="active" slot-scope="row">
-                                    <b-button size="sm" @click="onMeterActivate(row.item, row.index, $event.target)">
-                                        {{ row.item.active ? '✖ Deactivate' : '✔ Activate' }}
-                                    </b-button>
-                                </template> -->
                             </b-table>
                         </b-tab>
 
@@ -792,16 +784,9 @@
                                     <b-col md="12">
                                         <b-form-group label="Select the time range">
                                             <b-form-radio-group buttons
-                                                                button-variant="outline-primary"
-                                                                v-model="tabOpLog.form.select">
-                                                <b-form-radio value="1">-1d</b-form-radio>
-                                                <b-form-radio value="2">-2d</b-form-radio>
-                                                <b-form-radio value="3">-3d</b-form-radio>
-                                                <b-form-radio value="4">-4d</b-form-radio>
-                                                <b-form-radio value="5">-5d</b-form-radio>
-                                                <b-form-radio value="6">-6d</b-form-radio>
-                                                <b-form-radio value="7">-7d</b-form-radio>
-                                                <b-form-radio value="365">All</b-form-radio>
+                                                button-variant="outline-primary"
+                                                v-model="tabOpLog.form.selected"
+                                                :options="tabOpLog.form.options">
                                             </b-form-radio-group>
                                         </b-form-group>
                                     </b-col>
@@ -1250,7 +1235,17 @@ export default  {
                     //items: [{nr:1, active: true, entries: 101, period: 3, OBIS:'8181c78614ff', name:'name'}]
                 },
                 form: {
-                      select: "1"
+                    selected: "1",
+                    options: [
+                        { text: "-1d", value: "1" },
+                        { text: "-2d", value: "2" },
+                        { text: "-3d", value: "3" },
+                        { text: "-4d", value: "4" },
+                        { text: "-5d", value: "5" },
+                        { text: "-6d", value: "6" },
+                        { text: "-7d", value: "7" },
+                        { text: "All", value: "365" }
+                      ]
                 }
             },
         }
@@ -1274,9 +1269,11 @@ export default  {
                     if (obj.channel != null) {
                         // console.log('update channel ' + obj.channel);
                         if (obj.channel == MESSAGE_TYPES.getProcParameter) {
-                            console.log("section :::" + obj.section + ":::");
-                            console.log(obj.rec.values);
+                            //console.log("section :::" + obj.section + ":::");
+                            //console.log(obj.rec.values);
                             if (obj.section == SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
+                                //  hide loading spinner
+                                this.spinner.status = false;
                                 this.gw.status = [];
                                 // state.variant">{{state.value}
                                 if (obj.rec.values.word.FATAL_ERROR) {
@@ -1332,10 +1329,8 @@ export default  {
                                     this.gw.status.push({ value: 'uncertain timebase', variant: "dark" });
                                 }
                                 else {
-                                    this.gw.status.push({ value: 'NTP is running', variant: "success" });
+                                    this.gw.status.push({ value: 'NTP is running (Time base is secure)', variant: "success" });
                                 }
-                                //  hide loading spinner
-                                this.spinner.status = false;
                             }
                             else if (obj.section == SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
                                 Object.values(obj.rec.values).forEach((e, idx, a) => {
@@ -1353,7 +1348,8 @@ export default  {
                                         type: e.type,
                                         visible: true,
                                         active: false,
-                                        serverId: obj.rec.srv };
+                                        serverId: obj.rec.srv
+                                    };
 
                                     if (obj.rec.values.type < 2) {
                                         recVisible["_rowVariant"] = "success";
@@ -1431,7 +1427,8 @@ export default  {
                                         name: e['8181C78208FF'],
                                         version: e['818100020000'],
                                         active: e['8181C7820EFF'],
-                                        srv: srv};
+                                        srv: srv
+                                    };
                                     this.fw.values.push(rec);
                                 });
                             }
@@ -1452,22 +1449,23 @@ export default  {
                                 this.spinner.wmbus = false;
 
                                 //  radio protocol (T-mode, S-mode, S/T automatic, S/T parallel)
-                                switch (obj.rec.values['8106190701FF']) {
+                                switch (obj.rec.values[SML_CODES.W_MBUS_PROTOCOL]) {
                                     case 0: this.wmbus.protocol = 'T'; break;
                                     case 1: this.wmbus.protocol = 'S'; break;
                                     case 2: this.wmbus.protocol = 'A'; break;
                                     case 3: this.wmbus.protocol = 'P'; break;
                                     default: break;
                                 }
-                                switch (obj.rec.values['8106190704FF']) {
+                                switch (obj.rec.values[SML_CODES.W_MBUS_POWER]) {
                                     case 0: this.wmbus.power = 'low'; break;
                                     default: this.wmbus.power = 'basic'; break;
                                 }
-                                this.wmbus.reboot = obj.rec.values['8106190711FF'];
+                                //  reboot (seconds)
+                                this.wmbus.reboot = obj.rec.values[SML_CODES.W_MBUS_REBOOT];
                                 //  install mode
-                                this.wmbus.active = (obj.rec.values['8106190711FF'] != 0);
-                                this.wmbus.sMode = obj.rec.values['8106190702FF'];
-                                this.wmbus.tMode = obj.rec.values['8106190703FF'];
+                                this.wmbus.active = obj.rec.values[SML_CODES.W_MBUS_INSTALL_MODE];
+                                this.wmbus.sMode = obj.rec.values[SML_CODES.W_MBUS_MODE_S];
+                                this.wmbus.tMode = obj.rec.values[SML_CODES.W_MBUS_MODE_T];
                             }
                             else if (obj.section == SML_CODES.CODE_ROOT_IPT_STATE) {
                                 this.ipt.status.host = obj.rec.values['814917070000'];
@@ -1508,18 +1506,50 @@ export default  {
                                 this.iec.params.devices = Array.from(obj.rec.values['8181C79309FF']);
 
                             }
-                            else if (obj.section == 'device-class') {
+                            else if (obj.section == SML_CODES.CODE_DEVICE_CLASS) {
                                 console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
                             }
-                            else if (obj.section == 'manufacturer') {
+                            else if (obj.section == SML_CODES.DATA_MANUFACTURER) {
                                 console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
                             }
-                            else if (obj.section == 'server-id-visible') {
+                            else if (obj.section == SML_CODES.CODE_SERVER_ID) {
                                 console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
                             }
                             else {
-                                console.log('update channel ' + obj.channel + ' with unknown section ' + obj.section);
+                                console.error('update channel ' + obj.channel + ' with unknown section ' + obj.section);
 
+                            }
+                        }
+                        else if (obj.channel == MESSAGE_TYPES.getProfileList) {
+                            console.log("section :::" + obj.section + ":::");
+                            console.log(obj);
+                            console.log(obj.rec.values);
+                            if (obj.section == SML_CODES.CLASS_OP_LOG) {
+
+                                //  get timestamp
+                                var utc = (obj.rec.values['010000090B00'] != null)
+                                    ? new Date(obj.rec.values['010000090B00'].substring(0, 19))
+                                    : new Date();
+
+                                //  build record
+                                var rec = {
+                                    //actTime: obj.rec.values.actTime,
+                                    //regPeriod: obj.rec.values.regPeriod,
+                                    //valTime: obj.rec.values.valTime,
+                                    status: obj.rec.values.status,
+                                    event: obj.rec.values['8181C789E2FF'],
+                                    peer: obj.rec.values['8181000000FF'],
+                                    utc: utc,
+                                    serverId: obj.rec.values['8181C78204FF'],
+                                    target: obj.rec.values['8147170700FF'],
+                                    //target: 'T:' + obj.rec.values.evtType + ' S:' + obj.rec.values.evtSource + ' L:' + obj.rec.values.evtLevel,
+                                    pushNr: obj.rec.values['8181C78A01FF']
+                                };
+                                this.tabOpLog.data.items.push(rec);
+
+                            }
+                            else {
+                                console.error('update channel ' + obj.channel + ' with unknown section ' + obj.section);
                             }
                         }
                         else if (obj.channel == 'attention.code') {
@@ -1540,6 +1570,12 @@ export default  {
                             this.spinner.meters = false;
                             this.spinner.wmbus = false;
                             this.spinner.iec = false;
+                        }
+                        else if (obj.channel == 'table.gateway.count') {
+                            //  unused
+                        }
+                        else {
+                            console.error('update unknown channel ' + obj.channel);
                         }
                     }
                 }
@@ -1607,6 +1643,7 @@ export default  {
                     //  clear table
                     this.gateways = [];
                     this.meters.values = [];
+                    this.tabOpLog.data.items = [];
                 }
                 else if (obj.cmd == 'delete') {
                     var idx = this.gateways.findIndex(rec => rec.pk == obj.key);
@@ -1656,7 +1693,6 @@ export default  {
                 //  1 gateway selected
                 //
                 if (items.length == 1) {
-                    //var gw_req_vec = [];
                     var self = this;
                     this.options.selected.forEach(option => {
                         //  channels: ['Status Word', 'Meters', 'Firmware', 'Memory', 'wireless M-Bus', 'IP-Telemtry', 'IEC'],
@@ -1708,8 +1744,13 @@ export default  {
                         else if (option == 'log') {
                             //   SML_GetProfileList_Req
                             //  request operation log: 81 81 C7 89 E1 FF (OBIS_CLASS_OP_LOG)
-                            //"class-operation-log"
-                            self.ws_submit_request(MESSAGE_TYPES.getProfileList, SML_CODES.CLASS_OP_LOG, [items[0].pk]);
+                            //console.log("selected: " + this.tabOpLog.form.selected);
+                            this.tabOpLog.data.items = [];
+                            self.ws_submit_request(MESSAGE_TYPES.getProfileList
+                                , SML_CODES.CLASS_OP_LOG
+                                , [items[0].pk]
+                                , {range: this.tabOpLog.form.selected * 24});   //  hours
+
                             self.spinner.log = true;
                         }
                     });
