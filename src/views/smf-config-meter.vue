@@ -621,7 +621,8 @@
                 },
                 tabPush: {
                     data: {
-                        items: [{nr:1, interval: 15, delay: 101, OBIS:'8181c78611ff', name:'water@solosTec'}]
+                        //items: [{nr:1, interval: 15, delay: 101, OBIS:'8181c78611ff', name:'water@solosTec'}]
+                        items: []
                     }
                 },
                 tabDataMirror: {
@@ -682,11 +683,11 @@
                         this.meters.push(rec);
                     }
                     else if (obj.cmd == 'modify') {
-                        console.log('lookup meter ' + obj.key);
+                        //console.log('lookup meter ' + obj.key);
                         self = this;
                         this.meters.find(function (rec) {
                             if (rec.pk == obj.key[0]) {
-                                console.log('modify meter ' + rec.ident);
+                                //console.log('modify meter ' + rec.ident);
                                 if (obj.value.ident != null) {
                                     rec.ident = obj.value.ident;
                                     if (self.form.pk == obj.key[0]) self.form.ident = obj.value.ident;
@@ -798,7 +799,8 @@
                         }
                         else if (obj.channel == MESSAGE_TYPES.getProcParameter) {
                             console.log(MESSAGE_TYPES.getProcParameter + ': ' + obj.section);
-                            console.log(obj.rec.values);
+                            //console.log(obj.rec.values);
+                            console.log(obj);
                             if (obj.section == SML_CODES.CODE_ROOT_SENSOR_PARAMS) {
                                 this.spinner.meter = false;
                                 // aesKey: null
@@ -828,40 +830,42 @@
                                 this.tabMeter.data.user = obj.rec.values["8181613C01FF"];
                                 this.tabMeter.data.pwd = obj.rec.values["8181613C02FF"];
                             }
-                            else if (obj.section == 'root-data-prop') {
+                            else if (obj.section == SML_CODES.CODE_ROOT_DATA_COLLECTOR) {
                                 this.spinner.mirror = false;
-                                //this.tabPush.data.items = [];
-                                //section: "root-data-prop"
-                                //  [f5c74f17-c09f-4d95-bfef-7710edce0b16,9f773865-e4af-489a-8824-8f78a2311278,7,[f72f7307-40e6-483b-8106-115290f8f1fe],609a7d15-e32d-44fa-ada8-37d7a0b24420,get.proc.param,01-e61e-29436587-bf-03,root-data-prop,
-                                //  % (("OBIS": 8181C78611FF), ("active": true), ("idx": 4), ("period": 00000000), ("profile": profile - 15min), ("registers": [8181C78203FF, 0700030000FF, 0000616100FF, 0000600101FF, 0000600100FF, 0000616100FF]), ("size": 00000064))]
-                                var rec = {
-                                    nr: obj.rec.values.idx,
-                                    active: obj.rec.values.active,
-                                    entries: obj.rec.values.size,
-                                    period: obj.rec.values.period,
-                                    OBIS: obj.rec.values.OBIS,
-                                    name: obj.rec.values.profile,
-                                    registers: obj.rec.values.registers
-                                };
+                                Object.values(obj.rec.values).forEach((e, idx, a) => {
+                                    //console.log(e);
+                                    
+                                    var rec = {
+                                        nr: idx + 1,
+                                        active: e['8181C78621FF'],
+                                        entries: e['8181C78622FF'],
+                                        period: e['8181C78781FF'],
+                                        OBIS: e['8181C78A83FF'],
+                                        name: "Name",
+                                        registers: e['8181C78A23FF']
+                                    };
 
-                                //  insert into table
-                                this.tabDataMirror.data.items.push(rec);
+                                    //  insert into table
+                                    this.tabDataMirror.data.items.push(rec);
+                                });
 
                             }
-                            else if (obj.section == 'root-push-ops') {
+                            else if (obj.section == SML_CODES.PUSH_OPERATIONS) {
                                 this.spinner.push = false;
-                                var rec = {
-                                    nr: obj.rec.values.idx,
-                                    interval: obj.rec.values.interval,
-                                    delay: obj.rec.values.delay,
-                                    name: obj.rec.values.target,
-                                    OBIS: obj.rec.values.service,
-                                    source: obj.rec.values.source
-                                };
+                                Object.values(obj.rec.values).forEach((e, idx, a) => {
+                                    console.log(e);
+                                    var rec = {
+                                        nr: idx + 1,
+                                        interval: e['8181C78A02FF'],
+                                        delay: e['8181C78A03FF'],
+                                        name: e['8147170700FF'],
+                                        OBIS: e['8149000010FF'],   // profile
+                                        source: e['8181C78A04FF']    // push quelle
+                                    };
 
-                                //  insert into table
-                                this.tabPush.data.items.push(rec);
-
+                                    //  insert into table
+                                    this.tabPush.data.items.push(rec);
+                                });
                             }
                         }
                         else {

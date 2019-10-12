@@ -122,7 +122,7 @@
                 sortDirection: 'desc',
             }
         },
-        methods: {
+        methods: { //0000600101FF
             getRegisterName(reg) {
                 var name = reg.toUpperCase();
                 if (name === '8181C78203FF') return name + " - Hersteller-Identifikation";
@@ -131,6 +131,7 @@
                 else if (name === '0100000009FF') return name + " - Geräteeinzelidentifikation";
                 else if (name === '0100000000FF') return name + " - Identifikationsnummer 1.0 ServerId -> Seriennummer";
                 else if (name === '0000600100FF') return name + " - Identifikationsnummer 2.1 Seriennummer";
+                else if (name === '0000600101FF') return name + " - Identifikationsnummer 2.2 Kundennummer";
                 else if (name === '0000601000FF') return name + " - Geraetename";
                 else if (name === '0000616100FF') return name + " - Fehlerregister";
                 else if (name === '0100010800FF') return name + " - Zaehlerstand Totalregister";

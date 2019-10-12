@@ -420,23 +420,23 @@
 
                             <!-- table -->
                             <b-table ref="meterTable"
-                                     bordered
-                                     striped
-                                     small
-                                     hover
-                                     show-empty
-                                     stacked="md"
-                                     selectable
-                                     select-mode="single"
-                                     selectedVariant="info"
-                                     @row-selected="meterSelected"
-                                     :fields="meters.fields"
-                                     :items="meters.values"
-                                     primary-key="ident"
-                                     :sort-by.sync="meters.sortBy"
-                                     :sort-desc.sync="meters.sortDesc"
-                                     :sort-direction="meters.sortDirection"
-                                     class="shadow">
+                                bordered
+                                striped
+                                small
+                                hover
+                                show-empty
+                                stacked="md"
+                                selectable
+                                select-mode="single"
+                                selectedVariant="info"
+                                @row-selected="meterSelected"
+                                :fields="meters.fields"
+                                :items="meters.values"
+                                primary-key="ident"
+                                :sort-by.sync="meters.sortBy"
+                                :sort-desc.sync="meters.sortDesc"
+                                :sort-direction="meters.sortDirection"
+                                class="shadow">
 
                                 <template slot="visible" slot-scope="row">
                                     <b-button size="sm"
@@ -448,14 +448,13 @@
                                     <b-button size="sm"
                                               @click="onMeterActivate(row.item, row.index, $event.target)">{{ row.item.active ? '✖ Deactivate' : '✔ Activate' }}</b-button>
                                 </template>
-                                <template slot="edit" slot-scope="row">
-                                    <!--:disabled="!Boolean(row.item.mc)"-->
+                                <!--<template slot="edit" slot-scope="row">
                                     <b-button size="sm"
                                               variant="info"
                                               v-b-tooltip.hover :title="'meter code: ' + row.item.mc"
                                               :disabled="btnEditStatus(row.item.mc)"
                                               @click="onMeterEdit(row.item, row.index, $event.target)">{{ btnEdit }}</b-button>
-                                </template>
+                                </template>-->
                             </b-table>
                             <div>
                                 <b-link :href="meters.csv" download="meters.csv" type="text/csv">{{ linkMeterDownloadTitle }}</b-link>
@@ -781,8 +780,8 @@
                         <b-tab no-body title="Log">
                             <b-form v-on:submit.prevent class="p-3">
                                 <b-row>
-                                    <b-col md="12">
-                                        <b-form-group label="Select the time range">
+                                    <b-col md="6">
+                                        <b-form-group description="Select the time range">
                                             <b-form-radio-group buttons
                                                 button-variant="outline-primary"
                                                 v-model="tabOpLog.form.selected"
@@ -790,8 +789,11 @@
                                             </b-form-radio-group>
                                         </b-form-group>
                                     </b-col>
+                                    <b-col md="6">
+                                        <b-pagination v-model="tabOpLog.nav.currentPage" :total-rows="tabOpLog.nav.visibleRows" :per-page="tabOpLog.nav.perPage" class="justify-content-end" />
+                                    </b-col>
                                     <b-col md="12">
-                                        <opLog ref="opLog" :items="tabOpLog.data.items" />
+                                        <opLog ref="opLog" :items="tabOpLog.data.items" :nav="tabOpLog.nav" />
                                     </b-col>
                                 </b-row>
                             </b-form>
@@ -1097,11 +1099,11 @@ export default  {
                     //formatter: (value, key, item) => {
                     //    return item.pk;
                     //}
-                },
-                {
-                    key: 'edit',
-                    label: 'Edit'
                 }
+                //{
+                //    key: 'edit',
+                //    label: 'Edit'
+                //}
             ],
             sortBy: 'meter',
             sortDesc: false,
@@ -1233,6 +1235,11 @@ export default  {
                 data: {
                     items: []
                     //items: [{nr:1, active: true, entries: 101, period: 3, OBIS:'8181c78614ff', name:'name'}]
+                },
+                nav: {
+                    currentPage: 1,
+                    visibleRows: 0,
+                    perPage: 15
                 },
                 form: {
                     selected: "1",
@@ -1521,9 +1528,10 @@ export default  {
                             }
                         }
                         else if (obj.channel == MESSAGE_TYPES.getProfileList) {
-                            console.log("section :::" + obj.section + ":::");
-                            console.log(obj);
-                            console.log(obj.rec.values);
+                            //console.log("section :::" + obj.section + ":::");
+                            //console.log(obj);
+                            //console.log(obj.rec.values);
+                            console.log(obj.rec.values['8181C789E2FF'] + ", size: "+ this.tabOpLog.data.items.length);
                             if (obj.section == SML_CODES.CLASS_OP_LOG) {
 
                                 //  get timestamp
@@ -1543,9 +1551,12 @@ export default  {
                                     serverId: obj.rec.values['8181C78204FF'],
                                     target: obj.rec.values['8147170700FF'],
                                     //target: 'T:' + obj.rec.values.evtType + ' S:' + obj.rec.values.evtSource + ' L:' + obj.rec.values.evtLevel,
-                                    pushNr: obj.rec.values['8181C78A01FF']
+                                    pushNr: obj.rec.values['8181C78A01FF'],
+                                    details: obj.rec.values['8181C78123FF']
                                 };
                                 this.tabOpLog.data.items.push(rec);
+                                //    update pagination
+                                this.tabOpLog.nav.visibleRows = this.tabOpLog.data.items.length;
 
                             }
                             else {
@@ -1916,11 +1927,11 @@ export default  {
                     { nr: item.nr, meter: item.ident });
             }
         },
-        onMeterEdit(item, index, button) {
-            console.log("onMeterEdit " + item.pk + " : " + item.serverId);
-            //  route to meter configuration
-            this.$router.push({ name: 'smfConfigMeter' });
-        },
+        //onMeterEdit(item, index, button) {
+        //    console.log("onMeterEdit " + item.pk + " : " + item.serverId);
+        //    //  route to meter configuration
+        //    this.$router.push({ name: 'smfConfigMeter' });
+        //},
         onWMbusUpdate() {
             //this.ws_submit_command("com:sml",
             //    "set.proc.param",
