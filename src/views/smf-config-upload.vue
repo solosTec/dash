@@ -30,9 +30,9 @@
                             <b-form-radio value="subst">Overwrite</b-form-radio>
                         </b-form-radio-group>
                         <b-form-radio-group id="dev-upload-version" v-model="dev.version" name="dev-upload-version" class="mt-3">
-                            <b-form-radio value="v32">Version 3.2</b-form-radio>
-                            <b-form-radio value="v40">Version 4.0</b-form-radio>
-                            <b-form-radio value="v50">Version 5.0</b-form-radio>
+                            <b-form-radio value="v3.2">Version 3.2</b-form-radio>
+                            <b-form-radio value="v4.0">Version 4.0</b-form-radio>
+                            <b-form-radio value="v0.8">Version 0.8</b-form-radio>
                         </b-form-radio-group>
                         <b-button :disabled="!Boolean(dev.file)" type="submit" variant="primary" class="mt-3 mr-3">Start Upload &#8682;</b-button>
                         <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
@@ -142,7 +142,7 @@
         dev: {
             file: null,
             policy: 'append',
-            version: 'v50'
+            version: 'v0.8'
         },
         gw: {
             file: null,
@@ -193,9 +193,18 @@
             }
        },
        onSubmitDevices(evt) {
-        evt.preventDefault()
-        // alert(JSON.stringify(this.dev))
-        this.$http.post("/upload/config/device/", this.dev, {
+            evt.preventDefault();
+            //alert(JSON.stringify(this.dev))
+            //console.log(this.dev);
+            let formData = new FormData();
+           formData.append('file', this.dev.file);
+           formData.append('policy', this.dev.policy);
+           formData.append('version', this.dev.version);
+
+            this.$http.post("/upload/config/device/", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
             progress(e) {
                 if (e.lengthComputable) {
                     console.log(e.loaded / e.total * 100);
@@ -213,12 +222,19 @@
         evt.preventDefault()
         this.dev.file = null;
         this.dev.policy = 'append';
-        this.dev.version = 'v50';
+        this.dev.version = 'v0.8';
       },
+
       onSubmitGateway(evt) {
         evt.preventDefault()
         // alert(JSON.stringify(this.gw))
-        this.$http.post("/upload/config/gw/", this.gw, {
+        let formData = new FormData();
+        formData.append('file', this.gw.file);
+        formData.append('policy', this.gw.policy);
+        this.$http.post("/upload/config/gw/", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
             progress(e) {
                 if (e.lengthComputable) {
                     console.log(e.loaded / e.total * 100);
@@ -240,7 +256,13 @@
       onSubmitMeter(evt) {
         evt.preventDefault()
         // alert(JSON.stringify(this.meter))
-        this.$http.post("/upload/config/meter/", this.gw, {
+        let formData = new FormData();
+        formData.append('file', this.meter.file);
+        formData.append('policy', this.meter.policy);
+          this.$http.post("/upload/config/meter/", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
             progress(e) {
                 if (e.lengthComputable) {
                     console.log(e.loaded / e.total * 100);
@@ -262,7 +284,13 @@
       onSubmitLoRa(evt) {
         evt.preventDefault()
         // alert(JSON.stringify(this.LoRa))
-        this.$http.post("/upload/config/LoRa/", this.LoRa, {
+        let formData = new FormData();
+        formData.append('file', this.LoRa.file);
+        formData.append('policy', this.LoRa.policy);
+        this.$http.post("/upload/config/LoRa/", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
             progress(e) {
                 if (e.lengthComputable) {
                     console.log(e.loaded / e.total * 100);
@@ -309,6 +337,13 @@
             return this.LoRa.file.name + " with " + this.LoRa.file.size + " bytes selected.";
         }
     }
+
+    //watch: {
+    //    'dev.file'(newVal, oldVal) {
+    //        console.log('dev.file ' + oldVal + " => " + newVal);
+    //    }
+    //}
+
 }
 </script>
 

@@ -9,19 +9,19 @@ import vueHeadful from 'vue-headful'
 import Toasted from 'vue-toasted'
 import VueResource from 'vue-resource';
 import { i18n } from '@/plugins/i18n'
-import VueAnalytics from 'vue-analytics'
+//import VueAnalytics from 'vue-analytics'
 
 Vue.config.productionTip = false
 Vue.component("vue-headful", vueHeadful);
 Vue.use(Toasted);
 Vue.use(VueResource);
-Vue.use(VueAnalytics, {
-  id: 'UA-111467685-1',
-  router,
-  debug: {
-    sendHitTask: process.env.NODE_ENV === 'production'
-  }
-})
+//Vue.use(VueAnalytics, {
+//  id: 'UA-111467685-1',
+//  router,
+//  debug: {
+//    sendHitTask: process.env.NODE_ENV === 'production'
+//  }
+//})
 
 // Let's Register a Global Error Notification Toast.
 Vue.toasted.register(
