@@ -1,19 +1,21 @@
 <template lang="html">
-
-    <section class="smf-status-connections">
-
-        <template>
-            <div>
-                <vue-headful
-                    title="smf :: status connections"
-                    description="SMF dashboard"
-                    keywords="SMF, solosTec"
-                />
-            </div>
-        </template>
+  <section class="smf-status-connections">
+    <template>
+      <div>
+        <vue-headful
+          title="smf :: status connections"
+          description="SMF dashboard"
+          keywords="SMF, solosTec"
+        />
+      </div>
+    </template>
 
     <!-- <b-jumbotron fluid header="Running dial-up connections." :lead="connections.length + ' connection(s) so far'"/> -->
-    <b-jumbotron fluid :header="$t('header-status-connections')" :lead="$t('lead-status-connections', {count: this.connections.length})" />
+    <b-jumbotron
+      fluid
+      :header="$t('header-status-connections')"
+      :lead="$t('lead-status-connections', {count: this.connections.length})"
+    />
 
     <b-container fluid>
       <b-row>
@@ -29,8 +31,7 @@
             stacked="md"
             selectable
             select-mode="range"
-            selectedVariant="info"
-            @row-selected="rowSelected"
+            selected-variant="info"
             :fields="fields"
             :items="connections"
             primary_key="pk1 + pk2"
@@ -41,34 +42,44 @@
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"
             class="shadow"
-            >
-
+            @row-selected="rowSelected"
+          >
             <!-- caption slot -->
             <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
 
             <!-- A virtual column -->
-              <template slot="index" slot-scope="data">
-                  {{ data.index + 1 + (perPage * (currentPage - 1)) }}
-              </template>
+            <template
+              slot="index"
+              slot-scope="data"
+            >
+              {{ data.index + 1 + (perPage * (currentPage - 1)) }}
+            </template>
 
             <!-- loading slot -->
-            <div slot="table-busy" class="text-center text-danger">
-              <strong>Loading... {{busyLevel}}%</strong>
+            <div
+              slot="table-busy"
+              class="text-center text-danger"
+            >
+              <strong>Loading... {{ busyLevel }}%</strong>
             </div>
-
           </b-table>
         </b-col>
       </b-row>
 
       <b-row>
-        <b-col md="2" offset-md="10">
-          <b-pagination v-model="currentPage" :total-rows="connections.length" :per-page="perPage"/>
+        <b-col
+          md="2"
+          offset-md="10"
+        >
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="connections.length"
+            :per-page="perPage"
+          />
         </b-col>
       </b-row>
-
     </b-container>
   </section>
-
 </template>
 
 <script lang="js">
@@ -76,13 +87,9 @@
 import {webSocket} from '../../services/web-socket.js'
 
 export default  {
-    name: 'smfStatusConnection',
-    props: [],
+    name: 'SmfStatusConnection',
     mixins: [webSocket],
-
-    mounted() {
-        this.ws_open("/smf/api/connection/v0.7");
-    },
+    props: [],
 
     data() {
         return {
@@ -150,6 +157,13 @@ export default  {
         }
     },
 
+    computed: {
+    },
+
+    mounted() {
+        this.ws_open("/smf/api/connection/v0.7");
+    },
+
     beforeDestroy() {
         this.ws_close();
     },
@@ -209,9 +223,6 @@ export default  {
         rowSelected(items) {
             this.selected = items;
         }
-    },
-
-    computed: {
     }
 }
 </script>

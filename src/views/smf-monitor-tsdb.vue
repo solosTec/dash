@@ -1,81 +1,101 @@
 <template lang="html">
+  <section class="smf-monitor-tsdb">
+    <template>
+      <div>
+        <vue-headful
+          title="smf :: monitor time series database"
+          description="SMF dashboard"
+          keywords="SMF, solosTec"
+        />
+      </div>
+    </template>
 
-    <section class="smf-monitor-tsdb">
-        <template>
-            <div>
-                <vue-headful
-                    title="smf :: monitor time series database"
-                    description="SMF dashboard"
-                    keywords="SMF, solosTec"
-                />
+    <!-- <b-jumbotron fluid header="Time Series" /> -->
+    <b-jumbotron
+      fluid
+      :header="$t('header-monitor-tsdb')"
+    />
+    <b-container fluid>
+      <b-row>
+        <b-col md="6">
+          <b-form-group
+            label-cols-sm="3"
+            label="Filter"
+            class="mb-0"
+          >
+            <b-input-group>
+              <b-form-input
+                v-model="filter"
+                placeholder="Type to Search"
+              />
+              <b-input-group-append>
+                <b-button
+                  :disabled="!filter"
+                  @click="filter = ''"
+                >
+                  Clear
+                </b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
+
+        <b-col md="6">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="visibleRows"
+            :per-page="perPage"
+            class="justify-content-end"
+          />
+        </b-col>
+      </b-row>
+
+      <b-row>
+        <b-col md="12">
+          <b-table
+            ref="timeSeriesTable"
+            bordered
+            striped
+            small
+            hover
+            show-empty
+            stacked="md"
+            selectable
+            select-mode="range"
+            selected-variant="info"
+            :fields="fields"
+            :items="timeSeries"
+            :busy="isBusy"
+            primary-key="id"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            :sort-direction="sortDirection"
+            :current-page="currentPage"
+            :per-page="perPage"
+            :filter="filter"
+            class="shadow"
+            @row-selected="rowSelected"
+            @filtered="onFiltered"
+          >
+            <!-- caption slot -->
+            <!-- <template slot="table-caption">{{tableCaption}}</template> -->
+
+            <!-- loading slot -->
+            <div
+              slot="table-busy"
+              class="text-center text-danger"
+            >
+              <strong>Loading... {{ busyLevel }}%</strong>
             </div>
-        </template>
 
-        <!-- <b-jumbotron fluid header="Time Series" /> -->
-        <b-jumbotron fluid :header="$t('header-monitor-tsdb')"/>
-        <b-container fluid>
-
-            <b-row>
-            <b-col md="6">
-                <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
-                    <b-input-group>
-                        <b-form-input v-model="filter" placeholder="Type to Search" />
-                        <b-input-group-append>
-                        <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-                </b-form-group>
-            </b-col>
-
-            <b-col md="6">
-                <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
-            </b-col>
-            </b-row>
-
-            <b-row>
-                <b-col md="12">
-                    <b-table
-                    ref="timeSeriesTable"
-                    bordered
-                    striped
-                    small
-                    hover
-                    show-empty
-                    stacked="md"
-                    selectable
-                    select-mode="range"
-                    selectedVariant="info"
-                    @row-selected="rowSelected"
-                    :fields="fields"
-                    :items="timeSeries"
-                    :busy="isBusy"
-                    primary-key="id"
-                    :sort-by.sync="sortBy"
-                    :sort-desc.sync="sortDesc"
-                    :sort-direction="sortDirection"
-                    :current-page="currentPage"
-                    :per-page="perPage"
-                    :filter="filter"
-                    @filtered="onFiltered"
-                    class="shadow">
-
-                    <!-- caption slot -->
-                    <!-- <template slot="table-caption">{{tableCaption}}</template> -->
-
-                    <!-- loading slot -->
-                    <div slot="table-busy" class="text-center text-danger">
-                    <strong>Loading... {{busyLevel}}%</strong>
-                    </div>
-
-                    <!-- <template slot="empty" slot-scope="scope">
+            <!-- <template slot="empty" slot-scope="scope">
                     <p>{{ scope.emptyText }}</p>
                     </template> -->
-                </b-table>
-            </b-col>
-            </b-row>
-
-        </b-container>
-    </section>
+          </b-table>
+        </b-col>
+      </b-row>
+    </b-container>
+  </section>
 </template>
 
 <script lang="js">
@@ -83,13 +103,9 @@
 import {webSocket} from '../../services/web-socket.js'
 
 export default  {
-    name: 'smfMonitorTSDB',
-    props: [],
+    name: 'SmfMonitorTSDB',
     mixins: [webSocket],
-
-    mounted() {
-        this.ws_open("/smf/api/tsdb/v0.7");
-    },
+    props: [],
     data() {
         return {
             isBusy: true,
@@ -135,6 +151,13 @@ export default  {
             filter: null,
             visibleRows: 0
         }
+    },
+    computed: {
+
+    },
+
+    mounted() {
+        this.ws_open("/smf/api/tsdb/v0.7");
     },
     methods: {
         rowSelected(items) {
@@ -202,9 +225,6 @@ export default  {
             this.visibleRows = filteredItems.length
             this.currentPage = 1
         },
-
-    },
-    computed: {
 
     }
 }

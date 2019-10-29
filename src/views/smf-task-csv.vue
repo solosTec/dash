@@ -1,19 +1,21 @@
 <template lang="html">
-
-    <section class="smf-task-csv">
-
-        <template>
-            <div>
-                <vue-headful
-                    title="smf :: task CSV"
-                    description="SMF dashboard"
-                    keywords="SMF, solosTec"
-                />
-            </div>
-        </template>
+  <section class="smf-task-csv">
+    <template>
+      <div>
+        <vue-headful
+          title="smf :: task CSV"
+          description="SMF dashboard"
+          keywords="SMF, solosTec"
+        />
+      </div>
+    </template>
 
     <!-- <b-jumbotron fluid header="Generate CSV reports" :lead="jumboLead" /> -->
-    <b-jumbotron fluid :header="$t('header-task-csv')" :lead="jumboLead" />
+    <b-jumbotron
+      fluid
+      :header="$t('header-task-csv')"
+      :lead="jumboLead"
+    />
 
     <b-container fluid>
       <b-row>
@@ -29,8 +31,7 @@
             stacked="md"
             selectable
             select-mode="range"
-            selectedVariant="info"
-            @row-selected="rowSelected"
+            selected-variant="info"
             :fields="fields"
             :items="csv"
             :busy="isBusy"
@@ -41,31 +42,44 @@
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"
             class="shadow"
-            >
-
+            @row-selected="rowSelected"
+          >
             <!-- caption slot -->
             <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
 
             <!-- A virtual column -->
-            <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
+            <template
+              slot="index"
+              slot-scope="data"
+            >
+              {{ data.index + 1 }}
+            </template>
 
             <!-- loading slot -->
-            <div slot="table-busy" class="text-center text-danger">
-              <strong>Loading... {{busyLevel}}%</strong>
+            <div
+              slot="table-busy"
+              class="text-center text-danger"
+            >
+              <strong>Loading... {{ busyLevel }}%</strong>
             </div>
-
           </b-table>
         </b-col>
       </b-row>
 
       <b-row>
-        <b-col md="2" offset-md="10">
-          <b-pagination v-model="currentPage" :total-rows="csv.length" :per-page="perPage"/>
+        <b-col
+          md="2"
+          offset-md="10"
+        >
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="csv.length"
+            :per-page="perPage"
+          />
         </b-col>
       </b-row>
     </b-container>
   </section>
-
 </template>
 
 <script lang="js">
@@ -73,13 +87,9 @@
 import {webSocket} from '../../services/web-socket.js'
 
 export default  {
-    name: 'smfTaskCSV',
-    props: [],
+    name: 'SmfTaskCSV',
     mixins: [webSocket],
-
-    mounted() {
-        this.ws_open("/smf/api/csv/v0.7");
-    },
+    props: [],
 
     data() {
         return {
@@ -151,6 +161,21 @@ export default  {
             sortDesc: false,
             sortDirection: 'desc'
         }
+    },
+    computed: {
+        jumboLead: function() {
+            switch (this.csv.length ) {
+                case 0: return this.$t('lead-task-csv-0');
+                case 1: return this.$t('lead-task-csv-1');
+                default:
+                break;
+            }
+            return "There are " + this.csv.length + " nodes that creating CSV reports";
+        }
+    },
+
+    mounted() {
+        this.ws_open("/smf/api/csv/v0.7");
     },
     methods: {
         ws_on_open() {
@@ -227,17 +252,6 @@ export default  {
             this.selected = items;
         }
 
-    },
-    computed: {
-        jumboLead: function() {
-            switch (this.csv.length ) {
-                case 0: return this.$t('lead-task-csv-0');
-                case 1: return this.$t('lead-task-csv-1');
-                default:
-                break;
-            }
-            return "There are " + this.csv.length + " nodes that creating CSV reports";
-        }
     }
 }
 </script>

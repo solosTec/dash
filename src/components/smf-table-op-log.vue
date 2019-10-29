@@ -1,49 +1,46 @@
 ﻿<template lang="html">
-
-    <section class="smf-table-op-log">
-        <b-table ref="tableOpLog"
-            bordered
-            striped
-            small
-            hover
-            show-empty
-            stacked="md"
-            selectable
-            select-mode="single"
-            selectedVariant="info"
-            :fields="fields"
-            :items="items"
-            :busy="isBusy"
-            :current-page="nav.currentPage"
-            :per-page="nav.perPage"
-            primary-key="index"
-            :sort-by.sync="sortBy"
-            :sort-desc.sync="sortDesc"
-            :sort-direction="sortDirection"
-            class="shadow">
-
-            <!-- A virtual column -->
-            <template slot="index" slot-scope="data">
-                {{ data.index + 1 + (nav.perPage * (nav.currentPage - 1)) }}
-            </template>
-
-        </b-table>
-    </section>
-
+  <section class="smf-table-op-log">
+    <b-table
+      ref="tableOpLog"
+      bordered
+      striped
+      small
+      hover
+      show-empty
+      stacked="md"
+      selectable
+      select-mode="single"
+      selected-variant="info"
+      :fields="fields"
+      :items="items"
+      :busy="isBusy"
+      :current-page="nav.currentPage"
+      :per-page="nav.perPage"
+      primary-key="index"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
+      :sort-direction="sortDirection"
+      class="shadow"
+    >
+      <!-- A virtual column -->
+      <template
+        slot="index"
+        slot-scope="data"
+      >
+        {{ data.index + 1 + (nav.perPage * (nav.currentPage - 1)) }}
+      </template>
+    </b-table>
+  </section>
 </template>
 
 <script lang="js">
 
 
     export default {
-        name: 'smf-table-op-log',
+        name: 'SmfTableOpLog',
         props: {
             items: Array,
             nav: Object
-        },
-        created() {
-        },
-        mounted() {
         },
         data() {
             return {
@@ -186,9 +183,13 @@
                 sortDirection: 'desc',
             }
         },
-        methods: {
-        },
         computed: {
+        },
+        created() {
+        },
+        mounted() {
+        },
+        methods: {
         }
     }
 </script>

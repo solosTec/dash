@@ -1,39 +1,39 @@
 <template lang="html">
+  <section class="smf-task-plausibility">
+    <template>
+      <div>
+        <vue-headful
+          title="smf :: task plausibility"
+          description="SMF dashboard"
+          keywords="SMF, solosTec"
+        />
+      </div>
+    </template>
 
-    <section class="smf-task-plausibility">
-
-        <template>
-            <div>
-                <vue-headful
-                    title="smf :: task plausibility"
-                    description="SMF dashboard"
-                    keywords="SMF, solosTec"
-                />
-            </div>
-        </template>
-
-        <!-- <b-jumbotron fluid header="Test plausibility" lead="ToDo" /> -->
-        <b-jumbotron fluid :header="$t('header-task-plausibility')"/>
-    </section>
-
+    <!-- <b-jumbotron fluid header="Test plausibility" lead="ToDo" /> -->
+    <b-jumbotron
+      fluid
+      :header="$t('header-task-plausibility')"
+    />
+  </section>
 </template>
 
 <script lang="js">
   export default  {
-    name: 'smfTaskPlausibility',
+    name: 'SmfTaskPlausibility',
     props: [],
-    mounted() {
-
-    },
     data() {
       return {
 
       }
     },
-    methods: {
+    computed: {
 
     },
-    computed: {
+    mounted() {
+
+    },
+    methods: {
 
     }
 }

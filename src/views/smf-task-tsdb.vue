@@ -1,133 +1,185 @@
 <template lang="html">
+  <section class="smf-task-tsdb">
+    <template>
+      <div>
+        <vue-headful
+          title="smf :: task time series database"
+          description="SMF dashboard"
+          keywords="SMF, solosTec"
+        />
+      </div>
+    </template>
 
-    <section class="smf-task-tsdb">
+    <!-- <b-jumbotron fluid header="Bridge to Time Series Databases" :lead="tsdbs.length + ' time series databases online'" /> -->
+    <b-jumbotron
+      fluid
+      :header="$t('header-task-tsdb')"
+      :lead="$t('lead-task-tsdb', {count: this.tsdbs.length})"
+    />
 
-        <template>
-            <div>
-                <vue-headful
-                    title="smf :: task time series database"
-                    description="SMF dashboard"
-                    keywords="SMF, solosTec"
-                />
+    <b-container fluid>
+      <b-row>
+        <b-col md="12">
+          <!-- table -->
+          <b-table
+            ref="tsdbTable"
+            bordered
+            striped
+            small
+            hover
+            show-empty
+            stacked="md"
+            selectable
+            select-mode="range"
+            selected-variant="info"
+            :fields="fields"
+            :items="tsdbs"
+            :busy="isBusy"
+            :current-page="currentPage"
+            :per-page="perPage"
+            primary-key="pk"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            :sort-direction="sortDirection"
+            class="shadow"
+            @row-selected="rowSelected"
+          >
+            <!-- caption slot -->
+            <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
+
+            <!-- A virtual column -->
+            <template
+              slot="index"
+              slot-scope="data"
+            >
+              {{ data.index + 1 }}
+            </template>
+
+            <!-- loading slot -->
+            <div
+              slot="table-busy"
+              class="text-center text-danger"
+            >
+              <strong>Loading... {{ busyLevel }}%</strong>
             </div>
-        </template>
+          </b-table>
+        </b-col>
+      </b-row>
 
-        <!-- <b-jumbotron fluid header="Bridge to Time Series Databases" :lead="tsdbs.length + ' time series databases online'" /> -->
-        <b-jumbotron fluid :header="$t('header-task-tsdb')" :lead="$t('lead-task-tsdb', {count: this.tsdbs.length})" />
-
-        <b-container fluid>
-            <b-row>
+      <!-- details -->
+      <b-row>
+        <b-col
+          md="12"
+          class="p-3 shadow"
+        >
+          <b-tabs
+            v-model="tabIndex"
+            pills
+            card
+          >
+            <b-tab
+              title="Single File"
+              active
+            >
+              <b-row>
                 <b-col md="12">
-                <!-- table -->
-                <b-table
-                    ref="tsdbTable"
-                    bordered
-                    striped
-                    small
-                    hover
-                    show-empty
-                    stacked="md"
-                    selectable
-                    select-mode="range"
-                    selectedVariant="info"
-                    @row-selected="rowSelected"
-                    :fields="fields"
-                    :items="tsdbs"
-                    :busy="isBusy"
-                    :current-page="currentPage"
-                    :per-page="perPage"
-                    primary-key="pk"
-                    :sort-by.sync="sortBy"
-                    :sort-desc.sync="sortDesc"
-                    :sort-direction="sortDirection"
-                    class="shadow"
+                  <b-form-group
+                    label="Enabled"
+                    label-for="smf-task-tsdb-single-active"
+                  >
+                    <b-form-checkbox
+                      v-model="single.active"
+                      switch
+                      name="smf-task-tsdb-single-active"
                     >
-
-                    <!-- caption slot -->
-                    <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
-
-                    <!-- A virtual column -->
-                    <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
-
-                    <!-- loading slot -->
-                    <div slot="table-busy" class="text-center text-danger">
-                    <strong>Loading... {{busyLevel}}%</strong>
-                    </div>
-
-                    </b-table>
+                      {{ single.active ? "Active" : "Inactive" }}
+                    </b-form-checkbox>
+                  </b-form-group>
                 </b-col>
-            </b-row>
+              </b-row>
+            </b-tab>
 
-            <!-- details -->
-            <b-row>
-                <b-col md="12" class="p-3 shadow">
-                <b-tabs pills card v-model="tabIndex">
-
-                <b-tab title="Single File" active>
-                    <b-row>
-                    <b-col md="12">
-                        <b-form-group label="Enabled" label-for="smf-task-tsdb-single-active">
-                            <b-form-checkbox switch v-model="single.active"  name="smf-task-tsdb-single-active">
-                                {{ single.active ? "Active" : "Inactive" }}
-                            </b-form-checkbox>
-                        </b-form-group>
-                    </b-col>
-                    </b-row>
-                </b-tab>
-
-                <b-tab title="Multiple Files">
-                    <b-row>
-                    <b-col md="12">
-                        <b-form-group label="Enabled" label-for="smf-task-tsdb-multiple-active">
-                            <b-form-checkbox switch v-model="multiple.active"  name="smf-task-tsdb-multiple-active">
-                                {{ multiple.active ? "Active" : "Inactive" }}
-                            </b-form-checkbox>
-                        </b-form-group>
-                    </b-col>
-                    </b-row>
-                </b-tab>
-
-                <b-tab title="Database">
-                    <b-row>
-                    <b-col md="12">
-                        <b-form-group label="Enabled" label-for="smf-task-tsdb-db-active">
-                            <b-form-checkbox switch v-model="db.active"  name="smf-task-tsdb-db-active">
-                                {{ db.active ? "Active" : "Inactive" }}
-                            </b-form-checkbox>
-                        </b-form-group>
-                    </b-col>
-                    </b-row>
-                </b-tab>
-
-                <b-tab title="Line Protocol">
-                    <b-row>
-                    <b-col md="12">
-                        <b-form-group label="Enabled" label-for="smf-task-tsdb-lineprotocol-active">
-                            <b-form-checkbox switch v-model="lineProtocol.active"  name="smf-task-tsdb-lineprotocol-active">
-                                {{ lineProtocol.active ? "Active" : "Inactive" }}
-                            </b-form-checkbox>
-                        </b-form-group>
-                    </b-col>
-                    </b-row>
-                </b-tab>
-
-                <b-tab title="Influxdb">
-                    <b-row>
-                    <b-col md="12">
-                        <b-form-group label="Enabled" label-for="smf-task-tsdb-influxdb-active">
-                            <b-form-checkbox switch v-model="influxdb.active"  name="smf-task-tsdb-influxdb-active">
-                                {{ influxdb.active ? "Active" : "Inactive" }}
-                            </b-form-checkbox>
-                        </b-form-group>
-                    </b-col>
-                    </b-row>
-                </b-tab>
-
-                <b-tab title="Monitor">
-                <b-row>
+            <b-tab title="Multiple Files">
+              <b-row>
                 <b-col md="12">
-                <!-- table -->
-                <b-table
+                  <b-form-group
+                    label="Enabled"
+                    label-for="smf-task-tsdb-multiple-active"
+                  >
+                    <b-form-checkbox
+                      v-model="multiple.active"
+                      switch
+                      name="smf-task-tsdb-multiple-active"
+                    >
+                      {{ multiple.active ? "Active" : "Inactive" }}
+                    </b-form-checkbox>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+            </b-tab>
+
+            <b-tab title="Database">
+              <b-row>
+                <b-col md="12">
+                  <b-form-group
+                    label="Enabled"
+                    label-for="smf-task-tsdb-db-active"
+                  >
+                    <b-form-checkbox
+                      v-model="db.active"
+                      switch
+                      name="smf-task-tsdb-db-active"
+                    >
+                      {{ db.active ? "Active" : "Inactive" }}
+                    </b-form-checkbox>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+            </b-tab>
+
+            <b-tab title="Line Protocol">
+              <b-row>
+                <b-col md="12">
+                  <b-form-group
+                    label="Enabled"
+                    label-for="smf-task-tsdb-lineprotocol-active"
+                  >
+                    <b-form-checkbox
+                      v-model="lineProtocol.active"
+                      switch
+                      name="smf-task-tsdb-lineprotocol-active"
+                    >
+                      {{ lineProtocol.active ? "Active" : "Inactive" }}
+                    </b-form-checkbox>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+            </b-tab>
+
+            <b-tab title="Influxdb">
+              <b-row>
+                <b-col md="12">
+                  <b-form-group
+                    label="Enabled"
+                    label-for="smf-task-tsdb-influxdb-active"
+                  >
+                    <b-form-checkbox
+                      v-model="influxdb.active"
+                      switch
+                      name="smf-task-tsdb-influxdb-active"
+                    >
+                      {{ influxdb.active ? "Active" : "Inactive" }}
+                    </b-form-checkbox>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+            </b-tab>
+
+            <b-tab title="Monitor">
+              <b-row>
+                <b-col md="12">
+                  <!-- table -->
+                  <b-table
                     ref="monitorTable"
                     bordered
                     striped
@@ -137,8 +189,7 @@
                     stacked="md"
                     selectable
                     select-mode="single"
-                    selectedVariant="info"
-                    @row-selected="ruleSelected"
+                    selected-variant="info"
                     :fields="monitor.fields"
                     :items="monitor.rules"
                     :busy="monitor.isBusy"
@@ -146,123 +197,213 @@
                     :sort-desc.sync="monitor.sortDesc"
                     :sort-direction="monitor.sortDirection"
                     class="shadow"
-                    >
-
+                    @row-selected="ruleSelected"
+                  >
                     <!-- caption slot -->
                     <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
 
                     <!-- A virtual column -->
-                    <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
+                    <template
+                      slot="index"
+                      slot-scope="data"
+                    >
+                      {{ data.index + 1 }}
+                    </template>
 
                     <!-- row.item row.index -->
-                    <template slot="apply" slot-scope="row">
-  <!-- <b-button size="sm"> -->
-  {{calculateTotalHours(row.item.apply)}} h
-  <!-- </b-button> -->
-</template>
+                    <template
+                      slot="apply"
+                      slot-scope="row"
+                    >
+                      <!-- <b-button size="sm"> -->
+                      {{ calculateTotalHours(row.item.apply) }} h
+                      <!-- </b-button> -->
+                    </template>
 
                     <!-- loading slot -->
-                    <div slot="table-busy" class="text-center text-danger">
-                    <strong>Loading... {{busyLevel}}%</strong>
+                    <div
+                      slot="table-busy"
+                      class="text-center text-danger"
+                    >
+                      <strong>Loading... {{ busyLevel }}%</strong>
                     </div>
-
-                    </b-table>
-                    </b-col>
-                    </b-row>
-
-                    <b-row>
-                    <b-col md="12">
-                        <b-row>
-                        <b-col md="6">
-                            <b-form-group label="Select a Rule" label-for="smf-task-tsdb-rule">
-                                <b-form-select v-model="monitor.form.rule" class="mb-3">
-                                    <option value="sessionCount">Session Count</option>
-                                    <option value="demo">Demo Rule</option>
-                                </b-form-select>
-                            </b-form-group>
-                        </b-col>
-
-                        <b-col md="6">
-                            <b-form-group label="Threshold" label-for="smf-task-tsdb-limit">
-                            <b-input-group>
-                                <b-form-input
-                                id="smf-task-tsdb-limit"
-                                type="number"
-                                v-model.number="monitor.form.limit"
-                                min="0"
-                                max="6000"
-                                step="10"
-                                placeholder="<Threshold>" />
-                                <b-input-group-append>
-                                    <b-button variant="info" v-on:click.stop="monitor.form.limit = 100">Default</b-button>
-                                </b-input-group-append>
-                            </b-input-group>
-                            </b-form-group>
-                        </b-col>
-                        </b-row>
-
-                        <b-row>
-                        <b-col md="10">
-                            <b-form-group label="Apply the rule in the following hours" label-for="smf-task-tsdb-apply">
-                            <b-form-checkbox-group id="smf-task-tsdb-apply" name="smf-task-tsdb-apply" buttons v-model="monitor.form.apply">
-                            <b-form-checkbox value="0">0h</b-form-checkbox>
-                            <b-form-checkbox value="1">1h</b-form-checkbox>
-                            <b-form-checkbox value="2">2h</b-form-checkbox>
-                            <b-form-checkbox value="3">3h</b-form-checkbox>
-                            <b-form-checkbox value="4">4h</b-form-checkbox>
-                            <b-form-checkbox value="5">5h</b-form-checkbox>
-                            <b-form-checkbox value="6">6h</b-form-checkbox>
-                            <b-form-checkbox value="7">7h</b-form-checkbox>
-                            <b-form-checkbox value="8">8h</b-form-checkbox>
-                            <b-form-checkbox value="9">9h</b-form-checkbox>
-                            <b-form-checkbox value="10">10h</b-form-checkbox>
-                            <b-form-checkbox value="11">11h</b-form-checkbox>
-                            <b-form-checkbox value="12">12h</b-form-checkbox>
-
-                            <b-form-checkbox value="13">13h</b-form-checkbox>
-                            <b-form-checkbox value="14">14h</b-form-checkbox>
-                            <b-form-checkbox value="15">15h</b-form-checkbox>
-                            <b-form-checkbox value="16">16h</b-form-checkbox>
-                            <b-form-checkbox value="17">17h</b-form-checkbox>
-                            <b-form-checkbox value="18">18h</b-form-checkbox>
-                            <b-form-checkbox value="19">19h</b-form-checkbox>
-                            <b-form-checkbox value="20">20h</b-form-checkbox>
-                            <b-form-checkbox value="21">21h</b-form-checkbox>
-                            <b-form-checkbox value="22">22h</b-form-checkbox>
-                            <b-form-checkbox value="23">23h</b-form-checkbox>
-
-                            </b-form-checkbox-group>
-                            </b-form-group>
-                        </b-col>
-                        <b-col md="2">
-                            <b-form-group label="Total Hours" label-for="smf-task-tsdb-apply">
-                                <b-form-input
-                                id="smf-task-tsdb-apply"
-                                type="number"
-                                readonly
-                                v-model.number="monitor.form.totalHours"/>
-                            </b-form-group>
-                        </b-col>
-                        </b-row>
-
-                    </b-col>
-                    </b-row>
-
-                    <b-row>
-                    <b-col md="12">
-                        <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onRuleUpdate">Submit</b-button>
-                    </b-col>
-                    </b-row>
-
-                </b-tab>
-
-                </b-tabs>
+                  </b-table>
                 </b-col>
-            </b-row>
+              </b-row>
 
-        </b-container>
-    </section>
+              <b-row>
+                <b-col md="12">
+                  <b-row>
+                    <b-col md="6">
+                      <b-form-group
+                        label="Select a Rule"
+                        label-for="smf-task-tsdb-rule"
+                      >
+                        <b-form-select
+                          v-model="monitor.form.rule"
+                          class="mb-3"
+                        >
+                          <option value="sessionCount">
+                            Session Count
+                          </option>
+                          <option value="demo">
+                            Demo Rule
+                          </option>
+                        </b-form-select>
+                      </b-form-group>
+                    </b-col>
 
+                    <b-col md="6">
+                      <b-form-group
+                        label="Threshold"
+                        label-for="smf-task-tsdb-limit"
+                      >
+                        <b-input-group>
+                          <b-form-input
+                            id="smf-task-tsdb-limit"
+                            v-model.number="monitor.form.limit"
+                            type="number"
+                            min="0"
+                            max="6000"
+                            step="10"
+                            placeholder="<Threshold>"
+                          />
+                          <b-input-group-append>
+                            <b-button
+                              variant="info"
+                              @click.stop="monitor.form.limit = 100"
+                            >
+                              Default
+                            </b-button>
+                          </b-input-group-append>
+                        </b-input-group>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+
+                  <b-row>
+                    <b-col md="10">
+                      <b-form-group
+                        label="Apply the rule in the following hours"
+                        label-for="smf-task-tsdb-apply"
+                      >
+                        <b-form-checkbox-group
+                          id="smf-task-tsdb-apply"
+                          v-model="monitor.form.apply"
+                          name="smf-task-tsdb-apply"
+                          buttons
+                        >
+                          <b-form-checkbox value="0">
+                            0h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="1">
+                            1h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="2">
+                            2h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="3">
+                            3h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="4">
+                            4h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="5">
+                            5h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="6">
+                            6h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="7">
+                            7h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="8">
+                            8h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="9">
+                            9h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="10">
+                            10h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="11">
+                            11h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="12">
+                            12h
+                          </b-form-checkbox>
+
+                          <b-form-checkbox value="13">
+                            13h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="14">
+                            14h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="15">
+                            15h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="16">
+                            16h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="17">
+                            17h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="18">
+                            18h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="19">
+                            19h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="20">
+                            20h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="21">
+                            21h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="22">
+                            22h
+                          </b-form-checkbox>
+                          <b-form-checkbox value="23">
+                            23h
+                          </b-form-checkbox>
+                        </b-form-checkbox-group>
+                      </b-form-group>
+                    </b-col>
+                    <b-col md="2">
+                      <b-form-group
+                        label="Total Hours"
+                        label-for="smf-task-tsdb-apply"
+                      >
+                        <b-form-input
+                          id="smf-task-tsdb-apply"
+                          v-model.number="monitor.form.totalHours"
+                          type="number"
+                          readonly
+                        />
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                </b-col>
+              </b-row>
+
+              <b-row>
+                <b-col md="12">
+                  <b-button
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    @click.stop="onRuleUpdate"
+                  >
+                    Submit
+                  </b-button>
+                </b-col>
+              </b-row>
+            </b-tab>
+          </b-tabs>
+        </b-col>
+      </b-row>
+    </b-container>
+  </section>
 </template>
 
 <script lang="js">
@@ -270,13 +411,9 @@
 import {webSocket} from '../../services/web-socket.js'
 
 export default  {
-    name: 'smfTaskTSDB',
-    props: [],
+    name: 'SmfTaskTSDB',
     mixins: [webSocket],
-
-    mounted() {
-        this.ws_open("/smf/api/tsdb/v0.7");
-    },
+    props: [],
 
     data() {
         return {
@@ -391,6 +528,29 @@ export default  {
             }
         };
     },
+    computed: {
+
+    },
+    watch: {
+        'monitor.form.apply' : function() {
+            // alert(this.monitor.form.apply);
+            var val = 0;
+            this.monitor.form.apply.forEach(function(item){
+                var idx = parseInt(item, 10);
+                var n = Math.pow(2, idx);
+                val |= n;
+            });
+            if (this.monitor.selected.length > 0) {
+                this.monitor.form.value = val;
+                this.monitor.form.totalHours = this.calculateTotalHours(val);
+            }
+            // alert(val);
+        }
+    },
+
+    mounted() {
+        this.ws_open("/smf/api/tsdb/v0.7");
+    },
     methods: {
         rowSelected(items) {
             this.selected = items;
@@ -474,25 +634,6 @@ export default  {
                 if ((val & n) == n)  total++;
             }
             return total;
-        }
-    },
-    computed: {
-
-    },
-    watch: {
-        'monitor.form.apply' : function() {
-            // alert(this.monitor.form.apply);
-            var val = 0;
-            this.monitor.form.apply.forEach(function(item){
-                var idx = parseInt(item, 10);
-                var n = Math.pow(2, idx);
-                val |= n;
-            });
-            if (this.monitor.selected.length > 0) {
-                this.monitor.form.value = val;
-                this.monitor.form.totalHours = this.calculateTotalHours(val);
-            }
-            // alert(val);
         }
     }
 }

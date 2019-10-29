@@ -1,135 +1,221 @@
 <template lang="html">
+  <section class="smf-config-lora">
+    <template>
+      <div>
+        <vue-headful
+          title="smf :: config LoRa"
+          description="SMF dashboard"
+          keywords="SMF, solosTec"
+        />
+      </div>
+    </template>
 
-    <section class="smf-config-lora">
+    <b-jumbotron
+      fluid
+      :header="$t('header-LoRa')"
+      :lead="$t('lead-LoRa', {count: this.gateways.length})"
+    />
 
-        <template>
-            <div>
-                <vue-headful title="smf :: config LoRa"
-                             description="SMF dashboard"
-                             keywords="SMF, solosTec" />
+    <b-container fluid>
+      <b-row>
+        <b-col md="9">
+          <!-- table -->
+          <b-table
+            ref="gatewayTable"
+            bordered
+            striped
+            small
+            hover
+            show-empty
+            stacked="md"
+            selectable
+            select-mode="range"
+            selected-variant="info"
+            :fields="fields"
+            :items="gateways"
+            :busy="isBusy"
+            :current-page="currentPage"
+            :per-page="perPage"
+            primary-key="pk"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            :sort-direction="sortDirection"
+            class="shadow"
+            @row-selected="rowSelected"
+          >
+            <!-- caption slot -->
+            <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
+            <!-- A virtual column -->
+            <template
+              slot="index"
+              slot-scope="data"
+            >
+              {{ data.index + 1 }}
+            </template>
+
+            <!-- loading slot -->
+            <div
+              slot="table-busy"
+              class="text-center text-danger"
+            >
+              <strong>Loading... {{ busyLevel }}%</strong>
             </div>
-        </template>
+          </b-table>
+        </b-col>
 
-        <b-jumbotron fluid :header="$t('header-LoRa')" :lead="$t('lead-LoRa', {count: this.gateways.length})" />
+        <b-col md="3">
+          <!-- form -->
+          <b-form
+            class="p-3 shadow"
+            @submit.prevent
+          >
+            <b-form-group
+              label="DevEUI"
+              label-for="smf-form-lora-eui"
+            >
+              <b-form-input
+                id="smf-form-dev-name"
+                v-model="form.eui"
+                type="text"
+                required
+                placeholder="<DevEUI>"
+                maxlength="19"
+              />
+            </b-form-group>
 
-        <b-container fluid>
-            <b-row>
-                <b-col md="9">
-                    <!-- table -->
-                    <b-table ref="gatewayTable"
-                             bordered
-                             striped
-                             small
-                             hover
-                             show-empty
-                             stacked="md"
-                             selectable
-                             select-mode="range"
-                             selectedVariant="info"
-                             @row-selected="rowSelected"
-                             :fields="fields"
-                             :items="gateways"
-                             :busy="isBusy"
-                             :current-page="currentPage"
-                             :per-page="perPage"
-                             primary-key="pk"
-                             :sort-by.sync="sortBy"
-                             :sort-desc.sync="sortDesc"
-                             :sort-direction="sortDirection"
-                             class="shadow">
+            <b-form-group
+              label="AES Key"
+              label-for="smf-form-lora-aes"
+            >
+              <b-form-input
+                id="smf-form-dev-name"
+                v-model="form.aes"
+                type="text"
+                required
+                placeholder="<AES Key>"
+                maxlength="64"
+              />
+            </b-form-group>
 
-                        <!-- caption slot -->
-                        <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
-                        <!-- A virtual column -->
-                        <template slot="index" slot-scope="data">
-                            {{ data.index + 1 }}
-                        </template>
+            <b-form-group
+              label="Driver"
+              label-for="smf-form-lora-driver"
+            >
+              <b-form-select
+                v-model="form.driver"
+                class="mb-3"
+              >
+                <option value="binary">
+                  Binary
+                </option>
+                <option value="ascii">
+                  ASCII
+                </option>
+                <option value="mbus">
+                  M-Bus
+                </option>
+                <option value="waterv2">
+                  Water v2
+                </option>
+                <option value="demo">
+                  Demo (BETA)
+                </option>
+              </b-form-select>
+            </b-form-group>
 
-                        <!-- loading slot -->
-                        <div slot="table-busy" class="text-center text-danger">
-                            <strong>Loading... {{busyLevel}}%</strong>
-                        </div>
+            <b-form-group
+              label="Activation"
+              label-for="smf-form-lora-activation"
+            >
+              <b-form-radio-group
+                id="smf-form-lora-activation"
+                v-model="form.activation"
+                name="smf-form-lora-activation"
+              >
+                <b-form-radio
+                  v-b-popover.hover="'Over-the-Air Activation (OTAA) is the preferred and most secure way to connect with the LoRa Network. Devices perform a join-procedure with the network, during which a dynamic DevAddr is assigned and security keys are negotiated with the device.'"
+                  value="otaa"
+                  title="Over-the-Air Activation"
+                >
+                  OTAA
+                </b-form-radio>
+                <b-form-radio
+                  v-b-popover.hover="'In some cases you might need to hardcode the DevAddr as well as the security keys in the device. This means activating a device by personalization (ABP). This strategy might seem simpler, because you skip the join procedure, but it has some downsides related to security.'"
+                  value="abp"
+                  title="Activation by Personalization"
+                >
+                  ABP
+                </b-form-radio>
+              </b-form-radio-group>
+            </b-form-group>
 
-                    </b-table>
-                </b-col>
+            <b-form-group
+              label="AppEUI"
+              label-for="smf-form-lora-appeui"
+            >
+              <b-form-input
+                id="smf-form-lora-appeui"
+                v-model="form.appeui"
+                type="text"
+                required
+                placeholder="<App EUI>"
+                maxlength="19"
+              />
+            </b-form-group>
 
-                <b-col md="3">
-                    <!-- form -->
-                    <b-form v-on:submit.prevent class="p-3 shadow">
-                        <b-form-group label="DevEUI" label-for="smf-form-lora-eui">
-                            <b-form-input id="smf-form-dev-name"
-                                          type="text"
-                                          v-model="form.eui"
-                                          required
-                                          placeholder="<DevEUI>"
-                                          maxlength="19" />
-                        </b-form-group>
+            <b-form-group
+              label="GatewayEUI"
+              label-for="smf-form-lora-appeui"
+            >
+              <b-form-input
+                id="smf-form-lora-appeui"
+                v-model="form.gweui"
+                type="text"
+                required
+                placeholder="<Gateway EUI>"
+                maxlength="19"
+              />
+            </b-form-group>
 
-                        <b-form-group label="AES Key" label-for="smf-form-lora-aes">
-                            <b-form-input id="smf-form-dev-name"
-                                          type="text"
-                                          v-model="form.aes"
-                                          required
-                                          placeholder="<AES Key>"
-                                          maxlength="64" />
-                        </b-form-group>
+            <b-input-group class="pt-1">
+              <b-button
+                type="submit"
+                variant="primary"
+                :disabled="!isRecordSelected"
+                @click.stop="onDeviceUpdate"
+              >
+                {{ btnUpdateTitle }}
+              </b-button>
+            </b-input-group>
 
-                        <b-form-group label="Driver" label-for="smf-form-lora-driver">
-                            <b-form-select v-model="form.driver" class="mb-3">
-                                <option value="binary">Binary</option>
-                                <option value="ascii">ASCII</option>
-                                <option value="mbus">M-Bus</option>
-                                <option value="waterv2">Water v2</option>
-                                <option value="demo">Demo (BETA)</option>
-                            </b-form-select>
-                        </b-form-group>
+            <b-input-group class="pt-3">
+              <b-button
+                type="submit"
+                variant="danger"
+                :disabled="!isRecordSelected"
+                @click.stop="onDeviceDelete"
+              >
+                {{ btnDeleteTitle }}
+              </b-button>
+            </b-input-group>
+          </b-form>
+        </b-col>
+      </b-row>
 
-                        <b-form-group label="Activation" label-for="smf-form-lora-activation">
-                            <b-form-radio-group id="smf-form-lora-activation" v-model="form.activation" name="smf-form-lora-activation">
-                                <b-form-radio value="otaa" v-b-popover.hover="'Over-the-Air Activation (OTAA) is the preferred and most secure way to connect with the LoRa Network. Devices perform a join-procedure with the network, during which a dynamic DevAddr is assigned and security keys are negotiated with the device.'" title="Over-the-Air Activation">OTAA</b-form-radio>
-                                <b-form-radio value="abp" v-b-popover.hover="'In some cases you might need to hardcode the DevAddr as well as the security keys in the device. This means activating a device by personalization (ABP). This strategy might seem simpler, because you skip the join procedure, but it has some downsides related to security.'" title="Activation by Personalization">ABP</b-form-radio>
-                            </b-form-radio-group>
-                        </b-form-group>
-
-                        <b-form-group label="AppEUI" label-for="smf-form-lora-appeui">
-                            <b-form-input id="smf-form-lora-appeui"
-                                          type="text"
-                                          v-model="form.appeui"
-                                          required
-                                          placeholder="<App EUI>"
-                                          maxlength="19" />
-                        </b-form-group>
-
-                        <b-form-group label="GatewayEUI" label-for="smf-form-lora-appeui">
-                            <b-form-input id="smf-form-lora-appeui"
-                                          type="text"
-                                          v-model="form.gweui"
-                                          required
-                                          placeholder="<Gateway EUI>"
-                                          maxlength="19" />
-                        </b-form-group>
-
-                        <b-input-group class="pt-1">
-                            <b-button type="submit" variant="primary" :disabled="!isRecordSelected" v-on:click.stop="onDeviceUpdate">{{btnUpdateTitle}}</b-button>
-                        </b-input-group>
-
-                        <b-input-group class="pt-3">
-                            <b-button type="submit" variant="danger" :disabled="!isRecordSelected" v-on:click.stop="onDeviceDelete">{{btnDeleteTitle}}</b-button>
-                        </b-input-group>
-                    </b-form>
-                </b-col>
-            </b-row>
-
-            <b-row>
-                <b-col md="4" offset-md="8">
-                    <b-pagination v-model="currentPage" :total-rows="gateways.length" :per-page="perPage" />
-                </b-col>
-            </b-row>
-
-        </b-container>
-
-    </section>
-
+      <b-row>
+        <b-col
+          md="4"
+          offset-md="8"
+        >
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="gateways.length"
+            :per-page="perPage"
+          />
+        </b-col>
+      </b-row>
+    </b-container>
+  </section>
 </template>
 
 <script lang="js">
@@ -137,13 +223,9 @@
     import { webSocket } from '../../services/web-socket.js'
 
     export default {
-        name: 'smfConfigLora',
-        props: [],
+        name: 'SmfConfigLora',
         mixins: [webSocket],
-
-        mounted() {
-            this.ws_open("/smf/api/lora/v0.7");
-        },
+        props: [],
 
         data() {
             return {
@@ -212,6 +294,33 @@
                     gweui: ''
                 }
             }
+        },
+        computed: {
+            isRecordSelected() {
+                return this.selected.length != 0;
+            },
+            tableCaption() {
+                return this.selected.length + "/" + this.selected.length + " item(s) selected";
+            },
+            btnUpdateTitle() {
+                if (this.selected.length > 0) {
+                    return "Update " + this.form.eui;
+                }
+                return "Update";
+            },
+            btnDeleteTitle() {
+                if (this.selected.length == 0) {
+                    return "Delete";
+                }
+                else if (this.selected.length == 1) {
+                    return "Delete " + this.form.eui;
+                }
+                return "Delete " + this.selected.length + " record(s)";
+            }
+        },
+
+        mounted() {
+            this.ws_open("/smf/api/lora/v0.7");
         },
 
         beforeDestroy() {
@@ -337,29 +446,6 @@
                 // this.$refs.dlgDeleteDevice.show();
             },
 
-        },
-        computed: {
-            isRecordSelected() {
-                return this.selected.length != 0;
-            },
-            tableCaption() {
-                return this.selected.length + "/" + this.selected.length + " item(s) selected";
-            },
-            btnUpdateTitle() {
-                if (this.selected.length > 0) {
-                    return "Update " + this.form.eui;
-                }
-                return "Update";
-            },
-            btnDeleteTitle() {
-                if (this.selected.length == 0) {
-                    return "Delete";
-                }
-                else if (this.selected.length == 1) {
-                    return "Delete " + this.form.eui;
-                }
-                return "Delete " + this.selected.length + " record(s)";
-            }
         }
     }
 </script>

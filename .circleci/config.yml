@@ -15,6 +15,7 @@ jobs:
           keys:
             - node-10-dependencies-{{ checksum "package-lock.json" }}
 
+      - run: npm version
       - run: npm ci
 
       - save_cache:

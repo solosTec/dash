@@ -1,148 +1,273 @@
 ﻿/* eslint-disable no-console */
 <template lang="html">
+  <section class="smf-config-system">
+    <template>
+      <div>
+        <vue-headful
+          title="smf :: config web-interface"
+          description="SMF dashboard"
+          keywords="SMF, solosTec"
+        />
+      </div>
+    </template>
 
-    <section class="smf-config-system">
+    <b-jumbotron
+      fluid
+      header="Configure the Web-Interface"
+      :lead="'data path: ' + ws_get_url()"
+    />
 
-        <template>
-            <div>
-                <vue-headful title="smf :: config web-interface"
-                             description="SMF dashboard"
-                             keywords="SMF, solosTec" />
+    <b-container fluid>
+      <b-card-group deck>
+        <b-card
+          title="SSL/TSL available"
+          class="shadow"
+        >
+          <b-form-checkbox
+            v-model="cfg.ssl"
+            switch
+          >
+            Enable SSL/TLS encryption (HTTPs)
+          </b-form-checkbox>
+          <div slot="footer">
+            <small class="text-muted">default = <b>{{ cfg.def.ssl }}</b></small>
+          </div>
+        </b-card>
+
+        <b-card
+          title="HTTPS Rewrite"
+          class="shadow"
+        >
+          <b-form-checkbox
+            v-model="cfg.https_rewrite"
+            switch
+            :disabled="!ssl"
+          >
+            Redirect to HTTPS (if available)
+          </b-form-checkbox>
+          <div slot="footer">
+            <small class="text-muted">default = <b>{{ cfg.def.https_rewrite }}</b></small>
+          </div>
+        </b-card>
+      </b-card-group>
+
+      <br>
+
+      <b-card-group deck>
+        <b-card
+          title="Session Timeout (HTTP)"
+          class="shadow"
+        >
+          <b-input-group
+            prepend="sec."
+            class="mt-3"
+          >
+            <b-form-input
+              v-model.number="cfg.http_sessionTimeout"
+              type="number"
+              min="10"
+              max="10000"
+              step="10"
+              placeholder="<Session Timeout>"
+            />
+            <b-input-group-append>
+              <b-button
+                variant="secondary"
+                @click="cfg.http_sessionTimeout = cfg.def.http_sessionTimeout"
+              >
+                Default
+              </b-button>
+              <b-button
+                variant="success"
+                @click="changeHTTPSessionTimeout"
+              >
+                Commit
+              </b-button>
+            </b-input-group-append>
+          </b-input-group>
+
+          <!-- Maximum number of messages to be displayed. -->
+          <div slot="footer">
+            <small class="text-muted">default = <b>{{ cfg.def.http_sessionTimeout }} seconds</b></small>
+          </div>
+        </b-card>
+
+        <b-card
+          title="Maximum Upload Size (HTTP)"
+          class="shadow"
+        >
+          <b-input-group
+            :prepend="ws_format_bytes(cfg.http_maxUploadSize)"
+            class="mt-3"
+          >
+            <b-form-input
+              v-model.number="cfg.http_maxUploadSize"
+              type="number"
+              min="1024"
+              max="10485760"
+              step="1024"
+              placeholder="<max. Upload Size>"
+            />
+            <b-input-group-append>
+              <b-button
+                variant="secondary"
+                @click="cfg.http_maxUploadSize = cfg.def.http_maxUploadSize"
+              >
+                Default
+              </b-button>
+              <b-button
+                variant="success"
+                @click="changeHTTPMaxUploadSize"
+              >
+                Commit
+              </b-button>
+            </b-input-group-append>
+          </b-input-group>
+
+          <!-- Maximum number of events to be displayed. -->
+          <div slot="footer">
+            <small class="text-muted">default = <b>{{ ws_format_bytes(cfg.def.http_maxUploadSize) }}</b></small>
+          </div>
+        </b-card>
+      </b-card-group>
+
+      <br>
+
+      <b-card-group deck>
+        <b-card
+          title="Session Timeout (HTTPS)"
+          class="shadow"
+        >
+          <b-input-group
+            prepend="sec."
+            class="mt-3"
+          >
+            <b-form-input
+              v-model.number="cfg.https_sessionTimeout"
+              type="number"
+              min="10"
+              max="10000"
+              step="10"
+              placeholder="<Session Timeout>"
+              :disabled="!ssl"
+            />
+            <b-input-group-append>
+              <b-button
+                variant="secondary"
+                @click="cfg.https_sessionTimeout = cfg.def.https_sessionTimeout"
+              >
+                Default
+              </b-button>
+              <b-button
+                variant="success"
+                :disabled="!ssl"
+                @click="changeHTTPsSessionTimeout"
+              >
+                Commit
+              </b-button>
+            </b-input-group-append>
+          </b-input-group>
+
+          <!-- Maximum number of messages to be displayed. -->
+          <div slot="footer">
+            <small class="text-muted">default = <b>{{ cfg.def.https_sessionTimeout }} seconds</b></small>
+          </div>
+        </b-card>
+
+        <b-card
+          title="Maximum Upload Size (HTTPS)"
+          class="shadow"
+        >
+          <b-input-group
+            :prepend="ws_format_bytes(cfg.https_maxUploadSize)"
+            class="mt-3"
+          >
+            <b-form-input
+              v-model.number="cfg.https_maxUploadSize"
+              type="number"
+              min="1024"
+              max="10485760"
+              step="1024"
+              placeholder="<max. Upload Size>"
+              :disabled="!ssl"
+            />
+            <b-input-group-append>
+              <b-button
+                variant="secondary"
+                @click="cfg.https_maxUploadSize = cfg.def.https_maxUploadSize"
+              >
+                Default
+              </b-button>
+              <b-button
+                variant="success"
+                :disabled="!ssl"
+                @click="changeHTTPsMaxUploadSize"
+              >
+                Commit
+              </b-button>
+            </b-input-group-append>
+          </b-input-group>
+
+          <!-- Maximum number of events to be displayed. -->
+          <div slot="footer">
+            <small class="text-muted">default = <b>{{ ws_format_bytes(cfg.def.https_maxUploadSize) }}</b></small>
+          </div>
+        </b-card>
+      </b-card-group>
+
+      <br>
+
+      <b-row>
+        <b-col md="6" />
+        <b-col md="6" />
+      </b-row>
+
+      <b-row>
+        <b-col md="12">
+          <b-table
+            ref="webTable"
+            bordered
+            striped
+            small
+            hover
+            show-empty
+            stacked="md"
+            selectable
+            select-mode="range"
+            selected-variant="info"
+            :fields="table.fields"
+            :items="table.data"
+            :busy="table.isBusy"
+            primary-key="pk"
+            :sort-by.sync="table.sortBy"
+            :sort-desc.sync="table.sortDesc"
+            :sort-direction="table.sortDirection"
+            :current-page="table.currentPage"
+            :per-page="table.perPage"
+            :filter="table.filter"
+            class="shadow"
+            @row-selected="rowSelected"
+            @filtered="onFiltered"
+          >
+            <!-- A virtual column -->
+            <template
+              slot="index"
+              slot-scope="data"
+            >
+              {{ data.index + 1 }}
+            </template>
+            <!-- loading slot -->
+            <div
+              slot="table-busy"
+              class="text-center text-danger"
+            >
+              <strong>Loading... {{ table.busyLevel }}%</strong>
             </div>
-        </template>
-
-        <b-jumbotron fluid header="Configure the Web-Interface" :lead="'data path: ' + ws_get_url()" />
-
-        <b-container fluid>
-
-            <b-card-group deck>
-
-                <b-card title="SSL/TSL available"
-                        class="shadow">
-                    <b-form-checkbox switch v-model="cfg.ssl">
-                        Enable SSL/TLS encryption (HTTPs)
-                    </b-form-checkbox>
-                    <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.ssl}}</b></small></div>
-                </b-card>
-
-                <b-card title="HTTPS Rewrite" class="shadow">
-                    <b-form-checkbox switch v-model="cfg.https_rewrite" :disabled="!ssl">
-                        Redirect to HTTPS (if available)
-                    </b-form-checkbox>
-                    <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.https_rewrite}}</b></small></div>
-                </b-card>
-
-            </b-card-group>
-
-            <br />
-
-            <b-card-group deck>
-                <b-card title="Session Timeout (HTTP)" class="shadow">
-                    <b-input-group prepend="sec." class="mt-3">
-                        <b-form-input v-model.number="cfg.http_sessionTimeout" type="number" min="10" max="10000" step="10" placeholder="<Session Timeout>" />
-                        <b-input-group-append>
-                            <b-button variant="secondary" @click="cfg.http_sessionTimeout = cfg.def.http_sessionTimeout">Default</b-button>
-                            <b-button variant="success" @click="changeHTTPSessionTimeout">Commit</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-
-                    <!-- Maximum number of messages to be displayed. -->
-                    <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.http_sessionTimeout}} seconds</b></small></div>
-                </b-card>
-
-                <b-card title="Maximum Upload Size (HTTP)" class="shadow">
-                    <b-input-group :prepend="ws_format_bytes(cfg.http_maxUploadSize)" class="mt-3">
-                        <b-form-input v-model.number="cfg.http_maxUploadSize" type="number" min="1024" max="10485760" step="1024" placeholder="<max. Upload Size>" />
-                        <b-input-group-append>
-                            <b-button variant="secondary" @click="cfg.http_maxUploadSize = cfg.def.http_maxUploadSize">Default</b-button>
-                            <b-button variant="success" @click="changeHTTPMaxUploadSize">Commit</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-
-                    <!-- Maximum number of events to be displayed. -->
-                    <div slot="footer"><small class="text-muted">default = <b>{{ ws_format_bytes(cfg.def.http_maxUploadSize) }}</b></small></div>
-                </b-card>
-            </b-card-group>
-
-            <br />
-
-            <b-card-group deck>
-                <b-card title="Session Timeout (HTTPS)" class="shadow">
-                    <b-input-group prepend="sec." class="mt-3">
-                        <b-form-input v-model.number="cfg.https_sessionTimeout" type="number" min="10" max="10000" step="10" placeholder="<Session Timeout>" :disabled="!ssl" />
-                        <b-input-group-append>
-                            <b-button variant="secondary" @click="cfg.https_sessionTimeout = cfg.def.https_sessionTimeout">Default</b-button>
-                            <b-button variant="success" @click="changeHTTPsSessionTimeout" :disabled="!ssl">Commit</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-
-                    <!-- Maximum number of messages to be displayed. -->
-                    <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.https_sessionTimeout}} seconds</b></small></div>
-                </b-card>
-
-                <b-card title="Maximum Upload Size (HTTPS)" class="shadow">
-                    <b-input-group :prepend="ws_format_bytes(cfg.https_maxUploadSize)" class="mt-3">
-                        <b-form-input v-model.number="cfg.https_maxUploadSize" type="number" min="1024" max="10485760" step="1024" placeholder="<max. Upload Size>" :disabled="!ssl" />
-                        <b-input-group-append>
-                            <b-button variant="secondary" @click="cfg.https_maxUploadSize = cfg.def.https_maxUploadSize">Default</b-button>
-                            <b-button variant="success" @click="changeHTTPsMaxUploadSize" :disabled="!ssl">Commit</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-
-                    <!-- Maximum number of events to be displayed. -->
-                    <div slot="footer"><small class="text-muted">default = <b>{{ ws_format_bytes(cfg.def.https_maxUploadSize) }}</b></small></div>
-                </b-card>
-            </b-card-group>
-
-            <br />
-
-            <b-row>
-                <b-col md="6">
-                </b-col>
-                <b-col md="6">
-                </b-col>
-            </b-row>
-
-            <b-row>
-                <b-col md="12">
-                    <b-table ref="webTable"
-                        bordered
-                        striped
-                        small
-                        hover
-                        show-empty
-                        stacked="md"
-                        selectable
-                        select-mode="range"
-                        selectedVariant="info"
-                        @row-selected="rowSelected"
-                        :fields="table.fields"
-                        :items="table.data"
-                        :busy="table.isBusy"
-                        primary-key="pk"
-                        :sort-by.sync="table.sortBy"
-                        :sort-desc.sync="table.sortDesc"
-                        :sort-direction="table.sortDirection"
-                        :current-page="table.currentPage"
-                        :per-page="table.perPage"
-                        :filter="table.filter"
-                        @filtered="onFiltered"
-                        class="shadow">
-
-                        <!-- A virtual column -->
-                        <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
-                        <!-- loading slot -->
-                        <div slot="table-busy" class="text-center text-danger">
-                        <strong>Loading... {{table.busyLevel}}%</strong>
-                        </div>
-
-                    </b-table>
-                </b-col>
-            </b-row>
-
-        </b-container>
-    </section>
-
+          </b-table>
+        </b-col>
+      </b-row>
+    </b-container>
+  </section>
 </template>
 
 <script lang="js">
@@ -150,17 +275,9 @@
     import { webSocket } from '../../services/web-socket.js'
 
     export default {
-        name: 'smfConfigWeb',
-        props: [],
+        name: 'SmfConfigWeb',
         mixins: [webSocket],
-
-        mounted() {
-            this.ws_open("/smf/api/web/v0.8");
-        },
-
-        beforeDestroy() {
-            this.ws_close();
-        },
+        props: [],
 
         data() {
             return {
@@ -227,6 +344,35 @@
                     filter: null
                 }
             }
+        },
+
+        computed: {
+
+        },
+
+        watch: {
+            'cfg.ssl': function () {
+                // console.log(this.cfg.ssl);
+                this.ws_submit_record("modify", "config.web", {
+                    key: { name: "https-available" },
+                    data: { value: this.ssl }
+                });
+            },
+            'cfg.https_rewrite': function () {
+                //   console.log(this.cfg.https_rewrite);
+                this.ws_submit_record("modify", "config.web", {
+                    key: { name: "https-rewrite" },
+                    data: { value: this.cfg.https_rewrite }
+                });
+            }
+        },
+
+        mounted() {
+            this.ws_open("/smf/api/web/v0.8");
+        },
+
+        beforeDestroy() {
+            this.ws_close();
         },
 
         methods: {
@@ -371,27 +517,6 @@
             },
             rowSelected(items) {
                 this.selected = items
-            }
-        },
-
-        computed: {
-
-        },
-
-        watch: {
-            'cfg.ssl': function () {
-                // console.log(this.cfg.ssl);
-                this.ws_submit_record("modify", "config.web", {
-                    key: { name: "https-available" },
-                    data: { value: this.ssl }
-                });
-            },
-            'cfg.https_rewrite': function () {
-                //   console.log(this.cfg.https_rewrite);
-                this.ws_submit_record("modify", "config.web", {
-                    key: { name: "https-rewrite" },
-                    data: { value: this.cfg.https_rewrite }
-                });
             }
         }
     }

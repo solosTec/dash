@@ -1,105 +1,154 @@
 <template lang="html">
-
-    <section class="smf-status-session">
-
-        <template>
-            <div>
-                <vue-headful
-                    title="smf :: status sessions"
-                    description="SMF dashboard"
-                    keywords="SMF, solosTec"
-                />
-            </div>
-        </template>
+  <section class="smf-status-session">
+    <template>
+      <div>
+        <vue-headful
+          title="smf :: status sessions"
+          description="SMF dashboard"
+          keywords="SMF, solosTec"
+        />
+      </div>
+    </template>
 
     <!-- <b-jumbotron fluid header="All subscribers that are online" :lead="sessions.length + ' sessions so far'"> -->
-    <b-jumbotron fluid :header="$t('header-status-session')" :lead="$t('lead-status-session', {count: this.sessions.length})" >
-        <b-progress class="mt-2" height="1.2rem" :max="deviceCount" show-value>
-            <b-progress-bar :value="sessions.length" variant="success" />
-            <b-progress-bar :value="deviceCount - sessions.length" variant="warning" />
-        </b-progress>
+    <b-jumbotron
+      fluid
+      :header="$t('header-status-session')"
+      :lead="$t('lead-status-session', {count: this.sessions.length})"
+    >
+      <b-progress
+        class="mt-2"
+        height="1.2rem"
+        :max="deviceCount"
+        show-value
+      >
+        <b-progress-bar
+          :value="sessions.length"
+          variant="success"
+        />
+        <b-progress-bar
+          :value="deviceCount - sessions.length"
+          variant="warning"
+        />
+      </b-progress>
     </b-jumbotron>
 
 
     <b-container fluid>
-
       <b-row>
         <b-col md="6">
-            <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
-                <b-input-group>
-                    <b-form-input v-model="filter" placeholder="Type to Search" />
-                    <b-input-group-append>
-                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                    </b-input-group-append>
-                </b-input-group>
-            </b-form-group>
+          <b-form-group
+            label-cols-sm="3"
+            label="Filter"
+            class="mb-0"
+          >
+            <b-input-group>
+              <b-form-input
+                v-model="filter"
+                placeholder="Type to Search"
+              />
+              <b-input-group-append>
+                <b-button
+                  :disabled="!filter"
+                  @click="filter = ''"
+                >
+                  Clear
+                </b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
         </b-col>
         <b-col md="6">
-          <b-pagination v-model="currentPage" :total-rows="sessions.length" :per-page="perPage" class="justify-content-end" />
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="sessions.length"
+            :per-page="perPage"
+            class="justify-content-end"
+          />
         </b-col>
       </b-row>
 
       <b-row>
         <b-col md="12">
           <!-- table -->
-            <b-table ref="sessionTable"
-                     bordered
-                     striped
-                     small
-                     hover
-                     show-empty
-                     stacked="md"
-                     selectable
-                     select-mode="range"
-                     selectedVariant="info"
-                     @row-selected="rowSelected"
-                     :fields="fields"
-                     :items="sessions"
-                     :busy="isBusy"
-                     :current-page="currentPage"
-                     :per-page="perPage"
-                     :filter="filter"
-                     primary-key="pk"
-                     :sort-by.sync="sortBy"
-                     :sort-desc.sync="sortDesc"
-                     :sort-direction="sortDirection"
-                     class="shadow">
+          <b-table
+            ref="sessionTable"
+            bordered
+            striped
+            small
+            hover
+            show-empty
+            stacked="md"
+            selectable
+            select-mode="range"
+            selected-variant="info"
+            :fields="fields"
+            :items="sessions"
+            :busy="isBusy"
+            :current-page="currentPage"
+            :per-page="perPage"
+            :filter="filter"
+            primary-key="pk"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            :sort-direction="sortDirection"
+            class="shadow"
+            @row-selected="rowSelected"
+          >
+            <!-- A virtual column -->
+            <template
+              slot="index"
+              slot-scope="data"
+            >
+              {{ data.index + 1 + (perPage * (currentPage - 1)) }}
+            </template>
 
-                <!-- A virtual column -->
-                <template slot="index" slot-scope="data">
-                    {{ data.index + 1 + (perPage * (currentPage - 1)) }}
-                </template>
+            <template
+              slot="stop"
+              slot-scope="row"
+            >
+              <b-button
+                size="sm"
+                variant="warning"
+                class="shadow"
+                @click="onSessionAction(row.item, row.index, $event.target)"
+              >
+                Stop
+              </b-button>
+            </template>
 
-                <template slot="stop" slot-scope="row">
-                    <b-button size="sm"
-                              variant="warning"
-                              class="shadow"
-                              @click="onSessionAction(row.item, row.index, $event.target)">Stop</b-button>
-                </template>
-
-                <!-- loading slot -->
-                <div slot="table-busy" class="text-center text-danger">
-                    <strong>Loading... {{busyLevel}}%</strong>
-                </div>
-
-            </b-table>
+            <!-- loading slot -->
+            <div
+              slot="table-busy"
+              class="text-center text-danger"
+            >
+              <strong>Loading... {{ busyLevel }}%</strong>
+            </div>
+          </b-table>
         </b-col>
       </b-row>
 
       <b-row>
         <b-col md="12">
-            <b-form v-on:submit.prevent class="p-3 shadow">
-                <b-input-group class="pt-3">
-                    <b-button type="submit" variant="danger" :disabled="!isRecordSelected" v-on:click.stop="onSessionStop">{{btnStopTitle}}</b-button>
-                </b-input-group>
-            </b-form>
+          <b-form
+            class="p-3 shadow"
+            @submit.prevent
+          >
+            <b-input-group class="pt-3">
+              <b-button
+                type="submit"
+                variant="danger"
+                :disabled="!isRecordSelected"
+                @click.stop="onSessionStop"
+              >
+                {{ btnStopTitle }}
+              </b-button>
+            </b-input-group>
+          </b-form>
         </b-col>
       </b-row>
-
     </b-container>
-
   </section>
-
 </template>
 
 <script lang="js">
@@ -107,13 +156,9 @@
   import {webSocket} from '../../services/web-socket.js'
 
   export default  {
-    name: 'smfStatusSession',
-    props: [],
+    name: 'SmfStatusSession',
     mixins: [webSocket],
-
-    mounted() {
-        this.ws_open("/smf/api/session/v0.7");
-    },
+    props: [],
 
     data() {
       return {
@@ -207,6 +252,25 @@
       }
     },
 
+    computed: {
+        isRecordSelected() {
+            return this.selected.length != 0;
+        },
+        btnStopTitle() {
+            if (this.selected.length == 0)  {
+                return "Stop";
+            }
+            else if(this.selected.length == 1) {
+                return "Stop Session " + this.selected[0].name;
+            }
+            return "Stop " + this.selected.length + " Sessions";
+        }
+    },
+
+    mounted() {
+        this.ws_open("/smf/api/session/v0.7");
+    },
+
     beforeDestroy() {
         this.ws_close();
     },
@@ -289,21 +353,6 @@
         },
         onSessionAction(item, index, button) {
             this.ws_submit_key("stop", "status.session", [item.pk] );
-        }
-    },
-
-    computed: {
-        isRecordSelected() {
-            return this.selected.length != 0;
-        },
-        btnStopTitle() {
-            if (this.selected.length == 0)  {
-                return "Stop";
-            }
-            else if(this.selected.length == 1) {
-                return "Stop Session " + this.selected[0].name;
-            }
-            return "Stop " + this.selected.length + " Sessions";
         }
     }
 }

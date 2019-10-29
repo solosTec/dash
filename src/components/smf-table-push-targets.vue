@@ -1,56 +1,55 @@
 ﻿<template lang="html">
+  <section class="smf-table-push-targets">
+    <b-table
+      ref="tablePushTargets"
+      bordered
+      striped
+      small
+      hover
+      show-empty
+      stacked="md"
+      selectable
+      select-mode="single"
+      selected-variant="info"
+      :fields="fields"
+      :items="items"
+      :busy="isBusy"
+      primary-key="pk"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
+      :sort-direction="sortDirection"
+      class="shadow"
+    >
+      <template
+        slot="details"
+        slot-scope="row"
+      >
+        <b-button
+          size="sm"
+          @click="row.toggleDetails"
+        >
+          {{ row.detailsShowing ? 'Hide' : 'Show' }} Register
+        </b-button>
+      </template>
 
-    <section class="smf-table-push-targets">
-        <b-table ref="tablePushTargets"
-                 bordered
-                 striped
-                 small
-                 hover
-                 show-empty
-                 stacked="md"
-                 selectable
-                 select-mode="single"
-                 selectedVariant="info"
-                 :fields="fields"
-                 :items="items"
-                 :busy="isBusy"
-                 primary-key="pk"
-                 :sort-by.sync="sortBy"
-                 :sort-desc.sync="sortDesc"
-                 :sort-direction="sortDirection"
-                 class="shadow">
-
-
-            <template slot="details" slot-scope="row">
-                <b-button size="sm" @click="row.toggleDetails">
-                    {{ row.detailsShowing ? 'Hide' : 'Show' }} Register
-                </b-button>
-            </template>
-
-            <!--<template slot="row-details" slot-scope="row">
+      <!--<template slot="row-details" slot-scope="row">
                 <b-card>
                     <ul>
                         <li v-for="(register, key) in row.item.registers" :key="key">{{ getRegisterName(register) }}</li>
                     </ul>
                 </b-card>
             </template>-->
-
-        </b-table>
-    </section>
-
+    </b-table>
+  </section>
 </template>
 
 <script lang="js">
 
 
     export default {
-        name: 'smf-table-push-targets',
+        name: 'SmfTablePushTargets',
         props: {
             items: Array,
-        },
-        created() {
-        },
-        mounted() {
         },
         data() {
             return {
@@ -135,6 +134,12 @@
                 sortDirection: 'desc',
             }
         },
+        computed: {
+        },
+        created() {
+        },
+        mounted() {
+        },
         methods: {
             getRegisterName(reg) {
                 var name = reg.toUpperCase();
@@ -171,8 +176,6 @@
 
                 return reg.toUpperCase();
             }
-        },
-        computed: {
         }
     }
 </script>
