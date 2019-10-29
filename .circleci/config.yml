@@ -23,7 +23,7 @@ jobs:
             - node_modules
           key: node-10-dependencies-{{ checksum "package-lock.json" }}
 
-      - run: npm run test
+      - run: npm run test:unit
       - run: npm run build
 
       - store_artifacts:
