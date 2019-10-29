@@ -21,3 +21,4 @@ yarn-error.log*
 /bin
 /obj/Debug
 /.vs/dash/v16
+/coverage
