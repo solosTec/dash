@@ -24,3 +24,6 @@ jobs:
 
       #- run: npm run test
       - run: npm run build
+        -
+      - store_artifacts:
+          path: ~/repo/dist
