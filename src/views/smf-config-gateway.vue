@@ -1311,6 +1311,7 @@
 export default  {
     name: 'SmfConfigGateway',
     components: {
+      // eslint-disable-next-line vue/no-unused-components
         opLog, MESSAGE_TYPES, SML_CODES
     },
     mixins: [webSocket],
