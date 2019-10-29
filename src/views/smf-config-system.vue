@@ -1,251 +1,142 @@
-﻿/* eslint-disable no-console */
+﻿﻿/* eslint-disable no-console */
 <template lang="html">
-  <section class="smf-config-system">
-    <template>
-      <div>
-        <vue-headful
-          title="smf :: config system"
-          description="SMF dashboard"
-          keywords="SMF, solosTec"
-        />
-      </div>
-    </template>
 
-    <b-jumbotron
-      fluid
-      :header="$t('header-system', {version: this.cfg.version })"
-      :lead="$t('lead-system', {node: this.cfg.hostname})"
-    />
+  <section class="smf-config-system">
+
+        <template>
+            <div>
+                <vue-headful
+                    title="smf :: config system"
+                    description="SMF dashboard"
+                    keywords="SMF, solosTec"
+                />
+            </div>
+        </template>
+
+    <b-jumbotron fluid :header="$t('header-system', {version: this.cfg.version })" :lead="$t('lead-system', {node: this.cfg.hostname})" />
 
     <b-container fluid>
+
       <b-card-group deck>
-        <b-card
+
+          <b-card
           :title="$t('config-sys-01')"
-          class="shadow"
-        >
-          <b-form-checkbox
-            v-model="cfg.auto_login"
-            switch
-            name="check-button"
-          >
-            {{ $t('config-sys-02') }}
-            <!-- Accept unknown devices and transfer the login data to the configuration database (not recommended). -->
-          </b-form-checkbox>
-          <div slot="footer">
-            <small class="text-muted">{{ $t('config-sys-02-1') }}<b>{{ cfg.def.auto_login }}</b></small>
-          </div>
-        </b-card>
+          class="shadow">
+            <b-form-checkbox switch v-model="cfg.auto_login" name="check-button">
+              {{ $t('config-sys-02') }}
+              <!-- Accept unknown devices and transfer the login data to the configuration database (not recommended). -->
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-02-1') }}<b>{{cfg.def.auto_login}}</b></small></div>
+          </b-card>
 
-        <b-card
-          :title="$t('config-sys-03')"
-        >
-          <b-form-checkbox
-            v-model="cfg.auto_enabled"
-            switch
-            name="check-button"
-          >
-            {{ $t('config-sys-04') }}
-          </b-form-checkbox>
-          <div slot="footer">
-            <small class="text-muted">{{ $t('config-sys-04-1') }}<b>{{ cfg.def.auto_enabled }}</b></small>
-          </div>
-        </b-card>
+          <b-card
+          :title="$t('config-sys-03')">
+            <b-form-checkbox switch v-model="cfg.auto_enabled" name="check-button">
+              {{ $t('config-sys-04') }}
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-04-1') }}<b>{{cfg.def.auto_enabled}}</b></small></div>
+          </b-card>
 
-        <b-card
-          :title="$t('config-sys-05')"
-          class="shadow"
-        >
-          <b-form-checkbox
-            v-model="cfg.supersede"
-            switch
-            name="check-button"
-          >
-            {{ $t('config-sys-06') }}
-            <!-- New login terminates running session with same credentials (recommended). -->
-          </b-form-checkbox>
-          <div slot="footer">
-            <small class="text-muted">{{ $t('config-sys-06-1') }}<b>{{ cfg.def.supersede }}</b></small>
-          </div>
-        </b-card>
+          <b-card :title="$t('config-sys-05')" class="shadow">
+            <b-form-checkbox switch v-model="cfg.supersede" name="check-button">
+              {{ $t('config-sys-06') }}
+              <!-- New login terminates running session with same credentials (recommended). -->
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-06-1') }}<b>{{cfg.def.supersede}}</b></small></div>
+          </b-card>
+
       </b-card-group>
 
-      <br>
+      <br />
 
       <b-card-group deck>
-        <b-card
-          :title="$t('config-sys-07')"
-          class="shadow"
-        >
-          <b-input-group class="mt-3">
-            <b-form-select
-              v-model="cfg.countryCode"
-              :options="country.options"
-            />
-          </b-input-group>
+          <b-card :title="$t('config-sys-07')" class="shadow">
+            <b-input-group class="mt-3">
+                <b-form-select v-model="cfg.countryCode" :options="country.options" />
+            </b-input-group>
 
-          <!-- Maximum number of messages to be displayed. -->
-          <div slot="footer">
-            <small class="text-muted">{{ $t('config-sys-07-1') }}<b>{{ cfg.def.countryCode }}</b></small>
-          </div>
-        </b-card>
-        <b-card
-          :title="$t('config-sys-08')"
-          class="shadow"
-        >
-          <!-- Language Code -->
-          <b-input-group class="mt-3">
-            <b-form-select
-              v-model="cfg.languageCode"
-              :options="language.options"
-            />
-          </b-input-group>
+             <!-- Maximum number of messages to be displayed. -->
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-07-1') }}<b>{{cfg.def.countryCode}}</b></small></div>
+          </b-card>
+          <b-card :title="$t('config-sys-08')" class="shadow">
+            <!-- Language Code -->
+            <b-input-group class="mt-3">
+                <b-form-select v-model="cfg.languageCode" :options="language.options" />
+            </b-input-group>
 
-          <!-- Maximum number of messages to be displayed. -->
-          <div slot="footer">
-            <small class="text-muted">{{ $t('config-sys-08-1') }}<b>{{ cfg.def.languageCode }}</b></small>
-          </div>
-        </b-card>
+             <!-- Maximum number of messages to be displayed. -->
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-08-1') }}<b>{{cfg.def.languageCode}}</b></small></div>
+          </b-card>
       </b-card-group>
 
-      <br>
+      <br />
 
       <b-card-group deck>
-        <b-card
-          :title="$t('config-sys-09')"
-          class="shadow"
-        >
-          <b-input-group
-            prepend="max."
-            class="mt-3"
-          >
-            <b-form-input
-              v-model.number="cfg.maxMessages"
-              type="number"
-              min="10"
-              max="10000"
-              step="10"
-              placeholder="<max. Messages>"
-            />
-            <b-input-group-append>
-              <b-button
-                variant="secondary"
-                @click="cfg.maxMessages = cfg.def.maxMessages"
-              >
-                {{ $t('config-sys-09-1') }}
-              </b-button>
-              <b-button
-                variant="success"
-                @click="changeMaxMessages"
-              >
-                {{ $t('config-sys-09-2') }}
-              </b-button>
-            </b-input-group-append>
-          </b-input-group>
+          <b-card :title="$t('config-sys-09')" class="shadow">
+            <b-input-group prepend="max." class="mt-3">
+              <b-form-input v-model.number="cfg.maxMessages" type="number" min="10" max="10000" step="10" placeholder="<max. Messages>" />
+              <b-input-group-append>
+                <b-button variant="secondary" @click="cfg.maxMessages = cfg.def.maxMessages">{{ $t('config-sys-09-1') }}</b-button>
+                <b-button variant="success" @click="changeMaxMessages">{{ $t('config-sys-09-2') }}</b-button>
+              </b-input-group-append>
+            </b-input-group>
 
-          <!-- Maximum number of messages to be displayed. -->
-          <div slot="footer">
-            <small class="text-muted">{{ $t('config-sys-09-3') }}<b>{{ cfg.def.maxMessages }}</b></small>
-          </div>
-        </b-card>
+             <!-- Maximum number of messages to be displayed. -->
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-09-3') }}<b>{{cfg.def.maxMessages}}</b></small></div>
+          </b-card>
 
-        <b-card
-          :title="$t('config-sys-10')"
-          class="shadow"
-        >
-          <b-input-group
-            prepend="max."
-            class="mt-3"
-          >
-            <b-form-input
-              v-model.number="cfg.maxEvents"
-              type="number"
-              min="10"
-              max="10000"
-              step="10"
-              placeholder="<max. Events>"
-            />
-            <b-input-group-append>
-              <b-button
-                variant="secondary"
-                @click="cfg.maxEvents = cfg.def.maxEvents"
-              >
-                {{ $t('config-sys-10-1') }}
-              </b-button>
-              <b-button
-                variant="success"
-                @click="changeMaxEvents"
-              >
-                {{ $t('config-sys-10-2') }}
-              </b-button>
-            </b-input-group-append>
-          </b-input-group>
+          <b-card :title="$t('config-sys-10')" class="shadow">
+            <b-input-group prepend="max." class="mt-3">
+              <b-form-input v-model.number="cfg.maxEvents" type="number" min="10" max="10000" step="10" placeholder="<max. Events>" />
+              <b-input-group-append>
+                <b-button variant="secondary" @click="cfg.maxEvents = cfg.def.maxEvents">{{ $t('config-sys-10-1') }}</b-button>
+                <b-button variant="success" @click="changeMaxEvents">{{ $t('config-sys-10-2') }}</b-button>
+              </b-input-group-append>
+            </b-input-group>
 
-          <!-- Maximum number of events to be displayed. -->
-          <div slot="footer">
-            <small class="text-muted">{{ $t('config-sys-10-3') }}<b>{{ cfg.def.maxEvents }}</b></small>
-          </div>
-        </b-card>
+             <!-- Maximum number of events to be displayed. -->
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-10-3') }}<b>{{cfg.def.maxEvents}}</b></small></div>
+          </b-card>
       </b-card-group>
 
-      <br>
+      <br />
 
       <b-card-group deck>
-        <b-card
-          :title="$t('config-sys-11')"
-          class="shadow"
-        >
-          <b-form-checkbox
-            v-model="cfg.tsdb"
-            switch
-            name="check-button"
-          >
-            {{ $t('config-sys-12') }}<b>{{ cfg.tsdb_dir }}</b> {{ $t('config-sys-13') }}
-          </b-form-checkbox>
-          <div slot="footer">
-            <small class="text-muted">{{ $t('config-sys-13-1') }}<b>{{ cfg.def.tsdb }}</b></small>
-          </div>
-        </b-card>
+
+          <b-card :title="$t('config-sys-11')" class="shadow">
+            <b-form-checkbox switch v-model="cfg.tsdb" name="check-button">
+              {{ $t('config-sys-12') }}<b>{{cfg.tsdb_dir}}</b> {{ $t('config-sys-13') }}
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-13-1') }}<b>{{cfg.def.tsdb}}</b></small></div>
+          </b-card>
+
       </b-card-group>
 
-      <br>
+      <br />
 
       <b-card-group deck>
-        <b-card
-          :title="$t('config-sys-14')"
-          class="shadow"
-        >
-          <b-form-checkbox
-            v-model="cfg.catch_meters"
-            switch
-            name="check-button"
-          >
-            {{ $t('config-sys-15') }}
-          </b-form-checkbox>
-          <div slot="footer">
-            <small class="text-muted">{{ $t('config-sys-15-1') }}<b>{{ cfg.def.catch_meters }}</b></small>
-          </div>
-        </b-card>
 
-        <b-card
-          :title="$t('config-sys-16')"
-          class="shadow"
-        >
-          <b-form-checkbox
-            v-model="cfg.catch_lora"
-            switch
-            name="check-button"
-          >
-            {{ $t('config-sys-17') }}
-          </b-form-checkbox>
-          <div slot="footer">
-            <small class="text-muted">{{ $t('config-sys-17-1') }}<b>{{ cfg.def.catch_lora }}</b></small>
-          </div>
-        </b-card>
+          <b-card :title="$t('config-sys-14')" class="shadow">
+            <b-form-checkbox switch v-model="cfg.catch_meters" name="check-button">
+              {{ $t('config-sys-15') }}
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-15-1') }}<b>{{cfg.def.catch_meters}}</b></small></div>
+          </b-card>
+
+          <b-card :title="$t('config-sys-16')" class="shadow">
+            <b-form-checkbox switch v-model="cfg.catch_lora" name="check-button">
+              {{ $t('config-sys-17') }}
+            </b-form-checkbox>
+            <div slot="footer"><small class="text-muted">{{ $t('config-sys-17-1') }}<b>{{cfg.def.catch_lora}}</b></small></div>
+          </b-card>
+
       </b-card-group>
 
-      <br>
+      <br />
+
     </b-container>
   </section>
+
 </template>
 
 <script lang="js">
@@ -253,9 +144,17 @@
 import {webSocket} from '../../services/web-socket.js'
 
 export default  {
-    name: 'SmfConfigSystem',
-    mixins: [webSocket],
+    name: 'smfConfigSystem',
     props: [],
+    mixins: [webSocket],
+
+    mounted() {
+        this.ws_open("/smf/api/system/v0.8");
+    },
+
+    beforeDestroy() {
+        this.ws_close();
+    },
 
     data() {
         return {
@@ -307,72 +206,6 @@ export default  {
                 ]
             }
         }
-    },
-
-    computed: {
-
-    },
-
-    watch: {
-        'cfg.auto_login': function() {
-            // console.log(this.cfg.auto_login);
-            this.ws_submit_record("modify", "config.system", {
-                key: { name: "connection-auto-login" },
-                data: { value: this.cfg.auto_login }
-            });
-        },
-        'cfg.auto_enabled': function() {
-        //   console.log(this.cfg.auto_enabled);
-            this.ws_submit_record("modify", "config.system", {
-                key: { name: "connection-auto-enabled" },
-                data: { value: this.cfg.auto_enabled }
-            });
-        },
-        'cfg.supersede': function() {
-        //   console.log(this.cfg.supersede);
-            this.ws_submit_record("modify", "config.system", {
-                key: { name: "connection-superseed" },
-                data: { value: this.cfg.supersede }
-            });
-        },
-        'cfg.tsdb': function() {
-            this.ws_submit_record("modify", "config.system", {
-                key: { name: "generate-time-series" },
-                data: { value: this.cfg.tsdb }
-            });
-        },
-        'cfg.catch_meters': function() {
-            this.ws_submit_record("modify", "config.system", {
-                key: { name: "catch-meters" },
-                data: { value: this.cfg.catch_meters }
-            });
-        },
-        'cfg.catch_lora': function() {
-            this.ws_submit_record("modify", "config.system", {
-                key: { name: "catch-lora" },
-                data: { value: this.cfg.catch_lora }
-            });
-        },
-        'cfg.countryCode': function() {
-            this.ws_submit_record("modify", "config.system", {
-                key: { name: "country-code" },
-                data: { value: this.cfg.countryCode }
-            });
-        },
-        'cfg.languageCode': function() {
-            this.ws_submit_record("modify", "config.system", {
-                key: { name: "language-code" },
-                data: { value: this.cfg.languageCode }
-            });
-        }
-    },
-
-    mounted() {
-        this.ws_open("/smf/api/system/v0.8");
-    },
-
-    beforeDestroy() {
-        this.ws_close();
     },
 
     methods: {
@@ -503,6 +336,64 @@ export default  {
                 data: { value: this.cfg.maxEvents }
             });
 
+        }
+    },
+
+    computed: {
+
+    },
+
+    watch: {
+        'cfg.auto_login': function() {
+            // console.log(this.cfg.auto_login);
+            this.ws_submit_record("modify", "config.system", {
+                key: { name: "connection-auto-login" },
+                data: { value: this.cfg.auto_login }
+            });
+        },
+        'cfg.auto_enabled': function() {
+        //   console.log(this.cfg.auto_enabled);
+            this.ws_submit_record("modify", "config.system", {
+                key: { name: "connection-auto-enabled" },
+                data: { value: this.cfg.auto_enabled }
+            });
+        },
+        'cfg.supersede': function() {
+        //   console.log(this.cfg.supersede);
+            this.ws_submit_record("modify", "config.system", {
+                key: { name: "connection-superseed" },
+                data: { value: this.cfg.supersede }
+            });
+        },
+        'cfg.tsdb': function() {
+            this.ws_submit_record("modify", "config.system", {
+                key: { name: "generate-time-series" },
+                data: { value: this.cfg.tsdb }
+            });
+        },
+        'cfg.catch_meters': function() {
+            this.ws_submit_record("modify", "config.system", {
+                key: { name: "catch-meters" },
+                data: { value: this.cfg.catch_meters }
+            });
+        },
+        'cfg.catch_lora': function() {
+            this.ws_submit_record("modify", "config.system", {
+                key: { name: "catch-lora" },
+                data: { value: this.cfg.catch_lora }
+            });
+        },
+        'cfg.countryCode': function() {
+            this.ws_submit_record("modify", "config.system", {
+                key: { name: "country-code" },
+                data: { value: this.cfg.countryCode }
+            });
+        },
+        'cfg.languageCode': function() {
+            this.ws_submit_record("modify", "config.system", {
+                key: { name: "language-code" },
+                data: { value: this.cfg.languageCode }
+            });
         }
     }
 }

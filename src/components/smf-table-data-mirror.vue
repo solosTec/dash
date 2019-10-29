@@ -1,72 +1,64 @@
-﻿<template lang="html">
-  <section class="smf-table-data-mirror">
-    <b-table
-      ref="tableDataMirror"
-      bordered
-      striped
-      small
-      hover
-      show-empty
-      stacked="md"
-      selectable
-      select-mode="single"
-      selected-variant="info"
-      :fields="fields"
-      :items="items"
-      :busy="isBusy"
-      primary-key="pk"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      :sort-direction="sortDirection"
-      class="shadow"
-    >
-      <!--:current-page="currentPage"
+﻿﻿<template lang="html">
+
+    <section class="smf-table-data-mirror">
+        <b-table ref="tableDataMirror"
+                 bordered
+                 striped
+                 small
+                 hover
+                 show-empty
+                 stacked="md"
+                 selectable
+                 select-mode="single"
+                 selectedVariant="info"
+                 :fields="fields"
+                 :items="items"
+                 :busy="isBusy"
+                 primary-key="pk"
+                 :sort-by.sync="sortBy"
+                 :sort-desc.sync="sortDesc"
+                 :sort-direction="sortDirection"
+                 class="shadow">
+
+            <!--:current-page="currentPage"
     @row-selected="rowSelected"
     :per-page="perPage"
     :filter="filter"
     @filtered="onFiltered"-->
 
-      <template
-        slot="details"
-        slot-scope="row"
-      >
-        <!--<b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
+            <template slot="details" slot-scope="row">
+                <!--<b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
             Info modal
         </b-button>-->
-        <b-button
-          size="sm"
-          @click="row.toggleDetails"
-        >
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Register
-        </b-button>
-      </template>
+                <b-button size="sm" @click="row.toggleDetails">
+                    {{ row.detailsShowing ? 'Hide' : 'Show' }} Register
+                </b-button>
+            </template>
 
-      <template
-        slot="row-details"
-        slot-scope="row"
-      >
-        <b-card>
-          <ul>
-            <li
-              v-for="(register, key) in row.item.registers"
-              :key="key"
-            >
-              {{ getRegisterName(register) }}
-            </li>
-          </ul>
-        </b-card>
-      </template>
-    </b-table>
-  </section>
+            <template slot="row-details" slot-scope="row">
+                <b-card>
+                    <ul>
+                        <li v-for="(register, key) in row.item.registers" :key="key">{{ getRegisterName(register) }}</li>
+                    </ul>
+                </b-card>
+            </template>
+
+        </b-table>
+    </section>
+
 </template>
 
 <script lang="js">
 
 
     export default {
-        name: 'SmfTableDataMirror',
+        name: 'smf-table-data-mirror',
         props: {
             items: Array,
+        },
+        created() {
+        },
+        mounted() {
         },
         data() {
             return {
@@ -130,12 +122,6 @@
                 sortDirection: 'desc',
             }
         },
-        computed: {
-        },
-        created() {
-        },
-        mounted() {
-        },
         methods: { //0000600101FF
             getRegisterName(reg) {
                 var name = reg.toUpperCase();
@@ -173,6 +159,8 @@
 
                 return reg.toUpperCase();
             }
+        },
+        computed: {
         }
     }
 </script>

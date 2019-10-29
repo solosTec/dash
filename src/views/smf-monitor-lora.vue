@@ -1,21 +1,18 @@
 <template lang="html">
-  <section class="smf-monitor-lora">
-    <template>
-      <div>
-        <vue-headful
-          title="smf :: monitor LoRa uplinks"
-          description="SMF dashboard"
-          keywords="SMF, solosTec"
-        />
-      </div>
-    </template>
+    <section class="smf-monitor-lora">
+
+        <template>
+            <div>
+                <vue-headful
+                    title="smf :: monitor LoRa uplinks"
+                    description="SMF dashboard"
+                    keywords="SMF, solosTec"
+                />
+            </div>
+        </template>
 
     <!-- <b-jumbotron fluid header="LoRa Uplink" :lead="uplinks.length + ' uplinks stored'" /> -->
-    <b-jumbotron
-      fluid
-      :header="$t('header-monitor-lora')"
-      :lead="$t('lead-monitor-lora', {count: this.uplinks.length})"
-    />
+    <b-jumbotron fluid :header="$t('header-monitor-lora')" :lead="$t('lead-monitor-lora', {count: this.uplinks.length})" />
 
 
     <b-container fluid>
@@ -32,7 +29,8 @@
             stacked="md"
             selectable
             select-mode="range"
-            selected-variant="info"
+            selectedVariant="info"
+            @row-selected="rowSelected"
             :fields="fields"
             :items="uplinks"
             :busy="isBusy"
@@ -43,36 +41,30 @@
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"
             class="shadow"
-            @row-selected="rowSelected"
-          >
+            >
+
             <!-- caption slot -->
             <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
 
             <!-- loading slot -->
-            <div
-              slot="table-busy"
-              class="text-center text-danger"
-            >
-              <strong>Loading... {{ busyLevel }}%</strong>
+            <div slot="table-busy" class="text-center text-danger">
+              <strong>Loading... {{busyLevel}}%</strong>
             </div>
+
           </b-table>
         </b-col>
       </b-row>
 
       <b-row>
-        <b-col
-          md="2"
-          offset-md="10"
-        >
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="uplinks.length"
-            :per-page="perPage"
-          />
+        <b-col md="2" offset-md="10">
+          <b-pagination v-model="currentPage" :total-rows="uplinks.length" :per-page="perPage"/>
         </b-col>
       </b-row>
+
     </b-container>
+
   </section>
+
 </template>
 
 <script lang="js">
@@ -80,9 +72,13 @@
 import {webSocket} from '../../services/web-socket.js'
 
 export default  {
-    name: 'SmfMonitorLora',
-    mixins: [webSocket],
+    name: 'smfMonitorLora',
     props: [],
+    mixins: [webSocket],
+
+    mounted() {
+        this.ws_open("/smf/api/lorauplink/v0.7");
+    },
     data() {
         return {
             isBusy: false,
@@ -159,14 +155,6 @@ export default  {
         }
     },
 
-    computed: {
-
-    },
-
-    mounted() {
-        this.ws_open("/smf/api/lorauplink/v0.7");
-    },
-
     beforeDestroy() {
         this.ws_close();
     },
@@ -205,6 +193,10 @@ export default  {
                 }
              }
         }
+    },
+
+    computed: {
+
     }
 }
 </script>

@@ -1,132 +1,70 @@
 <template lang="html">
+
   <section class="smf-home">
+
     <template>
-      <div>
-        <vue-headful
-          title="smf :: home"
-          description="SMF dashboard"
-          keywords="SMF, solosTec"
-        />
-      </div>
+        <div>
+            <vue-headful
+                title="smf :: home"
+                description="SMF dashboard"
+                keywords="SMF, solosTec"
+            />
+        </div>
     </template>
 
-    <b-jumbotron
-      fluid
-      :header="$t('header-dashboard')"
-      :lead="$t('lead-dashboard')"
-    />
+    <b-jumbotron fluid :header="$t('header-dashboard')" :lead="$t('lead-dashboard')" />
 
     <b-container fluid>
-      <b-card-group deck>
-        <b-card
-          title="Configure Devices"
-          class="shadow"
-        >
-          <b-card-text>Managing the device pool.</b-card-text>
-          <b-button
-            to="/config/device"
-            href="#"
-            variant="primary"
-          >
-            Devices
-          </b-button>
-          <div slot="footer">
-            <small class="text-muted">{{ deviceCount }} device(s) configured</small>
-          </div>
-        </b-card>
+        <b-card-group deck>
 
-        <b-card
-          title="Configure Gateways"
-          class="shadow"
-        >
-          <b-card-text>Special support for gateways.</b-card-text>
-          <b-button
-            to="/config/gateway"
-            href="#"
-            variant="primary"
-          >
-            Gateways
-          </b-button>
-          <div slot="footer">
-            <small class="text-muted">{{ gatewayCount }} gateway(s) available</small>
-          </div>
-        </b-card>
+            <b-card title="Configure Devices" class="shadow">
+               <b-card-text>Managing the device pool.</b-card-text>
+               <b-button to="/config/device" href="#" variant="primary">Devices</b-button>
+               <div slot="footer"><small class="text-muted">{{ deviceCount }} device(s) configured</small></div>
+            </b-card>
 
-        <!-- <b-card title="Configure Meter" img-src="electric-meter.svg" img-height="100px"> -->
-        <b-card
-          title="Configure Meter"
-          class="shadow"
-        >
-          <b-card-text>Meter overview</b-card-text>
-          <b-button
-            to="/config/meter"
-            href="#"
-            variant="primary"
-          >
-            Meter
-          </b-button>
-          <div slot="footer">
-            <small class="text-muted">{{ meterCount }} meter(s) configured</small>
-          </div>
-        </b-card>
-      </b-card-group>
+            <b-card title="Configure Gateways" class="shadow">
+               <b-card-text>Special support for gateways.</b-card-text>
+               <b-button to="/config/gateway" href="#" variant="primary">Gateways</b-button>
+               <div slot="footer"><small class="text-muted">{{ gatewayCount }} gateway(s) available</small></div>
+            </b-card>
 
-      <br>
+            <!-- <b-card title="Configure Meter" img-src="electric-meter.svg" img-height="100px"> -->
+            <b-card title="Configure Meter" class="shadow">
+               <b-card-text>Meter overview</b-card-text>
+               <b-button to="/config/meter" href="#" variant="primary">Meter</b-button>
+               <div slot="footer"><small class="text-muted">{{ meterCount }} meter(s) configured</small></div>
+            </b-card>
 
-      <b-card-group deck>
-        <b-card
-          title="Show Sessions"
-          class="shadow"
-        >
-          <b-card-text>Show a list of all devices online now and their data throughput in realtime.</b-card-text>
-          <b-button
-            to="/status/sessions"
-            href="status.session.html"
-            variant="primary"
-          >
-            Sessions
-          </b-button>
-          <div slot="footer">
-            <small class="text-muted">{{ sessionCount }} session(s) online</small>
-          </div>
-        </b-card>
+        </b-card-group>
 
-        <b-card
-          title="Registered Targets"
-          class="shadow"
-        >
-          <b-card-text>All registered targets and their data throughput in realtime.</b-card-text>
-          <b-button
-            to="/status/targets"
-            href="status.targets.html"
-            variant="primary"
-          >
-            Targets
-          </b-button>
-          <div slot="footer">
-            <small class="text-muted">{{ targetCount }} target(s) registered</small>
-          </div>
-        </b-card>
+        <br />
 
-        <b-card
-          title="Connections"
-          class="shadow"
-        >
-          <b-card-text>See connections and manage leased lines.</b-card-text>
-          <b-button
-            to="/status/connections"
-            href="status.connections.html"
-            variant="primary"
-          >
-            Connections
-          </b-button>
-          <div slot="footer">
-            <small class="text-muted">{{ connectionCount }} running connection(s)</small>
-          </div>
-        </b-card>
-      </b-card-group>
+        <b-card-group deck>
+
+            <b-card title="Show Sessions" class="shadow">
+               <b-card-text>Show a list of all devices online now and their data throughput in realtime.</b-card-text>
+               <b-button to="/status/sessions" href="status.session.html" variant="primary">Sessions</b-button>
+               <div slot="footer"><small class="text-muted">{{sessionCount}} session(s) online</small></div>
+            </b-card>
+
+            <b-card title="Registered Targets" class="shadow">
+               <b-card-text>All registered targets and their data throughput in realtime.</b-card-text>
+               <b-button to="/status/targets" href="status.targets.html" variant="primary">Targets</b-button>
+               <div slot="footer"><small class="text-muted">{{targetCount}} target(s) registered</small></div>
+            </b-card>
+
+            <b-card title="Connections" class="shadow">
+               <b-card-text>See connections and manage leased lines.</b-card-text>
+               <b-button to="/status/connections" href="status.connections.html" variant="primary">Connections</b-button>
+               <div slot="footer"><small class="text-muted">{{connectionCount}} running connection(s)</small></div>
+            </b-card>
+
+        </b-card-group>
+
     </b-container>
   </section>
+
 </template>
 
 <script lang="js">
@@ -135,9 +73,17 @@
   import {webSocket} from '../../services/web-socket.js'
 
   export default  {
-    name: 'SmfHome',
-    mixins: [webSocket],
+    name: 'smfHome',
     props: [],
+    mixins: [webSocket],
+
+    mounted() {
+      this.ws_open("/smf/api/system/v0.7");
+    },
+
+    beforeDestroy() {
+      this.ws_close();
+    },
 
     data() {
       return {
@@ -148,17 +94,6 @@
         targetCount: 0,
         connectionCount: 0
       }
-    },
-
-    computed: {
-    },
-
-    mounted() {
-      this.ws_open("/smf/api/system/v0.7");
-    },
-
-    beforeDestroy() {
-      this.ws_close();
     },
 
     methods: {
@@ -196,6 +131,9 @@
           }
         }
       }
+    },
+
+    computed: {
     }
 }
 </script>

@@ -1,254 +1,170 @@
 <template lang="html">
-  <section class="smf-config-device">
-    <template>
-      <div>
-        <vue-headful
-          title="smf :: config devices"
-          description="SMF dashboard"
-          keywords="SMF, solosTec"
-        />
-      </div>
-    </template>
+    <section class="smf-config-device">
 
-    <b-jumbotron
-      fluid
-      :header="$t('header-device')"
-      :lead="$t('lead-device', {count: this.devices.length})"
-    />
-
-    <b-container fluid>
-      <b-row>
-        <b-col md="9">
-          <b-row>
-            <b-col md="6">
-              <b-form-group
-                label-cols-sm="3"
-                label="Filter"
-                class="mb-0"
-              >
-                <b-input-group>
-                  <b-form-input
-                    v-model="filter"
-                    :placeholder="$t('config-gateway-02')"
-                  />
-                  <b-input-group-append>
-                    <b-button
-                      :disabled="!filter"
-                      @click="filter = ''"
-                    >
-                      {{ $t('config-gateway-03') }}
-                    </b-button>
-                  </b-input-group-append>
-                </b-input-group>
-              </b-form-group>
-            </b-col>
-
-            <b-col md="6">
-              <b-pagination
-                v-model="currentPage"
-                :total-rows="visibleRows"
-                :per-page="perPage"
-                class="justify-content-end"
-              />
-            </b-col>
-          </b-row>
-
-          <b-row>
-            <b-col md="12">
-              <!-- table -->
-              <b-table
-                ref="devTable"
-                bordered
-                striped
-                small
-                hover
-                show-empty
-                stacked="md"
-                selectable
-                select-mode="range"
-                selected-variant="info"
-                :fields="fields"
-                :items="devices"
-                :busy="isBusy"
-                primary-key="pk"
-                :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
-                :sort-direction="sortDirection"
-                :current-page="currentPage"
-                :per-page="perPage"
-                :filter="filter"
-                class="shadow"
-                @row-selected="rowSelected"
-                @filtered="onFiltered"
-              >
-                <!-- A virtual column -->
-                <template
-                  slot="index"
-                  slot-scope="data"
-                >
-                  {{ data.index + 1 + (perPage * (currentPage - 1)) }}
-                </template>
-
-                <!-- A custom formatted column descr -->
-                <template
-                  slot="descr"
-                  slot-scope="data"
-                >
-                  <span
-                    v-b-popover.hover="data.value"
-                    :title="data.item.name"
-                  >{{ formatDescription(data.value) }}</span>
-                </template>
-
-                <!-- caption slot -->
-                <template slot="table-caption">
-                  {{ tableCaption }}
-                </template>
-
-
-                <!-- loading slot -->
-                <div
-                  slot="table-busy"
-                  class="text-center text-danger"
-                >
-                  <strong>Loading... {{ busyLevel }}%</strong>
-                </div>
-              </b-table>
-            </b-col>
-          </b-row>
-        </b-col>
-
-        <b-col md="3">
-          <!-- form -->
-          <b-form
-            class="p-3 shadow"
-            @submit.prevent
-          >
-            <b-form-group
-              :label="$t('config-device-01')"
-              label-for="smf-form-dev-name"
-            >
-              <b-form-input
-                id="smf-form-dev-name"
-                v-model="form.name"
-                type="text"
-                required
-                :placeholder="$t('config-device-01-01')"
-              />
-            </b-form-group>
-
-            <b-form-group
-              label="MSISDN"
-              label-for="smf-form-dev-msisdn"
-            >
-              <b-form-input
-                id="smf-form-dev-msisdn"
-                v-model="form.msisdn"
-                type="text"
-                required
-                placeholder="<MSISDN>"
-              />
-            </b-form-group>
-
-            <b-form-group
-              :label="$t('config-device-02')"
-              label-for="smf-form-dev-pwd"
-            >
-              <b-input-group>
-                <b-form-input
-                  id="smf-form-dev-pwd"
-                  v-model="form.pwd"
-                  type="text"
-                  required
-                  :placeholder="$t('config-device-02-02')"
+        <template>
+            <div>
+                <vue-headful
+                    title="smf :: config devices"
+                    description="SMF dashboard"
+                    keywords="SMF, solosTec"
                 />
-                <b-input-group-append>
-                  <b-button
-                    v-b-tooltip.hover
-                    variant="info"
-                    title="Generate password"
-                    @click.stop="generatePassword"
-                  >
-                    &#x21ba;
-                  </b-button>
-                </b-input-group-append>
-              </b-input-group>
-            </b-form-group>
+            </div>
+        </template>
 
-            <b-form-group
-              :label="$t('config-device-03')"
-              label-for="smf-form-dev-descr"
-            >
-              <b-form-input
-                id="smf-form-dev-descr"
-                v-model="form.descr"
-                type="text"
-                :placeholder="$t('config-device-03-03')"
-              />
-            </b-form-group>
+        <b-jumbotron fluid :header="$t('header-device')" :lead="$t('lead-device', {count: this.devices.length})" />
 
-            <b-form-group
-              label=""
-              label-for="smf-form-dev-enabled"
-            >
-              <b-form-checkbox
-                v-model="form.enabled"
-                switch
-                :disabled="!isRecordSelected"
-                name="smf-form-dev-enabled"
-              >
-                {{ form.enabled ? $t('config-device-04') : $t('config-device-05') }}
-              </b-form-checkbox>
-            </b-form-group>
+        <b-container fluid>
+            <b-row>
+                <b-col md="9">
 
-            <b-input-group class="pt-1">
-              <b-button
-                type="submit"
-                variant="primary"
-                :disabled="!isRecordSelected"
-                @click.stop="onDeviceUpdate"
-              >
-                {{ btnUpdateTitle }}
-              </b-button>&nbsp;
-            </b-input-group>
+                    <b-row>
+                    <b-col md="6">
+                        <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+                            <b-input-group>
+                                <b-form-input v-model="filter" :placeholder="$t('config-gateway-02')" />
+                                <b-input-group-append>
+                                <b-button :disabled="!filter" @click="filter = ''">{{ $t('config-gateway-03') }}</b-button>
+                                </b-input-group-append>
+                            </b-input-group>
+                        </b-form-group>
+                    </b-col>
 
-            <b-input-group class="pt-3">
-              <b-button
-                type="submit"
-                variant="danger"
-                :disabled="!isRecordSelected"
-                @click.stop="onDeviceDelete"
-              >
-                {{ btnDeleteTitle }}
-              </b-button>
-            </b-input-group>
+                    <b-col md="6">
+                        <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
+                    </b-col>
+                    </b-row>
 
-            <hr>
+                    <b-row>
+                    <b-col md="12">
+                    <!-- table -->
+                    <b-table
+                        ref="devTable"
+                        bordered
+                        striped
+                        small
+                        hover
+                        show-empty
+                        stacked="md"
+                        selectable
+                        select-mode="range"
+                        selectedVariant="info"
+                        @row-selected="rowSelected"
+                        :fields="fields"
+                        :items="devices"
+                        :busy="isBusy"
+                        primary-key="pk"
+                        :sort-by.sync="sortBy"
+                        :sort-desc.sync="sortDesc"
+                        :sort-direction="sortDirection"
+                        :current-page="currentPage"
+                        :per-page="perPage"
+                        :filter="filter"
+                        @filtered="onFiltered"
+                        class="shadow"
+                    >
 
-            <b-button
-              type="submit"
-              variant="success"
-              :disabled="!isRecordNew"
-              @click.stop="onDeviceInsert"
-            >
-              {{ btnInsertTitle }}
-            </b-button>
-          </b-form>
-        </b-col>
-      </b-row>
+                        <!-- A virtual column -->
+                        <template slot="index" slot-scope="data">{{ data.index + 1 + (perPage * (currentPage - 1)) }}</template>
+
+                        <!-- A custom formatted column descr -->
+                        <template slot="descr" slot-scope="data">
+                            <span v-b-popover.hover="data.value" :title="data.item.name">{{ formatDescription(data.value) }}</span>
+                        </template>
+
+                        <!-- caption slot -->
+                        <template slot="table-caption">{{ tableCaption }}</template>
+
+
+                        <!-- loading slot -->
+                        <div slot="table-busy" class="text-center text-danger">
+                        <strong>Loading... {{busyLevel}}%</strong>
+                        </div>
+
+                    </b-table>
+                    </b-col>
+                    </b-row>
+
+                </b-col>
+
+                <b-col md="3">
+
+                <!-- form -->
+                <b-form v-on:submit.prevent class="p-3 shadow">
+
+                    <b-form-group :label="$t('config-device-01')" label-for="smf-form-dev-name">
+                    <b-form-input
+                        id="smf-form-dev-name"
+                        type="text"
+                        v-model="form.name"
+                        required
+                        :placeholder="$t('config-device-01-01')" />
+                    </b-form-group>
+
+                    <b-form-group label="MSISDN" label-for="smf-form-dev-msisdn">
+                    <b-form-input
+                        id="smf-form-dev-msisdn"
+                        type="text"
+                        v-model="form.msisdn"
+                        required
+                        placeholder="<MSISDN>" />
+                    </b-form-group>
+
+                    <b-form-group :label="$t('config-device-02')" label-for="smf-form-dev-pwd">
+                    <b-input-group>
+                        <b-form-input
+                        id="smf-form-dev-pwd"
+                        type="text"
+                        v-model="form.pwd"
+                        required
+                        :placeholder="$t('config-device-02-02')"/>
+                        <b-input-group-append>
+                        <b-button variant="info" v-on:click.stop="generatePassword" v-b-tooltip.hover title="Generate password">&#x21ba;</b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+                    </b-form-group>
+
+                    <b-form-group :label="$t('config-device-03')" label-for="smf-form-dev-descr">
+                    <b-form-input
+                        id="smf-form-dev-descr"
+                        type="text"
+                        v-model="form.descr"
+                        :placeholder="$t('config-device-03-03')" />
+                    </b-form-group>
+
+                    <b-form-group label="" label-for="smf-form-dev-enabled">
+                    <b-form-checkbox switch v-model="form.enabled" :disabled="!isRecordSelected" name="smf-form-dev-enabled">
+                        {{ form.enabled ? $t('config-device-04') : $t('config-device-05') }}
+                    </b-form-checkbox>
+                    </b-form-group>
+
+                    <b-input-group class="pt-1">
+                        <b-button type="submit" variant="primary" :disabled="!isRecordSelected" v-on:click.stop="onDeviceUpdate">{{btnUpdateTitle}}</b-button>&nbsp;
+                    </b-input-group>
+
+                    <b-input-group class="pt-3">
+                        <b-button type="submit" variant="danger"  :disabled="!isRecordSelected" v-on:click.stop="onDeviceDelete">{{btnDeleteTitle}}</b-button>
+                    </b-input-group>
+
+                    <hr />
+
+                    <b-button type="submit" variant="success" :disabled="!isRecordNew" v-on:click.stop="onDeviceInsert">{{btnInsertTitle}}</b-button>
+                </b-form>
+            </b-col>
+        </b-row>
     </b-container>
 
     <!-- Modal Component -->
     <b-modal
-      ref="dlgDeleteDevice"
-      :title="btnDeleteTitle"
-      header-bg-variant="danger"
-      centered
-      @ok="handleDeleteDeviceOk"
-    >
-      <p>Proceed?</p>
+        ref="dlgDeleteDevice"
+        :title=btnDeleteTitle
+        @ok="handleDeleteDeviceOk"
+        header-bg-variant="danger"
+        centered
+        >
+        <p>Proceed?</p>
     </b-modal>
-  </section>
+
+    </section>
 </template>
 
 <script lang="js">
@@ -257,9 +173,16 @@
     // import smfConfigDeviceProps from "./smf-config-device-form.vue";
 
     export default  {
-    name: 'SmfConfigDevice',
-    mixins: [webSocket],
+    name: 'smfConfigDevice',
     props: [],
+    mixins: [webSocket],
+    // components: {
+    //     smfConfigDeviceProps
+    // },
+
+    mounted() {
+      this.ws_open("/smf/api/device/v0.7");
+    },
 
     data() {
       return {
@@ -337,46 +260,6 @@
           pk: ''
         }
       }
-    },
-
-    computed: {
-      tableCaption() {
-        return this.selected.length + "/" + this.devices.length + " devices(s) selected - " + this.visibleRows + " device(s) filtered";
-      },
-      btnUpdateTitle() {
-        if(this.selected.length > 0) {
-          return this.$t('config-device-06') + this.selected[0].name;
-        }
-        return this.$t('config-device-06');
-      },
-      btnDeleteTitle() {
-        if (this.selected.length == 0)  {
-          return this.$t('config-device-07');
-        }
-        else if(this.selected.length == 1) {
-          return this.$t('config-device-07') + this.selected[0].name;
-        }
-        return this.$t('config-device-07') + this.selected.length + " record(s)";
-      },
-      btnInsertTitle() {
-        return this.$t('config-device-08') + this.form.name;
-      },
-      isRecordSelected() {
-        return this.selected.length != 0;
-      },
-      isRecordNew() {
-        if (this.selected.length != 0) {
-          return this.form.name != this.selected[0].name;
-        }
-        return this.form.name.length > 0;
-      }
-    },
-    // components: {
-    //     smfConfigDeviceProps
-    // },
-
-    mounted() {
-      this.ws_open("/smf/api/device/v0.7");
     },
 
     beforeDestroy() {
@@ -581,6 +464,39 @@
             if (str.length > 24)  return str.substring(0, 24) + '...';
             return str;
         }
+    },
+
+    computed: {
+      tableCaption() {
+        return this.selected.length + "/" + this.devices.length + " devices(s) selected - " + this.visibleRows + " device(s) filtered";
+      },
+      btnUpdateTitle() {
+        if(this.selected.length > 0) {
+          return this.$t('config-device-06') + this.selected[0].name;
+        }
+        return this.$t('config-device-06');
+      },
+      btnDeleteTitle() {
+        if (this.selected.length == 0)  {
+          return this.$t('config-device-07');
+        }
+        else if(this.selected.length == 1) {
+          return this.$t('config-device-07') + this.selected[0].name;
+        }
+        return this.$t('config-device-07') + this.selected.length + " record(s)";
+      },
+      btnInsertTitle() {
+        return this.$t('config-device-08') + this.form.name;
+      },
+      isRecordSelected() {
+        return this.selected.length != 0;
+      },
+      isRecordNew() {
+        if (this.selected.length != 0) {
+          return this.form.name != this.selected[0].name;
+        }
+        return this.form.name.length > 0;
+      }
     }
 }
 </script>

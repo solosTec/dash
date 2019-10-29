@@ -1,311 +1,116 @@
 <template lang="html">
-  <section class="smf-config-download">
-    <template>
-      <div>
-        <vue-headful
-          title="smf :: config download"
-          description="SMF dashboard"
-          keywords="SMF, solosTec"
-        />
-      </div>
-    </template>
 
-    <b-jumbotron
-      fluid
-      :header="$t('header-download')"
-      :lead="$t('lead-download')"
-    />
+    <section class="smf-config-download">
 
-    <b-container fluid>
-      <b-form-row>
-        <b-col class="m-2 p-2 shadow">
-          <h4>Download {{ deviceCount }} devices</h4>
-          <b-form
-            @submit="onSubmitDevices"
-            @reset="onResetDevices"
-          >
-            <b-form-radio-group
-              id="dev-download-type"
-              v-model="dev.fmt"
-              name="smf-download-device-format"
-              class="mt-3"
-            >
-              <b-form-radio value="XML">
-                XML
-              </b-form-radio>
-              <b-form-radio value="JSON">
-                JSON
-              </b-form-radio>
-              <b-form-radio value="CSV">
-                CSV
-              </b-form-radio>
-            </b-form-radio-group>
-            <b-form-radio-group
-              v-model="dev.version"
-              name="smf-download-config-device-version"
-            >
-              <b-form-radio
-                :disabled="dev.fmt != 'XML'"
-                value="v32"
-              >
-                Version 3.2
-              </b-form-radio>
-              <b-form-radio
-                :disabled="dev.fmt != 'XML'"
-                value="v40"
-              >
-                Version 4.0
-              </b-form-radio>
-              <b-form-radio
-                :disabled="dev.fmt != 'XML'"
-                value="v50"
-              >
-                Version 5.0
-              </b-form-radio>
-            </b-form-radio-group>
-            <input
-              id="smf-procedure"
-              type="hidden"
-              name="smf-procedure"
-              value="cfg.download.devices"
-            >
-            <b-button
-              type="submit"
-              variant="primary"
-              class="mt-3 mr-3"
-              :disabled="deviceCount == 0"
-            >
-              Download &#8681;
-            </b-button>
-            <b-button
-              type="reset"
-              variant="danger"
-              class="mt-3"
-            >
-              Reset
-            </b-button>
-          </b-form>
-        </b-col>
+        <template>
+            <div>
+                <vue-headful title="smf :: config download"
+                             description="SMF dashboard"
+                             keywords="SMF, solosTec" />
+            </div>
+        </template>
 
-        <b-col class="m-2 p-2 shadow">
-          <h4>Download {{ gatewayCount }} gateways</h4>
-          <b-form
-            @submit="onSubmitGateways"
-            @reset="onResetGateways"
-          >
-            <b-form-radio-group
-              id="gw-download-type"
-              v-model="gw.fmt"
-              name="gw-download-type"
-              class="mt-3"
-            >
-              <b-form-radio value="XML">
-                XML
-              </b-form-radio>
-              <b-form-radio value="JSON">
-                JSON
-              </b-form-radio>
-              <b-form-radio value="CSV">
-                CSV
-              </b-form-radio>
-            </b-form-radio-group>
-            <b-button
-              type="submit"
-              variant="primary"
-              class="mt-3 mr-3"
-              :disabled="gatewayCount == 0"
-            >
-              Download &#8681;
-            </b-button>
-            <b-button
-              type="reset"
-              variant="danger"
-              class="mt-3"
-            >
-              Reset
-            </b-button>
-          </b-form>
-        </b-col>
+        <b-jumbotron fluid :header="$t('header-download')" :lead="$t('lead-download')" />
 
-        <b-col class="m-2 p-2 shadow">
-          <h4>Download {{ meterCount }} meters</h4>
-          <b-form
-            @submit="onSubmitMeters"
-            @reset="onResetMeters"
-          >
-            <b-form-radio-group
-              id="meter-download-type"
-              v-model="meter.fmt"
-              name="meter-download-type"
-              class="mt-3"
-            >
-              <b-form-radio value="XML">
-                XML
-              </b-form-radio>
-              <b-form-radio value="JSON">
-                JSON
-              </b-form-radio>
-              <b-form-radio value="CSV">
-                CSV
-              </b-form-radio>
-            </b-form-radio-group>
-            <b-button
-              type="submit"
-              variant="primary"
-              class="mt-3 mr-3"
-              :disabled="meterCount == 0"
-            >
-              Download &#8681;
-            </b-button>
-            <b-button
-              type="reset"
-              variant="danger"
-              class="mt-3"
-            >
-              Reset
-            </b-button>
-          </b-form>
-        </b-col>
-      </b-form-row>
+        <b-container fluid>
 
-      <b-form-row>
-        <b-col class="m-2 p-2 shadow">
-          <h4>Download {{ LoRaCount }} LoRa devices</h4>
-          <b-form
-            @submit="onSubmitLoRa"
-            @reset="onResetLoRa"
-          >
-            <b-form-radio-group
-              id="meter-download-type"
-              v-model="LoRa.fmt"
-              name="LoRa-download-type"
-              class="mt-3"
-            >
-              <b-form-radio value="XML">
-                XML
-              </b-form-radio>
-              <b-form-radio value="JSON">
-                JSON
-              </b-form-radio>
-              <b-form-radio value="CSV">
-                CSV
-              </b-form-radio>
-            </b-form-radio-group>
-            <b-form-radio-group
-              id="LoRa-download-type"
-              v-model="LoRa.vendor"
-              name="LoRa-vendor-type"
-            >
-              <b-form-radio value="actility">
-                Actility
-              </b-form-radio>
-              <b-form-radio value="swisscom">
-                Swisscom
-              </b-form-radio>
-              <b-form-radio value="sigfox">
-                SigFox
-              </b-form-radio>
-            </b-form-radio-group>
-            <b-button
-              type="submit"
-              variant="primary"
-              class="mt-3 mr-3"
-              :disabled="LoRaCount == 0"
-            >
-              Download &#8681;
-            </b-button>
-            <b-button
-              type="reset"
-              variant="danger"
-              class="mt-3"
-            >
-              Reset
-            </b-button>
-          </b-form>
-        </b-col>
+            <b-form-row>
+                <b-col class="m-2 p-2 shadow">
+                    <h4>Download {{deviceCount}} devices</h4>
+                    <b-form @submit="onSubmitDevices" @reset="onResetDevices">
+                        <b-form-radio-group id="dev-download-type" v-model="dev.fmt" name="smf-download-device-format" class="mt-3">
+                            <b-form-radio value="XML">XML</b-form-radio>
+                            <b-form-radio value="JSON">JSON</b-form-radio>
+                            <b-form-radio value="CSV">CSV</b-form-radio>
+                        </b-form-radio-group>
+                        <b-form-radio-group v-model="dev.version" name="smf-download-config-device-version">
+                            <b-form-radio :disabled="dev.fmt != 'XML'" value="v32">Version 3.2</b-form-radio>
+                            <b-form-radio :disabled="dev.fmt != 'XML'" value="v40">Version 4.0</b-form-radio>
+                            <b-form-radio :disabled="dev.fmt != 'XML'" value="v50">Version 5.0</b-form-radio>
+                        </b-form-radio-group>
+                        <input type="hidden" id="smf-procedure" name="smf-procedure" value="cfg.download.devices" />
+                        <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="deviceCount == 0">Download &#8681;</b-button>
+                        <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
+                    </b-form>
+                </b-col>
 
-        <b-col class="m-2 p-2 shadow">
-          <h4>Download {{ uplinkCount }} LoRa uplink records</h4>
-          <b-form
-            @submit="onSubmitUplink"
-            @reset="onResetUplink"
-          >
-            <b-form-radio-group
-              id="meter-uplink-type"
-              v-model="uplink.fmt"
-              name="uplink-download-type"
-              class="mt-3"
-            >
-              <b-form-radio value="XML">
-                XML
-              </b-form-radio>
-              <b-form-radio value="JSON">
-                JSON
-              </b-form-radio>
-              <b-form-radio value="CSV">
-                CSV
-              </b-form-radio>
-            </b-form-radio-group>
-            <b-button
-              type="submit"
-              variant="primary"
-              class="mt-3 mr-3"
-              :disabled="uplinkCount == 0"
-            >
-              Download &#8681;
-            </b-button>
-            <b-button
-              type="reset"
-              variant="danger"
-              class="mt-3"
-            >
-              Reset
-            </b-button>
-          </b-form>
-        </b-col>
+                <b-col class="m-2 p-2 shadow">
+                    <h4>Download {{ gatewayCount }} gateways</h4>
+                    <b-form @submit="onSubmitGateways" @reset="onResetGateways">
+                        <b-form-radio-group id="gw-download-type" v-model="gw.fmt" name="gw-download-type" class="mt-3">
+                            <b-form-radio value="XML">XML</b-form-radio>
+                            <b-form-radio value="JSON">JSON</b-form-radio>
+                            <b-form-radio value="CSV">CSV</b-form-radio>
+                        </b-form-radio-group>
+                        <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="gatewayCount == 0">Download &#8681;</b-button>
+                        <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
+                    </b-form>
+                </b-col>
 
-        <b-col class="m-2 p-2 shadow">
-          <h4>Download {{ msgCount }} system messages</h4>
-          <b-form
-            @submit="onSubmitMsg"
-            @reset="onResetMsg"
-          >
-            <b-form-radio-group
-              id="msg-uplink-type"
-              v-model="msg.fmt"
-              name="msg-download-type"
-              class="mt-3"
-            >
-              <b-form-radio value="XML">
-                XML
-              </b-form-radio>
-              <b-form-radio value="JSON">
-                JSON
-              </b-form-radio>
-              <b-form-radio value="CSV">
-                CSV
-              </b-form-radio>
-            </b-form-radio-group>
-            <b-button
-              type="submit"
-              variant="primary"
-              class="mt-3 mr-3"
-              :disabled="msgCount == 0"
-            >
-              Download &#8681;
-            </b-button>
-            <b-button
-              type="reset"
-              variant="danger"
-              class="mt-3"
-            >
-              Reset
-            </b-button>
-          </b-form>
-        </b-col>
-      </b-form-row>
-    </b-container>
-  </section>
+                <b-col class="m-2 p-2 shadow">
+                    <h4>Download {{ meterCount }} meters</h4>
+                    <b-form @submit="onSubmitMeters" @reset="onResetMeters">
+                        <b-form-radio-group id="meter-download-type" v-model="meter.fmt" name="meter-download-type" class="mt-3">
+                            <b-form-radio value="XML">XML</b-form-radio>
+                            <b-form-radio value="JSON">JSON</b-form-radio>
+                            <b-form-radio value="CSV">CSV</b-form-radio>
+                        </b-form-radio-group>
+                        <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="meterCount == 0">Download &#8681;</b-button>
+                        <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
+                    </b-form>
+                </b-col>
+            </b-form-row>
+
+            <b-form-row>
+                <b-col class="m-2 p-2 shadow">
+                    <h4>Download {{ LoRaCount }} LoRa devices</h4>
+                    <b-form @submit="onSubmitLoRa" @reset="onResetLoRa">
+                        <b-form-radio-group id="meter-download-type" v-model="LoRa.fmt" name="LoRa-download-type" class="mt-3">
+                            <b-form-radio value="XML">XML</b-form-radio>
+                            <b-form-radio value="JSON">JSON</b-form-radio>
+                            <b-form-radio value="CSV">CSV</b-form-radio>
+                        </b-form-radio-group>
+                        <b-form-radio-group id="LoRa-download-type" v-model="LoRa.vendor" name="LoRa-vendor-type">
+                            <b-form-radio value="actility">Actility</b-form-radio>
+                            <b-form-radio value="swisscom">Swisscom</b-form-radio>
+                            <b-form-radio value="sigfox">SigFox</b-form-radio>
+                        </b-form-radio-group>
+                        <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="LoRaCount == 0">Download &#8681;</b-button>
+                        <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
+                    </b-form>
+                </b-col>
+
+                <b-col class="m-2 p-2 shadow">
+                    <h4>Download {{ uplinkCount }} LoRa uplink records</h4>
+                    <b-form @submit="onSubmitUplink" @reset="onResetUplink">
+                        <b-form-radio-group id="meter-uplink-type" v-model="uplink.fmt" name="uplink-download-type" class="mt-3">
+                            <b-form-radio value="XML">XML</b-form-radio>
+                            <b-form-radio value="JSON">JSON</b-form-radio>
+                            <b-form-radio value="CSV">CSV</b-form-radio>
+                        </b-form-radio-group>
+                        <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="uplinkCount == 0">Download &#8681;</b-button>
+                        <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
+                    </b-form>
+                </b-col>
+
+                <b-col class="m-2 p-2 shadow">
+                    <h4>Download {{ msgCount }} system messages</h4>
+                    <b-form @submit="onSubmitMsg" @reset="onResetMsg">
+                        <b-form-radio-group id="msg-uplink-type" v-model="msg.fmt" name="msg-download-type" class="mt-3">
+                            <b-form-radio value="XML">XML</b-form-radio>
+                            <b-form-radio value="JSON">JSON</b-form-radio>
+                            <b-form-radio value="CSV">CSV</b-form-radio>
+                        </b-form-radio-group>
+                        <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="msgCount == 0">Download &#8681;</b-button>
+                        <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
+                    </b-form>
+                </b-col>
+            </b-form-row>
+
+        </b-container>
+
+    </section>
+
 </template>
 
 <script lang="js">
@@ -313,9 +118,13 @@
     import { webSocket } from '../../services/web-socket.js'
 
     export default {
-        name: 'SmfConfigDownload',
-        mixins: [webSocket],
+        name: 'smfConfigDownload',
         props: [],
+        mixins: [webSocket],
+
+        mounted() {
+            this.ws_open("/smf/api/download/v0.7");
+        },
 
         data() {
             return {
@@ -352,14 +161,6 @@
                     fmt: 'XML',
                 }
             }
-        },
-
-        computed: {
-
-        },
-
-        mounted() {
-            this.ws_open("/smf/api/download/v0.7");
         },
 
         beforeDestroy() {
@@ -565,6 +366,10 @@
                 a.download = fileName;
                 a.dispatchEvent(new MouseEvent('click'));
             }
+        },
+
+        computed: {
+
         }
     }
 </script>

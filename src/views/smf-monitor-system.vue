@@ -1,67 +1,39 @@
 <template lang="html">
-  <section class="smf-monitor-system">
-    <template>
-      <div>
-        <vue-headful
-          title="smf :: monitor SMF"
-          description="SMF dashboard"
-          keywords="SMF, solosTec"
-        />
-      </div>
-    </template>
+
+    <section class="smf-monitor-system">
+
+        <template>
+            <div>
+                <vue-headful
+                    title="smf :: monitor SMF"
+                    description="SMF dashboard"
+                    keywords="SMF, solosTec"
+                />
+            </div>
+        </template>
 
     <!-- <b-jumbotron fluid header="System Status" :lead="nodes.length + ' nodes online'" /> --> -->
-    <b-jumbotron
-      fluid
-      :header="$t('header-monitor-system')"
-      :lead="$t('lead-monitor-system', {count: this.nodes.length})"
-    />
+    <b-jumbotron fluid :header="$t('header-monitor-system')" :lead="$t('lead-monitor-system', {count: this.nodes.length})" />
 
     <b-container fluid>
       <b-row>
         <b-col md="12">
-          <b-card-group deck>
-            <b-card
-              title="CPU"
-              class="shadow"
-            >
+        <b-card-group deck>
+
+            <b-card title="CPU" class="shadow">
               <b-card-text>CPU load in %</b-card-text>
               <!-- https://stackoverflow.com/a/52142602/3979819 -->
-              <b-progress
-                class="mt-2"
-                height="1.2rem"
-                :value="stat.cpuLoad.value"
-                :max="stat.max"
-                :variant="stat.cpuLoad.variant"
-                show-value
-              />
-              <div slot="footer">
-                <small class="text-muted">{{ stat.cpuCount }} CPUs available</small>
-              </div>
+              <b-progress class="mt-2" height="1.2rem" :value="stat.cpuLoad.value" :max="stat.max" :variant="stat.cpuLoad.variant" show-value />
+              <div slot="footer"><small class="text-muted">{{stat.cpuCount}} CPUs available</small></div>
             </b-card>
 
-            <b-card
-              title="Memory"
-              class="shadow"
-            >
+            <b-card title="Memory" class="shadow">
               <b-card-text>Virtual Memory Usage</b-card-text>
-              <b-progress
-                class="mt-2"
-                height="1.2rem"
-                :value="stat.virtualMemory.percent"
-                :max="stat.max"
-                :variant="stat.virtualMemory.variant"
-                show-value
-              />
-              <div slot="footer">
-                <small class="text-muted">{{ virtualMemoryTotalFormatted }} virtual memory are available</small>
-              </div>
+              <b-progress class="mt-2" height="1.2rem" :value="stat.virtualMemory.percent" :max="stat.max" :variant="stat.virtualMemory.variant" show-value></b-progress >
+              <div slot="footer"><small class="text-muted">{{virtualMemoryTotalFormatted}} virtual memory are available</small></div>
             </b-card>
 
-            <b-card
-              title="I/O"
-              class="shadow"
-            >
+            <b-card title="I/O" class="shadow">
               <b-card-text>Bytes exchanged with server.</b-card-text>
               <!-- <b-progress class="mt-2" height="1.2rem" :max="stat.rx + stat.sx" show-value>
                 <b-progress-bar :value="stat.sx" variant="info" />
@@ -69,15 +41,14 @@
               </b-progress> -->
               <b-card-text>{{ ws_format_bytes(stat.rx) }} received</b-card-text>
               <b-card-text>{{ ws_format_bytes(stat.sx) }} sent</b-card-text>
-              <div slot="footer">
-                <small class="text-muted">{{ totalIoFormatted }} in total</small>
-              </div>
+              <div slot="footer"><small class="text-muted">{{totalIoFormatted}} in total</small></div>
             </b-card>
-          </b-card-group>
+
+        </b-card-group>
         </b-col>
       </b-row>
 
-      <br>
+      <br />
 
       <b-row>
         <b-col md="12">
@@ -91,7 +62,8 @@
             stacked="md"
             selectable
             select-mode="range"
-            selected-variant="info"
+            selectedVariant="info"
+            @row-selected="rowSelected"
             :fields="fields"
             :items="nodes"
             :busy="isBusy"
@@ -102,26 +74,18 @@
             :current-page="currentPage"
             :per-page="perPage"
             class="shadow"
-            @row-selected="rowSelected"
-          >
-            <!-- A virtual column -->
-            <template
-              slot="index"
-              slot-scope="data"
             >
-              {{ data.index + 1 }}
-            </template>
+
+            <!-- A virtual column -->
+            <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
 
             <!-- caption slot -->
             <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
             <!-- <template slot="table-caption">ToDo: CAPTION</template> -->
 
             <!-- loading slot -->
-            <div
-              slot="table-busy"
-              class="text-center text-danger"
-            >
-              <strong>Loading... {{ busyLevel }}%</strong>
+            <div slot="table-busy" class="text-center text-danger">
+              <strong>Loading... {{busyLevel}}%</strong>
             </div>
 
             <!-- <template slot="empty" slot-scope="scope">
@@ -132,6 +96,7 @@
       </b-row>
     </b-container>
   </section>
+
 </template>
 
 <script lang="js">
@@ -140,9 +105,24 @@ import {webSocket} from '../../services/web-socket.js'
 import { EventBus } from '../../services/event-bus.js'
 
 export default  {
-    name: 'SmfMonitorSystem',
-    mixins: [webSocket],
+    name: 'smfMonitorSystem',
     props: [],
+    mixins: [webSocket],
+
+    created() {
+        EventBus.$on('ws-rx', rx => {
+            this.stat.rx += rx;
+            // console.log("rx " + this.stat.rx);
+        });
+        EventBus.$on('ws-sx', sx => {
+            this.stat.sx += sx;
+            // console.log("sx " + this.stat.sx);
+        });
+    },
+
+    mounted() {
+        this.ws_open("/smf/api/system/v0.7");
+    },
 
     data() {
         return {
@@ -218,32 +198,6 @@ export default  {
             },
             sysTimer: null
         }
-    },
-    computed: {
-        tableCaption() {
-            return "Showing " + this.nodes.length + " cluster nodes";
-        },
-        virtualMemoryTotalFormatted() {
-            return this.ws_format_bytes(this.stat.virtualMemory.total);
-        },
-        totalIoFormatted() {
-            return this.ws_format_bytes(this.stat.sx + this.stat.rx);
-        }
-    },
-
-    created() {
-        EventBus.$on('ws-rx', rx => {
-            this.stat.rx += rx;
-            // console.log("rx " + this.stat.rx);
-        });
-        EventBus.$on('ws-sx', sx => {
-            this.stat.sx += sx;
-            // console.log("sx " + this.stat.sx);
-        });
-    },
-
-    mounted() {
-        this.ws_open("/smf/api/system/v0.7");
     },
 
     beforeDestroy() {
@@ -369,6 +323,17 @@ export default  {
 
             //  restart
             this.sysTimer = setTimeout(this.onSysTimer, 5000);
+        }
+    },
+    computed: {
+        tableCaption() {
+            return "Showing " + this.nodes.length + " cluster nodes";
+        },
+        virtualMemoryTotalFormatted() {
+            return this.ws_format_bytes(this.stat.virtualMemory.total);
+        },
+        totalIoFormatted() {
+            return this.ws_format_bytes(this.stat.sx + this.stat.rx);
         }
     }
 }

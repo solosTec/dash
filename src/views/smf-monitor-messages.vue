@@ -1,51 +1,31 @@
 <template lang="html">
-  <section class="smf-monitor-messages">
-    <template>
-      <div>
-        <vue-headful
-          title="smf :: monitor system messages"
-          description="SMF dashboard"
-          keywords="SMF, solosTec"
-        />
-      </div>
-    </template>
+
+    <section class="smf-monitor-messages">
+
+        <template>
+            <div>
+                <vue-headful
+                    title="smf :: monitor system messages"
+                    description="SMF dashboard"
+                    keywords="SMF, solosTec"
+                />
+            </div>
+        </template>
 
     <!-- <b-jumbotron fluid header="System Messages" :lead="msgCount + ' messages logged'"> -->
-    <b-jumbotron
-      fluid
-      :header="$t('header-monitor-messages')"
-      :lead="$t('lead-monitor-messages', {count: this.messages.length})"
-    >
-      <b-progress
-        class="mt-2 shadow"
-        :max="msgCount"
-        show-value
-        height="1.5rem"
-      >
-        <b-progress-bar
-          :value="stat.trace + stat.debug"
-          variant="info"
-        />
-        <b-progress-bar
-          :value="stat.info"
-          variant="success"
-        />
-        <b-progress-bar
-          :value="stat.warn"
-          variant="secondary"
-        />
-        <b-progress-bar
-          :value="stat.error"
-          variant="warning"
-        />
-        <b-progress-bar
-          :value="stat.fatal"
-          variant="danger"
-        />
-      </b-progress>
-    </b-jumbotron>
+        <b-jumbotron fluid :header="$t('header-monitor-messages')" :lead="$t('lead-monitor-messages', {count: this.messages.length})">
+            <b-progress class="mt-2 shadow" :max="msgCount" show-value height="1.5rem">
+                <b-progress-bar :value="stat.trace + stat.debug" variant="info" />
+                <b-progress-bar :value="stat.info" variant="success" />
+                <b-progress-bar :value="stat.warn" variant="secondary" />
+                <b-progress-bar :value="stat.error" variant="warning" />
+                <b-progress-bar :value="stat.fatal" variant="danger" />
+            </b-progress>
+
+        </b-jumbotron>
 
     <b-container fluid>
+
       <b-row>
         <b-col md="12">
           <b-table
@@ -58,7 +38,8 @@
             stacked="md"
             selectable
             select-mode="range"
-            selected-variant="info"
+            selectedVariant="info"
+            @row-selected="rowSelected"
             :fields="fields"
             :items="messages"
             :busy="isBusy"
@@ -68,20 +49,14 @@
             :sort-direction="sortDirection"
             :current-page="currentPage"
             :per-page="perPage"
-            class="shadow"
-            @row-selected="rowSelected"
-          >
+            class="shadow">
+
             <!-- caption slot -->
-            <template slot="table-caption">
-              {{ tableCaption }}
-            </template>
+            <template slot="table-caption">{{tableCaption}}</template>
 
             <!-- loading slot -->
-            <div
-              slot="table-busy"
-              class="text-center text-danger"
-            >
-              <strong>Loading... {{ busyLevel }}%</strong>
+            <div slot="table-busy" class="text-center text-danger">
+              <strong>Loading... {{busyLevel}}%</strong>
             </div>
 
             <!-- <template slot="empty" slot-scope="scope">
@@ -92,74 +67,41 @@
       </b-row>
 
       <b-row>
+
         <b-col md="2">
           <b-list-group>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               TRACE
-              <b-badge
-                variant="info"
-                pill
-              >
-                {{ stat.trace }}
-              </b-badge>
+              <b-badge variant="info" pill>{{stat.trace}}</b-badge>
             </b-list-group-item>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               DEBUG
-              <b-badge
-                variant="info"
-                pill
-              >
-                {{ stat.debug }}
-              </b-badge>
+              <b-badge variant="info" pill>{{stat.debug}}</b-badge>
             </b-list-group-item>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               INFO
-              <b-badge
-                variant="success"
-                pill
-              >
-                {{ stat.info }}
-              </b-badge>
+              <b-badge variant="success" pill>{{stat.info}}</b-badge>
             </b-list-group-item>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               WARN
-              <b-badge
-                variant="secondary"
-                pill
-              >
-                {{ stat.warn }}
-              </b-badge>
+              <b-badge variant="secondary" pill>{{stat.warn}}</b-badge>
             </b-list-group-item>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               ERROR
-              <b-badge
-                variant="warning"
-                pill
-              >
-                {{ stat.error }}
-              </b-badge>
+              <b-badge variant="warning" pill>{{stat.error}}</b-badge>
             </b-list-group-item>
             <b-list-group-item class="d-flex justify-content-between align-items-center">
               FATAL
-              <b-badge
-                variant="danger"
-                pill
-              >
-                {{ stat.fatal }}
-              </b-badge>
+              <b-badge variant="danger" pill>{{stat.fatal}}</b-badge>
             </b-list-group-item>
           </b-list-group>
         </b-col>
 
         <!-- <b-col md="4" offset-md="6"> -->
         <b-col md="10">
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="msgCount"
-            :per-page="perPage"
-            class="justify-content-end"
-          />
+          <b-pagination v-model="currentPage" :total-rows="msgCount" :per-page="perPage" class="justify-content-end"/>
         </b-col>
+
       </b-row>
 
       <!-- <b-row>
@@ -167,8 +109,10 @@
           <h1>HALLO</h1>
         </b-col>
       </b-row> -->
-      <br>
+      <br />
     </b-container>
+
+
   </section>
 </template>
 
@@ -177,9 +121,17 @@
 import {webSocket} from '../../services/web-socket.js'
 
 export default  {
-    name: 'SmfMonitorMessages',
-    mixins: [webSocket],
+    name: 'smfMonitorMessages',
     props: [],
+    mixins: [webSocket],
+
+    mounted() {
+        var rec = { id: 0, ts: new Date(), severity: 3, msg: "mounted"};
+        rec["_rowVariant"] = 'success';
+        this.messages.push(rec);
+        this.ws_open("/smf/api/gw/v0.7");
+        this.isBusy = true;
+    },
 
     data() {
         return {
@@ -242,20 +194,6 @@ export default  {
           fatal: 0,
         }
       }
-    },
-    computed: {
-      tableCaption() {
-        return "Showing " + this.msgCount + " messages";
-      }
-
-    },
-
-    mounted() {
-        var rec = { id: 0, ts: new Date(), severity: 3, msg: "mounted"};
-        rec["_rowVariant"] = 'success';
-        this.messages.push(rec);
-        this.ws_open("/smf/api/gw/v0.7");
-        this.isBusy = true;
     },
 
     beforeDestroy() {
@@ -337,6 +275,12 @@ export default  {
             }
           }
         }
+      }
+
+    },
+    computed: {
+      tableCaption() {
+        return "Showing " + this.msgCount + " messages";
       }
 
     }

@@ -1,10 +1,7 @@
 <template>
   <div id="app">
-    <SMFNavigation
-      brand="solos::Tec"
-      logo="/logo.svg"
-    />
-    <router-view />
+    <SMFNavigation brand="solos::Tec" logo="/logo.svg" />
+    <router-view/>
   </div>
 </template>
 
@@ -12,7 +9,7 @@
 import SMFNavigation from '@/components/smf-navigation.vue'
 
 export default {
-  name: 'App',
+  name: 'app',
   components: {
     SMFNavigation
   },
