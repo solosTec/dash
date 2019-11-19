@@ -172,6 +172,8 @@
     import {webSocket} from '../../services/web-socket.js'
     // import smfConfigDeviceProps from "./smf-config-device-form.vue";
 
+    let tmpDevices = [];
+
     export default  {
     name: 'smfConfigDevice',
     props: [],
@@ -302,7 +304,7 @@
                     if (!obj.rec.data.enabled) {
                         rec["_rowVariant"] = "warning";
                     }
-                    this.devices.push(rec);
+                    tmpDevices.push(rec);
                 }
                 else if (obj.cmd == 'modify') {
                     // eslint-disable-next-line
@@ -370,6 +372,15 @@
                         // eslint-disable-next-line
                         console.log('load state ' + obj.show);
                         this.isBusy = obj.show;
+
+                        if (this.isBusy) {
+                            // reset the tmpDevices array if the initial upload starts
+                            tmpDevices = [];
+                        } else {
+                            // set the tmpDevices if the initial uploads is done
+                            this.devices = tmpDevices;
+                        }
+
                     }
                     else if (obj.level != 0) {
                         this.busyLevel = obj.level;
