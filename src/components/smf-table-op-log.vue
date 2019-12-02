@@ -87,6 +87,7 @@
                             if (value == 8388608) return 'cyclic log entry';
                             else if (value == 1048577) return 'power return';
                             else if (value == 1048578) return 'power failure';
+                            else if (value == 1048611) return 'power failure (return)';
                             else if (value == 8454146) return 'time base is saved';
                             else if (value == 34603017) return 'customer/service interface not connected';
                             else if (value == 1232076810) return 'IP-T access is done';
