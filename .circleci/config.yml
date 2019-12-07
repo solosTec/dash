@@ -25,9 +25,10 @@ jobs:
 
       - run: npm run test:unit
       - run: npm run build
+      - run: tar -zcvf dist.tar.gz ~/repo/dist
 
       - store_artifacts:
           path: ~/repo/coverage
 
       - store_artifacts:
-          path: ~/repo/dist
+          path: ~/repo/dist.tar.gz
