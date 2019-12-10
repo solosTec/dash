@@ -16,7 +16,16 @@
                 options: [5,10,15,20, 25,50,100].map( value => ({ value, text: `${value}` }))
             }
         },
-        props: ['value'],
+        props: {
+            'value': {
+                type: Number,
+                required: true
+            },
+            'storeKey': {
+                type: String,
+                required: true
+            }
+        },
         methods: {
             onRowSelectionChanged (rowCount) {
                 this.rowCount = rowCount;

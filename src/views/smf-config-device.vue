@@ -32,7 +32,7 @@
 
                     <b-col md="6">
                         <b-form-row>
-                            <smf-row-count-selector v-model="perPage" class="col"/>
+                            <smf-row-count-selector v-model="perPage" store-key="devices" class="col"/>
                             <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
                         </b-form-row>
                     </b-col>
@@ -176,7 +176,6 @@
 <script lang="js">
 
     import {webSocket} from '../../services/web-socket.js'
-    import smfRowCountSelector from "./../components/smf-row-count-selector";
 
     let tmpDevices = [];
 

@@ -36,7 +36,7 @@
         </b-col>
         <b-col md="6">
             <b-form-row>
-                <smf-row-count-selector v-model="perPage" class="col"/>
+                <smf-row-count-selector v-model="perPage" store-key="sessions" class="col"/>
                 <b-pagination v-model="currentPage" :total-rows="sessions.length" :per-page="perPage" class="justify-content-end" />
             </b-form-row>
         </b-col>

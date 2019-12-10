@@ -29,7 +29,7 @@
 
             <b-col md="6">
                 <b-form-row>
-                    <smf-row-count-selector v-model="perPage" class="col"/>
+                    <smf-row-count-selector v-model="perPage" store-key="tsdb" class="col"/>
                     <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
                 </b-form-row>
             </b-col>

@@ -16,7 +16,8 @@ describe('smfRowCountSelector.vue', () => {
             $t: () => {}
         },
         propsData: {
-            value: 15
+            value: 15,
+            storeKey: 'anyKey'
         }
     });
 
