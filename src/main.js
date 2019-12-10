@@ -8,7 +8,9 @@ import router from './router'
 import vueHeadful from 'vue-headful'
 import Toasted from 'vue-toasted'
 import VueResource from 'vue-resource';
-import { i18n } from '@/plugins/i18n'
+import { i18n } from '@/plugins/i18n';
+import Vuex from 'vuex';
+import store from './store'
 import smfRowCountSelector from "@/components/smf-row-count-selector";
 
 Vue.config.productionTip = false;
@@ -60,9 +62,15 @@ Vue.toasted.register(
   }
 );
 
+router.beforeEach( (to, from, next) => {
+    console.log('before route enter', to, from);
+    next()
+});
+
 new Vue({
   router,
+  store,
   i18n,
   render: h => h(App),
-}).$mount('#app')
+}).$mount('#app');
 

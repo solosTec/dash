@@ -1,15 +1,12 @@
-import { EventBus } from './event-bus.js'
-//import msgTypes from '@/constants/msgTypes'
+import store from './../src/store/index';
 
 export const webSocket = {
 
     created() {
-        // eslint-disable-next-line no-console
         console.log(this.$options.name + " created with env " + process.env.NODE_ENV);
     },
 
     mounted() {
-        // eslint-disable-next-line no-console
         console.log(this.$options.name + " mounted");
     },
 
@@ -194,13 +191,13 @@ export const webSocket = {
             this.ws_emit_event_sx();
         },
         ws_emit_event_state(state) {
-            EventBus.$emit("ws-state", state);
+            store.commit('websocket/eventState', state);
         },
         ws_emit_event_rx() {
-            EventBus.$emit("ws-rx", this.rx);
+            store.commit('websocket/eventRx', this.rx);
         },
         ws_emit_event_sx() {
-            EventBus.$emit("ws-sx", this.sx);
+            store.commit('websocket/eventSx', this.sx);
         },
         ws_format_bytes(x) {
             const units = [

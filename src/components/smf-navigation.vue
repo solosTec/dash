@@ -71,8 +71,8 @@
 
 <script lang="js">
 
-  import { EventBus } from '../../services/event-bus.js'
   import { AVAILABLE_LANGUAGES } from '@/constants/languages'
+  import { mapState } from 'vuex'
 
   export default  {
     name: 'smf-navigation',
@@ -80,29 +80,25 @@
         brand: String,
         logo: String
     },
-    created() {
-      EventBus.$on('ws-state', state => {
-        // console.log(`websocket is ${state}`)
-        this.connection_state = state;
-      });
-    },
     mounted() {
-        this.connection_state = "mounted";
+        this.$store.commit('websocket/eventState', 'mounted');
     },
+    computed: mapState({
+        connection_state: state => {
+            return state.websocket.state
+        }
+    }),
     data() {
       return {
-        connection_state: "unknown",
         avail: AVAILABLE_LANGUAGES
       }
     },
     methods: {
         get_color() {
-            if (this.connection_state == "online")   return "green";
-            if (this.connection_state == "connection lost")   return "yellow";
+            if (this.connection_state === "online")   return "green";
+            if (this.connection_state === "connection lost")   return "yellow";
             return "grey";
         }
-    },
-    computed: {
     }
 }
 </script>

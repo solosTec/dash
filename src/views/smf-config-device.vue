@@ -186,7 +186,6 @@
     mounted() {
       this.ws_open("/smf/api/device/v0.7");
     },
-
     data() {
       return {
         isBusy: true,

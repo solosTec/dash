@@ -39,9 +39,9 @@
                 <b-progress-bar :value="stat.sx" variant="info" />
                 <b-progress-bar :value="stat.rx" variant="success" />
               </b-progress> -->
-              <b-card-text>{{ ws_format_bytes(stat.rx) }} received</b-card-text>
-              <b-card-text>{{ ws_format_bytes(stat.sx) }} sent</b-card-text>
-              <div slot="footer"><small class="text-muted">{{totalIoFormatted}} in total</small></div>
+              <b-card-text>{{ received }} received</b-card-text>
+              <b-card-text>{{ send }} sent</b-card-text>
+              <div slot="footer"><small class="text-muted">{{ totalIoFormatted }} in total</small></div>
             </b-card>
 
         </b-card-group>
@@ -102,28 +102,15 @@
 <script lang="js">
 
 import {webSocket} from '../../services/web-socket.js'
-import { EventBus } from '../../services/event-bus.js'
+import {mapState} from "vuex";
 
 export default  {
     name: 'smfMonitorSystem',
     props: [],
     mixins: [webSocket],
-
-    created() {
-        EventBus.$on('ws-rx', rx => {
-            this.stat.rx += rx;
-            // console.log("rx " + this.stat.rx);
-        });
-        EventBus.$on('ws-sx', sx => {
-            this.stat.sx += sx;
-            // console.log("sx " + this.stat.sx);
-        });
-    },
-
     mounted() {
         this.ws_open("/smf/api/system/v0.7");
     },
-
     data() {
         return {
             msgCount: 0,
@@ -192,8 +179,6 @@ export default  {
                 },
                 ioLoad: 0,
                 nodeCount: 0,
-                sx: 0,
-                rx: 1,
                 max: 100
             },
             sysTimer: null
@@ -332,9 +317,17 @@ export default  {
         virtualMemoryTotalFormatted() {
             return this.ws_format_bytes(this.stat.virtualMemory.total);
         },
-        totalIoFormatted() {
-            return this.ws_format_bytes(this.stat.sx + this.stat.rx);
-        }
+        ...mapState({
+            totalIoFormatted: function (state) {
+              return this.ws_format_bytes(state.websocket.sx + state.websocket.rx);
+            },
+            received: function(state) {
+                return this.ws_format_bytes(state.websocket.rx);
+            },
+            send: function(state){
+                return this.ws_format_bytes(state.websocket.sx);
+            }
+        })
     }
 }
 </script>
