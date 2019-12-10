@@ -22,3 +22,4 @@ yarn-error.log*
 /obj/Debug
 /.vs/dash/v16
 /coverage
+/.env
