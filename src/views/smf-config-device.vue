@@ -18,7 +18,7 @@
                 <b-col md="9">
 
                     <b-row>
-                    <b-col md="6" row>
+                    <b-col md="6">
                         <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
                             <b-input-group>
                                 <b-form-input v-model="filter" :placeholder="$t('config-gateway-02')" />
