@@ -1,17 +1,17 @@
 
 const state = {
-    username: null,
+    username: 'x',
     roles: []
 };
-const getters = {
 
-};
+const getters = {};
 
-const actions = {
-
-};
+const actions = {};
 
 const mutations = {
+    loaded(state, payload) {
+        state.username = payload.username;
+    }
 };
 
 export default {

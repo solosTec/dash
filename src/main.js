@@ -62,11 +62,6 @@ Vue.toasted.register(
   }
 );
 
-router.beforeEach( (to, from, next) => {
-    console.log('before route enter', to, from);
-    next()
-});
-
 new Vue({
   router,
   store,
@@ -74,3 +69,21 @@ new Vue({
   render: h => h(App),
 }).$mount('#app');
 
+const data = {
+    name: 'Alfred',
+    lastAccess: '2019-12-10 17:20:33.00000000',
+    modules: {
+        devices: {
+            priv: [
+                4,
+                'delete',
+                'edit'
+            ]
+        },
+        meters: {
+            actions: [
+                'view'
+            ]
+        }
+    }
+};

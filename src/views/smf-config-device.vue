@@ -508,6 +508,10 @@
         }
         return this.form.name.length > 0;
       }
+    },
+    beforeRouteEnter (to, from, next) {
+        console.log(to, from);
+        next();
     }
 }
 </script>
