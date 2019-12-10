@@ -1,4 +1,4 @@
-﻿/* eslint-disable no-console */
+﻿﻿/* eslint-disable no-console */
 <template lang="html">
 
     <section class="smf-config-system">
@@ -289,11 +289,11 @@
                     if (obj.channel == 'web.sessions') {
                         if (obj.cmd == 'insert') {
                             var start = new Date(obj.rec.data.start.substring(0, 19));
-                            var rec = { 
-                                pk: obj.rec.key.tag, 
-                                ep: obj.rec.data.ep, 
-                                type: obj.rec.data.type, 
-                                start: start, 
+                            var rec = {
+                                pk: obj.rec.key.tag,
+                                ep: obj.rec.data.ep,
+                                type: obj.rec.data.type,
+                                start: start,
                                 authorized: obj.rec.data.authorized,
                                 status: obj.rec.data.status
                             };

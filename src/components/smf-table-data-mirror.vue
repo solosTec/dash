@@ -1,4 +1,4 @@
-﻿<template lang="html">
+﻿﻿<template lang="html">
 
     <section class="smf-table-data-mirror">
         <b-table ref="tableDataMirror"

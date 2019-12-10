@@ -1,4 +1,4 @@
-﻿<template lang="html">
+﻿﻿<template lang="html">
 
     <section class="smf-table-push-targets">
         <b-table ref="tablePushTargets"
@@ -97,7 +97,7 @@
                         formatter: (value, key, item) => {
                             if (value === '8181c78a21ff') return 'IP-Telemetry';
                             else if (value === '8181c78a22ff') return 'Service Interface';
-                            else if (value === '8181c78a23ff') return 'OBIS List';  
+                            else if (value === '8181c78a23ff') return 'OBIS List';
                             //if (value === '8181c78610ff') return '1 minute values';
                             //else if (value === '8181c78611ff') return '15 minute values';
                             //else if (value === '8181c78612ff') return 'hourly values';

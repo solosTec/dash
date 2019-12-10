@@ -20,5 +20,5 @@ yarn-error.log*
 *.njsproj.user
 /bin
 /obj/Debug
-/package-lock.json
 /.vs/dash/v16
+/coverage

@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -26,6 +27,10 @@
     "@vue/cli-service": "^3.12.1",
     "babel-eslint": "^10.0.3",
     "bootstrap": "^4.4.1",
+    "@vue/cli-plugin-unit-jest": "^3.12.1",
+    "@vue/test-utils": "1.0.0-beta.29",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "mutationobserver-shim": "^0.3.3",
@@ -49,8 +54,19 @@
       "no-console": "off"
     },
     "parserOptions": {
-      "parser": "babel-eslint"
-    }
+      "parser": "babel-eslint",
+      "allowImportExportEverywhere": true
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ]
   },
   "postcss": {
     "plugins": {

@@ -1,4 +1,4 @@
-﻿<template lang="html">
+﻿﻿<template lang="html">
 
     <section class="smf-config-meter">
 
@@ -834,7 +834,7 @@
                                 this.spinner.mirror = false;
                                 Object.values(obj.rec.values).forEach((e, idx, a) => {
                                     //console.log(e);
-                                    
+
                                     var rec = {
                                         nr: idx + 1,
                                         active: e['8181C78621FF'],

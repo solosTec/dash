@@ -1,4 +1,4 @@
-﻿<template lang="html">
+﻿﻿<template lang="html">
 
     <section class="smf-table-op-log">
         <b-table ref="tableOpLog"
@@ -180,7 +180,7 @@
                         label: 'Details',
                         sortable: false
                     }
-                    
+
                 ],
                 sortBy: 'nr',
                 sortDesc: false,

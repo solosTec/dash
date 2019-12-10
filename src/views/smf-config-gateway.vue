@@ -1,4 +1,4 @@
-﻿<template lang="html">
+﻿﻿<template lang="html">
 
     <section class="smf-config-gateway">
 
@@ -865,6 +865,7 @@ export default  {
     props: [],
     mixins: [webSocket],
     components: {
+        // eslint-disable-next-line vue/no-unused-components
         opLog, MESSAGE_TYPES, SML_CODES
     },
 

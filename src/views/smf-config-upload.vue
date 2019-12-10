@@ -121,15 +121,15 @@
 <script lang="js">
 
   import {webSocket} from '../../services/web-socket.js'
-  
 
-  export default  { 
+
+  export default  {
     name: 'smfConfigUpload',
     props: [],
     mixins: [webSocket],
 
     mounted() {
-    //   console.log("$http: "+ this.$http);        
+    //   console.log("$http: "+ this.$http);
       this.ws_open("/smf/api/upload/v0.7");
     },
 
@@ -173,7 +173,7 @@
         },
         ws_on_data(obj) {
             if (obj.cmd != null) {
-            console.log('websocket received ' + obj.cmd); 
+            console.log('websocket received ' + obj.cmd);
                 if (obj.cmd == 'update') {
                     if (obj.channel != null) {
                         if (obj.channel == 'table.device.count') {
@@ -208,7 +208,7 @@
             progress(e) {
                 if (e.lengthComputable) {
                     console.log(e.loaded / e.total * 100);
-                }              
+                }
             }
         })
             .then(res =>{
@@ -238,7 +238,7 @@
             progress(e) {
                 if (e.lengthComputable) {
                     console.log(e.loaded / e.total * 100);
-                }              
+                }
             }
         })
             .then(res =>{
@@ -266,7 +266,7 @@
             progress(e) {
                 if (e.lengthComputable) {
                     console.log(e.loaded / e.total * 100);
-                }              
+                }
             }
         })
             .then(res =>{
@@ -294,7 +294,7 @@
             progress(e) {
                 if (e.lengthComputable) {
                     console.log(e.loaded / e.total * 100);
-                }              
+                }
             }
         })
             .then(res =>{
