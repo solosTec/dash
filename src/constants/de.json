@@ -186,5 +186,6 @@
   "config-gateway-70-04":"D",
   "config-gateway-71":"Max. Zeitüberschreitung (msek)",
   "config-gateway-72":"<Datenausleseperiode>",
-  "config-gateway-73":"Übermitteln"
+  "config-gateway-73":"Übermitteln",
+  "count-of-rows":"Anzahl Zeilen"
 }

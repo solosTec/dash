@@ -26,7 +26,10 @@
                 </b-col>
 
                 <b-col md="6">
-                    <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
+                    <b-form-row>
+                        <smf-row-count-selector v-model="perPage" store-key="gateway" class="col"/>
+                        <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
+                    </b-form-row>
                 </b-col>
             </b-row>
 

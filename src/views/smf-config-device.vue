@@ -29,8 +29,12 @@
                         </b-form-group>
                     </b-col>
 
+
                     <b-col md="6">
-                        <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
+                        <b-form-row>
+                            <smf-row-count-selector v-model="perPage" store-key="devices" class="col"/>
+                            <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
+                        </b-form-row>
                     </b-col>
                     </b-row>
 
@@ -172,7 +176,6 @@
 <script lang="js">
 
     import {webSocket} from '../../services/web-socket.js'
-    // import smfConfigDeviceProps from "./smf-config-device-form.vue";
 
     let tmpDevices = [];
 
@@ -180,10 +183,6 @@
     name: 'smfConfigDevice',
     props: [],
     mixins: [webSocket],
-    // components: {
-    //     smfConfigDeviceProps
-    // },
-
     mounted() {
       this.ws_open("/smf/api/device/v0.7");
     },
