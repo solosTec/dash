@@ -1542,9 +1542,7 @@ export default  {
 
                                 //  build record
                                 var rec = {
-                                    //actTime: obj.rec.values.actTime,
-                                    //regPeriod: obj.rec.values.regPeriod,
-                                    //valTime: obj.rec.values.valTime,
+                                    index: this.tabOpLog.data.items.length,
                                     status: obj.rec.values.status,
                                     event: obj.rec.values['8181C789E2FF'],
                                     peer: obj.rec.values['8181000000FF'],
