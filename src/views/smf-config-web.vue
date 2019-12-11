@@ -208,6 +208,11 @@
                             sortable: true
                         },
                         {
+                            key: 'user',
+                            label: 'User',
+                            sortable: true
+                        },
+                        {
                             key: 'authorized',
                             label: 'Authorized',
                             sortable: true
@@ -295,6 +300,7 @@
                                 type: obj.rec.data.type,
                                 start: start,
                                 authorized: obj.rec.data.authorized,
+                                user: obj.rec.data.user,
                                 status: obj.rec.data.status
                             };
                             console.log('insert web session' + obj.rec.key.tag + ': ' + obj.rec.data.ep);
