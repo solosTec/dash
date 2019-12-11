@@ -73,7 +73,7 @@
                         </template>
 
                         <!-- A custom formatted column descr -->
-                        <template slot="descr" slot-scope="data">
+                        <template v-slot:cell(descr)="data">
                             <span v-b-popover.hover="data.value" :title="data.item.name">{{ formatDescription(data.value) }}</span>
                         </template>
 
