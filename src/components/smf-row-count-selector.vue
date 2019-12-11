@@ -1,6 +1,5 @@
 <template>
     <b-form-group label-cols-sm="5" class="mb-0" :label="$t('count-of-rows')">
-        {{rowCount}}
         <b-form-select
                 :value="rowCount"
                 :options="options"
