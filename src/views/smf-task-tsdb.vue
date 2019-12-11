@@ -267,7 +267,10 @@
 
 <script lang="js">
 
-import {webSocket} from '../../services/web-socket.js'
+import {webSocket} from '../mixins/web-socket.js'
+import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+import store from "../store";
+import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
 
 export default  {
     name: 'smfTaskTSDB',
@@ -494,6 +497,11 @@ export default  {
             }
             // alert(val);
         }
+    },
+    beforeRouteEnter(to, from, next) {
+        hasPrivilegesWaitForUser(store, MODULES.TASK_TSDB, PRIVILEGES.VIEW).then((result) => {
+            next( result ? true: NO_ACCESS_ROUTE);
+        });
     }
 }
 </script>

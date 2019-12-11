@@ -120,7 +120,10 @@
 
 <script lang="js">
 
-  import {webSocket} from '../../services/web-socket.js'
+  import {webSocket} from '../mixins/web-socket.js'
+  import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+  import store from "../store";
+  import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
 
 
   export default  {
@@ -336,7 +339,12 @@
             }
             return this.LoRa.file.name + " with " + this.LoRa.file.size + " bytes selected.";
         }
-    }
+    },
+      beforeRouteEnter(to, from, next) {
+          hasPrivilegesWaitForUser(store, MODULES.CONFOG_UPLOAD, PRIVILEGES.VIEW).then((result) => {
+              next( result ? true: NO_ACCESS_ROUTE);
+          });
+      }
 
     //watch: {
     //    'dev.file'(newVal, oldVal) {

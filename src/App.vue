@@ -1,15 +1,18 @@
 <template>
   <div id="app">
-    <div v-if="user">
+    <div v-if="userName">
       <SMFNavigation brand="solos::Tec" logo="/logo.svg" />
       <router-view/>
+    </div>
+    <div v-else>
+      loading user...
     </div>
   </div>
 </template>
 
 <script>
 
-  import {webSocket} from '../services/web-socket.js'
+  import {webSocket} from './mixins/web-socket.js'
   import SMFNavigation from '@/components/smf-navigation.vue'
   import {mapState} from 'vuex';
 
@@ -23,21 +26,22 @@
       console.log('NODE_ENV: ' + process.env.NODE_ENV);
       this.ws_open("/smf/api/device/v0.7");
     },
+    beforeDestroy() {
+      this.ws_close();
+    },
     methods: {
       ws_on_open() {
         this.ws_subscribe("config.user");
       },
       ws_on_data(obj) {
-        console.log(obj)
-
-        if (obj.cmd === 'load' && obj.show === false) {
-          this.$store.commit('user/loaded', {username: 'bla'});
+        if (obj.cmd === 'insert') {
+          this.$store.commit('user/loaded', obj.rec.data);
         }
       }
     },
     computed: {
       ...mapState({
-        user: state => {
+        userName: state => {
           return state.user.username;
         }
       })

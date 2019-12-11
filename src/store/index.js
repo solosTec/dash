@@ -2,7 +2,6 @@ import Vue from "vue";
 import Vuex from "vuex";
 import user from './modules/user';
 import websocket from "./modules/websocket";
-import createLogger from 'vuex/dist/logger'
 
 Vue.use(Vuex);
 
@@ -14,5 +13,5 @@ export default new Vuex.Store({
         user,
     },
     strict: debug,
-    plugins: debug ? [createLogger()] : []
+    plugins: [] // can be used to enable debugging for vuex: debug ? [createLogger()] : []
 })

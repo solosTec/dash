@@ -14,8 +14,11 @@ localVue.use(Vuex);
 const router = new VueRouter();
 
 describe('SmfNavigation.vue', () => {
-  it('should be a vue component instance', () => {
-    const wrapper = shallowMount(SmfNavigation, {
+
+  let wrapper;
+
+  beforeEach( ()=>{
+    wrapper = shallowMount(SmfNavigation, {
       localVue,
       router,
       store,
@@ -23,6 +26,10 @@ describe('SmfNavigation.vue', () => {
         $t: () => {}
       }
     });
+  });
+
+  it('should be a vue component instance', () => {
     expect(wrapper.isVueInstance())
-  })
+  });
+
 });

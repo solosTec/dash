@@ -146,7 +146,10 @@
 
 <script lang="js">
 
-    import { webSocket } from '../../services/web-socket.js'
+    import { webSocket } from '../mixins/web-socket.js'
+    import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+    import store from "../store";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
 
     export default {
         name: 'smfConfigWeb',
@@ -325,7 +328,7 @@
                         }
                         else if (obj.cmd == 'delete') {
                             console.log('delete web session ' + obj.key[0]);
-                            var idx = this.table.data.findIndex(rec => rec.tag == obj.key[0]);
+                            var idx = this.table.data.findIndex(rec => rec.pk === obj.key[0]);
                             // eslint-disable-next-line
                             console.log('delete index ' + idx + ' - ' + obj.key[0]);
                             this.table.data.splice(idx, 1);
@@ -399,6 +402,11 @@
                     data: { value: this.cfg.https_rewrite }
                 });
             }
+        },
+        beforeRouteEnter(to, from, next) {
+            hasPrivilegesWaitForUser(store, MODULES.CONFIG_WEB, PRIVILEGES.VIEW).then((result) => {
+                next( result ? true: NO_ACCESS_ROUTE);
+            });
         }
     }
 </script>

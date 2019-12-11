@@ -1,6 +1,6 @@
-import userModule from '@/store/modules/user';
+import user from '@/store/modules/user'
 
-const { loaded } = userModule.mutations;
+const { loaded } = user.mutations;
 
 describe('websocket store', () => {
 
@@ -9,16 +9,19 @@ describe('websocket store', () => {
     beforeEach(() => {
         state = {
             username: null,
-            roles: []
+            privileges: {}
         };
     });
 
     it('should set the loaded user', () => {
         expect(state.username).toBeNull();
-        loaded(state, {username: 'testname'});
-        expect(state.username).toEqual('testname');
+        loaded(state, {
+            lastAccess: "2019-12-11 08:57:14.00000000",
+            name: "Alfred",
+            privs: {devices: ["view","edit"], meters:[]}});
+        expect(state.username).toEqual('Alfred');
+        expect(state.privileges.configDevice.includes('view')).toBeTruthy();
+        expect(state.privileges.configMeter.length).toBe(1);
     });
 
-
-
- });
+});
