@@ -88,7 +88,7 @@
         logo: String
     },
     mounted() {
-        this.$store.commit('websocket/eventState', 'mounted');
+        //this.$store.commit('websocket/eventState', 'mounted');
     },
     computed: mapState({
         connection_state: state => state.websocket.state,

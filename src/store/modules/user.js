@@ -39,6 +39,11 @@ const mutations = {
     // data: {lastAccess: "2019-12-11 08:57:14.00000000", name: "Alfred", privs: {devices: ["view","edit"], meters:[]}
     loaded(state, data) {
         state.username = data.name;
+        //
+        //  uncomment the following line to use configured privileges
+        //
+        //state.privileges = data.priv;
+
         state.privileges = {};
         state.privileges[MODULES.CONFIG_DEVICES] = [PRIVILEGES.VIEW];
         state.privileges[MODULES.CONFIG_SYSTEM] = [PRIVILEGES.VIEW];

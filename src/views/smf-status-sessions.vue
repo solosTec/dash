@@ -107,12 +107,14 @@
 
 <script lang="js">
 
-  import {webSocket} from '../mixins/web-socket.js'
-  import {hasPrivilegesWaitForUser} from "../mixins/privileges";
-  import store from "../store";
-  import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+    import {webSocket} from '../mixins/web-socket.js'
+    import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+    import store from "../store";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
 
-  export default  {
+    let tmpSessions = [];
+
+    export default  {
     name: 'smfStatusSession',
     props: [],
     mixins: [webSocket],
@@ -239,7 +241,7 @@
                         px: obj.rec.data.px,
                         login: loginTime,
                         lastSeen: loginTime };
-                    this.sessions.push(rec);
+                    tmpSessions.push(rec);
                 }
                 else if (obj.cmd == 'delete') {
                     var idx = this.sessions.findIndex(rec => rec.pk == obj.key);
@@ -270,6 +272,15 @@
                 else if (obj.cmd == 'load') {
                     if (obj.show != null) {
                         this.isBusy = obj.show;
+
+                        if (this.isBusy) {
+                            // reset the tmpSessions array if the initial upload starts
+                            tmpSessions = [];
+                        } else {
+                            // set the tmpSessions if the initial uploads is done
+                            this.sessions = tmpSessions;
+                        }
+
                     }
                     else if (obj.level != 0) {
                         this.busyLevel = obj.level;
