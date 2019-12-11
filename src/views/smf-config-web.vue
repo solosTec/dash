@@ -129,7 +129,7 @@
                              class="shadow">
 
                         <!-- A virtual column -->
-                        <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
+                        <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
                         <!-- loading slot -->
                         <div slot="table-busy" class="text-center text-danger">
                             <strong>Loading... {{table.busyLevel}}%</strong>
@@ -208,6 +208,11 @@
                             sortable: true
                         },
                         {
+                            key: 'user',
+                            label: 'User',
+                            sortable: true
+                        },
+                        {
                             key: 'authorized',
                             label: 'Authorized',
                             sortable: true
@@ -235,6 +240,7 @@
                 this.ws_subscribe("web.sessions");
             },
             ws_on_data(obj) {
+                console.log(obj);
                 if (obj.cmd != null && obj.channel != null) {
                     console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                     if (obj.channel == 'config.web') {
@@ -294,6 +300,7 @@
                                 type: obj.rec.data.type,
                                 start: start,
                                 authorized: obj.rec.data.authorized,
+                                user: obj.rec.data.user,
                                 status: obj.rec.data.status
                             };
                             console.log('insert web session' + obj.rec.key.tag + ': ' + obj.rec.data.ep);
