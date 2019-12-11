@@ -19,6 +19,10 @@
 </template>
 
 <script lang="js">
+  import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+  import store from "../store";
+  import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+
   export default  {
     name: 'smfTaskPlausibility',
     props: [],
@@ -35,7 +39,12 @@
     },
     computed: {
 
-    }
+    },
+      beforeRouteEnter(to, from, next) {
+          hasPrivilegesWaitForUser(store, MODULES.TASK_PLAUSIBILITY, PRIVILEGES.VIEW).then((result) => {
+              next( result ? true: NO_ACCESS_ROUTE);
+          });
+      }
 }
 </script>
 

@@ -17,6 +17,7 @@ import smfMonitorTSDB from "./views/smf-monitor-tsdb.vue"
 import smfMonitorLora from "./views/smf-monitor-lora.vue"
 import smfTaskCSV from "./views/smf-task-csv.vue"
 import smfTaskTSDB from "./views/smf-task-tsdb.vue"
+import smfNoAccess from "./views/smf-no-access.vue"
 
 Vue.use(Router);
 
@@ -33,6 +34,11 @@ export default new Router({
                 // which is lazy-loaded when the route is visited.
                 component: () =>
                     import("./views/smf-home.vue")
+            },
+            {
+                path: "/no-access",
+                name: "smfNoAccess",
+                component: smfNoAccess
             },
             {
                 path: "/config/system",

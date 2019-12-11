@@ -175,7 +175,10 @@
 
 <script lang="js">
 
-    import {webSocket} from '../../services/web-socket.js'
+    import {webSocket} from '../mixins/web-socket';
+    import store from './../store/index';
+    import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
 
     let tmpDevices = [];
 
@@ -185,8 +188,8 @@
     mixins: [webSocket],
     mounted() {
       this.ws_open("/smf/api/device/v0.7");
+      console.log('devices view mounted')
     },
-
     data() {
       return {
         isBusy: true,
@@ -509,6 +512,11 @@
         }
         return this.form.name.length > 0;
       }
+    },
+    beforeRouteEnter(to, from, next) {
+        hasPrivilegesWaitForUser(store, MODULES.CONFIG_DEVICES, PRIVILEGES.VIEW).then((result) => {
+           next( result ? true: NO_ACCESS_ROUTE);
+        });
     }
 }
 </script>

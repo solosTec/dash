@@ -858,10 +858,13 @@
 
 <script lang="js">
 
-    import {webSocket} from '../../services/web-socket.js'
+    import {webSocket} from '../mixins/web-socket.js'
     import opLog from '@/components/smf-table-op-log.vue'
     import { MESSAGE_TYPES } from '@/constants/msgTypes.js'
     import { SML_CODES } from '@/constants/rootCodes.js'
+    import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+    import store from "../store";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
 
 export default  {
     name: 'smfConfigGateway',
@@ -2056,6 +2059,11 @@ export default  {
                 this.options.allSelected = false
             }
         }
+    },
+    beforeRouteEnter(to, from, next) {
+        hasPrivilegesWaitForUser(store, MODULES.CONFIG_GATEWAY, PRIVILEGES.VIEW).then((result) => {
+            next( result ? true: NO_ACCESS_ROUTE);
+        });
     }
 }
 </script>

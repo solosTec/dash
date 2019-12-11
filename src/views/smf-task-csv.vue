@@ -70,7 +70,10 @@
 
 <script lang="js">
 
-import {webSocket} from '../../services/web-socket.js'
+import {webSocket} from '../mixins/web-socket.js'
+import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+import store from "../store";
+import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
 
 export default  {
     name: 'smfTaskCSV',
@@ -238,6 +241,11 @@ export default  {
             }
             return "There are " + this.csv.length + " nodes that creating CSV reports";
         }
+    },
+    beforeRouteEnter(to, from, next) {
+        hasPrivilegesWaitForUser(store, MODULES.TASK_CSV, PRIVILEGES.VIEW).then((result) => {
+            next( result ? true: NO_ACCESS_ROUTE);
+        });
     }
 }
 </script>
