@@ -58,6 +58,10 @@ const mutations = {
         state.privileges[MODULES.TASK_CSV] = [PRIVILEGES.VIEW];
         state.privileges[MODULES.TASK_TSDB] = [PRIVILEGES.VIEW];
         state.privileges[MODULES.TASK_PLAUSIBILITY] = [PRIVILEGES.VIEW];
+    },
+    reset (state) {
+        state.username = null;
+        state.privileges = {}
     }
 };
 
