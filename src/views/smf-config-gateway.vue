@@ -66,7 +66,7 @@
                         </template>
 
                         <!-- A virtual column -->
-                        <template slot="index" slot-scope="data">
+                        <template v-slot:cell(index)="data">
                             {{ data.index + 1 + (perPage * (currentPage - 1)) }}
                         </template>
 
@@ -763,7 +763,7 @@
                                              :sort-direction="iec.sortDirection"
                                              class="shadow">
                                         <!-- A virtual column -->
-                                        <template slot="index" slot-scope="data">
+                                        <template v-slot:cell(index)="data">
                                             {{ data.index + 1 }}
                                         </template>
 

@@ -77,7 +77,7 @@
             >
 
             <!-- A virtual column -->
-            <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
+            <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
 
             <!-- caption slot -->
             <!-- <template slot="table-caption">{{ tableCaption }}</template> -->

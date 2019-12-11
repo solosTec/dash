@@ -47,7 +47,7 @@
             <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
 
             <!-- A virtual column -->
-            <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
+            <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
 
             <!-- loading slot -->
             <div slot="table-busy" class="text-center text-danger">

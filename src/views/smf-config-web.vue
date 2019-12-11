@@ -130,7 +130,7 @@
                         class="shadow">
 
                         <!-- A virtual column -->
-                        <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
+                        <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
                         <!-- loading slot -->
                         <div slot="table-busy" class="text-center text-danger">
                         <strong>Loading... {{table.busyLevel}}%</strong>
@@ -236,6 +236,7 @@
                 this.ws_subscribe("web.sessions");
             },
             ws_on_data(obj) {
+                console.log(obj);
                 if (obj.cmd != null && obj.channel != null) {
                     console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                     if (obj.channel == 'config.web') {
