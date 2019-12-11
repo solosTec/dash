@@ -1,4 +1,4 @@
-﻿﻿/* eslint-disable no-console */
+﻿/* eslint-disable no-console */
 <template lang="html">
 
     <section class="smf-config-system">
@@ -26,7 +26,7 @@
                 </b-card>
 
                 <b-card title="HTTPS Rewrite" class="shadow">
-                    <b-form-checkbox switch v-model="cfg.https_rewrite" :disabled="!ssl">
+                    <b-form-checkbox switch v-model="cfg.https_rewrite" :disabled="!cfg.ssl">
                         Redirect to HTTPS (if available)
                     </b-form-checkbox>
                     <div slot="footer"><small class="text-muted">default = <b>{{cfg.def.https_rewrite}}</b></small></div>
@@ -69,10 +69,10 @@
             <b-card-group deck>
                 <b-card title="Session Timeout (HTTPS)" class="shadow">
                     <b-input-group prepend="sec." class="mt-3">
-                        <b-form-input v-model.number="cfg.https_sessionTimeout" type="number" min="10" max="10000" step="10" placeholder="<Session Timeout>" :disabled="!ssl" />
+                        <b-form-input v-model.number="cfg.https_sessionTimeout" type="number" min="10" max="10000" step="10" placeholder="<Session Timeout>" :disabled="!cfg.ssl" />
                         <b-input-group-append>
                             <b-button variant="secondary" @click="cfg.https_sessionTimeout = cfg.def.https_sessionTimeout">Default</b-button>
-                            <b-button variant="success" @click="changeHTTPsSessionTimeout" :disabled="!ssl">Commit</b-button>
+                            <b-button variant="success" @click="changeHTTPsSessionTimeout" :disabled="!cfg.ssl">Commit</b-button>
                         </b-input-group-append>
                     </b-input-group>
 
@@ -82,10 +82,10 @@
 
                 <b-card title="Maximum Upload Size (HTTPS)" class="shadow">
                     <b-input-group :prepend="ws_format_bytes(cfg.https_maxUploadSize)" class="mt-3">
-                        <b-form-input v-model.number="cfg.https_maxUploadSize" type="number" min="1024" max="10485760" step="1024" placeholder="<max. Upload Size>" :disabled="!ssl" />
+                        <b-form-input v-model.number="cfg.https_maxUploadSize" type="number" min="1024" max="10485760" step="1024" placeholder="<max. Upload Size>" :disabled="!cfg.ssl" />
                         <b-input-group-append>
                             <b-button variant="secondary" @click="cfg.https_maxUploadSize = cfg.def.https_maxUploadSize">Default</b-button>
-                            <b-button variant="success" @click="changeHTTPsMaxUploadSize" :disabled="!ssl">Commit</b-button>
+                            <b-button variant="success" @click="changeHTTPsMaxUploadSize" :disabled="!cfg.ssl">Commit</b-button>
                         </b-input-group-append>
                     </b-input-group>
 
@@ -106,34 +106,33 @@
             <b-row>
                 <b-col md="12">
                     <b-table ref="webTable"
-                        bordered
-                        striped
-                        small
-                        hover
-                        show-empty
-                        stacked="md"
-                        selectable
-                        select-mode="range"
-                        selectedVariant="info"
-                        @row-selected="rowSelected"
-                        :fields="table.fields"
-                        :items="table.data"
-                        :busy="table.isBusy"
-                        primary-key="pk"
-                        :sort-by.sync="table.sortBy"
-                        :sort-desc.sync="table.sortDesc"
-                        :sort-direction="table.sortDirection"
-                        :current-page="table.currentPage"
-                        :per-page="table.perPage"
-                        :filter="table.filter"
-                        @filtered="onFiltered"
-                        class="shadow">
+                             bordered
+                             striped
+                             small
+                             hover
+                             show-empty
+                             stacked="md"
+                             selectable
+                             select-mode="range"
+                             selectedVariant="info"
+                             @row-selected="rowSelected"
+                             :fields="table.fields"
+                             :items="table.data"
+                             :busy="table.isBusy"
+                             primary-key="pk"
+                             :sort-by.sync="table.sortBy"
+                             :sort-desc.sync="table.sortDesc"
+                             :sort-direction="table.sortDirection"
+                             :current-page="table.currentPage"
+                             :per-page="table.perPage"
+                             :filter="table.filter"
+                             class="shadow">
 
                         <!-- A virtual column -->
                         <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
                         <!-- loading slot -->
                         <div slot="table-busy" class="text-center text-danger">
-                        <strong>Loading... {{table.busyLevel}}%</strong>
+                            <strong>Loading... {{table.busyLevel}}%</strong>
                         </div>
 
                     </b-table>
@@ -204,7 +203,7 @@
                             key: 'start',
                             label: 'Start',
                             formatter: (value, key, item) => {
-                              return value.toLocaleString()
+                                return value.toLocaleString()
                             },
                             sortable: true
                         },
