@@ -1,5 +1,5 @@
 import {hasPrivileges, hasPrivilegesWaitForUser} from "../../../src/mixins/privileges";
-import store from "@/store";
+import store from "@/store/index";
 import {MODULES, PRIVILEGES} from "../../../src/store/modules/user";
 
 describe('privileges mixin', () => {
@@ -20,7 +20,7 @@ describe('privileges mixin', () => {
     });
 
     it('should wait for the user data to be loaded', (done) => {
-        hasPrivilegesWaitForUser(store, MODULES.MONITOR_LORA, PRIVILEGES.VIEW).then( (res) => {
+        hasPrivilegesWaitForUser(store, MODULES.MONITOR_LORA, PRIVILEGES.VIEW).then( res => {
             expect(res).toBeTruthy();
             done();
         });
@@ -29,7 +29,7 @@ describe('privileges mixin', () => {
 
     it('should not wait for the user data to be loaded - if the data is already loaded', (done) => {
         store.commit('user/loaded', {});
-        hasPrivilegesWaitForUser(store, MODULES.MONITOR_LORA, PRIVILEGES.VIEW).then( (res) => {
+        hasPrivilegesWaitForUser(store, MODULES.MONITOR_LORA, PRIVILEGES.VIEW).then( res => {
             expect(res).toBeTruthy();
             done();
         });

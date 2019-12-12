@@ -1,5 +1,10 @@
 
-const state = {
+export interface UserState {
+    username: string |  null;
+    privileges: any;
+}
+
+const state: UserState = {
     username: null,
     privileges: {}
 };
@@ -37,7 +42,7 @@ export const PRIVILEGES = {
 
 const mutations = {
     // data: {lastAccess: "2019-12-11 08:57:14.00000000", name: "Alfred", privs: {devices: ["view","edit"], meters:[]}
-    loaded(state, data) {
+    loaded(state: UserState, data: any) {
         state.username = data.name;
         //
         //  uncomment the following line to use configured privileges
@@ -64,7 +69,7 @@ const mutations = {
         state.privileges[MODULES.TASK_TSDB] = [PRIVILEGES.VIEW];
         state.privileges[MODULES.TASK_PLAUSIBILITY] = [PRIVILEGES.VIEW];
     },
-    reset (state) {
+    reset (state: UserState) {
         state.username = null;
         state.privileges = {}
     }

@@ -1,10 +1,13 @@
+import {MutationPayload, Store} from 'vuex';
+import Vue from 'vue';
+import {AppState} from '@/store';
 
-export async function hasPrivilegesWaitForUser(store, module, privilege) {
-    return new Promise((resolve) => {
+export async function hasPrivilegesWaitForUser(store: Store<AppState>, module: string, privilege: string) {
+    return new Promise<boolean>((resolve) => {
         // if there are no privileges right now, we need to wait for the
         // user to be loaded. After that we can check the privileges
         if (Object.keys(store.state.user.privileges).length === 0) {
-            store.subscribe((mutation) => {
+            store.subscribe((mutation: MutationPayload) => {
                 if (mutation.type === 'user/loaded') {
                     resolve(hasPrivileges(store, module, privilege));
                 }
@@ -15,7 +18,7 @@ export async function hasPrivilegesWaitForUser(store, module, privilege) {
     });
 }
 
-export function hasPrivileges(store, module, privilege) {
+export function hasPrivileges(store: Store<any>, module: string, privilege: string) {
 
     console.log('hasPrivileges', module, privilege);
 
@@ -26,10 +29,10 @@ export function hasPrivileges(store, module, privilege) {
     return privs[module].includes(privilege);
 }
 
-export const privileges = {
+export const privileges = Vue.extend( {
     methods: {
-        hasPrivs(module, privilege ){
+        hasPrivs(module: string, privilege: string ): boolean{
             return hasPrivileges(this.$store, module, privilege)
         }
     }
-};
+});
