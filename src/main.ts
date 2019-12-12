@@ -10,7 +10,7 @@ import Toasted from 'vue-toasted'
 import VueResource from 'vue-resource';
 import { i18n } from '@/plugins/i18n';
 import store from './store'
-import smfRowCountSelector from "@/components/smf-row-count-selector";
+import smfRowCountSelector from "@/components/smf-row-count-selector.vue";
 
 Vue.config.productionTip = false;
 Vue.component("vue-headful", vueHeadful);
