@@ -7,13 +7,15 @@
     </b-form-group>
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    function createFullStoreKey(storeKey) {
+    import Vue from 'vue'
+
+    function createFullStoreKey(storeKey: string) {
         return `smf-${storeKey}-rowCount`;
     }
 
-    export default {
+    export default Vue.extend({
         data() {
             return {
                 options: [5,10,15,20, 25,50,100].map( value => ({ value, text: `${value}` }))
@@ -21,12 +23,12 @@
         },
         computed: {
             rowCount: {
-                set: function(val) {
-                    localStorage.setItem(createFullStoreKey(this.storeKey), val);
+                set: function(val: number) {
+                    localStorage.setItem(createFullStoreKey(this.storeKey), String(val));
                 },
-                get: function() {
+                get: function(): number {
                     const storedValue = localStorage.getItem(createFullStoreKey(this.storeKey));
-                    return storedValue  ? storedValue : this.value;
+                    return storedValue  ? +storedValue : this.value;
                 }
             }
         },
@@ -41,11 +43,11 @@
             }
         },
         methods: {
-            onRowSelectionChanged (rowCount) {
+            onRowSelectionChanged (rowCount: number) {
                 this.rowCount = rowCount;
                 this.$emit('input', rowCount);
             }
         }
-    }
+    })
 
 </script>

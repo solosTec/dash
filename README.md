@@ -1,3 +1,16 @@
+# supported environment variables
+
+replace the smf server on development
+```
+VUE_APP_SMF_SERVER=host:port
+```
+
+do not ask for a config.user - use admin instead 
+```
+VUE_APP_SMF_NO_AUTH=true
+```
+
+
 # pre steps
 
 sudo npm install -g @vue/cli

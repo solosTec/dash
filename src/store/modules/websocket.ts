@@ -1,5 +1,11 @@
 
-const state = {
+export interface WebsocketState {
+    state: string;
+    rx: number;
+    sx: number;
+}
+
+const state: WebsocketState = {
     state: "unknown",
     rx: 1,
     sx: 0
@@ -14,13 +20,13 @@ const actions = {
 };
 
 const mutations = {
-    eventState (state, eventState) {
+    eventState (state: WebsocketState, eventState: string) {
         state.state = eventState;
     },
-    eventRx(state, rx) {
+    eventRx(state: WebsocketState, rx: number) {
         state.rx += rx;
     },
-    eventSx(state, sx) {
+    eventSx(state: WebsocketState, sx: number) {
         state.sx += sx;
     }
 };

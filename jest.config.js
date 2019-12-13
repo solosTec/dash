@@ -1,10 +1,10 @@
 module.exports = {
-
     transform: {
       '^.+\\.vue$': 'vue-jest',
       '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
       '^.+\\.(js|jsx)?$': 'babel-jest',
-      '^.+\\.jsx?$': 'babel-jest'
+      '^.+\\.jsx?$': 'babel-jest',
+      '^.+\\.tsx?$': 'ts-jest'
     },
 
     transformIgnorePatterns: [
@@ -21,6 +21,7 @@ module.exports = {
         '!<rootDir>/src/plugins/**', '!<rootDir>/src/constants/**', '!<rootDir>/tests/unit/**',
         '!<rootDir>/coverage/**',
     ],
+
     coverageReporters: ['lcov', 'text-summary'],
 
     testMatch: [
@@ -31,7 +32,9 @@ module.exports = {
       'js',
       'jsx',
       'json',
-      'vue'
+      'vue',
+      'ts',
+      'tsx'
     ],
 
     snapshotSerializers: [
@@ -43,5 +46,11 @@ module.exports = {
     watchPlugins: [
       'jest-watch-typeahead/filename',
       'jest-watch-typeahead/testname'
-    ]
+    ],
+
+    globals: {
+      'ts-jest': {
+        babelConfig: true
+      }
+    }
 };

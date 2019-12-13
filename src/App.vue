@@ -24,6 +24,12 @@
     },
     mounted () {
       console.log('NODE_ENV: ' + process.env.NODE_ENV);
+
+      if (process.env.VUE_APP_SMF_NO_AUTH) {
+        this.$store.commit('user/loaded', {name: 'Admin', privs:[]});
+        return;
+      }
+
       this.ws_open("/smf/api/device/v0.7");
     },
     beforeDestroy() {
