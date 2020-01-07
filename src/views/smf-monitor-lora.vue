@@ -80,7 +80,7 @@ export default  {
     mixins: [webSocket],
 
     mounted() {
-        this.ws_open("/smf/api/lorauplink/v0.7");
+        this.ws_open("/smf/api/lorauplink/v0.8");
     },
     data() {
         return {

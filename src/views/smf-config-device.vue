@@ -179,7 +179,7 @@
         props: [],
         mixins: [webSocket],
         mounted() {
-            this.ws_open("/smf/api/device/v0.7");
+            this.ws_open("/smf/api/device/v0.8");
             console.log('devices view mounted')
         },
         data() {

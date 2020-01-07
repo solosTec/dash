@@ -876,7 +876,7 @@ export default  {
     },
 
     mounted() {
-        this.ws_open("/smf/api/gw/v0.7");
+        this.ws_open("/smf/api/gw/v0.8");
     },
 
     data() {

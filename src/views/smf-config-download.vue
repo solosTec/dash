@@ -126,7 +126,7 @@
         mixins: [webSocket],
 
         mounted() {
-            this.ws_open("/smf/api/download/v0.7");
+            this.ws_open("/smf/api/download/v0.8");
         },
 
         data() {

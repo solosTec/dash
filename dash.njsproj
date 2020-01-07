@@ -91,7 +91,6 @@
     <Content Include="src\constants\fr.json" />
     <Content Include="src\constants\languages.js" />
     <Content Include="src\constants\ru.json" />
-    <Content Include="src\main.js" />
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>

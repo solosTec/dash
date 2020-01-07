@@ -278,7 +278,7 @@ export default  {
     mixins: [webSocket],
 
     mounted() {
-        this.ws_open("/smf/api/tsdb/v0.7");
+        this.ws_open("/smf/api/tsdb/v0.8");
     },
 
     data() {

@@ -112,7 +112,7 @@ export default  {
     props: [],
     mixins: [webSocket],
     mounted() {
-        this.ws_open("/smf/api/system/v0.7");
+        this.ws_open("/smf/api/system/v0.8");
     },
     data() {
         return {
@@ -209,7 +209,7 @@ export default  {
             this.ws_subscribe("status.cluster");
             this.ws_subscribe("table.cluster.count");
 
-            // this.onSysTimer();
+            this.onSysTimer();
         },
 
         ws_on_data(obj) {
@@ -217,7 +217,7 @@ export default  {
                 console.log(this.$options.name + ' websocket received ' + obj.cmd + ' [' + obj.channel + ']');
                 if (obj.cmd == 'update') {
                     if (obj.channel != null) {
-                        // console.log('update channel ' + obj.channel + ": " + obj.value);
+                        //console.log('update channel ' + obj.channel + ": " + obj.value);
                         if (obj.channel == 'sys.cpu.usage.total') {
                             this.stat.cpuLoad.value = obj.value;
                             if (obj.value < 75) {
@@ -232,9 +232,6 @@ export default  {
                         }
                         else if (obj.channel == 'sys.cpu.count') {
                             this.stat.cpuCount = obj.value;
-                        }
-                        else if (obj.channel == 'sys.mem.virtual.used') {
-                            // this.stat.virtualMemory.used = obj.value;
                         }
                         else if (obj.channel == 'sys.mem.virtual.total') {
                             this.stat.virtualMemory.total = obj.value;
@@ -253,6 +250,9 @@ export default  {
                             else {
                                 this.stat.virtualMemory.variant = "danger";
                             }
+                        }
+                        else {
+                            console.error("update - unknown channel: " + obj.channel);
                         }
                     }
                 }
@@ -280,17 +280,22 @@ export default  {
                     this.nodes.splice(idx, 1);
                 }
                 else if (obj.cmd == 'modify') {
-                    this.nodes.find(function(rec) {
-                        if(rec.key == obj.key) {
-                            // console.log('modify record ' + rec.key);
-                            if (obj.value.clients != null) {
-                                rec.clients = obj.value.clients;
+                    if (obj.channel == 'status.cluster') {
+                        this.nodes.find(function (rec) {
+                            if (rec.key == obj.key) {
+                                //console.log('modify record ' + rec.key);
+                                if (obj.value.clients != null) {
+                                    rec.clients = obj.value.clients;
+                                }
+                                else if (obj.value.ping != null) {
+                                    rec.ping = obj.value.ping;
+                                }
                             }
-                            else if (obj.value.ping != null) {
-                                rec.ping = obj.value.ping;
-                            }
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        console.error("modify - unknown channel: " + obj.channel);
+                    }
                 }
                 else if (obj.cmd == 'load') {
                     //  load status

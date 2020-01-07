@@ -466,7 +466,7 @@
         },
 
         mounted() {
-            this.ws_open("/smf/api/meter/v0.7");
+            this.ws_open("/smf/api/meter/v0.8");
         },
 
         data() {

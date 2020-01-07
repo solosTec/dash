@@ -133,7 +133,7 @@
 
     mounted() {
     //   console.log("$http: "+ this.$http);
-      this.ws_open("/smf/api/upload/v0.7");
+      this.ws_open("/smf/api/upload/v0.8");
     },
 
     data() {

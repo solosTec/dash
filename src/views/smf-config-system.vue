@@ -221,7 +221,6 @@ export default  {
                 // console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                 if (obj.cmd == 'insert') {
                     if (obj.rec.key.name == 'connection-auto-login') {
-                        console.log("insert cfg.auto_login ", obj.rec.data.value);
                         this.cfg.auto_login = obj.rec.data.value;
                     }
                     else if (obj.rec.key.name == 'connection-auto-enabled') {
@@ -290,9 +289,9 @@ export default  {
                     }
                 }
                 else if (obj.cmd == 'modify') {
-                    console.log('modify ' + obj.key[0] + ": " + obj.value);
+                    //console.log('modify ' + obj.key[0] + ": " + obj.value);
                     if (obj.key[0] == 'connection-auto-login') {
-                        console.log("modify cfg.auto_login ", obj.value);
+                        //console.log("modify cfg.auto_login ", obj.value, typeof obj.value);
                         this.cfg.auto_login = obj.value;
                     }
                     else if (obj.key[0] == 'connection-auto-enabled') {
@@ -328,7 +327,7 @@ export default  {
             }
         },
         changeMaxMessages(evt) {
-          console.log('changeMaxMessages ' + this.cfg.maxMessages);
+          //console.log('changeMaxMessages ' + this.cfg.maxMessages);
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "max-messages" },
                 data: { value: this.cfg.maxMessages }
@@ -336,7 +335,7 @@ export default  {
 
         },
         changeMaxEvents(evt) {
-          console.log('changeMaxEvents ' + this.cfg.maxEvents);
+          //console.log('changeMaxEvents ' + this.cfg.maxEvents);
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "max-events" },
                 data: { value: this.cfg.maxEvents }
@@ -350,55 +349,53 @@ export default  {
     },
 
     watch: {
-        'cfg.auto_login': function() {
-            console.log("watch cfg.auto_login ", this.cfg.auto_login);
+        'cfg.auto_login': function(valNew, valOld) {
+            //console.log("watch cfg.auto_login ", this.cfg.auto_login, valNew, valOld, typeof valNew);
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "connection-auto-login" },
-                data: { value: this.cfg.auto_login }
+                data: { value: valNew }
             });
         },
-        'cfg.auto_enabled': function() {
-        //   console.log(this.cfg.auto_enabled);
+        'cfg.auto_enabled': function(valNew, valOld) {
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "connection-auto-enabled" },
-                data: { value: this.cfg.auto_enabled }
+                data: { value: valNew }
             });
         },
-        'cfg.supersede': function() {
-        //   console.log(this.cfg.supersede);
+        'cfg.supersede': function(valNew, valOld) {
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "connection-superseed" },
-                data: { value: this.cfg.supersede }
+                data: { value: valNew }
             });
         },
-        'cfg.tsdb': function() {
+        'cfg.tsdb': function(valNew, valOld) {
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "generate-time-series" },
-                data: { value: this.cfg.tsdb }
+                data: { value: valNew }
             });
         },
-        'cfg.catch_meters': function() {
+        'cfg.catch_meters': function(valNew, valOld) {
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "catch-meters" },
-                data: { value: this.cfg.catch_meters }
+                data: { value: valNew }
             });
         },
-        'cfg.catch_lora': function() {
+        'cfg.catch_lora': function(valNew, valOld) {
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "catch-lora" },
-                data: { value: this.cfg.catch_lora }
+                data: { value: valNew }
             });
         },
-        'cfg.countryCode': function() {
+        'cfg.countryCode': function(valNew, valOld) {
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "country-code" },
-                data: { value: this.cfg.countryCode }
+                data: { value: valNew }
             });
         },
-        'cfg.languageCode': function() {
+        'cfg.languageCode': function(valNew, valOld) {
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "language-code" },
-                data: { value: this.cfg.languageCode }
+                data: { value: valNew }
             });
         }
     },

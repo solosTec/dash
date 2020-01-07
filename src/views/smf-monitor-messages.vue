@@ -143,7 +143,7 @@
             var rec = { id: 0, ts: new Date(), severity: 3, msg: "mounted" };
             rec["_rowVariant"] = 'success';
             this.messages.push(rec);
-            this.ws_open("/smf/api/gw/v0.7");
+            this.ws_open("/smf/api/gw/v0.8");
             this.isBusy = true;
         },
 

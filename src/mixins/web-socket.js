@@ -36,6 +36,7 @@ export const webSocket = {
             }
             else {
                 // VUE_APP_SMF_SERVER can be set in the .env file
+                console.log('VUE_APP_SMF_SERVER: ' + process.env.VUE_APP_SMF_SERVER);
                 this.ws = new WebSocket(`ws://${ process.env.VUE_APP_SMF_SERVER || '192.168.1.21:8082'}/${path}`, ["SMF"]);
             }
             this.ws.onopen = function() {

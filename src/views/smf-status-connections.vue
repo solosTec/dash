@@ -84,7 +84,7 @@ export default  {
     mixins: [webSocket],
 
     mounted() {
-        this.ws_open("/smf/api/connection/v0.7");
+        this.ws_open("/smf/api/connection/v0.8");
     },
 
     data() {
