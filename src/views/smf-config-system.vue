@@ -30,7 +30,8 @@
           </b-card>
 
           <b-card
-          :title="$t('config-sys-03')">
+          :title="$t('config-sys-03')"
+          class="shadow">
             <b-form-checkbox switch v-model="cfg.auto_enabled" name="check-button">
               {{ $t('config-sys-04') }}
             </b-form-checkbox>
@@ -220,6 +221,7 @@ export default  {
                 // console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                 if (obj.cmd == 'insert') {
                     if (obj.rec.key.name == 'connection-auto-login') {
+                        console.log("insert cfg.auto_login ", obj.rec.data.value);
                         this.cfg.auto_login = obj.rec.data.value;
                     }
                     else if (obj.rec.key.name == 'connection-auto-enabled') {
@@ -290,6 +292,7 @@ export default  {
                 else if (obj.cmd == 'modify') {
                     console.log('modify ' + obj.key[0] + ": " + obj.value);
                     if (obj.key[0] == 'connection-auto-login') {
+                        console.log("modify cfg.auto_login ", obj.value);
                         this.cfg.auto_login = obj.value;
                     }
                     else if (obj.key[0] == 'connection-auto-enabled') {
@@ -348,7 +351,7 @@ export default  {
 
     watch: {
         'cfg.auto_login': function() {
-            // console.log(this.cfg.auto_login);
+            console.log("watch cfg.auto_login ", this.cfg.auto_login);
             this.ws_submit_record("modify", "config.system", {
                 key: { name: "connection-auto-login" },
                 data: { value: this.cfg.auto_login }

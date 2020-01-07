@@ -30,7 +30,7 @@
         return;
       }
 
-      this.ws_open("/smf/api/device/v0.7");
+      this.ws_open("/smf/api/device/v0.8");
     },
     beforeDestroy() {
       this.ws_close();
