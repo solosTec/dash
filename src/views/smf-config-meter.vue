@@ -246,7 +246,7 @@
                                                  class="shadow">
 
                                         <!-- A custom formatted column descr -->
-                                            <template slot="obis" slot-scope="data">
+                                            <template v-slot:cell(obis)="data">
                                                 <span v-b-popover.hover="data.item.value + ' ' + getUnitName(data.item.unit)" :title="data.value | toRegisterName">{{ data.item.obis }}</span>
 <!--                                                <span v-b-popover.hover="data.value" :title="data.item.obis">{{ formatDescription(data.value) }}</span>-->
                                             </template>

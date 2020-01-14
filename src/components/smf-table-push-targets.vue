@@ -21,7 +21,7 @@
                  class="shadow">
 
 
-            <template slot="details" slot-scope="row">
+            <template v-slot:cell(details)="row">
                 <b-button size="sm" @click="row.toggleDetails">
                     {{ row.detailsShowing ? 'Hide' : 'Show' }} Register
                 </b-button>

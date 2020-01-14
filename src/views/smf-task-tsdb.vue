@@ -155,11 +155,11 @@
                     <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
 
                     <!-- row.item row.index -->
-                    <template slot="apply" slot-scope="row">
-  <!-- <b-button size="sm"> -->
-  {{calculateTotalHours(row.item.apply)}} h
-  <!-- </b-button> -->
-</template>
+                    <template v-slot:cell(apply)="row">
+                      <!-- <b-button size="sm"> -->
+                      {{calculateTotalHours(row.item.apply)}} h
+                      <!-- </b-button> -->
+                    </template>
 
                     <!-- loading slot -->
                     <div slot="table-busy" class="text-center text-danger">

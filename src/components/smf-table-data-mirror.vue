@@ -26,7 +26,7 @@
     :filter="filter"
     @filtered="onFiltered"-->
 
-            <template slot="details" slot-scope="row">
+            <template v-slot:cell(details)="row">
                 <!--<b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
             Info modal
         </b-button>-->
@@ -35,7 +35,7 @@
                 </b-button>
             </template>
 
-            <template slot="row-details" slot-scope="row">
+            <template v-slot:cell(row-details)="row">
                 <b-card>
                     <ul>
                         <li v-for="(register, key) in row.item.registers" :key="key">{{ register | toRegisterName(true) }}</li>
