@@ -91,7 +91,7 @@
                         label: 'Profile',
                         sortable: true,
                         class: 'text-right',
-                        formatter: (value, key, item) => {
+                        formatter: (value) => {
                             if (value === '8181c78610ff') return '1 minute values';
                             else if (value === '8181c78611ff') return '15 minute values';
                             else if (value === '8181c78612ff') return 'hourly values';
