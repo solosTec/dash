@@ -83,7 +83,7 @@
                 <b-col md="12" class="p-3 shadow">
                     <b-tabs pills card v-model="tabIndex">
                         <b-tab title="Configuration" active>
-                            <b-form v-on:submit.prevent>
+                            <b-form @:submit.prevent="">
                                 <b-row>
                                     <b-col md="3">
                                         <b-form-group label="Ident" label-for="smf-form-meter-ident">
@@ -115,8 +115,8 @@
                                         </b-form-group>
                                     </b-col>
                                     <b-col md="3">
-                                        <b-form-group label="Manufacturer" label-for="smf-form-meter-maker">
-                                            <b-form-input id="smf-form-meter-maker"
+                                        <b-form-group label="Manufacturer" label-for="smf-form-meter-maker-1">
+                                            <b-form-input id="smf-form-meter-maker-1"
                                                           type="text"
                                                           v-model="form.maker"
                                                           placeholder="<Manufacturer>" />
@@ -197,7 +197,7 @@
                                 <b-spinner v-if="spinner.readout" type="grow" small />
                             </template>
 
-                            <b-form v-on:submit.prevent>
+                            <b-form @:submit.prevent="">
                                 <b-row>
                                     <b-col md="6">
                                         <b-form-group label="Ident" label-for="smf-form-meter-ident-a">
@@ -269,7 +269,7 @@
                                 <b-spinner v-if="spinner.meter" type="grow" small />
                             </template>
 
-                            <b-form v-on:submit.prevent class="p-3 shadow">
+                            <b-form @:submit.prevent="" class="p-3 shadow">
                                 <b-row>
                                     <b-col md="9">
                                         <b-form-group label="Public Key" label-for="smf-form-meter-pubkey">
@@ -323,11 +323,11 @@
                                 </b-row>
                             </b-form>
 
-                            <b-form v-on:submit.prevent class="p-3">
+                            <b-form @:submit.prevent="" class="p-3">
                                 <b-row>
                                     <b-col md="3">
-                                        <b-form-group label="Device Class" label-for="smf-form-meter-class">
-                                            <b-form-input id="smf-form-meter-class"
+                                        <b-form-group label="Device Class" label-for="smf-form-device-class">
+                                            <b-form-input id="smf-form-device-class"
                                                           type="text"
                                                           v-model="tabMeter.data.devClass"
                                                           readonly
@@ -335,8 +335,8 @@
                                         </b-form-group>
                                     </b-col>
                                     <b-col md="3">
-                                        <b-form-group label="Manufacturer" label-for="smf-form-meter-maker">
-                                            <b-form-input id="smf-form-meter-maker"
+                                        <b-form-group label="Manufacturer" label-for="smf-form-meter-maker-2">
+                                            <b-form-input id="smf-form-meter-maker-2"
                                                           type="text"
                                                           v-model="tabMeter.data.maker"
                                                           readonly
@@ -394,7 +394,7 @@
                                 Push Operations
                                 <b-spinner v-if="spinner.push" type="grow" small />
                             </template>
-                            <b-form v-on:submit.prevent class="p-3">
+                            <b-form @:submit.prevent="" class="p-3">
                                 <b-row>
                                     <b-col md="6">
                                         <pushTargets ref="pushTargets" :items="tabPush.data.items" />
@@ -413,7 +413,7 @@
                                 Data Mirror
                                 <b-spinner v-if="spinner.mirror" type="grow" small />
                             </template>
-                            <b-form v-on:submit.prevent class="p-3">
+                            <b-form @:submit.prevent="" class="p-3">
                                 <b-row>
                                     <b-col md="6">
                                         <dataMirror ref="dataMirror" :items="tabDataMirror.data.items" />
@@ -505,7 +505,7 @@
                         key: 'tom',
                         label: 'TOM',
                         sortable: true,
-                        formatter: (value, key, item) => {
+                        formatter: (value) => {
                             return value.toUTCString();
                         }
                     },
@@ -538,9 +538,9 @@
                         key: 'online',
                         label: 'Online',
                         sortable: true,
-                        formatter: (value, key, item) => {
-                            if (value == 0) return '║';
-                            else if (value == 1) return '⊶';
+                        formatter: (value) => {
+                            if (value === 0) return '║';
+                            else if (value === 1) return '⊶';
                             return '⇆';
                         },
                         class: 'text-center'
@@ -588,7 +588,7 @@
                             key: 'unit',
                             label: 'Unit',
                             sortable: true,
-                            formatter: (value, key, item) => {
+                            formatter: (value) => {
                                 return this.getUnitName(value);
                             }
                         },
@@ -659,9 +659,9 @@
             ws_on_data(obj) {
                 if (obj.cmd != null) {
                     //console.log('websocket received command ' + obj.cmd);
-                    if (obj.cmd == 'insert') {
-                        var tom = new Date(obj.rec.data.tom.substring(0, 19));
-                        var rec = {
+                    if (obj.cmd === 'insert') {
+                        const tom = new Date(obj.rec.data.tom.substring(0, 19));
+                        let rec = {
                             pk: obj.rec.key.pk,
                             ident: obj.rec.data.ident,
                             meter: obj.rec.data.meter,
@@ -678,59 +678,59 @@
                             online: obj.rec.data.online
                         };
 
-                        if (obj.rec.data.online == 1) {
+                        if (obj.rec.data.online === 1) {
                             rec["_rowVariant"] = 'success';
                         }
-                        else if (obj.rec.data.online == 2) {
+                        else if (obj.rec.data.online === 2) {
                             rec["_rowVariant"] = 'warning';
                         }
                         //  insert into table
                         this.meters.push(rec);
                     }
-                    else if (obj.cmd == 'modify') {
+                    else if (obj.cmd === 'modify') {
                         //console.log('lookup meter ' + obj.key);
-                        self = this;
+                        const self = this;
                         this.meters.find(function (rec) {
-                            if (rec.pk == obj.key[0]) {
+                            if (rec.pk === obj.key[0]) {
                                 //console.log('modify meter ' + rec.ident);
                                 if (obj.value.ident != null) {
                                     rec.ident = obj.value.ident;
-                                    if (self.form.pk == obj.key[0]) self.form.ident = obj.value.ident;
+                                    if (self.form.pk === obj.key[0]) self.form.ident = obj.value.ident;
                                 }
                                 else if (obj.value.meter != null) {
                                     rec.meter = obj.value.meter;
-                                    if (self.form.pk == obj.key[0]) self.form.meter = obj.value.meter;
+                                    if (self.form.pk === obj.key[0]) self.form.meter = obj.value.meter;
                                 }
                                 else if (obj.value.code != null) {
                                     rec.code = obj.value.code;
-                                    if (self.form.pk == obj.key[0]) self.form.code = obj.value.code;
+                                    if (self.form.pk === obj.key[0]) self.form.code = obj.value.code;
                                 }
                                 else if (obj.value.maker != null) {
                                     rec.maker = obj.value.maker;
-                                    if (self.form.pk == obj.key[0]) self.form.maker = obj.value.maker;
+                                    if (self.form.pk === obj.key[0]) self.form.maker = obj.value.maker;
                                 }
                                 else if (obj.value.tom != null) {
                                     rec.tom = new Date(obj.value.tom.substring(0, 19));
                                 }
                                 else if (obj.value.vFirmware != null) {
                                     rec.fw = obj.value.vFirmware;
-                                    if (self.form.pk == obj.key[0]) self.form.fw = obj.value.vFirmware;
+                                    if (self.form.pk === obj.key[0]) self.form.fw = obj.value.vFirmware;
                                 }
                                 else if (obj.value.vParam != null) {
                                     rec.vParam = obj.value.vParam;
-                                    if (self.form.pk == obj.key[0]) self.form.vParam = obj.value.vParam;
+                                    if (self.form.pk === obj.key[0]) self.form.vParam = obj.value.vParam;
                                 }
                                 else if (obj.value.factoryNr != null) {
                                     rec.factoryNr = obj.value.factoryNr;
-                                    if (self.form.pk == obj.key[0]) self.form.factoryNr = obj.value.factoryNr;
+                                    if (self.form.pk === obj.key[0]) self.form.factoryNr = obj.value.factoryNr;
                                 }
                                 else if (obj.value.item != null) {
                                     rec.item = obj.value.item;
-                                    if (self.form.pk == obj.key[0]) self.form.item = obj.value.item;
+                                    if (self.form.pk === obj.key[0]) self.form.item = obj.value.item;
                                 }
                                 else if (obj.value.mClass != null) {
                                     rec.mClass = obj.value.mClass;
-                                    if (self.form.pk == obj.key[0]) self.form.mClass = obj.value.mClass;
+                                    if (self.form.pk === obj.key[0]) self.form.mClass = obj.value.mClass;
                                 }
                                 else if (obj.value.serverId != null) {
                                     rec.serverId = obj.value.serverId;
@@ -744,31 +744,39 @@
                             }
                         });
                     }
-                    else if (obj.cmd == 'clear') {
+                    else if (obj.cmd === 'clear') {
                         //  clear table
                         this.meters = [];
                     }
-                    else if (obj.cmd == 'delete') {
-                        // console.log('lookup meter ' + obj.key);
-                        var idx = this.meters.findIndex(rec => rec.pk == obj.key);
-                        // console.log('delete index ' + idx);
+                    else if (obj.cmd === 'delete') {
+                        const idx = this.meters.findIndex(rec => rec.pk === obj.key);
                         this.meters.splice(idx, 1);
                     }
-                    else if (obj.cmd == 'load') {
+                    else if (obj.cmd === 'load') {
                         //  load status
                         if (obj.show != null) {
                             //   console.log('load state ' + obj.show);
                             this.isBusy = obj.show;
                         }
-                        else if (obj.level != 0) {
+                        else if (obj.level !== 0) {
                             this.busyLevel = obj.level;
                         }
+
+                        if (obj.show === false) {
+                            // the table is loaded, we can select the meter - if there is one
+                            const meterPk = this.$route.params.meterPk;
+                            if (!meterPk){
+                                return;
+                            }
+                            const rowIndex = this.meters.findIndex(meter => meter.pk === meterPk);
+                            this.$refs.readoutTable.selectRow(rowIndex);
+                        }
                     }
-                    else if (obj.cmd == 'update') {
+                    else if (obj.cmd === 'update') {
                         console.log('update channel ' + obj.channel);
-                        if (obj.channel == 'attention.code') {
+                        if (obj.channel === 'attention.code') {
                             //   toasts/alerts
-                            if (obj.section == '8181c7c7fd00') {
+                            if (obj.section === '8181c7c7fd00') {
                                 //  OK
                                 this.$toasted.global.sml_attention_ok(obj.rec.srv + " modification accepted", "info");
                             }
@@ -782,17 +790,17 @@
                             this.spinner.push = false;
                             this.spinner.mirror = false;
                         }
-                        else if (obj.channel == MESSAGE_TYPES.getList) {
+                        else if (obj.channel === MESSAGE_TYPES.getList) {
                             //console.log(obj.rec.values);
                             //  hide spinner
                             this.spinner.readout = false;
                             // clear table
                             this.readout.values = [];
                             this.$toasted.global.sml_attention_ok(obj.rec.srv + " sent " + Object.keys(obj.rec.values).length + " values", "info");
-                            Object.keys(obj.rec.values.values).forEach((key, idx, a) => {
+                            Object.keys(obj.rec.values.values).forEach((key) => {
                                 //console.log(key);
                                 //console.log(obj.rec.values.values[key]);
-                                var rec = {
+                                const rec = {
                                     obis: key,
                                     value: obj.rec.values.values[key].value,
                                     unit: obj.rec.values.values[key].unit,
@@ -802,11 +810,11 @@
                                 this.readout.values.push(rec);
                             });
                         }
-                        else if (obj.channel == MESSAGE_TYPES.getProcParameter) {
+                        else if (obj.channel === MESSAGE_TYPES.getProcParameter) {
                             console.log(MESSAGE_TYPES.getProcParameter + ': ' + obj.section);
                             //console.log(obj.rec.values);
                             console.log(obj);
-                            if (obj.section == SML_CODES.CODE_ROOT_SENSOR_PARAMS) {
+                            if (obj.section === SML_CODES.CODE_ROOT_SENSOR_PARAMS) {
                                 this.spinner.meter = false;
                                 // aesKey: null
                                 // bitMask: "3030"
@@ -835,12 +843,12 @@
                                 this.tabMeter.data.user = obj.rec.values["8181613C01FF"];
                                 this.tabMeter.data.pwd = obj.rec.values["8181613C02FF"];
                             }
-                            else if (obj.section == SML_CODES.CODE_ROOT_DATA_COLLECTOR) {
+                            else if (obj.section === SML_CODES.CODE_ROOT_DATA_COLLECTOR) {
                                 this.spinner.mirror = false;
-                                Object.values(obj.rec.values).forEach((e, idx, a) => {
+                                Object.values(obj.rec.values).forEach((e, idx) => {
                                     //console.log(e);
 
-                                    var rec = {
+                                    const rec = {
                                         nr: idx + 1,
                                         active: e['8181C78621FF'],
                                         entries: e['8181C78622FF'],
@@ -855,11 +863,11 @@
                                 });
 
                             }
-                            else if (obj.section == SML_CODES.PUSH_OPERATIONS) {
+                            else if (obj.section === SML_CODES.PUSH_OPERATIONS) {
                                 this.spinner.push = false;
-                                Object.values(obj.rec.values).forEach((e, idx, a) => {
+                                Object.values(obj.rec.values).forEach((e, idx) => {
                                     console.log(e);
-                                    var rec = {
+                                    const rec = {
                                         nr: idx + 1,
                                         interval: e['8181C78A02FF'],
                                         delay: e['8181C78A03FF'],
@@ -991,7 +999,7 @@
             },
             onFiltered(filteredItems) {
                 // Trigger pagination to update the number of buttons/pages due to filtering
-                this.visibleRows = filteredItems.length
+                this.visibleRows = filteredItems.length;
                 this.currentPage = 1
             },
             getUnitName (code) {
@@ -1008,7 +1016,7 @@
                 return code;
             },
             getRegisterName(reg) {
-                var name = reg.toUpperCase();
+                const name = reg.toUpperCase();
                 if (name === '8181C78203FF') return "Hersteller-Identifikation";
                 else if (name === '8181C78205FF') return "öffentlicher Schlüssel";
                 else if (name === '810000090B00') return "Sekundenindex"; //  second index from meter
@@ -1064,10 +1072,10 @@
                 return "Refresh";
             },
             btnDeleteTitle() {
-                if (this.selected.length == 0) {
+                if (this.selected.length === 0) {
                     return "Delete";
                 }
-                else if (this.selected.length == 1) {
+                else if (this.selected.length === 1) {
                     return "Delete " + this.selected[0].ident;
                 }
                 return "Delete " + this.selected.length + " record(s)";
@@ -1080,21 +1088,21 @@
             },
             aesKeyValidation() {
                 if (this.tabMeter.data.aesKey == null) return true;
-                if (this.tabMeter.data.aesKey.length == 0) return true;
+                if (this.tabMeter.data.aesKey.length === 0) return true;
                 var rex = /[0-9A-Fa-f]{32}/g;   //  test for hexadecimal string
                 return rex.test(this.tabMeter.data.aesKey);
             },
             isOnline() {
-                if (this.selected.length == 0) return false;
+                if (this.selected.length === 0) return false;
 
                 var self = this;
                 var rec = this.meters.find(function (rec) {
                     //console.log(rec.pk + ' ? ' + self.form.pk);
-                    if (rec.pk == self.form.pk) return true;
+                    if (rec.pk === self.form.pk) return true;
                 });
                 //console.log(rec.pk + ' - ' + rec.ident + ' - ' + rec.online);
                 //  online state == 1
-                return (rec == null) ? true : (rec.online == 1);
+                return (rec == null) ? true : (rec.online === 1);
             }
         },
         beforeRouteEnter(to, from, next) {

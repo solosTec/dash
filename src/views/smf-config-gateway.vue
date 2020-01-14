@@ -85,7 +85,7 @@
                     <b-tabs pills card v-model="tabIndex">
 
                         <b-tab :title="$t('config-gateway-04')" active>
-                            <b-form v-on:submit.prevent>
+                            <b-form @submit.prevent="">
 
                                 <b-row>
                                     <b-col md="10" class="shadow">
@@ -193,7 +193,7 @@
                                 {{ $t('config-gateway-10') }}
                                 <b-spinner v-if="spinner.ipt" type="grow" small />
                             </template>
-                            <b-form v-on:submit.prevent>
+                            <b-form @submit.prevent="">
 
                                 <b-row>
                                     <b-col md="6" class="border">
@@ -451,13 +451,13 @@
                                     <b-button size="sm"
                                               @click="onMeterActivate(row.item, row.index, $event.target)">{{ row.item.active ? '✖ Deactivate' : '✔ Activate' }}</b-button>
                                 </template>
-                                <!--<template slot="edit" slot-scope="row">
+                                <template slot="edit" slot-scope="row">
                                     <b-button size="sm"
                                               variant="info"
                                               v-b-tooltip.hover :title="'meter code: ' + row.item.mc"
                                               :disabled="btnEditStatus(row.item.mc)"
                                               @click="onMeterEdit(row.item, row.index, $event.target)">{{ btnEdit }}</b-button>
-                                </template>-->
+                                </template>
                             </b-table>
                             <div>
                                 <b-link :href="meters.csv" download="meters.csv" type="text/csv">{{ linkMeterDownloadTitle }}</b-link>
@@ -471,7 +471,7 @@
                                 <b-spinner v-if="spinner.wmbus" type="grow" small />
                             </template>
 
-                            <b-form v-on:submit.prevent class="p-3 shadow">
+                            <b-form @submit.prevent="" class="p-3 shadow">
 
                                 <b-row>
 
@@ -529,7 +529,7 @@
                                     <b-col md="3">
                                         <b-form-group :label="$t('config-gateway-44')" label-for="smf-gw-wmbus-smode">
                                             <b-input-group>
-                                                <b-form-input :disabled="wmbus.protocol != 'A'"
+                                                <b-form-input :disabled="wmbus.protocol !== 'A'"
                                                               id="smf-gw-wmbus-smode"
                                                               type="number"
                                                               v-model.number="wmbus.sMode"
@@ -545,7 +545,7 @@
 
                                         <b-form-group :label="$t('config-gateway-46')" label-for="smf-gw-wmbus-tmode">
                                             <b-input-group>
-                                                <b-form-input :disabled="wmbus.protocol != 'A'"
+                                                <b-form-input :disabled="wmbus.protocol !== 'A'"
                                                               id="smf-gw-wmbus-tmode"
                                                               type="number"
                                                               v-model.number="wmbus.tMode"
@@ -623,7 +623,7 @@
                                 <b-spinner v-if="spinner.iec" type="grow" small />
                             </template>
 
-                            <b-form v-on:submit.prevent v-bind:class="{ 'bg-warning' : !iec.params.active }">
+                            <b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params.active }">
 
                                 <b-row class="p-3">
                                     <b-col md="3">
@@ -781,7 +781,7 @@
 
                         <!-- logs -->
                         <b-tab no-body title="Log">
-                            <b-form v-on:submit.prevent class="p-3">
+                            <b-form @submit.prevent="" class="p-3">
                                 <b-row>
                                     <b-col md="6">
                                         <b-form-group description="Select the time range">
@@ -805,7 +805,7 @@
                 </b-col>
 
                 <b-col md="2" class="p-3 bg-light">
-                    <b-form v-on:submit.prevent>
+                    <b-form @submit.prevent="">
                         <!-- bg-warning -->
                         <b-alert show dismissible class="bg-warning" v-if="mode === 'production'">
                             <span style="font-weight: bold">Note:</span> No other IP-T connection can be active during the execution of the requests below.
@@ -935,9 +935,9 @@ export default  {
           {
             key: 'online',
             label: "Online",
-            formatter: (value, key, item) => {
-                if (value == 0)  return '║';
-                else if (value == 1)  return '⊶';
+            formatter: (value) => {
+                if (value === 0)  return '║';
+                else if (value === 1)  return '⊶';
                 return '⇆';
             },
             class: 'text-center',
@@ -1047,7 +1047,7 @@ export default  {
                     key: 'meter',
                     label: 'Meter',
                     sortable: true,
-                    formatter: (value, key, item) => {
+                    formatter: (value) => {
                         return Boolean(value) ? value.toUpperCase() : '?';
                     }
                 },
@@ -1055,7 +1055,7 @@ export default  {
                     key: 'maker',
                     label: 'Maker',
                     sortable: true,
-                    formatter: (value, key, item) => {
+                    formatter: (value) => {
                         return (value) ? value : '-';
                     }
                 },
@@ -1063,7 +1063,7 @@ export default  {
                     key: 'lastSeen',
                     label: 'Last Seen',
                     sortable: true,
-                    formatter: (value, key, item) => {
+                    formatter: (value) => {
                         return value.toLocaleString()
                     }
                 },
@@ -1071,7 +1071,7 @@ export default  {
                     key: 'type',
                     label: 'Type',
                     sortable: true,
-                    formatter: (value, key, item) => {
+                    formatter: (value) => {
                         switch (value) {
                             case 0: return "M-Bus (wired)";
                             case 1: return "M-Bus (radio)";
@@ -1106,11 +1106,11 @@ export default  {
                     //formatter: (value, key, item) => {
                     //    return item.pk;
                     //}
+                },
+                {
+                    key: 'edit',
+                    label: 'Edit'
                 }
-                //{
-                //    key: 'edit',
-                //    label: 'Edit'
-                //}
             ],
             sortBy: 'meter',
             sortDesc: false,
@@ -1143,7 +1143,7 @@ export default  {
                     key: 'active',
                     label: 'Active',
                     sortable: true,
-                    formatter: (value, key, item) => {
+                    formatter: (value) => {
                         if (value)  return '✔';
                         return '✖';
                     },
@@ -1219,7 +1219,7 @@ export default  {
                     key: '8181C7930DFF',
                     label: 'P1',
                     sortable: false,
-                    formatter: (value, key, item) => {
+                    formatter: (value) => {
                         if (value)  return value;
                         return '-';
                     }
@@ -1228,7 +1228,7 @@ export default  {
                     key: '8181C7930EFF',
                     label: 'W5',
                     sortable: false,
-                    formatter: (value, key, item) => {
+                    formatter: (value) => {
                         if (value)  return value;
                         return '-';
                     }
@@ -1270,7 +1270,7 @@ export default  {
     },
 
     methods: {
-        ws_on_open(path) {
+        ws_on_open() {
             this.gateways = [];
             this.ws_subscribe("config.gateway");
             this.ws_subscribe("table.gateway.count");
@@ -1279,13 +1279,13 @@ export default  {
         ws_on_data(obj) {
             if (obj.cmd != null) {
             // console.log('websocket received ' + obj.cmd);
-                if (obj.cmd == 'update') {
+                if (obj.cmd === 'update') {
                     if (obj.channel != null) {
                         // console.log('update channel ' + obj.channel);
-                        if (obj.channel == MESSAGE_TYPES.getProcParameter) {
+                        if (obj.channel === MESSAGE_TYPES.getProcParameter) {
                             //console.log("section :::" + obj.section + ":::");
                             //console.log(obj.rec.values);
-                            if (obj.section == SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
+                            if (obj.section === SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
                                 //  hide loading spinner
                                 this.spinner.status = false;
                                 this.gw.status = [];
@@ -1346,14 +1346,14 @@ export default  {
                                     this.gw.status.push({ value: 'NTP is running (Time base is secure)', variant: "success" });
                                 }
                             }
-                            else if (obj.section == SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
-                                Object.values(obj.rec.values).forEach((e, idx, a) => {
+                            else if (obj.section === SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
+                                Object.values(obj.rec.values).forEach((e) => {
                                     //console.log(e);
-                                    var lastSeenVisible = (e[SML_CODES.CURRENT_UTC] != null)
+                                    const lastSeenVisible = (e[SML_CODES.CURRENT_UTC] != null)
                                         ? new Date(e[SML_CODES.CURRENT_UTC].substring(0, 19))
                                         : new Date();
 
-                                    var recVisible = {
+                                    const recVisible = {
                                         nr: e.nr,
                                         ident: e[SML_CODES.CODE_SERVER_ID],
                                         meter: e.serial,
@@ -1372,15 +1372,15 @@ export default  {
 
                                 });
                             }
-                            else if (obj.section == SML_CODES.CODE_ROOT_ACTIVE_DEVICES) {
+                            else if (obj.section === SML_CODES.CODE_ROOT_ACTIVE_DEVICES) {
                                 //  hide loading spinner
                                 this.spinner.meters = false;
 
-                                Object.values(obj.rec.values).forEach((e, idx, a) => {
+                                Object.values(obj.rec.values).forEach((e) => {
                                     //console.log(e);
-                                    var recActive = this.meters.values.find(meter => {
+                                    let recActive = this.meters.values.find(meter => {
                                         //console.log('active device: compare ' + meter.ident + ' <> ' + e[SML_CODES.CODE_SERVER_ID]);
-                                        if (meter.ident == e[SML_CODES.CODE_SERVER_ID]) {
+                                        if (meter.ident === e[SML_CODES.CODE_SERVER_ID]) {
                                             meter.active = true;
                                             meter.pk = obj.rec.values.pk;
                                             meter.mc = obj.rec.values.mc;
@@ -1425,7 +1425,7 @@ export default  {
                                 //
                                 this.meterTableComplete();
                             }
-                            else if (obj.section == SML_CODES.CODE_ROOT_DEVICE_IDENT) {
+                            else if (obj.section === SML_CODES.CODE_ROOT_DEVICE_IDENT) {
                                 //  hide loading spinner
                                 this.spinner.firmware = false;
                                 //  firmware
@@ -1434,9 +1434,9 @@ export default  {
                                 const srv = obj.rec.values['8181C78204FF'];
                                 const values = Object.values(obj.rec.values['8181C78206FF']);
                                 //console.log(values);
-                                values.forEach((e, idx, a) => {
+                                values.forEach((e, idx) => {
                                     //console.log(e);
-                                    var rec = {
+                                    const rec = {
                                         nr: idx,
                                         name: e['8181C78208FF'],
                                         version: e['818100020000'],
@@ -1446,19 +1446,19 @@ export default  {
                                     this.fw.values.push(rec);
                                 });
                             }
-                            else if (obj.section == SML_CODES.CODE_ROOT_MEMORY_USAGE) {
+                            else if (obj.section === SML_CODES.CODE_ROOT_MEMORY_USAGE) {
                                 //  hide loading spinner
                                 this.spinner.memory = false;
                                 this.gw.memory.mirror = obj.rec.values['0080800011FF'];
                                 this.gw.memory.tmp = obj.rec.values['0080800012FF'];
                             }
-                            else if (obj.section == SML_CODES.CODE_ROOT_W_MBUS_STATUS) {
+                            else if (obj.section === SML_CODES.CODE_ROOT_W_MBUS_STATUS) {
                                 this.wmbus.type = obj.rec.values['810600000100'];
-                                this.wmbus.id = obj.rec.values['810600000300']
+                                this.wmbus.id = obj.rec.values['810600000300'];
                                 this.wmbus.firmware = obj.rec.values['810600020000'];
                                 this.wmbus.hardware = obj.rec.values['8106000203FF'];
                             }
-                            else if (obj.section == SML_CODES.CODE_IF_wMBUS) {
+                            else if (obj.section === SML_CODES.CODE_IF_wMBUS) {
                                 //  hide loading spinner
                                 this.spinner.wmbus = false;
 
@@ -1481,12 +1481,12 @@ export default  {
                                 this.wmbus.sMode = obj.rec.values[SML_CODES.W_MBUS_MODE_S];
                                 this.wmbus.tMode = obj.rec.values[SML_CODES.W_MBUS_MODE_T];
                             }
-                            else if (obj.section == SML_CODES.CODE_ROOT_IPT_STATE) {
+                            else if (obj.section === SML_CODES.CODE_ROOT_IPT_STATE) {
                                 this.ipt.status.host = obj.rec.values['814917070000'];
                                 this.ipt.status.local = obj.rec.values['81491A070000'];
                                 this.ipt.status.remote = obj.rec.values['814919070000'];
                             }
-                            else if (obj.section == SML_CODES.CODE_ROOT_IPT_PARAM) {
+                            else if (obj.section === SML_CODES.CODE_ROOT_IPT_PARAM) {
                                 //console.log(obj.rec.values);
                                 //  hide loading spinner
                                 this.spinner.ipt = false;
@@ -1500,7 +1500,7 @@ export default  {
                                 this.ipt.param[1].user = obj.rec.values['81490D070002']['8149633C0102'];
                                 this.ipt.param[1].pwd = obj.rec.values['81490D070002']['8149633C0202'];
                             }
-                            else if (obj.section == SML_CODES.CODE_IF_1107) {
+                            else if (obj.section === SML_CODES.CODE_IF_1107) {
                                 //  hide loading spinner
                                 this.spinner.iec = false;
 
@@ -1520,13 +1520,13 @@ export default  {
                                 this.iec.params.devices = Array.from(obj.rec.values['8181C79309FF']);
 
                             }
-                            else if (obj.section == SML_CODES.CODE_DEVICE_CLASS) {
+                            else if (obj.section === SML_CODES.CODE_DEVICE_CLASS) {
                                 console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
                             }
-                            else if (obj.section == SML_CODES.DATA_MANUFACTURER) {
+                            else if (obj.section === SML_CODES.DATA_MANUFACTURER) {
                                 console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
                             }
-                            else if (obj.section == SML_CODES.CODE_SERVER_ID) {
+                            else if (obj.section === SML_CODES.CODE_SERVER_ID) {
                                 console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
                             }
                             else {
@@ -1534,20 +1534,20 @@ export default  {
 
                             }
                         }
-                        else if (obj.channel == MESSAGE_TYPES.getProfileList) {
+                        else if (obj.channel === MESSAGE_TYPES.getProfileList) {
                             //console.log("section :::" + obj.section + ":::");
                             //console.log(obj);
                             //console.log(obj.rec.values);
                             console.log(obj.rec.values['8181C789E2FF'] + ", size: "+ this.tabOpLog.data.items.length);
-                            if (obj.section == SML_CODES.CLASS_OP_LOG) {
+                            if (obj.section === SML_CODES.CLASS_OP_LOG) {
 
                                 //  get timestamp
-                                var utc = (obj.rec.values['010000090B00'] != null)
+                                const utc = (obj.rec.values['010000090B00'] != null)
                                     ? new Date(obj.rec.values['010000090B00'].substring(0, 19))
                                     : new Date();
 
                                 //  build record
-                                var rec = {
+                                let rec = {
                                     index: this.tabOpLog.data.items.length,
                                     status: obj.rec.values.status,
                                     event: obj.rec.values['8181C789E2FF'],
@@ -1568,9 +1568,9 @@ export default  {
                                 console.error('update channel ' + obj.channel + ' with unknown section ' + obj.section);
                             }
                         }
-                        else if (obj.channel == 'attention.code') {
+                        else if (obj.channel === 'attention.code') {
                             // Vue.toasted.show('ATTENTION please!');
-                            if (obj.section == '8181c7c7fd00') {
+                            if (obj.section === '8181c7c7fd00') {
                                 //  OK
                                 this.$toasted.global.sml_attention_ok(obj.rec.srv + " modification accepted", "info");
                             }
@@ -1587,7 +1587,7 @@ export default  {
                             this.spinner.wmbus = false;
                             this.spinner.iec = false;
                         }
-                        else if (obj.channel == 'table.gateway.count') {
+                        else if (obj.channel === 'table.gateway.count') {
                             //  unused
                         }
                         else {
@@ -1595,8 +1595,8 @@ export default  {
                         }
                     }
                 }
-                else if (obj.cmd == 'insert') {
-                    var rec = {
+                else if (obj.cmd === 'insert') {
+                    let rec = {
                         pk: obj.rec.key.pk,
                         serverId: obj.rec.data.serverId,
                         manufacturer: obj.rec.data.manufacturer,
@@ -1608,19 +1608,19 @@ export default  {
                         userPwd: obj.rec.data.userPwd,
                         online: obj.rec.data.online };
 
-                    if (obj.rec.data.online == 1) {
+                    if (obj.rec.data.online === 1) {
                         rec["_rowVariant"] = 'success';
                     }
-                    else if (obj.rec.data.online == 2) {
+                    else if (obj.rec.data.online === 2) {
                         rec["_rowVariant"] = 'warning';
                     }
 
                     this.gateways.push(rec);
                 }
-                else if (obj.cmd == 'modify') {
+                else if (obj.cmd === 'modify') {
                     console.log('lookup gateway ' + obj.key);
                     this.gateways.find(function(rec) {
-                        if(rec.pk == obj.key) {
+                        if(rec.pk === obj.key) {
                             console.log('modify record ' + rec.name);
                             if (obj.value.serverId != null) {
                                 rec.serverId = obj.value.serverId;
@@ -1639,11 +1639,11 @@ export default  {
                             }
                             else if (obj.value.online != null) {
                                 rec.online = obj.value.online;
-                                if (obj.value.online == 1) {
+                                if (obj.value.online === 1) {
                                     //  cause possibly an update problem
                                     rec["_rowVariant"] = 'success';
                                 }
-                                else if (obj.value.online == 2) {
+                                else if (obj.value.online === 2) {
                                     rec["_rowVariant"] = 'warning';
                                 }
                                 else {
@@ -1655,24 +1655,24 @@ export default  {
                         }
                     });
                 }
-                else if (obj.cmd == 'clear') {
+                else if (obj.cmd === 'clear') {
                     //  clear table
                     this.gateways = [];
                     this.meters.values = [];
                     this.tabOpLog.data.items = [];
                 }
-                else if (obj.cmd == 'delete') {
-                    var idx = this.gateways.findIndex(rec => rec.pk == obj.key);
+                else if (obj.cmd === 'delete') {
+                    const idx = this.gateways.findIndex(rec => rec.pk === obj.key);
                     console.log('delete index ' + idx);
                     this.gateways.splice(idx, 1);
                 }
-                else if (obj.cmd == 'load') {
+                else if (obj.cmd === 'load') {
                     //  load status
                     if (obj.show != null) {
                         console.log('load state ' + obj.show);
                         this.isBusy = obj.show;
                     }
-                    else if (obj.level != 0) {
+                    else if (obj.level !== 0) {
                         this.busyLevel = obj.level;
                     }
                 }
@@ -1686,7 +1686,7 @@ export default  {
         },
 
         rowSelected(items) {
-            this.selected = items
+            this.selected = items;
             if (items.length > 0) {
                 console.log('selected ' + items[0].serverId);
                 // console.log(items.length + ' rows selected ');
@@ -1708,17 +1708,17 @@ export default  {
                 //
                 //  1 gateway selected
                 //
-                if (items.length == 1) {
-                    var self = this;
+                if (items.length === 1) {
+                    const self = this;
                     this.options.selected.forEach(option => {
                         //  channels: ['Status Word', 'Meters', 'Firmware', 'Memory', 'wireless M-Bus', 'IP-Telemtry', 'IEC'],
                         //console.log('option: ' + option);
-                        if (option == 'status-word') {
+                        if (option === 'status-word') {
                             //  810060050000
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CLASS_OP_LOG_STATUS_WORD, [items[0].pk]);
                             self.spinner.status = true;
                         }
-                        else if (option == 'devices') {
+                        else if (option === 'devices') {
                             //gw_req_vec.push("root-visible-devices");
                             //gw_req_vec.push("root-active-devices");
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_VISIBLE_DEVICES, [items[0].pk]);
@@ -1727,37 +1727,37 @@ export default  {
                             self.meters.values = [];
                             self.spinner.meters = true;
                         }
-                        else if (option == 'firmware') {
+                        else if (option === 'firmware') {
                             //gw_req_vec.push("root-device-id");
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_DEVICE_IDENT, [items[0].pk]);
                             self.fw.values = []; // ? self
                             self.spinner.firmware = true;
                         }
-                        else if (option == 'memory-usage') {
+                        else if (option === 'memory-usage') {
                             //gw_req_vec.push("root-memory-usage");
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_MEMORY_USAGE, [items[0].pk]);
                             self.spinner.memory = true;
                         }
-                        else if (option == 'w-MBus') {
+                        else if (option === 'w-MBus') {
                             //gw_req_vec.push("root-wMBus-status");
                             //gw_req_vec.push("IF-wireless-mbus");
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_W_MBUS_STATUS, [items[0].pk]);
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_IF_wMBUS, [items[0].pk]);
                             self.spinner.wmbus = true;
                         }
-                        else if (option == 'ipt') {
+                        else if (option === 'ipt') {
                             //gw_req_vec.push("root-ipt-state");
                             //gw_req_vec.push("root-ipt-param");
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_IPT_PARAM, [items[0].pk]);
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_IPT_STATE, [items[0].pk]);
                             self.spinner.ipt = true;
                         }
-                        else if (option == 'iec') {
+                        else if (option === 'iec') {
                             //gw_req_vec.push("IF-IEC-62505-21");
                             self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_IF_1107, [items[0].pk]);
                             self.spinner.iec = true;
                         }
-                        else if (option == 'log') {
+                        else if (option === 'log') {
                             //   SML_GetProfileList_Req
                             //  request operation log: 81 81 C7 89 E1 FF (OBIS_CLASS_OP_LOG)
                             //console.log("selected: " + this.tabOpLog.form.selected);
@@ -1867,7 +1867,7 @@ export default  {
 
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
-            this.visibleRows = filteredItems.length
+            this.visibleRows = filteredItems.length;
             this.currentPage = 1
         },
 
@@ -1884,7 +1884,7 @@ export default  {
                 [this.form.pk],
                 { ipt: this.ipt.param });
         },
-        onMeterDelete(item, index, button) {
+        onMeterDelete(item) {
             // alert("delete: " + item.ident);
             //this.ws_submit_command("com:sml",
             //    "set.proc.param",
@@ -1900,7 +1900,7 @@ export default  {
                 [this.form.pk],
                 { nr: item.nr, meter: item.ident });
         },
-        onMeterActivate(item, index, button) {
+        onMeterActivate(item) {
             if (item.active) {
                 //this.ws_submit_command("com:sml",
                 //    "set.proc.param",
@@ -1932,11 +1932,11 @@ export default  {
                     { nr: item.nr, meter: item.ident });
             }
         },
-        //onMeterEdit(item, index, button) {
-        //    console.log("onMeterEdit " + item.pk + " : " + item.serverId);
-        //    //  route to meter configuration
-        //    this.$router.push({ name: 'smfConfigMeter' });
-        //},
+        onMeterEdit(item) {
+           console.log("onMeterEdit " + item.pk + " : " + item.serverId);
+           //  route to meter configuration
+           this.$router.push({ name: 'smfConfigMeter', params: { meterPk: item.pk  }});
+        },
         onWMbusUpdate() {
             //this.ws_submit_command("com:sml",
             //    "set.proc.param",
@@ -1963,19 +1963,18 @@ export default  {
         },
 
         meterTableComplete() {
-            var csv = 'Ident;Meter;Maker;ServerId\n';
+            let csv = 'Ident;Meter;Maker;ServerId\n';
             this.meters.values.forEach(function(row) {
                 //console.log(row.ident);
                 csv += row.ident + ';' + row.meter + ';' + row.maker + ';' + row.serverId + '\n';
             });
-            var data = new Blob([csv]);
+            const data = new Blob([csv]);
             this.meters.csv = URL.createObjectURL(data);
         },
         btnEditStatus(mc) {
             //console.log("btnEditStatus " + mc);
             if (typeof mc == 'undefined') return true;
-            if ((mc.length > 2) && mc.startsWith("MC")) return true;
-            return false;
+            return (mc.length > 2) && mc.startsWith("MC");
         }
    },
 
@@ -1990,19 +1989,19 @@ export default  {
             return "Update";
         },
         btnDeleteTitle() {
-            if (this.selected.length == 0)  {
+            if (this.selected.length === 0)  {
                 return "Delete";
             }
-            else if(this.selected.length == 1) {
+            else if(this.selected.length === 1) {
                 return "Delete " + this.selected[0].name;
             }
             return "Delete " + this.selected.length + " gateway(s)";
         },
         btnRebootTitle() {
-            if (this.selected.length == 0)  {
+            if (this.selected.length === 0)  {
                 return "Reboot";
             }
-            else if(this.selected.length == 1) {
+            else if(this.selected.length === 1) {
                 return "Reboot " + this.selected[0].name;
             }
             return "Reboot " + this.selected.length + " gateway(s)";
@@ -2011,17 +2010,17 @@ export default  {
             return "Edit";
         },
         isRecordSelected() {
-            return this.selected.length != 0;
+            return this.selected.length !== 0;
         },
         isRecordNew() {
-            if (this.selected.length != 0) {
-                return this.form.name != this.selected[0].name;
+            if (this.selected.length !== 0) {
+                return this.form.name !== this.selected[0].name;
             }
             return this.form.name.length > 0;
         },
         serverIdValidation() {
             if (this.form.serverId == null) return false;
-            var rex = /[0-9A-Fa-f]{14}/g;   //  test for hexadecimal string with 14 characters
+            const rex = /[0-9A-Fa-f]{14}/g;   //  test for hexadecimal string with 14 characters
             return rex.test(this.form.serverId);
         },
         wmbusRebootPrep() {
@@ -2031,7 +2030,7 @@ export default  {
             else if (this.wmbus.reboot > 60) {
                 return (this.wmbus.reboot / 60).toFixed(2) + ' min';
             }
-            else if (this.wmbus.reboot == 0) {
+            else if (this.wmbus.reboot === 0) {
                 return 'OFF';
             }
             return this.wmbus.reboot + ' sec.';
@@ -2045,18 +2044,18 @@ export default  {
     },
 
     watch: {
-        'options.selected'(newVal, oldVal) {
+        'options.selected'(newVal) {
             //console.log('selected ' + newVal + ", " + oldVal);
             if (newVal.length === 0) {
-                this.options.indeterminate = false
-                this.options.allSelected = false
+                this.options.indeterminate = false;
+                this.options.allSelected = false;
             } else if (newVal.length === this.options.channels.length) {
-                this.options.indeterminate = false
-                this.options.allSelected = true
+                this.options.indeterminate = false;
+                this.options.allSelected = true;
             }
             else {
-                this.options.indeterminate = true
-                this.options.allSelected = false
+                this.options.indeterminate = true;
+                this.options.allSelected = false;
             }
         }
     },
