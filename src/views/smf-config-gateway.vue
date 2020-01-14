@@ -441,22 +441,22 @@
                                 :sort-direction="meters.sortDirection"
                                 class="shadow">
 
-                                <template slot="visible" slot-scope="row">
+                                <template v-slot:cell(visible)="row">
                                     <b-button size="sm"
                                               v-if="row.item.visible"
                                               @click="onMeterDelete(row.item, row.index, $event.target)">✔ Delete</b-button>
                                 </template>
 
-                                <template slot="active" slot-scope="row">
+                                <template v-slot:cell(active)="row">
                                     <b-button size="sm"
                                               @click="onMeterActivate(row.item, row.index, $event.target)">{{ row.item.active ? '✖ Deactivate' : '✔ Activate' }}</b-button>
                                 </template>
-                                <template slot="edit" slot-scope="row">
+                                <template v-slot:cell(edit)="row">
                                     <b-button size="sm"
                                               variant="info"
                                               v-b-tooltip.hover :title="'meter code: ' + row.item.mc"
                                               :disabled="btnEditStatus(row.item.mc)"
-                                              @click="onMeterEdit(row.item, row.index, $event.target)">{{ btnEdit }}</b-button>
+                                              @click="onMeterEdit(row.item)">{{ btnEdit }}</b-button>
                                 </template>
                             </b-table>
                             <div>
@@ -1517,7 +1517,8 @@ export default  {
                                 this.iec.params.timeSync = obj.rec.values['8181C79313FF'];
                                 this.iec.params.maxVar = obj.rec.values['8181C79314FF'];
                                 //  object
-                                this.iec.params.devices = Array.from(obj.rec.values['8181C79309FF']);
+                                const whatIsThis = obj.rec.values['8181C79309FF'];
+                                this.iec.params.devices = whatIsThis ? Array.from(whatIsThis) : [];
 
                             }
                             else if (obj.section === SML_CODES.CODE_DEVICE_CLASS) {
@@ -1933,9 +1934,7 @@ export default  {
             }
         },
         onMeterEdit(item) {
-           console.log("onMeterEdit " + item.pk + " : " + item.serverId);
-           //  route to meter configuration
-           this.$router.push({ name: 'smfConfigMeter', params: { meterPk: item.pk  }});
+           this.$router.push({ name: 'smfConfigMeter', params: { meterIdent: item.ident }});
         },
         onWMbusUpdate() {
             //this.ws_submit_command("com:sml",

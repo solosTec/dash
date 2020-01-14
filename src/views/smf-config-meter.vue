@@ -764,11 +764,11 @@
 
                         if (obj.show === false) {
                             // the table is loaded, we can select the meter - if there is one
-                            const meterPk = this.$route.params.meterPk;
-                            if (!meterPk){
+                            const meterIdent = this.$route.params.meterIdent;
+                            if (!meterIdent){
                                 return;
                             }
-                            const rowIndex = this.meters.findIndex(meter => meter.pk === meterPk);
+                            const rowIndex = this.meters.findIndex(meter => meter.ident === meterIdent);
                             this.$refs.readoutTable.selectRow(rowIndex);
                         }
                     }
