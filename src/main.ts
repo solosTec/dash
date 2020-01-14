@@ -2,15 +2,15 @@ import '@babel/polyfill'
 import 'mutationobserver-shim'
 import Vue from 'vue'
 import './plugins/bootstrap-vue'
-import './plugins/bootstrap-vue'
 import App from './App.vue'
 import router from './router'
 import vueHeadful from 'vue-headful'
 import Toasted from 'vue-toasted'
 import VueResource from 'vue-resource';
-import { i18n } from '@/plugins/i18n';
+import {i18n} from '@/plugins/i18n';
 import store from './store'
 import smfRowCountSelector from "@/components/smf-row-count-selector.vue";
+import './shared/formatter/registerNames';
 
 Vue.config.productionTip = false;
 Vue.component("vue-headful", vueHeadful);

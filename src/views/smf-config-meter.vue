@@ -247,7 +247,7 @@
 
                                         <!-- A custom formatted column descr -->
                                             <template slot="obis" slot-scope="data">
-                                                <span v-b-popover.hover="data.item.value + ' ' + getUnitName(data.item.unit)" :title="getRegisterName(data.value)">{{ data.item.obis }}</span>
+                                                <span v-b-popover.hover="data.item.value + ' ' + getUnitName(data.item.unit)" :title="data.value | toRegisterName">{{ data.item.obis }}</span>
 <!--                                                <span v-b-popover.hover="data.value" :title="data.item.obis">{{ formatDescription(data.value) }}</span>-->
                                             </template>
 
@@ -633,7 +633,7 @@
                 tabDataMirror: {
                     data: {
                         items: []
-                        //items: [{nr:1, active: true, entries: 101, period: 3, OBIS:'8181c78614ff', name:'name'}]
+                        // items: [{nr:1, active: true, entries: 101, period: 3, OBIS:'8181c78614ff', name:'name'}]
                     }
                 },
                 //  loading state of SML data
@@ -1014,44 +1014,6 @@
                         break;
                 }
                 return code;
-            },
-            getRegisterName(reg) {
-                const name = reg.toUpperCase();
-                if (name === '8181C78203FF') return "Hersteller-Identifikation";
-                else if (name === '8181C78205FF') return "öffentlicher Schlüssel";
-                else if (name === '810000090B00') return "Sekundenindex"; //  second index from meter
-                else if (name === '0100000009FF') return "Geräteeinzelidentifikation";
-                else if (name === '0100000000FF') return "Identifikationsnummer 1.0 ServerId -> Seriennummer";
-                else if (name === '0000600100FF') return "Identifikationsnummer 2.1 Seriennummer";
-                else if (name === '0000601000FF') return "Geraetename";
-                else if (name === '0000616100FF') return "Fehlerregister";
-                else if (name === '0100010800FF') return "Zaehlerstand Totalregister";
-                else if (name === '0100010801FF') return "Zaehlerstand Tarif 1";
-                else if (name === '0100010802FF') return "Zaehlerstand Tarif 2";
-                else if (name === '0100100700FF') return "aktuelle Wirkleistung";
-                else if (name === '0100011100FF') return "letzter signierter Total-Zaehlerstand";
-                else if (name === '0100240700FF') return "Wirkleistung L1";
-                else if (name === '0100380700FF') return "Wirkleistung L2";
-                else if (name === '01004C0700FF') return "Wirkleistung L3";
-                else if (name === '010060320002') return "Aktuelle Chiptemperatur";
-                else if (name === '010060320003') return "Minimale Chiptemperatur";
-                else if (name === '010060320004') return "Maximale Chiptemperatur";
-                else if (name === '010060320005') return "Gemittelte Chiptemperatur";
-                else if (name === '010060320303') return "Spannungsminimum";
-                else if (name === '010060320304') return "Spannungsmaximum";
-                else if (name === '01001F0700FF') return "Strom L1";
-                else if (name === '0100200700FF') return "Spannung L1";
-                else if (name === '0100020800FF') return "negative Wirkenergie";
-                else if (name === '0100020801FF') return "negative Wirkenergie - Tarif 1";
-                else if (name === '0100020802FF') return "negative Wirkenergie - Tarif 2";
-                else if (name === '0100330700FF') return "Strom L2";
-                else if (name === '0100340700FF') return "Spannung L2";
-                else if (name === '0100470700FF') return "Strom L3";
-                else if (name === '0100480700FF') return "Spannung L3";
-                else if (name === '010000090B00') return "Zeitstempel (UTC)";
-                else if (name === '0700030000FF') return "Verbrauch in m³ (nicht korrigiert)";
-
-                return reg.toUpperCase();
             }
         },
 
