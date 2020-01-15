@@ -26,7 +26,7 @@
     :filter="filter"
     @filtered="onFiltered"-->
 
-            <template slot="details" slot-scope="row">
+            <template v-slot:cell(details)="row">
                 <!--<b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
             Info modal
         </b-button>-->
@@ -35,10 +35,10 @@
                 </b-button>
             </template>
 
-            <template slot="row-details" slot-scope="row">
+            <template v-slot:cell(row-details)="row">
                 <b-card>
                     <ul>
-                        <li v-for="(register, key) in row.item.registers" :key="key">{{ getRegisterName(register) }}</li>
+                        <li v-for="(register, key) in row.item.registers" :key="key">{{ register | toRegisterName(true) }}</li>
                     </ul>
                 </b-card>
             </template>
@@ -49,7 +49,6 @@
 </template>
 
 <script lang="js">
-
 
     export default {
         name: 'smf-table-data-mirror',
@@ -92,7 +91,7 @@
                         label: 'Profile',
                         sortable: true,
                         class: 'text-right',
-                        formatter: (value, key, item) => {
+                        formatter: (value) => {
                             if (value === '8181c78610ff') return '1 minute values';
                             else if (value === '8181c78611ff') return '15 minute values';
                             else if (value === '8181c78612ff') return 'hourly values';
@@ -121,46 +120,6 @@
                 sortDesc: false,
                 sortDirection: 'desc',
             }
-        },
-        methods: { //0000600101FF
-            getRegisterName(reg) {
-                var name = reg.toUpperCase();
-                if (name === '8181C78203FF') return name + " - Hersteller-Identifikation";
-                else if (name === '8181C78205FF') return name + " - öffentlicher Schlüssel";
-                else if (name === '810000090B00') return name + " - Sekundenindex"; //  second index from meter
-                else if (name === '0100000009FF') return name + " - Geräteeinzelidentifikation";
-                else if (name === '0100000000FF') return name + " - Identifikationsnummer 1.0 ServerId -> Seriennummer";
-                else if (name === '0000600100FF') return name + " - Identifikationsnummer 2.1 Seriennummer";
-                else if (name === '0000600101FF') return name + " - Identifikationsnummer 2.2 Kundennummer";
-                else if (name === '0000601000FF') return name + " - Geraetename";
-                else if (name === '0000616100FF') return name + " - Fehlerregister";
-                else if (name === '0100010800FF') return name + " - Zaehlerstand Totalregister";
-                else if (name === '0100010801FF') return name + " - Zaehlerstand Tarif 1";
-                else if (name === '0100010802FF') return name + " - Zaehlerstand Tarif 2";
-                else if (name === '0100100700FF') return name + " - aktuelle Wirkleistung";
-                else if (name === '0100011100FF') return name + " - letzter signierter Total-Zaehlerstand";
-                else if (name === '0100240700FF') return name + " - Wirkleistung L1";
-                else if (name === '0100380700FF') return name + " - Wirkleistung L2";
-                else if (name === '01004C0700FF') return name + " - Wirkleistung L3";
-                else if (name === '010060320002') return name + " - Aktuelle Chiptemperatur";
-                else if (name === '010060320003') return name + " - Minimale Chiptemperatur";
-                else if (name === '010060320004') return name + " - Maximale Chiptemperatur";
-                else if (name === '010060320005') return name + " - Gemittelte Chiptemperatur";
-                else if (name === '010060320303') return name + " - Spannungsminimum";
-                else if (name === '010060320304') return name + " - Spannungsmaximum";
-                else if (name === '01001F0700FF') return name + " - Strom L1";
-                else if (name === '0100200700FF') return name + " - Spannung L1";
-                else if (name === '0100330700FF') return name + " - Strom L2";
-                else if (name === '0100340700FF') return name + " - Spannung L2";
-                else if (name === '0100470700FF') return name + " - Strom L3";
-                else if (name === '0100480700FF') return name + " - Spannung L3";
-                else if (name === '010000090B00') return name + " - Zeitstempel (UTC)";
-                else if (name === '0700030000FF') return name + " - Verbrauch in m³ (nicht korrigiert)";
-
-                return reg.toUpperCase();
-            }
-        },
-        computed: {
         }
     }
 </script>

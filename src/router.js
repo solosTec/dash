@@ -61,7 +61,7 @@ export default new Router({
                 component: smfConfigGateway
             },
             {
-                path: "/config/meter",
+                path: "/config/meter/:meterIdent?",
                 name: "smfConfigMeter",
                 component: smfConfigMeter
             },

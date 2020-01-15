@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Vuex, {Store} from "vuex";
+import Vuex from "vuex";
 import user, {UserState} from './modules/user';
 import websocket, {WebsocketState} from "./modules/websocket";
 

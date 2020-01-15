@@ -73,7 +73,7 @@
                     {{ data.index + 1 + (perPage * (currentPage - 1)) }}
                 </template>
 
-                <template slot="stop" slot-scope="row">
+                <template v-slot:cell(stop)="row">
                     <b-button size="sm"
                               variant="warning"
                               class="shadow"
