@@ -24,8 +24,12 @@ jobs:
           key: node-10-dependencies-{{ checksum "package-lock.json" }}
 
       - run: npm run test:unit
+
       - run: npm run build
       - run: tar -zcvf dist.tar.gz ./dist
+
+      - run: npm run build-no-auth
+      - run: tar -zcvf dist-no-auth.tar.gz ./dist-no-auth
 
       - store_artifacts:
           path: ~/repo/coverage

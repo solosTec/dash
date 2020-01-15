@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build-no-auth": "vue-cli-service build --mode no-auth --dest dist-no-auth",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
