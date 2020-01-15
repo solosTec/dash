@@ -12,7 +12,7 @@
             </div>
         </template>
 
-        <b-jumbotron fluid :header="$t('header-user')" :lead="$t('lead-user')"/>
+        <b-jumbotron fluid :header="$t('header-user')" :lead="$t('lead-user', {count: this.count})"/>
 
         <b-container fluid>
         </b-container>
@@ -29,12 +29,12 @@
     import Vue from 'vue';
 
     export default mixins(webSocket, Vue).extend({
-        name: 'smfConfigSystem',
+        name: 'smfConfigUser',
         props: [],
         mixins: [webSocket],
 
         mounted() {
-            this.ws_open("/smf/api/system/v0.8");
+            this.ws_open("/smf/api/user/v0.8");
         },
 
         beforeDestroy() {
@@ -46,6 +46,13 @@
                 count: 0
             }
         },
+
+        methods: {
+            ws_on_open() {
+
+            }
+        },
+
         beforeRouteEnter(to: any, from: any, next: any) {
             hasPrivilegesWaitForUser(store, MODULES.CONFIG_USER, PRIVILEGES.VIEW).then((result) => {
                 next( result ? true: NO_ACCESS_ROUTE);

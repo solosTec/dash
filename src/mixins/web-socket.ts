@@ -43,8 +43,7 @@ export const webSocket = Vue.extend({
     methods: {
         ws_open: function(path: string) {
             this.path = path;
-            let self: any;
-            self = this; //  save context
+            const self = this as any; //  save context
             if (process.env.NODE_ENV === 'production') {
                 this.ws = new WebSocket('ws://' + location.host + path, ['SMF']);
             }
