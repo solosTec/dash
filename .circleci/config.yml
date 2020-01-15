@@ -36,3 +36,6 @@ jobs:
 
       - store_artifacts:
           path: ~/repo/dist.tar.gz
+
+      - store_artifacts:
+          path: ~/repo/dist-no-auth.tar.gz
