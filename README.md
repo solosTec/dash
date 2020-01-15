@@ -37,6 +37,12 @@ npm run serve
 npm run build
 ```
 
+Use the following command to build a version without authorization:
+
+```
+npm run build-no-auth 
+```
+
 ### Run your tests
 ```
 npm run test
