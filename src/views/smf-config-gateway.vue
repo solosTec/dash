@@ -858,9 +858,9 @@
 
 <script lang="js">
 
-    import {webSocket} from '../mixins/web-socket.js'
+    import {webSocket} from '../mixins/web-socket'
     import opLog from '@/components/smf-table-op-log.vue'
-    import { MESSAGE_TYPES } from '@/constants/msgTypes.js'
+    import { MESSAGE_TYPES } from '@/constants/msgTypes'
     import { SML_CODES } from '@/constants/rootCodes.js'
     import {hasPrivilegesWaitForUser} from "../mixins/privileges";
     import store from "../store";
@@ -1048,7 +1048,7 @@ export default  {
                     label: 'Meter',
                     sortable: true,
                     formatter: (value) => {
-                        return Boolean(value) ? value.toUpperCase() : '?';
+                        return value ? value.toUpperCase() : '?';
                     }
                 },
                 {

@@ -27,6 +27,7 @@
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_DOWNLOAD, PRIVILEGES.VIEW)" to="/config/download">{{ $t('nav-download') }}</b-dropdown-item>
                     <div class="dropdown-divider"></div>
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_SYSTEM, PRIVILEGES.VIEW)" to="/config/system">{{ $t('nav-system') }}</b-dropdown-item>
+                    <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_USER, PRIVILEGES.VIEW)" to="/config/user">{{ $t('nav-user') }}</b-dropdown-item>
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_WEB, PRIVILEGES.VIEW)" to="/config/web">Web</b-dropdown-item>
                 </b-nav-item-dropdown>
 

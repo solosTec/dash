@@ -1,0 +1,56 @@
+<template lang="html">
+
+    <section class="smf-config-system">
+
+        <template>
+            <div>
+                <vue-headful
+                        title="smf :: config user"
+                        description="SMF dashboard"
+                        keywords="SMF, solosTec"
+                />
+            </div>
+        </template>
+
+        <b-jumbotron fluid :header="$t('header-user')" :lead="$t('lead-user')"/>
+
+        <b-container fluid>
+        </b-container>
+    </section>
+</template>
+
+<script lang="ts">
+
+    import {webSocket} from '@/mixins/web-socket';
+    import mixins from 'vue-typed-mixins';
+    import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
+    import store from "../store";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+    import Vue from 'vue';
+
+    export default mixins(webSocket, Vue).extend({
+        name: 'smfConfigSystem',
+        props: [],
+        mixins: [webSocket],
+
+        mounted() {
+            this.ws_open("/smf/api/system/v0.8");
+        },
+
+        beforeDestroy() {
+            this.ws_close();
+        },
+
+        data() {
+            return {
+                count: 0
+            }
+        },
+        beforeRouteEnter(to: any, from: any, next: any) {
+            hasPrivilegesWaitForUser(store, MODULES.CONFIG_USER, PRIVILEGES.VIEW).then((result) => {
+                next( result ? true: NO_ACCESS_ROUTE);
+            });
+        }
+    })
+
+</script>

@@ -11,7 +11,7 @@
             </div>
         </template>
 
-        <b-jumbotron fluid header="Configure the Web-Interface" :lead="'data path: ' + ws_get_url()" />
+        <b-jumbotron fluid header="Configure the Web-Interface" :lead="'data path: ' + ws_url" />
 
         <b-container fluid>
 
@@ -146,7 +146,7 @@
 
 <script lang="js">
 
-    import { webSocket } from '../mixins/web-socket.js'
+    import { webSocket } from '../mixins/web-socket'
     import {hasPrivilegesWaitForUser} from "../mixins/privileges";
     import store from "../store";
     import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
@@ -291,6 +291,7 @@
                                 this.cfg.https_maxUploadSize = obj.value;
                             }
                         }
+                        // eslint-disable-next-line no-empty
                         else if (obj.cmd == 'load') {
                         }
                     }
@@ -384,7 +385,7 @@
         },
 
         computed: {
-
+            ws_url(){ return this.ws_get_url() }
         },
 
         watch: {

@@ -448,8 +448,8 @@
 
 <script lang="js">
 
-    import { webSocket } from '../mixins/web-socket.js';
-    import { MESSAGE_TYPES } from '@/constants/msgTypes.js'
+    import { webSocket } from '../mixins/web-socket';
+    import { MESSAGE_TYPES } from '@/constants/msgTypes'
     import { SML_CODES } from '@/constants/rootCodes.js'
     import dataMirror from '@/components/smf-table-data-mirror.vue'
     import pushTargets from '@/components/smf-table-push-targets.vue'

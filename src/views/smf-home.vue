@@ -70,7 +70,7 @@
 <script lang="js">
 
   // import vueHeadful from 'vue-headful'
-  import {webSocket} from '../mixins/web-socket.js'
+  import {webSocket} from '../mixins/web-socket'
 
   export default  {
     name: 'smfHome',

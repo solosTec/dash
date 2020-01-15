@@ -83,7 +83,7 @@
 
 <script lang="js">
 
-import {webSocket} from '../mixins/web-socket.js'
+import {webSocket} from '../mixins/web-socket'
 import {hasPrivilegesWaitForUser} from "../mixins/privileges";
 import store from "../store";
 import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
@@ -180,8 +180,10 @@ export default  {
                 else if (obj.cmd == 'clear') {
                     timeSeries = [];
                 }
+                // eslint-disable-next-line no-empty
                 else if (obj.cmd == 'delete') {
                 }
+                // eslint-disable-next-line no-empty
                 else if (obj.cmd == 'modify') {
                 }
                 else if (obj.cmd == 'load') {

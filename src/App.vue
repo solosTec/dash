@@ -12,7 +12,7 @@
 
 <script>
 
-  import {webSocket} from './mixins/web-socket.js'
+  import {webSocket} from './mixins/web-socket'
   import SMFNavigation from '@/components/smf-navigation.vue'
   import {mapState} from 'vuex';
 
