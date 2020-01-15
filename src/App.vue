@@ -25,7 +25,7 @@
     mounted () {
       console.log('NODE_ENV: ' + process.env.NODE_ENV);
 
-      if (process.env.VUE_APP_SMF_NO_AUTH) {
+      if (process.env.VUE_APP_SMF_NO_AUTH === 'true') {
         this.$store.commit('user/loaded', {name: 'Admin', privs:[]});
         return;
       }

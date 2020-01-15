@@ -1,3 +1,6 @@
+
+[![CircleCI](https://circleci.com/gh/solosTec/dash/tree/master.svg?style=shield)](https://circleci.com/gh/solosTec/dash/tree/master)
+
 # supported environment variables
 
 replace the smf server on development
