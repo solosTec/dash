@@ -98,7 +98,7 @@
                                                                   v-model="form.serverId"
                                                                   :state="serverIdValidation"
                                                                   required
-                                                                  :placeholder="$t('config-gateway-05-01')"
+                                                                  :placeholder="getPlaceholder($t('config-gateway-05'))"
                                                                   maxlength="14" />
                                                     <b-form-invalid-feedback :state="serverIdValidation">
                                                         A server ID must be a 14 characters long hexadecimal string
@@ -114,7 +114,7 @@
                                                                   type="text"
                                                                   v-model="form.manufacturer"
                                                                   required
-                                                                  :placeholder="$t('config-gateway-06-01')" />
+                                                                  :placeholder="getPlaceholder($t('config-gateway-06'))" />
                                                 </b-form-group>
                                             </b-col>
                                         </b-row>
@@ -126,7 +126,7 @@
                                                                   type="text"
                                                                   v-model="form.userName"
                                                                   required
-                                                                  :placeholder="$t('config-gateway-07-01')"
+                                                                  :placeholder="getPlaceholder($t('config-gateway-07'))"
                                                                   maxlength="14" />
                                                 </b-form-group>
                                             </b-col>
@@ -137,7 +137,7 @@
                                                                       type="text"
                                                                       v-model="form.userPwd"
                                                                       required
-                                                                      :placeholder="$t('config-gateway-08-01')" />
+                                                                      :placeholder="getPlaceholder($t('config-gateway-08'))" />
                                                         <b-input-group-append>
                                                             <b-button variant="info" v-on:click.stop="generatePassword">&#x21ba;</b-button>
                                                         </b-input-group-append>
@@ -209,7 +209,7 @@
                                                                   v-model="ipt.param[0].host"
                                                                   required
                                                                   v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Primary IP-T Master"
-                                                                  :placeholder="$t('config-gateway-11-01')" />
+                                                                  :placeholder="getPlaceholder($t('config-gateway-11'))" />
                                                 </b-form-group>
                                             </b-col>
                                             <b-col md="6">
@@ -218,7 +218,7 @@
                                                                   type="text"
                                                                   v-model="ipt.param[0].user"
                                                                   required
-                                                                  :placeholder="$t('config-gateway-13')" />
+                                                                  :placeholder="getPlaceholder($t('config-gateway-12'))" />
                                                 </b-form-group>
                                             </b-col>
                                         </b-row>
@@ -233,9 +233,9 @@
                                                                       required
                                                                       min="1024"
                                                                       max="‭65535‬"
-                                                                      :placeholder="$t('config-gateway-15')" />
+                                                                      :placeholder="getPlaceholder($t('config-gateway-14'))" />
                                                         <b-input-group-append>
-                                                            <b-button variant="info" v-on:click.stop="ipt.param[0].port = 26862">{{ $t('config-gateway-15-01') }}</b-button>
+                                                            <b-button variant="info" v-on:click.stop="ipt.param[0].port = 26862">{{ $t('com-default') }}</b-button>
                                                         </b-input-group-append>
                                                     </b-input-group>
                                                 </b-form-group>
@@ -247,7 +247,7 @@
                                                                       type="text"
                                                                       v-model="ipt.param[0].pwd"
                                                                       required
-                                                                      :placeholder="$t('config-gateway-17')" />
+                                                                      :placeholder="getPlaceholder($t('config-gateway-16'))" />
                                                         <b-input-group-append>
                                                             <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 0)">&#x21ba;</b-button>
                                                         </b-input-group-append>
@@ -279,7 +279,7 @@
                                                                   type="text"
                                                                   v-model="ipt.param[1].user"
                                                                   required
-                                                                  :placeholder="$t('config-gateway-13')" />
+                                                                  :placeholder="getPlaceholder($t('config-gateway-12'))" />
                                                 </b-form-group>
                                             </b-col>
                                         </b-row>
@@ -294,9 +294,9 @@
                                                                       required
                                                                       min="1024"
                                                                       max="‭65535‬"
-                                                                      :placeholder="$t('config-gateway-15')" />
+                                                                      :placeholder="getPlaceholder($t('config-gateway-14'))" />
                                                         <b-input-group-append>
-                                                            <b-button variant="info" v-on:click.stop="ipt.param[1].port = 26863">{{ $t('config-gateway-15-01') }}</b-button>
+                                                            <b-button variant="info" v-on:click.stop="ipt.param[1].port = 26863">{{ $t('com-default') }}</b-button>
                                                         </b-input-group-append>
                                                     </b-input-group>
                                                 </b-form-group>
@@ -308,7 +308,7 @@
                                                                       type="text"
                                                                       v-model="ipt.param[1].pwd"
                                                                       required
-                                                                      :placeholder="$t('config-gateway-17')" />
+                                                                      :placeholder="getPlaceholder($t('config-gateway-16'))" />
                                                         <b-input-group-append>
                                                             <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 1)">&#x21ba;</b-button>
                                                         </b-input-group-append>
@@ -339,7 +339,7 @@
                                                           v-model="ipt.status.host"
                                                           v-b-popover.hover="'Current IP address'" title="Hostname" placement="top"
                                                           readonly
-                                                          :placeholder="$t('config-gateway-11-01')" />
+                                                          :placeholder="getPlaceholder($t('config-gateway-11'))" />
                                         </b-form-group>
                                     </b-col>
                                     <b-col md="3">
@@ -350,7 +350,7 @@
                                                           readonly
                                                           min="1024"
                                                           max="‭65535‬"
-                                                          :placeholder="$t('config-gateway-15')" />
+                                                          :placeholder="getPlaceholder($t('config-gateway-14'))" />
                                         </b-form-group>
                                     </b-col>
                                     <b-col md="3">
@@ -361,7 +361,7 @@
                                                           readonly
                                                           min="1024"
                                                           max="‭65535‬"
-                                                          :placeholder="$t('config-gateway-15')" />
+                                                          :placeholder="getPlaceholder($t('config-gateway-14'))" />
                                         </b-form-group>
                                     </b-col>
                                 </b-row>
@@ -536,7 +536,7 @@
                                                               min="0"
                                                               max="6000"
                                                               step="10"
-                                                              :placeholder="$t('config-gateway-45')" />
+                                                              :placeholder="getPlaceholder($t('config-gateway-44'))" />
                                                 <b-input-group-append>
                                                     <b-button variant="info" v-on:click.stop="wmbus.sMode = 30">{{$t('config-gateway-48')}}</b-button>
                                                 </b-input-group-append>
@@ -579,7 +579,7 @@
                                                           type="text"
                                                           v-model="wmbus.type"
                                                           readonly
-                                                          :placeholder="$t('config-gateway-50')" />
+                                                          :placeholder="getPlaceholder($t('config-gateway-49'))" />
                                         </b-form-group>
                                     </b-col>
 
@@ -589,7 +589,7 @@
                                                           type="text"
                                                           v-model="wmbus.id"
                                                           readonly
-                                                          :placeholder="$t('config-gateway-52')" />
+                                                          :placeholder="getPlaceholder($t('config-gateway-51'))" />
                                         </b-form-group>
                                     </b-col>
 
@@ -599,7 +599,7 @@
                                                           type="text"
                                                           v-model="wmbus.firmware"
                                                           readonly
-                                                          :placeholder="$t('config-gateway-54')" />
+                                                          :placeholder="getPlaceholder($t('config-gateway-53'))" />
                                         </b-form-group>
                                     </b-col>
 
@@ -609,7 +609,7 @@
                                                           type="text"
                                                           v-model="wmbus.hardware"
                                                           readonly
-                                                          :placeholder="$t('config-gateway-56')" />
+                                                          :placeholder="getPlaceholder($t('config-gateway-55'))" />
                                         </b-form-group>
                                     </b-col>
                                 </b-row>
@@ -1977,6 +1977,10 @@ export default  {
             //console.log("btnEditStatus " + mc);
             if (typeof mc == 'undefined') return true;
             return (mc.length > 2) && mc.startsWith("MC");
+        },
+        getPlaceholder(str) {
+            console.log(str);
+            return "<" + str + ">";
         }
    },
 
