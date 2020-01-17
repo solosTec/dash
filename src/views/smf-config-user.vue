@@ -53,10 +53,9 @@
             }
         },
 
-        beforeRouteEnter(to: any, from: any, next: any) {
-            hasPrivilegesWaitForUser(store, MODULES.CONFIG_USER, PRIVILEGES.VIEW).then((result) => {
-                next( result ? true: NO_ACCESS_ROUTE);
-            });
+        async beforeRouteEnter(to: any, from: any, next: any) {
+            const result = hasPrivilegesWaitForUser(store, MODULES.CONFIG_USER, PRIVILEGES.VIEW)
+            next(result ? true : NO_ACCESS_ROUTE);
         }
     })
 

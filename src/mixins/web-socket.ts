@@ -54,7 +54,6 @@ export const webSocket = Vue.extend({
             }
             this.ws.onopen = function() {
                 //  subscribe system status
-                // eslint-disable-next-line no-console
                 console.log("websocket open: " + this.url);
                 self.ws_on_open(this.url);
                 self.state = self.$t('state-online');
@@ -69,41 +68,34 @@ export const webSocket = Vue.extend({
             this.ws.onclose = function(evt) {
                 switch (evt.code) {
                     case 1000:
-                        // eslint-disable-next-line no-console
                         console.log("websocket - normal closure: " + evt.code);
                         // self.ws_emit_event_state("normal closure");
                     break;
                     case 1001:
-                        // eslint-disable-next-line no-console
                         console.log("websocket - going away: " + evt.code);
                         self.ws_emit_event_state("going away");
                     break;
                     case 1002:
-                        // eslint-disable-next-line no-console
                         console.log("websocket - protocol error: " + evt.code);
                         self.ws_emit_event_state("protocol error");
                     break;
                     case 1003:
-                        // eslint-disable-next-line no-console
                         console.log("websocket - unsupported data: " + evt.code);
                         self.ws_emit_event_state("unsupported data");
                     break;
                     case 1006:
-                        // eslint-disable-next-line no-console
                         console.log("websocket - connection lost: ");
                         self.ws_emit_event_state("connection lost");
                         //  start timer to reconnect
                         self.onTimer();
                     break;
                     default:
-                        // eslint-disable-next-line no-console
                         console.log("websocket closed: " + evt.code);
                         self.ws_emit_event_state(evt.code + " closed");
                     break;
                 }
             };
             this.ws.onerror = function(err) {
-                // eslint-disable-next-line no-console
                 console.log("websocket error: " + err);
                 self.ws_emit_event_state("error");
             };
@@ -250,7 +242,6 @@ export const webSocket = Vue.extend({
         onTimer() {
             if (!this.ws_is_open())    {
                 //  try to reconnect
-                // eslint-disable-next-line no-console
                 console.log("try reconnect: " + this.path);
                 this.ws_open(this.path);
                 // this.ws = new WebSocket(this.path, ["SMF"]);
@@ -262,7 +253,6 @@ export const webSocket = Vue.extend({
         },
         ws_is_open() {
             if (this.ws != null) {
-                // eslint-disable-next-line no-console
                 console.log("websocket state: " +
                     this.ws_state_name() +
                     " / " +
