@@ -866,6 +866,8 @@
     import store from "../store";
     import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
 
+    let tmpGateways = [];
+
 export default  {
     name: 'smfConfigGateway',
     props: [],
@@ -1616,7 +1618,8 @@ export default  {
                         rec["_rowVariant"] = 'warning';
                     }
 
-                    this.gateways.push(rec);
+                    tmpGateways.push(rec);
+
                 }
                 else if (obj.cmd === 'modify') {
                     console.log('lookup gateway ' + obj.key);
@@ -1664,17 +1667,17 @@ export default  {
                 }
                 else if (obj.cmd === 'delete') {
                     const idx = this.gateways.findIndex(rec => rec.pk === obj.key);
-                    console.log('delete index ' + idx);
                     this.gateways.splice(idx, 1);
                 }
                 else if (obj.cmd === 'load') {
                     //  load status
                     if (obj.show != null) {
-                        console.log('load state ' + obj.show);
                         this.isBusy = obj.show;
+                        tmpGateways = [];
                     }
                     else if (obj.level !== 0) {
                         this.busyLevel = obj.level;
+                        this.gateways = tmpGateways;
                     }
                 }
                 else {
