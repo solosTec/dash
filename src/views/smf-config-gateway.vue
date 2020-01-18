@@ -1974,12 +1974,12 @@ export default  {
             this.meters.csv = URL.createObjectURL(data);
         },
         btnEditStatus(mc) {
-            //console.log("btnEditStatus " + mc);
+            // console.log("btnEditStatus " , mc);
             if (typeof mc == 'undefined') return true;
             return (mc.length > 2) && mc.startsWith("MC");
         },
         getPlaceholder(str) {
-            console.log(str);
+            // console.log(str);
             return "<" + str + ">";
         }
    },

@@ -769,7 +769,7 @@
                                 return;
                             }
                             const rowIndex = this.meters.findIndex(meter => meter.ident === meterIdent);
-                            this.$refs.readoutTable.selectRow(rowIndex);
+                            this.$refs.meterTable.selectRow(rowIndex);
                         }
                     }
                     else if (obj.cmd === 'update') {
