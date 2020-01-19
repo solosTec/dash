@@ -1622,10 +1622,11 @@ export default  {
 
                 }
                 else if (obj.cmd === 'modify') {
-                    console.log('lookup gateway ' + obj.key);
+                    //console.log('lookup gateway ' + obj.key[0]);
                     this.gateways.find(function(rec) {
-                        if(rec.pk === obj.key) {
-                            console.log('modify record ' + rec.name);
+                        //console.log('compare ' + obj.key[0] + ' <==> ' + rec.pk);
+                        if(rec.pk === obj.key[0]) {
+                            //console.log('modify record ' + rec.name);
                             if (obj.value.serverId != null) {
                                 rec.serverId = obj.value.serverId;
                             }
@@ -1666,7 +1667,7 @@ export default  {
                     this.tabOpLog.data.items = [];
                 }
                 else if (obj.cmd === 'delete') {
-                    const idx = this.gateways.findIndex(rec => rec.pk === obj.key);
+                    const idx = this.gateways.findIndex(rec => rec.pk === obj.key[0]);
                     this.gateways.splice(idx, 1);
                 }
                 else if (obj.cmd === 'load') {
@@ -1877,28 +1878,12 @@ export default  {
 
         onIPTUpdate(event)   {
             event.preventDefault();
-            // console.log('onIPTUpdate: ' + this.form.name);
-            //this.ws_submit_command("com:sml",
-            //    "set.proc.param",
-            //    [this.form.pk],
-            //    [{ ipt: this.ipt.param }],
-            //    ["root-ipt-param"]);
             this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
                 SML_CODES.CODE_ROOT_IPT_PARAM,
                 [this.form.pk],
                 { ipt: this.ipt.param });
         },
         onMeterDelete(item) {
-            // alert("delete: " + item.ident);
-            //this.ws_submit_command("com:sml",
-            //    "set.proc.param",
-            //    [this.form.pk],
-            //    [
-            //        { nr: item.nr },
-            //        { meter: item.meter },
-            //        { meterId: item.meterId }
-            //    ],
-            //    ["delete"]);
             this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
                 SML_CODES.CODE_DELETE_DEVICE,
                 [this.form.pk],
@@ -1906,30 +1891,12 @@ export default  {
         },
         onMeterActivate(item) {
             if (item.active) {
-                //this.ws_submit_command("com:sml",
-                //    "set.proc.param",
-                //    [this.form.pk],
-                //    [
-                //        { nr: item.nr },
-                //        { meter: item.meter },
-                //        { meterId: item.meterId }
-                //    ],
-                //    ["deactivate"]);
                 this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
                     SML_CODES.CODE_DEACTIVATE_DEVICE,
                     [this.form.pk],
                     { nr: item.nr, meter: item.ident });
             }
             else {
-                //this.ws_submit_command("com:sml",
-                //    "set.proc.param",
-                //    [this.form.pk],
-                //    [
-                //        { nr: item.nr },
-                //        { meter: item.meter },
-                //        { meterId: item.meterId }
-                //    ],
-                //    ["activate"]);
                 this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
                     SML_CODES.CODE_ACTIVATE_DEVICE,
                     [this.form.pk],
@@ -1940,11 +1907,6 @@ export default  {
            this.$router.push({ name: 'smfConfigMeter', params: { meterIdent: item.ident }});
         },
         onWMbusUpdate() {
-            //this.ws_submit_command("com:sml",
-            //    "set.proc.param",
-            //    [this.form.pk],
-            //    [{ wmbus: this.wmbus }],
-            //    ["IF-wireless-mbus"]);
             this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
                 SML_CODES.CODE_IF_wMBUS,
                 [this.form.pk],
@@ -1952,12 +1914,6 @@ export default  {
 
         },
         onIECUpdate() {
-            //alert("onIECUpdate: " + this.form.serverId);
-            //this.ws_submit_command("com:sml",
-            //    "set.proc.param",
-            //    [this.form.pk],
-            //    [{ iec: this.iec.params }],
-            //    ["IF-IEC-62505-21"]);
             this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
                 SML_CODES.CODE_IF_1107,
                 [this.form.pk],
