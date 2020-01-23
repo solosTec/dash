@@ -270,7 +270,7 @@
                                                                   v-model="ipt.param[1].host"
                                                                   required
                                                                   v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Secondary IP-T Master"
-                                                                  :placeholder="$t('config-gateway-11-01')" />
+                                                                  :placeholder="$t('config-gateway-11')" />
                                                 </b-form-group>
                                             </b-col>
                                             <b-col md="6">
@@ -1356,6 +1356,7 @@ export default  {
                                         : new Date();
 
                                     const recVisible = {
+                                        pk: e.pk[0],
                                         nr: e.nr,
                                         ident: e[SML_CODES.CODE_SERVER_ID],
                                         meter: e.serial,
@@ -1370,6 +1371,7 @@ export default  {
                                     if (obj.rec.values.type < 2) {
                                         recVisible["_rowVariant"] = "success";
                                     }
+                                    console.log("visisble ", recVisible);
                                     this.meters.values.push(recVisible);
 
                                 });
@@ -1409,7 +1411,7 @@ export default  {
                                             visible: false,
                                             active: true,
                                             serverId: obj.rec.srv,
-                                            pk: e.pk,
+                                            pk: e.pk[0],
                                             mc: e.mc
                                         };
 
@@ -1417,6 +1419,7 @@ export default  {
                                             recActive["_rowVariant"] = "success";
                                         }
 
+                                        console.log("active ", recActive);
                                         this.meters.values.push(recActive);
                                     }
 
@@ -1538,10 +1541,7 @@ export default  {
                             }
                         }
                         else if (obj.channel === MESSAGE_TYPES.getProfileList) {
-                            //console.log("section :::" + obj.section + ":::");
-                            //console.log(obj);
-                            //console.log(obj.rec.values);
-                            console.log(obj.rec.values['8181C789E2FF'] + ", size: "+ this.tabOpLog.data.items.length);
+                            //console.log(obj.rec.values['8181C789E2FF'] + ", size: "+ this.tabOpLog.data.items.length);
                             if (obj.section === SML_CODES.CLASS_OP_LOG) {
 
                                 //  get timestamp
@@ -1618,7 +1618,14 @@ export default  {
                         rec["_rowVariant"] = 'warning';
                     }
 
-                    tmpGateways.push(rec);
+                    if (this.isBusy) {
+                        //  bulk insert
+                        tmpGateways.push(rec);
+                    }
+                    else {
+                        //  operational insert
+                        this.gateways.push(rec);
+                    }
 
                 }
                 else if (obj.cmd === 'modify') {
@@ -1693,8 +1700,7 @@ export default  {
         rowSelected(items) {
             this.selected = items;
             if (items.length > 0) {
-                console.log('selected ' + items[0].serverId);
-                // console.log(items.length + ' rows selected ');
+                //console.log('selected ' + items[0].serverId);
 
                 this.form.serverId = items[0].serverId;
                 this.form.manufacturer = items[0].manufacturer;
@@ -1834,14 +1840,14 @@ export default  {
         },
         onGatewayReboot(event) {
             event.preventDefault();
-            console.log('onGatewayReboot: ' + this.selected.length + ' gateway(s)');
+            //console.log('onGatewayReboot: ' + this.selected.length + ' gateway(s)');
             this.$refs.dlgRebootGateway.show();
         },
         handleRebootGatewayOk(event) {
             event.preventDefault();
             this.selected.forEach(element => {
                 //this.ws_submit_command("com:sml", "set.proc.param", [element.pk], [], ["reboot"]);
-                console.log('ws_submit_request: ' + MESSAGE_TYPES.setProcParameter + ' gateway:' + element.pk);
+                //console.log('ws_submit_request: ' + MESSAGE_TYPES.setProcParameter + ' gateway:' + element.pk);
                 this.ws_submit_request(MESSAGE_TYPES.setProcParameter, SML_CODES.CODE_REBOOT, [element.pk]);
             });
             this.$nextTick(() => {
@@ -1935,7 +1941,7 @@ export default  {
             return (mc.length > 2) && mc.startsWith("MC");
         },
         getPlaceholder(str) {
-            console.log(str);
+            //console.log(str);
             return "<" + str + ">";
         }
    },

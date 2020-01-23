@@ -688,8 +688,16 @@
                         else if (obj.rec.data.online === 2) {
                             rec["_rowVariant"] = 'warning';
                         }
-                        //  insert into table
-                        tmpMeters.push(rec);
+
+                        if (this.isBusy) {
+                            //  bulk insert
+                            tmpMeters.push(rec);
+                        }
+                        else {
+                            //  operational insert
+                            this.meters.push(rec);
+                        }
+
                     }
                     else if (obj.cmd === 'modify') {
                         //console.log('lookup meter ' + obj.key);
