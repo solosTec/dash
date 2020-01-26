@@ -1,4 +1,5 @@
-﻿﻿<template lang="html">
+﻿﻿
+<template lang="html">
 
     <section class="smf-config-meter">
 
@@ -27,7 +28,7 @@
 
                 <b-col md="6">
                     <b-form-row>
-                        <smf-row-count-selector v-model="perPage" store-key="meter" class="col"/>
+                        <smf-row-count-selector v-model="perPage" store-key="meter" class="col" />
                         <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
                     </b-form-row>
                 </b-col>
@@ -245,10 +246,10 @@
                                                  :sort-direction="readout.sortDirection"
                                                  class="shadow">
 
-                                        <!-- A custom formatted column descr -->
+                                            <!-- A custom formatted column descr -->
                                             <template v-slot:cell(obis)="data">
                                                 <span v-b-popover.hover="data.item.value + ' ' + getUnitName(data.item.unit)" :title="data.value | toRegisterName">{{ data.item.obis }}</span>
-<!--                                                <span v-b-popover.hover="data.value" :title="data.item.obis">{{ formatDescription(data.value) }}</span>-->
+                                                <!--                                                <span v-b-popover.hover="data.value" :title="data.item.obis">{{ formatDescription(data.value) }}</span>-->
                                             </template>
 
                                         </b-table>
@@ -453,9 +454,11 @@
     import { SML_CODES } from '@/constants/rootCodes.js'
     import dataMirror from '@/components/smf-table-data-mirror.vue'
     import pushTargets from '@/components/smf-table-push-targets.vue'
-    import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+    import { hasPrivilegesWaitForUser } from "../mixins/privileges";
     import store from "../store";
-    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
+
+    let tmpMeters = [];
 
     export default {
         name: 'smfConfigMeter',
@@ -661,6 +664,7 @@
                     //console.log('websocket received command ' + obj.cmd);
                     if (obj.cmd === 'insert') {
                         const tom = new Date(obj.rec.data.tom.substring(0, 19));
+                        //console.log('insert meter ' + obj.rec.key.pk + " - "+ obj.rec.data.ident);
                         let rec = {
                             pk: obj.rec.key.pk,
                             ident: obj.rec.data.ident,
@@ -684,8 +688,16 @@
                         else if (obj.rec.data.online === 2) {
                             rec["_rowVariant"] = 'warning';
                         }
-                        //  insert into table
-                        this.meters.push(rec);
+
+                        if (this.isBusy) {
+                            //  bulk insert
+                            tmpMeters.push(rec);
+                        }
+                        else {
+                            //  operational insert
+                            this.meters.push(rec);
+                        }
+
                     }
                     else if (obj.cmd === 'modify') {
                         //console.log('lookup meter ' + obj.key);
@@ -757,6 +769,13 @@
                         if (obj.show != null) {
                             //   console.log('load state ' + obj.show);
                             this.isBusy = obj.show;
+                            if (this.isBusy) {
+                                // reset the tmpMeters array if the initial upload starts
+                                tmpMeters = [];
+                            } else {
+                                // set the tmpMeters if the initial uploads is done
+                                this.meters = tmpMeters;
+                            }
                         }
                         else if (obj.level !== 0) {
                             this.busyLevel = obj.level;
@@ -765,7 +784,7 @@
                         if (obj.show === false) {
                             // the table is loaded, we can select the meter - if there is one
                             const meterIdent = this.$route.params.meterIdent;
-                            if (!meterIdent){
+                            if (!meterIdent) {
                                 return;
                             }
                             const rowIndex = this.meters.findIndex(meter => meter.ident === meterIdent);
@@ -1002,7 +1021,7 @@
                 this.visibleRows = filteredItems.length;
                 this.currentPage = 1
             },
-            getUnitName (code) {
+            getUnitName(code) {
                 switch (code) {
                     case 9: return "°C";
                     case 13: return "m³";
@@ -1069,7 +1088,7 @@
         },
         beforeRouteEnter(to, from, next) {
             hasPrivilegesWaitForUser(store, MODULES.CONFIG_METERS, PRIVILEGES.VIEW).then((result) => {
-                next( result ? true: NO_ACCESS_ROUTE);
+                next(result ? true : NO_ACCESS_ROUTE);
             });
         }
     }

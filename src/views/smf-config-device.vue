@@ -301,7 +301,14 @@
                         if (!obj.rec.data.enabled) {
                             rec["_rowVariant"] = "warning";
                         }
-                        tmpDevices.push(rec);
+                        if (this.isBusy) {
+                            //  bulk insert
+                            tmpDevices.push(rec);
+                        }
+                        else {
+                            //  operational insert
+                            this.devices.push(rec);
+                        }
                     }
                     else if (obj.cmd == 'modify') {
                         // eslint-disable-next-line

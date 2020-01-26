@@ -7,7 +7,8 @@
     "build": "vue-cli-service build",
     "build-no-auth": "vue-cli-service build --mode no-auth --dest dist-no-auth",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "pre-commit": "npm run test:unit && npm run build"
   },
   "dependencies": {
     "bootstrap-vue": "^2.1.0",

@@ -251,7 +251,10 @@ export default  {
                                 this.stat.virtualMemory.variant = "danger";
                             }
                         }
-                        else {
+                        else if (obj.channel == 'table.cluster.count') {
+                            //  unused yet
+                       }
+                       else {
                             console.error("update - unknown channel: " + obj.channel);
                         }
                     }
