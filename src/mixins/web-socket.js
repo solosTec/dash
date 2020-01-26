@@ -29,15 +29,17 @@ export const webSocket = {
 
     methods: {
         ws_open: function(path) {
+            const isSecure = window.location.protocol === 'https:';
+            const protocol = isSecure ? 'wss' : 'ws';
             this.path = path;
             var self = this; //  save context
             if (process.env.NODE_ENV === 'production') {
-                this.ws = new WebSocket('ws://' + location.host + path, ['SMF']);
+                this.ws = new WebSocket(`${protocol}://` + location.host + path, ['SMF']);
             }
             else {
                 // VUE_APP_SMF_SERVER can be set in the .env file
                 console.log('VUE_APP_SMF_SERVER: ' + process.env.VUE_APP_SMF_SERVER);
-                this.ws = new WebSocket(`ws://${ process.env.VUE_APP_SMF_SERVER || '192.168.1.21:8082'}/${path}`, ["SMF"]);
+                this.ws = new WebSocket(`${protocol}://${ process.env.VUE_APP_SMF_SERVER || '192.168.1.21:8082'}/${path}`, ["SMF"]);
             }
             this.ws.onopen = function() {
                 //  subscribe system status
@@ -240,7 +242,7 @@ export const webSocket = {
                 // this.ws = new WebSocket(this.path, ["SMF"]);
                 return;
             }
-            this.ws_emit_event_state("online");                
+            this.ws_emit_event_state("online");
             //  restart timer
             this.timer = setTimeout(this.onTimer, 5000);
         },
