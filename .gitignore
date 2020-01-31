@@ -24,3 +24,5 @@ yarn-error.log*
 /.vs/dash/v16
 /coverage
 /.env
+/dist.tar.gz
+/UpgradeLog.htm
