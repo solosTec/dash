@@ -1910,7 +1910,7 @@ export default  {
             }
         },
         onMeterEdit(item) {
-           this.$router.push({ name: 'smfConfigMeter', params: { meterIdent: item.ident }});
+           this.$router.push({ name: 'smfConfigMeter', params: { meterPk: item.pk }});
         },
         onWMbusUpdate() {
             this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
