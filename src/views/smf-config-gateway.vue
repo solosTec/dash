@@ -423,23 +423,23 @@
 
                             <!-- table -->
                             <b-table ref="meterTable"
-                                bordered
-                                striped
-                                small
-                                hover
-                                show-empty
-                                stacked="md"
-                                selectable
-                                select-mode="single"
-                                selectedVariant="info"
-                                @row-selected="meterSelected"
-                                :fields="meters.fields"
-                                :items="meters.values"
-                                primary-key="ident"
-                                :sort-by.sync="meters.sortBy"
-                                :sort-desc.sync="meters.sortDesc"
-                                :sort-direction="meters.sortDirection"
-                                class="shadow">
+                                     bordered
+                                     striped
+                                     small
+                                     hover
+                                     show-empty
+                                     stacked="md"
+                                     selectable
+                                     select-mode="single"
+                                     selectedVariant="info"
+                                     @row-selected="meterSelected"
+                                     :fields="meters.fields"
+                                     :items="meters.values"
+                                     primary-key="ident"
+                                     :sort-by.sync="meters.sortBy"
+                                     :sort-desc.sync="meters.sortDesc"
+                                     :sort-direction="meters.sortDirection"
+                                     class="shadow">
 
                                 <template v-slot:cell(visible)="row">
                                     <b-button size="sm"
@@ -779,6 +779,13 @@
                             </b-form>
                         </b-tab>
 
+                        <!-- Access -->
+                        <b-tab no-body title="Access">
+                            <b-form @submit.prevent="">
+                                <b-button type="submit" variant="primary" v-on:click.stop="onAuthUpdate">Query</b-button>
+                            </b-form>
+                        </b-tab>
+
                         <!-- logs -->
                         <b-tab no-body title="Log">
                             <b-form @submit.prevent="" class="p-3">
@@ -786,9 +793,9 @@
                                     <b-col md="6">
                                         <b-form-group description="Select the time range">
                                             <b-form-radio-group buttons
-                                                button-variant="outline-primary"
-                                                v-model="tabOpLog.form.selected"
-                                                :options="tabOpLog.form.options">
+                                                                button-variant="outline-primary"
+                                                                v-model="tabOpLog.form.selected"
+                                                                :options="tabOpLog.form.options">
                                             </b-form-radio-group>
                                         </b-form-group>
                                     </b-col>
@@ -985,6 +992,7 @@ export default  {
               { text: 'Meters', value: 'devices' },
               { text: 'wireless M-Bus', value: 'w-MBus' },
               { text: 'IEC', value: 'iec' },
+              { text: 'Access', value: 'auth' },
               { text: 'Operation Log', value: 'log' }
               ],
           selected: [],
@@ -1526,6 +1534,10 @@ export default  {
                                 this.iec.params.devices = whatIsThis ? Array.from(whatIsThis) : [];
 
                             }
+                            else if (obj.section === SML_CODES.CODE_ROOT_ACCESS_RIGHTS) {
+                                console.log('update channel ' + obj.channel + ', section ' + obj.section);
+                                console.log(obj.rec);
+                            }
                             else if (obj.section === SML_CODES.CODE_DEVICE_CLASS) {
                                 console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
                             }
@@ -1924,6 +1936,13 @@ export default  {
                 SML_CODES.CODE_IF_1107,
                 [this.form.pk],
                 { iec: this.iec.params });
+        },
+
+        onAuthUpdate() {
+            this.ws_submit_request(MESSAGE_TYPES.getProcParameter,
+                SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
+                [this.form.pk],
+                { serverId: this.form.serverId, roleNr: 3, userNr: 1, meterNr: 6 });
         },
 
         meterTableComplete() {

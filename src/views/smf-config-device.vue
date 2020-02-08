@@ -487,7 +487,7 @@
             },
             btnUpdateTitle() {
                 if (this.selected.length > 0) {
-                    return this.$t('config-device-06') + '&nbsp;' + this.selected[0].name;
+                    return this.$t('config-device-06') + ' ' + this.selected[0].name;
                 }
                 return this.$t('config-device-06');
             },
@@ -496,12 +496,12 @@
                     return this.$t('config-device-07');
                 }
                 else if (this.selected.length == 1) {
-                    return this.$t('config-device-07') + '&nbsp;' + this.selected[0].name;
+                    return this.$t('config-device-07') + ' ' + this.selected[0].name;
                 }
-                return this.$t('config-device-07') + '&nbsp;' + this.selected.length + " record(s)";
+                return this.$t('config-device-07') + ' ' + this.selected.length + " record(s)";
             },
             btnInsertTitle() {
-                return this.$t('config-device-08') + '&nbsp;' + this.form.name;
+                return this.$t('config-device-08') + ' ' + this.form.name;
             },
             isRecordSelected() {
                 return this.selected.length != 0;
