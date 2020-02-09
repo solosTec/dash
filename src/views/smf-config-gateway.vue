@@ -1942,7 +1942,7 @@ export default  {
             this.ws_submit_request(MESSAGE_TYPES.getProcParameter,
                 SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
                 [this.form.pk],
-                { serverId: this.form.serverId, roleNr: 3, userNr: 1, meterNr: 6 });
+                { serverId: this.form.serverId, roleNr: 3, userNr: 1, meterNr: 2 });
         },
 
         meterTableComplete() {
