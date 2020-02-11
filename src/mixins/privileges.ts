@@ -20,7 +20,7 @@ export async function hasPrivilegesWaitForUser(store: Store<AppState>, module: s
 
 export function hasPrivileges(store: Store<any>, module: string, privilege: string) {
 
-    console.log('hasPrivileges', module, privilege);
+    // console.log('hasPrivileges', module, privilege);
 
     const privs = store.state.user.privileges;
     if (!privs[module]){
