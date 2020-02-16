@@ -782,7 +782,7 @@
                         <!-- Access -->
                         <b-tab no-body title="Access">
                             <b-form @submit.prevent="">
-                                <b-form-input  type="number" 
+                                <b-form-input  type="number"
                                               id="smf-form-gw-server"
                                                 required
                                               v-model="access.meterNr"
@@ -878,6 +878,7 @@
     import {hasPrivilegesWaitForUser} from "../mixins/privileges";
     import store from "../store";
     import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+    import {generatePassword} from "@/shared/generate-password";
 
     let tmpGateways = [];
 
@@ -1880,22 +1881,12 @@ export default  {
 
         generatePassword(event) {
             event.preventDefault();
-            let charSet = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!';
-            this.form.userPwd = "";
-            // this.form[element] = '';
-            for(let idx = 0; idx < 8; idx++) {
-                this.form.userPwd += charSet.charAt(Math.floor(Math.random() * charSet.length));
-            }
+            this.form.userPwd = generatePassword();
         },
 
         generatePasswordIPT(event, element) {
             event.preventDefault();
-            let charSet = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!';
-            // this.form.userPwd = "";
-            this.ipt.param[element].pwd = '';
-            for(let idx = 0; idx < 8; idx++) {
-                this.ipt.param[element].pwd  += charSet.charAt(Math.floor(Math.random() * charSet.length));
-            }
+            this.ipt.param[element].pwd = generatePassword();
         },
 
         onFiltered(filteredItems) {

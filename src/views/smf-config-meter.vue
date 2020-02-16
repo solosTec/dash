@@ -457,6 +457,7 @@
     import { hasPrivilegesWaitForUser } from "../mixins/privileges";
     import store from "../store";
     import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
+    import {generatePassword} from "@/shared/generate-password";
 
     let tmpMeters = [];
 
@@ -1016,12 +1017,7 @@
             },
             generatePassword(event) {
                 event.preventDefault();
-                let charSet = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!';
-                this.tabMeter.data.pwd = "";
-                // this.form[element] = '';
-                for (let idx = 0; idx < 8; idx++) {
-                    this.tabMeter.data.pwd += charSet.charAt(Math.floor(Math.random() * charSet.length));
-                }
+                this.tabMeter.data.pwd = generatePassword();
             },
             onFiltered(filteredItems) {
                 // Trigger pagination to update the number of buttons/pages due to filtering

@@ -171,6 +171,7 @@
     import store from './../store/index';
     import { hasPrivilegesWaitForUser } from "../mixins/privileges";
     import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
+    import {generatePassword} from "@/shared/generate-password";
 
     let tmpDevices = [];
 
@@ -464,11 +465,7 @@
             },
             generatePassword(event) {
                 event.preventDefault();
-                let charSet = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!';
-                this.form.pwd = "";
-                for (let idx = 0; idx < 12; idx++) {
-                    this.form.pwd += charSet.charAt(Math.floor(Math.random() * charSet.length));
-                }
+                this.form.pwd = generatePassword();
             },
             onFiltered(filteredItems) {
                 // Trigger pagination to update the number of buttons/pages due to filtering
