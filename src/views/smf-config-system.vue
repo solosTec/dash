@@ -320,6 +320,7 @@
                             this.cfg.languageCode = obj.value;
                         }
                     }
+                    // eslint-disable-next-line
                     else if (obj.cmd == 'load') {
                     }
                 }

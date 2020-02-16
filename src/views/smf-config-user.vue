@@ -18,24 +18,50 @@
             <b-row>
                 <b-col md="9">
                     <smf-data-table
-                         :busyLevel="busyLevel"
-                         tableName="users"
-                         :items="users"
-                         :fields="fields"
-                         @itemSelected="usersSelected">
-
-                        <template v-slot:cell(lastAccess)="data">
-                            <span>{{ data.item.lastAccess }} xxx</span>
-                        </template>
-
+                            :busyLevel="busyLevel"
+                            tableName="users"
+                            :items="users"
+                            :fields="fields"
+                            @itemSelected="usersSelected">
                     </smf-data-table>
                 </b-col>
                 <b-col md="3">
-                    <b-form v-on:submit.prevent class="p-3 shadow">
-                    </b-form>
+                    <smf-crud-form
+                            identityPropertyName="username"
+                            :formBackedValue="form"
+                            :items="selectedUsers"
+                            @updateItem="updateItem"
+                            @deleteItem="deleteItem"
+                            @insertItem="insertItem">
+
+                        <b-form-group label="Username" label-for="smf-form-username">
+                            <b-form-input id="smf-form-username"
+                                          type="text"
+                                          v-model="form.username"
+                                          required
+                                          placeholder="Username"/>
+                        </b-form-group>
+
+                        <b-form-group label="Role" label-for="smf-form-role">
+                            <b-form-select id="smf-form-role"
+                                           v-model="form.role"
+                                           :options="roleOptions"
+                                           required></b-form-select>
+                        </b-form-group>
+
+                    </smf-crud-form>
+
                 </b-col>
             </b-row>
         </b-container>
+
+        <b-modal ref="dlgDeleteUser"
+                 title="Delete User"
+                 @ok="deleteConfirmed"
+                 header-bg-variant="danger"
+                 centered>
+            <p>{{deleteMessage}}</p>
+        </b-modal>
     </section>
 </template>
 
@@ -48,12 +74,34 @@
     import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
     import Vue from 'vue';
     import smfDataTable from '@/components/smf-data-table.vue';
-    import {User} from '@/backend-api/user';
+    import smfCrudForm from '@/components/smf-crud-form.vue';
+    import {ROLES, User, UserRole} from '@/backend-api/user';
+    import {BModal} from 'bootstrap-vue';
+
+    const MOCK_USERS: User[] = [
+        {
+            username: 'Hugo',
+            role: UserRole.SystemAdmin,
+            lastAccess: '2019-12-11 08:57:14.00000000',
+            passwort: ''
+        },
+        {
+            username: 'Alvin',
+            role: UserRole.DeviceManager,
+            lastAccess: '2019-12-11 08:57:14.00000000',
+            passwort: ''
+        }
+    ];
 
     const fields = [
         {
             key: 'username',
             label: 'Username',
+            sortable: true
+        },
+        {
+            key: 'role',
+            label: 'Role',
             sortable: true
         },
         {
@@ -63,21 +111,28 @@
         }
     ];
 
+    const FormInit = {
+        username: '',
+        role: '',
+        passwort: ''
+    };
+
     export default mixins(webSocket, Vue).extend({
         name: 'smfConfigUser',
         mixins: [webSocket],
         components: {
-            smfDataTable
+            smfDataTable,
+            smfCrudForm
         },
         mounted() {
+            // init the form with default props and values
+            this.form = Object.assign({}, FormInit) as User;
             this.ws_open("/smf/api/user/v0.8");
             // mock code
-            setTimeout(()=>{
+            setTimeout(() => {
                 this.busyLevel = 100;
-                this.users = [
-                    {username: 'y', lastAccess: '2020-02-12T12:09:01'} as User
-                ]
-            }, 100)
+                this.users = MOCK_USERS;
+            }, 100);
         },
         beforeDestroy() {
             this.ws_close();
@@ -86,15 +141,47 @@
             return {
                 users: [] as User[],
                 busyLevel: 0,
-                fields
+                fields,
+                selectedUsers: [] as User[],
+                form: {} as User,
+                roleOptions: ROLES.map(r => ({value: r, text: r}))
             }
         },
         methods: {
             ws_on_open() {
 
             },
-            usersSelected(users: any[]){
-                console.log('users selected', users)
+            usersSelected(users: User[]): void {
+                this.selectedUsers = users || [];
+                if (this.selectedUsers.length === 1) {
+                    this.form = Object.assign({}, this.selectedUsers[0]);
+                } else {
+                    this.form = Object.assign({}, FormInit) as User
+                }
+            },
+            updateItem() {
+                console.log('update', JSON.stringify(this.form), JSON.stringify(this.selectedUsers))
+            },
+            deleteItem() {
+                console.log('delete', this.form);
+                (this.$refs.dlgDeleteUser as BModal).show();
+            },
+            insertItem() {
+                console.log('insert', this.form)
+            },
+            deleteConfirmed() {
+                console.log('delete confirmed', this.form)
+            }
+        },
+
+        computed: {
+            deleteMessage(): string {
+                if (this.selectedUsers.length > 1) {
+                    return `Do you really want to delete the ${this.selectedUsers.length} selected users?`;
+                } else if (this.selectedUsers.length === 1) {
+                    return `Do you really want to delete user ${this.selectedUsers[0].username}?`;
+                }
+                return '';
             }
         },
 
