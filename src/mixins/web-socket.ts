@@ -3,7 +3,7 @@ import Vue from 'vue';
 import {TranslateResult} from 'vue-i18n';
 import {MESSAGE_TYPES} from '@/constants/msgTypes';
 
-declare interface WebSocketData {
+interface WebSocketData {
     ws: WebSocket | null,
     rx: number,
     sx: number,
@@ -11,6 +11,37 @@ declare interface WebSocketData {
     timer: number | null,
     host: string,
     state: string | TranslateResult
+}
+
+export interface WSResponse {
+    cmd: 'update' | 'insert' | 'modify' | 'clear' | 'delete' | 'load';
+    channel: string;
+}
+
+export interface WSInsertResponse<T> extends WSResponse {
+    rec: {
+        key: any;
+        data: T;
+    };
+}
+
+export interface WSUpdateResponse extends WSResponse {
+    section: string;
+    rec: any;
+}
+
+export interface WSModifyResponse<T> extends WSResponse {
+    key: any;
+    value: Partial<T>;
+}
+
+export interface WSDeleteResponse extends WSResponse {
+    key: any;
+}
+
+export interface WSLoadResponse extends WSResponse {
+    show: boolean;
+    level: number;
 }
 
 export const webSocket = Vue.extend({
@@ -24,7 +55,7 @@ export const webSocket = Vue.extend({
     },
 
     data(): WebSocketData {
-        return  {
+        return {
             ws: null,
             rx: 0,
             sx: 0,
@@ -41,82 +72,81 @@ export const webSocket = Vue.extend({
     },
 
     methods: {
-        ws_open: function(path: string) {
+        ws_open: function (path: string) {
             const isSecure = window.location.protocol === 'https:';
             const protocol = isSecure ? 'wss' : 'ws';
             this.path = path;
             const self = this as any; //  save context
             if (process.env.NODE_ENV === 'production') {
                 this.ws = new WebSocket(`${protocol}://` + location.host + path, ['SMF']);
-            }
-            else {
+            } else {
                 // VUE_APP_SMF_SERVER can be set in the .env file
                 console.log('VUE_APP_SMF_SERVER: ' + process.env.VUE_APP_SMF_SERVER);
-                this.ws = new WebSocket(`${protocol}://${ process.env.VUE_APP_SMF_SERVER || '192.168.1.21:8082'}/${path}`, ["SMF"]);
+                this.ws = new WebSocket(`${protocol}://${process.env.VUE_APP_SMF_SERVER || '192.168.1.21:8082'}/${path}`, ["SMF"]);
             }
-            this.ws.onopen = function() {
+            this.ws.onopen = function () {
                 //  subscribe system status
                 console.log("websocket open: " + this.url);
                 self.ws_on_open(this.url);
                 self.state = self.$t('state-online');
                 self.ws_emit_event_state(self.state);
             };
-            this.ws.onmessage = function(e) {
+            this.ws.onmessage = function (e) {
                 // console.log('websocket received data (' + e.data.length + ')');
                 self.rx += e.data.length;
                 self.ws_emit_event_rx();
                 self.ws_on_data(JSON.parse(e.data));
             };
-            this.ws.onclose = function(evt) {
+            this.ws.onclose = function (evt) {
                 switch (evt.code) {
                     case 1000:
                         console.log("websocket - normal closure: " + evt.code);
                         // self.ws_emit_event_state("normal closure");
-                    break;
+                        break;
                     case 1001:
                         console.log("websocket - going away: " + evt.code);
                         self.ws_emit_event_state("going away");
-                    break;
+                        break;
                     case 1002:
                         console.log("websocket - protocol error: " + evt.code);
                         self.ws_emit_event_state("protocol error");
-                    break;
+                        break;
                     case 1003:
                         console.log("websocket - unsupported data: " + evt.code);
                         self.ws_emit_event_state("unsupported data");
-                    break;
+                        break;
                     case 1006:
                         console.log("websocket - connection lost: ");
                         self.ws_emit_event_state("connection lost");
                         //  start timer to reconnect
                         self.onTimer();
-                    break;
+                        break;
                     default:
                         console.log("websocket closed: " + evt.code);
                         self.ws_emit_event_state(evt.code + " closed");
-                    break;
+                        break;
                 }
             };
-            this.ws.onerror = function(err) {
+            this.ws.onerror = function (err) {
                 console.log("websocket error: " + err);
                 self.ws_emit_event_state("error");
             };
         },
 
         //  close socket intentionally
-        ws_close: function() {
+        ws_close: function () {
             if (!this.ws_is_open() || !this.ws) return;
 
             switch (this.ws.readyState) {
                 case 0: //  CONNECTING
                 case 1: //  OPEN
                     this.ws.close();
-                break;
+                    break;
 
                 case 2: //  CLOSING
                 case 3: //  CLOSED
                 default:
-                break;
+                    break;
             }
             this.state = this.$t('state-offline');
             this.ws_emit_event_state(this.state);
@@ -153,7 +183,7 @@ export const webSocket = Vue.extend({
             this.sx += msg.length;
             this.ws_emit_event_sx();
         },
-        ws_submit_key(cmd: string, channel: string, key: string) {
+        ws_submit_key(cmd: string, channel: string, key: any) {
             if (!this.ws_is_open() || !this.ws) return;
             const msg = JSON.stringify({
                 cmd: cmd,
@@ -185,7 +215,7 @@ export const webSocket = Vue.extend({
         //  pk_meter: primary key of selected object (gateway, meter)
         //  params: optional parameters
         //
-        ws_submit_request(msgType: MESSAGE_TYPES, root: string, pk_gw: string, params = { params: null }) {
+        ws_submit_request(msgType: MESSAGE_TYPES, root: string, pk_gw: string, params = {params: null}) {
             if (!this.ws_is_open() || !this.ws) return;
             const msg = JSON.stringify({
                 cmd: "com:sml",
@@ -220,7 +250,7 @@ export const webSocket = Vue.extend({
                 "YB"
             ];
             let l = 0;
-            let n = parseInt(''+x, 10) || 0;
+            let n = parseInt('' + x, 10) || 0;
             while (n >= 1024 && ++l) {
                 n = n / 1024;
             }
@@ -228,21 +258,25 @@ export const webSocket = Vue.extend({
             return n.toFixed(n >= 10 || l < 1 ? 0 : 1) + " " + units[l];
         },
         ws_state_name() {
-            if(!this.ws) {
+            if (!this.ws) {
                 return;
             }
             switch (this.ws.readyState) {
-                case 0: return "CONNECTING";
-                case 1: return "OPEN";
-                case 2: return "CLOSING";
-                case 3: return "CLOSED";
+                case 0:
+                    return "CONNECTING";
+                case 1:
+                    return "OPEN";
+                case 2:
+                    return "CLOSING";
+                case 3:
+                    return "CLOSED";
                 default:
                     break;
             }
             return "invalid socket state";
         },
         onTimer() {
-            if (!this.ws_is_open())    {
+            if (!this.ws_is_open()) {
                 //  try to reconnect
                 console.log("try reconnect: " + this.path);
                 this.ws_open(this.path);
@@ -275,6 +309,5 @@ export const webSocket = Vue.extend({
             return "no connection";
         }
     },
-    computed: {
-    }
+    computed: {}
 });

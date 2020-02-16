@@ -21,7 +21,6 @@
                             :fields="fields"
                             @itemSelected="rowSelected">
 
-                        <!-- A custom formatted column descr -->
                         <template v-slot:cell(descr)="data">
                             <span v-b-popover.hover="data.value" :title="data.item.name">{{ formatDescription(data.value) }}</span>
                         </template>
@@ -104,18 +103,101 @@
     </section>
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    import { webSocket } from '../mixins/web-socket';
+    import {
+        webSocket,
+        WSDeleteResponse,
+        WSInsertResponse,
+        WSLoadResponse,
+        WSModifyResponse,
+        WSResponse
+    } from '@/mixins/web-socket';
     import store from './../store/index';
-    import { hasPrivilegesWaitForUser } from "../mixins/privileges";
-    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
+    import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
     import {generatePassword} from "@/shared/generate-password";
     import smfDataTable from '@/components/smf-data-table.vue';
+    import mixins from 'vue-typed-mixins';
+    import Vue from 'vue';
+    import {BModal} from 'bootstrap-vue';
+    import {TranslateResult} from 'vue-i18n';
+    import {Device} from '@/backend-api/device';
+    import {Route} from 'vue-router';
 
-    let tmpDevices = [];
+    interface BTableItem {
+        _rowVariant?: 'warning' | null;
+    }
 
-    export default {
+    interface UiDevice extends BTableItem {
+        pk: string;
+        age: Date;
+        descr: string;
+        enabled: boolean;
+        id: string;
+        msisdn: string;
+        name: string;
+        pwd: string;
+        vFirmware: string;
+    }
+
+    interface FormDevice {
+        name: string;
+        msisdn: string | null;
+        pwd: string | null;
+        descr: string | null;
+        enabled: boolean;
+        pk: string | null;
+    }
+
+    const fields = [
+        {
+            key: 'name',
+            label: 'Name',
+            sortable: true
+        },
+        {
+            key: 'msisdn',
+            label: 'MSISDN',
+            sortable: true
+        },
+        {
+            key: 'pwd',
+            label: 'Password'
+        },
+        {
+            key: 'descr',
+            label: 'Description',
+            sortable: true
+        },
+        {
+            key: 'id',
+            label: 'Model',
+            sortable: true
+        },
+        {
+            key: 'vFirmware',
+            label: 'Firmware',
+            sortable: true
+        },
+        {
+            key: 'enabled',
+            label: 'Enabled',
+            sortable: true,
+            formatter: (value: string) => value ? '✔' : '✖',
+            class: 'text-center'
+        },
+        {
+            key: 'age',
+            label: 'Created',
+            formatter: (value: string) => value.toLocaleString(),
+            sortable: true
+        }
+    ];
+
+    let tmpDevices: UiDevice[] = [];
+
+    export default mixins(webSocket, Vue).extend({
         name: 'smfConfigDevice',
         props: [],
         components: {
@@ -130,53 +212,9 @@
             return {
                 isBusy: true,
                 busyLevel: 0,
-                fields: [
-                    {
-                        key: 'name',
-                        label: 'Name',
-                        sortable: true
-                    },
-                    {
-                        key: 'msisdn',
-                        label: 'MSISDN',
-                        sortable: true
-                    },
-                    {
-                        key: 'pwd',
-                        label: 'Password'
-                    },
-                    {
-                        key: 'descr',
-                        label: 'Description',
-                        sortable: true
-                    },
-                    {
-                        key: 'id',
-                        label: 'Model',
-                        sortable: true
-                    },
-                    {
-                        key: 'vFirmware',
-                        label: 'Firmware',
-                        sortable: true
-                    },
-                    {
-                        key: 'enabled',
-                        label: 'Enabled',
-                        sortable: true,
-                        formatter: (value) => value ? '✔' : '✖',
-                        class: 'text-center'
-                    },
-                    {
-                        key: 'age',
-                        label: 'Created',
-                        formatter: (value) => value.toLocaleString(),
-                        sortable: true
-                    }
-                ],
-                devices: [],
-                // devices: [{ pk: "e92d32cf-5387-48ff-ad8b-29507a033075", age: new Date(), descr: "comment #4", enabled: true, id: "ID", msisdn: "1004", name: "device-4", pwd: "geheim", vFirmware: "v4" }],
-                selected: [],
+                fields,
+                devices: [] as UiDevice[],
+                selected: [] as UiDevice[],
                 form: {
                     name: '',
                     msisdn: '',
@@ -184,7 +222,7 @@
                     descr: '',
                     enabled: true,
                     pk: ''
-                }
+                } as FormDevice
             }
         },
 
@@ -200,8 +238,8 @@
                 this.ws_subscribe("config.device");
             },
 
-            ws_on_data(obj) {
-                if (obj.cmd != null) {
+            ws_on_data(obj: WSResponse) {
+                if (obj.cmd) {
                     // eslint-disable-next-line
                     console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                     if (obj.cmd === 'update') {
@@ -213,22 +251,22 @@
                         // }
                     }
                     else if (obj.cmd === 'insert') {
-                        var created = new Date(obj.rec.data.creationTime.substring(0, 19));
-                        var rec = {
-                            pk: obj.rec.key.pk,
+                        const insertResponse = obj as WSInsertResponse<Device>;
+                        const bDevice = insertResponse.rec.data;
+                        const created = new Date(bDevice.creationTime.substring(0, 19));
+                        const rec: UiDevice = {
+                            pk: insertResponse.rec.key.pk,
                             age: created,
-                            descr: obj.rec.data.descr,
-                            enabled: obj.rec.data.enabled,
-                            id: obj.rec.data.id,
-                            msisdn: obj.rec.data.msisdn,
-                            name: obj.rec.data.name,
-                            pwd: obj.rec.data.pwd,
-                            vFirmware: obj.rec.data.vFirmware
+                            descr: bDevice.descr,
+                            enabled: bDevice.enabled,
+                            id: bDevice.id,
+                            msisdn: bDevice.msisdn,
+                            name: bDevice.name,
+                            pwd: bDevice.pwd,
+                            vFirmware: bDevice.vFirmware,
+                            _rowVariant: bDevice.enabled ? null : 'warning'
                         };
 
-                        if (!obj.rec.data.enabled) {
-                            rec["_rowVariant"] = "warning";
-                        }
                         if (this.isBusy) {
                             //  bulk insert
                             tmpDevices.push(rec);
@@ -239,50 +277,43 @@
                         }
                     }
                     else if (obj.cmd === 'modify') {
+                        const modResponse = obj as WSModifyResponse<Device>;
                         // eslint-disable-next-line
-                        console.log('modify device ' + obj.key);
-                        var self = this;
-                        this.devices.find(function (rec) {
-                            if (rec.pk === obj.key) {
+                        console.log('modify device ' + modResponse.key);
+                        this.devices.forEach( (rec: UiDevice) => {
+                            if (rec.pk === modResponse.key) {
                                 // eslint-disable-next-line
                                 console.log('modify record ' + rec.name);
-                                if (obj.value.name != null) {
-                                    rec.name = obj.value.name;
-                                    if (self.form.pk === rec.pk) {
-                                        self.form.name = rec.name;
+                                if (modResponse.value.name != null) {
+                                    rec.name = modResponse.value.name;
+                                    if (this.form.pk === rec.pk) {
+                                        this.form.name = rec.name;
                                     }
                                 }
-                                else if (obj.value.msisdn != null) {
-                                    rec.msisdn = obj.value.msisdn;
-                                    if (self.form.pk === rec.pk) {
-                                        self.form.msisdn = rec.msisdn;
+                                else if (modResponse.value.msisdn != null) {
+                                    rec.msisdn = modResponse.value.msisdn;
+                                    if (this.form.pk === rec.pk) {
+                                        this.form.msisdn = rec.msisdn;
                                     }
                                 }
-                                else if (obj.value.pwd != null) {
-                                    rec.pwd = obj.value.pwd;
-                                    if (self.form.pk === rec.pk) {
-                                        self.form.pwd = rec.pwd;
+                                else if (modResponse.value.pwd != null) {
+                                    rec.pwd = modResponse.value.pwd;
+                                    if (this.form.pk === rec.pk) {
+                                        this.form.pwd = rec.pwd;
                                     }
                                 }
-                                else if (obj.value.descr != null) {
-                                    rec.descr = obj.value.descr;
-                                    if (self.form.pk === rec.pk) {
-                                        self.form.descr = rec.descr;
+                                else if (modResponse.value.descr != null) {
+                                    rec.descr = modResponse.value.descr;
+                                    if (this.form.pk === rec.pk) {
+                                        this.form.descr = rec.descr;
                                     }
                                 }
-                                else if (obj.value.enabled != null) {
-                                    rec.enabled = obj.value.enabled;
-                                    if (!obj.value.enabled) {
-                                        rec._rowVariant = 'warning';
+                                else if (modResponse.value.enabled != null) {
+                                    rec.enabled = modResponse.value.enabled;
+                                    rec._rowVariant = modResponse.value.enabled ? null : 'warning';
+                                    if (this.form.pk === rec.pk) {
+                                        this.form.enabled = rec.enabled;
                                     }
-                                    else {
-                                        rec._rowVariant = null;
-                                    }
-                                    if (self.form.pk === rec.pk) {
-                                        self.form.enabled = rec.enabled;
-                                    }
-                                    //  force refresh: https://github.com/bootstrap-vue/bootstrap-vue/issues/1529
-                                    // this.$refs.devTable.refresh();
                                 }
                             }
                         });
@@ -292,18 +323,15 @@
                         this.devices = [];
                     }
                     else if (obj.cmd === 'delete') {
-                        // console.log('lookup device ' + obj.key);
-                        var idx = this.devices.findIndex(rec => rec.pk === obj.key);
+                        var idx = this.devices.findIndex(rec => rec.pk === (obj as WSDeleteResponse).key);
                         // eslint-disable-next-line
                         console.log('delete index ' + idx);
                         this.devices.splice(idx, 1);
                     }
                     else if (obj.cmd === 'load') {
-                        //  load status
-                        if (obj.show != null) {
-                            // eslint-disable-next-line
-                            //console.log('load state ' + obj.show);
-                            this.isBusy = obj.show;
+                        const loadResponse = obj as WSLoadResponse;
+                        if (loadResponse.hasOwnProperty('show')) {
+                            this.isBusy = loadResponse.show;
 
                             if (this.isBusy) {
                                 // reset the tmpDevices array if the initial upload starts
@@ -313,18 +341,16 @@
                                 this.devices = tmpDevices;
                             }
                         }
-                        else if (obj.level !== 0) {
-                            this.busyLevel = obj.level;
+                        if (loadResponse.hasOwnProperty('level')) {
+                            this.busyLevel = loadResponse.level;
                         }
                     }
                 }
             },
 
-            ws_on_closed(err) {
-                // alert("ws closed: " + err);
-            },
+            ws_on_closed(err: any) {},
 
-            rowSelected(items) {
+            rowSelected(items: UiDevice[]) {
                 this.selected = items;
                 if (items.length > 0) {
                     // eslint-disable-next-line
@@ -349,7 +375,7 @@
                 }
             },
 
-            onDeviceUpdate(event) {
+            onDeviceUpdate(event: Event) {
                 event.preventDefault();
                 // console.log('onDeviceUpdate: ' + this.form.name);
                 this.ws_submit_record("modify", "config.device", {
@@ -363,74 +389,81 @@
                     }
                 });
             },
-            onDeviceDelete(event) {
+            onDeviceDelete(event: Event) {
                 event.preventDefault();
                 // eslint-disable-next-line
                 //console.log('onDeviceDelete: ' + this.selected.length + ' devices');
-                this.$refs.dlgDeleteDevice.show();
+                (this.$refs.dlgDeleteDevice as BModal).show();
             },
-            handleDeleteDeviceOk(event) {
+            handleDeleteDeviceOk(event: Event) {
                 event.preventDefault();
                 this.selected.forEach(element => {
                     this.ws_submit_key("delete", "config.device", { tag: [element.pk] });
                 });
                 this.$nextTick(() => {
                     // Wrapped in $nextTick to ensure DOM is rendered before closing
-                    this.$refs.dlgDeleteDevice.hide();
+                    (this.$refs.dlgDeleteDevice as BModal).hide();
                 })
             },
-            onDeviceInsert(event) {
+            onDeviceInsert(event: Event) {
                 event.preventDefault();
                 // eslint-disable-next-line
                 console.log('onDeviceInsert: ' + event);
                 this.ws_submit_record("insert", "config.device", {
                     key: [this.form.pk],
-                    data: { name: this.form.name, msisdn: this.form.msisdn, descr: this.form.descr, pwd: this.form.pwd, enabled: this.form.enabled, age: new Date() }
+                    data: {
+                        name: this.form.name,
+                        msisdn: this.form.msisdn,
+                        descr: this.form.descr,
+                        pwd: this.form.pwd,
+                        enabled: this.form.enabled,
+                        age: new Date()
+                    }
                 });
             },
-            generatePassword(event) {
+            generatePassword(event: Event) {
                 event.preventDefault();
                 this.form.pwd = generatePassword();
             },
-            formatDescription(str) {
+            formatDescription(str: string) {
                 if (str.length > 24) return str.substring(0, 24) + '...';
                 return str;
             }
         },
 
         computed: {
-            btnUpdateTitle() {
+            btnUpdateTitle(): string | TranslateResult {
                 if (this.selected.length > 0) {
                     return this.$t('config-device-06') + ' ' + this.selected[0].name;
                 }
                 return this.$t('config-device-06');
             },
-            btnDeleteTitle() {
-                if (this.selected.length == 0) {
+            btnDeleteTitle(): string | TranslateResult {
+                if (this.selected.length === 0) {
                     return this.$t('config-device-07');
                 }
-                else if (this.selected.length == 1) {
+                else if (this.selected.length === 1) {
                     return this.$t('config-device-07') + ' ' + this.selected[0].name;
                 }
                 return this.$t('config-device-07') + ' ' + this.selected.length + " record(s)";
             },
-            btnInsertTitle() {
+            btnInsertTitle(): string | TranslateResult {
                 return this.$t('config-device-08') + ' ' + this.form.name;
             },
-            isRecordSelected() {
-                return this.selected.length != 0;
+            isRecordSelected(): boolean {
+                return this.selected.length !== 0;
             },
-            isRecordNew() {
-                if (this.selected.length != 0) {
-                    return this.form.name != this.selected[0].name;
+            isRecordNew(): boolean {
+                if (this.selected.length !== 0) {
+                    return this.form.name !== this.selected[0].name;
                 }
                 return this.form.name.length > 0;
             }
         },
-        beforeRouteEnter(to, from, next) {
+        beforeRouteEnter(to: Route, from: Route, next: any) {
             hasPrivilegesWaitForUser(store, MODULES.CONFIG_DEVICES, PRIVILEGES.VIEW).then((result) => {
                 next(result ? true : NO_ACCESS_ROUTE);
             });
         }
-    }
+    })
 </script>
