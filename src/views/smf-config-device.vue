@@ -14,80 +14,19 @@
         <b-container fluid>
             <b-row>
                 <b-col md="9">
+                    <smf-data-table
+                            :busyLevel="busyLevel"
+                            tableName="devices"
+                            :items="devices"
+                            :fields="fields"
+                            @itemSelected="rowSelected">
 
-                    <b-row>
-                        <b-col md="6">
-                            <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
-                                <b-input-group>
-                                    <b-form-input v-model="filter" :placeholder="$t('config-gateway-02')" />
-                                    <b-input-group-append>
-                                        <b-button :disabled="!filter" @click="filter = ''">{{ $t('config-gateway-03') }}</b-button>
-                                    </b-input-group-append>
-                                </b-input-group>
-                            </b-form-group>
-                        </b-col>
+                        <!-- A custom formatted column descr -->
+                        <template v-slot:cell(descr)="data">
+                            <span v-b-popover.hover="data.value" :title="data.item.name">{{ formatDescription(data.value) }}</span>
+                        </template>
 
-
-                        <b-col md="6">
-                            <b-form-row>
-                                <smf-row-count-selector v-model="perPage" store-key="devices" class="col" />
-                                <b-pagination v-model="currentPage" :total-rows="visibleRows" :per-page="perPage" class="justify-content-end" />
-                            </b-form-row>
-                        </b-col>
-                    </b-row>
-
-                    <b-row>
-                        <b-col md="12">
-                            <!-- table -->
-                            <b-table ref="devTable"
-                                     bordered
-                                     striped
-                                     small
-                                     hover
-                                     show-empty
-                                     stacked="md"
-                                     selectable
-                                     select-mode="range"
-                                     selectedVariant="info"
-                                     @row-selected="rowSelected"
-                                     :fields="fields"
-                                     :items="devices"
-                                     :busy="isBusy"
-                                     primary-key="pk"
-                                     :sort-by.sync="sortBy"
-                                     :sort-desc.sync="sortDesc"
-                                     :sort-direction="sortDirection"
-                                     :current-page="currentPage"
-                                     :per-page="perPage"
-                                     :filter="filter"
-                                     @filtered="onFiltered"
-                                     class="shadow">
-
-                                <!-- A virtual column -->
-                                <template v-slot:cell(index)="data">
-                                    {{ data.index + 1 + (perPage * (currentPage - 1)) }}
-                                </template>
-
-                                <!-- A custom formatted column descr -->
-                                <template v-slot:cell(descr)="data">
-                                    <span v-b-popover.hover="data.value" :title="data.item.name">{{ formatDescription(data.value) }}</span>
-                                </template>
-
-                                <!-- caption slot -->
-                                <template slot="table-caption">
-                                    {{ tableCaption }}
-                                </template>
-
-
-                                <!-- loading slot -->
-                                <div slot="table-busy" class="text-center text-danger">
-                                    <strong>Loading... {{busyLevel}}%</strong>
-                                </div>
-
-                            </b-table>
-                        </b-col>
-                    </b-row>
-
+                    </smf-data-table>
                 </b-col>
 
                 <b-col md="3">
@@ -172,12 +111,16 @@
     import { hasPrivilegesWaitForUser } from "../mixins/privileges";
     import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
     import {generatePassword} from "@/shared/generate-password";
+    import smfDataTable from '@/components/smf-data-table.vue';
 
     let tmpDevices = [];
 
     export default {
         name: 'smfConfigDevice',
         props: [],
+        components: {
+            smfDataTable
+        },
         mixins: [webSocket],
         mounted() {
             this.ws_open("/smf/api/device/v0.8");
@@ -187,13 +130,7 @@
             return {
                 isBusy: true,
                 busyLevel: 0,
-                currentPage: 1,
-                perPage: 15,
                 fields: [
-                    {
-                        key: 'index',
-                        class: 'text-right small text-muted'
-                    },
                     {
                         key: 'name',
                         label: 'Name',
@@ -227,29 +164,19 @@
                         key: 'enabled',
                         label: 'Enabled',
                         sortable: true,
-                        formatter: (value, key, item) => {
-                            if (value) return '✔';
-                            return '✖';
-                        },
+                        formatter: (value) => value ? '✔' : '✖',
                         class: 'text-center'
                     },
                     {
                         key: 'age',
                         label: 'Created',
-                        formatter: (value, key, item) => {
-                            return value.toLocaleString()
-                        },
+                        formatter: (value) => value.toLocaleString(),
                         sortable: true
                     }
                 ],
                 devices: [],
                 // devices: [{ pk: "e92d32cf-5387-48ff-ad8b-29507a033075", age: new Date(), descr: "comment #4", enabled: true, id: "ID", msisdn: "1004", name: "device-4", pwd: "geheim", vFirmware: "v4" }],
                 selected: [],
-                sortBy: 'name',
-                sortDesc: false,
-                sortDirection: 'desc',
-                filter: null,
-                visibleRows: 0,
                 form: {
                     name: '',
                     msisdn: '',
@@ -277,7 +204,7 @@
                 if (obj.cmd != null) {
                     // eslint-disable-next-line
                     console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
-                    if (obj.cmd == 'update') {
+                    if (obj.cmd === 'update') {
                         // if (obj.channel != null) {
                         //     console.log('update channel ' + obj.channel);
                         //     if (obj.channel == 'table.session.count') {
@@ -285,7 +212,7 @@
                         //     }
                         // }
                     }
-                    else if (obj.cmd == 'insert') {
+                    else if (obj.cmd === 'insert') {
                         var created = new Date(obj.rec.data.creationTime.substring(0, 19));
                         var rec = {
                             pk: obj.rec.key.pk,
@@ -311,35 +238,35 @@
                             this.devices.push(rec);
                         }
                     }
-                    else if (obj.cmd == 'modify') {
+                    else if (obj.cmd === 'modify') {
                         // eslint-disable-next-line
                         console.log('modify device ' + obj.key);
                         var self = this;
                         this.devices.find(function (rec) {
-                            if (rec.pk == obj.key) {
+                            if (rec.pk === obj.key) {
                                 // eslint-disable-next-line
                                 console.log('modify record ' + rec.name);
                                 if (obj.value.name != null) {
                                     rec.name = obj.value.name;
-                                    if (self.form.pk == rec.pk) {
+                                    if (self.form.pk === rec.pk) {
                                         self.form.name = rec.name;
                                     }
                                 }
                                 else if (obj.value.msisdn != null) {
                                     rec.msisdn = obj.value.msisdn;
-                                    if (self.form.pk == rec.pk) {
+                                    if (self.form.pk === rec.pk) {
                                         self.form.msisdn = rec.msisdn;
                                     }
                                 }
                                 else if (obj.value.pwd != null) {
                                     rec.pwd = obj.value.pwd;
-                                    if (self.form.pk == rec.pk) {
+                                    if (self.form.pk === rec.pk) {
                                         self.form.pwd = rec.pwd;
                                     }
                                 }
                                 else if (obj.value.descr != null) {
                                     rec.descr = obj.value.descr;
-                                    if (self.form.pk == rec.pk) {
+                                    if (self.form.pk === rec.pk) {
                                         self.form.descr = rec.descr;
                                     }
                                 }
@@ -351,7 +278,7 @@
                                     else {
                                         rec._rowVariant = null;
                                     }
-                                    if (self.form.pk == rec.pk) {
+                                    if (self.form.pk === rec.pk) {
                                         self.form.enabled = rec.enabled;
                                     }
                                     //  force refresh: https://github.com/bootstrap-vue/bootstrap-vue/issues/1529
@@ -360,18 +287,18 @@
                             }
                         });
                     }
-                    else if (obj.cmd == 'clear') {
+                    else if (obj.cmd === 'clear') {
                         //  clear table
                         this.devices = [];
                     }
-                    else if (obj.cmd == 'delete') {
+                    else if (obj.cmd === 'delete') {
                         // console.log('lookup device ' + obj.key);
-                        var idx = this.devices.findIndex(rec => rec.pk == obj.key);
+                        var idx = this.devices.findIndex(rec => rec.pk === obj.key);
                         // eslint-disable-next-line
                         console.log('delete index ' + idx);
                         this.devices.splice(idx, 1);
                     }
-                    else if (obj.cmd == 'load') {
+                    else if (obj.cmd === 'load') {
                         //  load status
                         if (obj.show != null) {
                             // eslint-disable-next-line
@@ -386,12 +313,10 @@
                                 this.devices = tmpDevices;
                             }
                         }
-                        else if (obj.level != 0) {
+                        else if (obj.level !== 0) {
                             this.busyLevel = obj.level;
                         }
                     }
-                    //    update pagination
-                    this.visibleRows = this.devices.length;
                 }
             },
 
@@ -400,7 +325,7 @@
             },
 
             rowSelected(items) {
-                this.selected = items
+                this.selected = items;
                 if (items.length > 0) {
                     // eslint-disable-next-line
                     console.log(items.length + ' rows selected ');
@@ -467,11 +392,6 @@
                 event.preventDefault();
                 this.form.pwd = generatePassword();
             },
-            onFiltered(filteredItems) {
-                // Trigger pagination to update the number of buttons/pages due to filtering
-                this.visibleRows = filteredItems.length
-                this.currentPage = 1
-            },
             formatDescription(str) {
                 if (str.length > 24) return str.substring(0, 24) + '...';
                 return str;
@@ -479,9 +399,6 @@
         },
 
         computed: {
-            tableCaption() {
-                return this.selected.length + "/" + this.devices.length + " devices(s) selected - " + this.visibleRows + " device(s) filtered";
-            },
             btnUpdateTitle() {
                 if (this.selected.length > 0) {
                     return this.$t('config-device-06') + ' ' + this.selected[0].name;
@@ -517,12 +434,3 @@
         }
     }
 </script>
-
-<style scoped lang="css">
-    .truncate {
-        width: 150px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-</style>
