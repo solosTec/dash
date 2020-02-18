@@ -785,17 +785,16 @@
                             // the table is loaded, we can select the meter - if there is one
                             const meterPk = this.$route.params.meterPk;
                             const meterIsAvailable = this.meters.findIndex(meter => meter.pk === meterPk);
-                            if (meterIsAvailable === -1) {
-                                return;
+                            if (meterIsAvailable !== -1) {
+                                // filter the table by the primary key - just in case there amount of meters is greate
+                                // than the page size (in this case the selected meter may not be visible.
+                                this.filter = meterPk;
+                                // wait a tick to let the view update itself and the table is filtered
+                                // after that the forst row must be the matching meter
+                                setTimeout(()=> {
+                                    this.$refs.meterTable.selectRow(0);
+                                },1);
                             }
-                            // filter the table by the primary key - just in case there amount of meters is greate
-                            // than the page size (in this case the selected meter may not be visible.
-                            this.filter = meterPk;
-                            // wait a tick to let the view update itself and the table is filtered
-                            // after that the forst row must be the matching meter
-                            setTimeout(()=> {
-                                this.$refs.meterTable.selectRow(0);
-                            },1);
                         }
                     }
                     else if (obj.cmd === 'update') {
