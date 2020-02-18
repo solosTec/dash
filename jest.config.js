@@ -17,8 +17,12 @@ module.exports = {
 
     collectCoverage: true,
 
-    collectCoverageFrom: ['**/*.{js|jsx|ts|tsx|vue}', '!**/node_modules/**', '!<rootDir>/dist/**',
-        '!<rootDir>/src/plugins/**', '!<rootDir>/src/constants/**', '!<rootDir>/tests/unit/**',
+    collectCoverageFrom: ['**/*.{js|jsx|ts|tsx|vue}', '!**/node_modules/**',
+        '!<rootDir>/dist/**',
+        '!<rootDir>/dist-no-auth/**',
+        '!<rootDir>/src/plugins/**',
+        '!<rootDir>/src/constants/**',
+        '!<rootDir>/tests/unit/**',
         '!<rootDir>/coverage/**',
     ],
 

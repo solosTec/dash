@@ -18,6 +18,7 @@ export const NO_ACCESS_ROUTE = 'no-access';
 export const MODULES = {
     CONFIG_DEVICES: 'configDevice',
     CONFIG_SYSTEM: 'configSystem',
+    CONFIG_USER: 'configUser',
     CONFIG_WEB: 'configWeb',
     CONFIG_GATEWAY: 'configGateway',
     CONFIG_METERS: 'configMeter',
@@ -52,6 +53,7 @@ const mutations = {
         state.privileges = {};
         state.privileges[MODULES.CONFIG_DEVICES] = [PRIVILEGES.VIEW];
         state.privileges[MODULES.CONFIG_SYSTEM] = [PRIVILEGES.VIEW];
+        state.privileges[MODULES.CONFIG_USER] = [PRIVILEGES.VIEW];
         state.privileges[MODULES.CONFIG_WEB] = [PRIVILEGES.VIEW];
         state.privileges[MODULES.CONFIG_GATEWAY] = [PRIVILEGES.VIEW];
         state.privileges[MODULES.CONFIG_METERS] = [PRIVILEGES.VIEW];

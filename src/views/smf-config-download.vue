@@ -115,7 +115,7 @@
 
 <script lang="js">
 
-    import { webSocket } from '../mixins/web-socket.js'
+    import { webSocket } from '../mixins/web-socket'
     import {hasPrivilegesWaitForUser} from "../mixins/privileges";
     import store from "../store";
     import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
@@ -360,7 +360,7 @@
                 });
             },
             onResetMsg(evt) {
-                evt.preventDefault()
+                evt.preventDefault();
                 this.msg.type = 'XML';
             },
             saveOrOpenBlob(blob, fileName) {
@@ -370,10 +370,9 @@
                 a.dispatchEvent(new MouseEvent('click'));
             }
         },
-        beforeRouteEnter(to, from, next) {
-            hasPrivilegesWaitForUser(store, MODULES.CONFIG_DOWNLOAD, PRIVILEGES.VIEW).then((result) => {
-                next( result ? true: NO_ACCESS_ROUTE);
-            });
+        async beforeRouteEnter(to, from, next) {
+            const result = await hasPrivilegesWaitForUser(store, MODULES.CONFIG_DOWNLOAD, PRIVILEGES.VIEW);
+            next( result ? true : NO_ACCESS_ROUTE);
         }
     }
 </script>

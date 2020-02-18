@@ -782,7 +782,7 @@
                         <!-- Access -->
                         <b-tab no-body title="Access">
                             <b-form @submit.prevent="">
-                                <b-form-input  type="number" 
+                                <b-form-input  type="number"
                                               id="smf-form-gw-server"
                                                 required
                                               v-model="access.meterNr"
@@ -871,13 +871,14 @@
 
 <script lang="js">
 
-    import {webSocket} from '../mixins/web-socket.js'
+    import {webSocket} from '../mixins/web-socket'
     import opLog from '@/components/smf-table-op-log.vue'
-    import { MESSAGE_TYPES } from '@/constants/msgTypes.js'
+    import { MESSAGE_TYPES } from '@/constants/msgTypes'
     import { SML_CODES } from '@/constants/rootCodes.js'
     import {hasPrivilegesWaitForUser} from "../mixins/privileges";
     import store from "../store";
     import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+    import {generatePassword} from "@/shared/generate-password";
 
     let tmpGateways = [];
 
@@ -1064,7 +1065,7 @@ export default  {
                     label: 'Meter',
                     sortable: true,
                     formatter: (value) => {
-                        return Boolean(value) ? value.toUpperCase() : '?';
+                        return value ? value.toUpperCase() : '?';
                     }
                 },
                 {
@@ -1880,22 +1881,12 @@ export default  {
 
         generatePassword(event) {
             event.preventDefault();
-            let charSet = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!';
-            this.form.userPwd = "";
-            // this.form[element] = '';
-            for(let idx = 0; idx < 8; idx++) {
-                this.form.userPwd += charSet.charAt(Math.floor(Math.random() * charSet.length));
-            }
+            this.form.userPwd = generatePassword();
         },
 
         generatePasswordIPT(event, element) {
             event.preventDefault();
-            let charSet = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!';
-            // this.form.userPwd = "";
-            this.ipt.param[element].pwd = '';
-            for(let idx = 0; idx < 8; idx++) {
-                this.ipt.param[element].pwd  += charSet.charAt(Math.floor(Math.random() * charSet.length));
-            }
+            this.ipt.param[element].pwd = generatePassword();
         },
 
         onFiltered(filteredItems) {
@@ -1966,7 +1957,7 @@ export default  {
             this.meters.csv = URL.createObjectURL(data);
         },
         btnEditStatus(mc) {
-            //console.log("btnEditStatus " + mc);
+            // console.log("btnEditStatus " , mc);
             if (typeof mc == 'undefined') return true;
             return (mc.length > 2) && mc.startsWith("MC");
         },

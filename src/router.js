@@ -18,6 +18,7 @@ import smfMonitorLora from "./views/smf-monitor-lora.vue"
 import smfTaskCSV from "./views/smf-task-csv.vue"
 import smfTaskTSDB from "./views/smf-task-tsdb.vue"
 import smfNoAccess from "./views/smf-no-access.vue"
+import smfHome from "./views/smf-home"
 
 Vue.use(Router);
 
@@ -29,11 +30,7 @@ export default new Router({
             {
                 path: "/",
                 name: "smfHome",
-                // route level code-splitting
-                // this generates a separate chunk (smf-home.[hash].js) for this route
-                // which is lazy-loaded when the route is visited.
-                component: () =>
-                    import("./views/smf-home.vue")
+                component: smfHome
             },
             {
                 path: "/no-access",
@@ -79,6 +76,11 @@ export default new Router({
                 path: "/config/download",
                 name: "smfConfigDownload",
                 component: smfConfigDownload
+            },
+            {
+                path: "/config/user",
+                name: "smf-config-user",
+                component: () => import("./views/smf-config-user.vue")
             },
 
             //
@@ -140,8 +142,7 @@ export default new Router({
             {
                 path: "/task/plausibility",
                 name: "smfTaskPlausibility",
-                component: () =>
-                    import("./views/smf-task-plausibility.vue")
+                component: () => import("./views/smf-task-plausibility.vue")
             }
         ],
     scrollBehavior(to, from, savedPosition) {
@@ -149,6 +150,6 @@ export default new Router({
             return savedPosition
         }
 
-        return { x: 0, y: 0 }
+        return {x: 0, y: 0}
     }
 })

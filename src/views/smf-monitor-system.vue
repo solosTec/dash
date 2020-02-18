@@ -101,7 +101,7 @@
 
 <script lang="js">
 
-import {webSocket} from '../mixins/web-socket.js'
+import {webSocket} from '../mixins/web-socket'
 import {mapState} from "vuex";
 import {hasPrivilegesWaitForUser} from "../mixins/privileges";
 import store from "../store";
