@@ -146,8 +146,9 @@
                             else if (value == '818100000012') return "WMBUS";
                             else if (value == '818100000013') return "WANGSM";
                             else if (value == '818100000014') return "WANPLC";
+                            else if (value == '8181000000FF') return "adressed Profile";
 
-                            else if (value == '8146000011FF') return 'Load switch mdoule events';
+                            else if (value == '8146000011FF') return 'Load switch module events';
                             else if (value == '8146000012FF') return 'Load switch module status';
                             return value;
                         }
