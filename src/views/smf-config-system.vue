@@ -104,7 +104,7 @@
 
                 <b-card :title="$t('config-sys-11')" class="shadow">
                     <b-form-checkbox switch v-model="cfg.tsdb" name="check-button" v-on:change="tsdbChange($event)">
-                        {{ $t('config-sys-12') }}<b>{{cfg.tsdb_dir}}</b> {{ $t('config-sys-13') }}
+                        {{ $t('config-sys-12') }} <b>{{cfg.tsdb_dir}}</b> {{ $t('config-sys-13') }}
                     </b-form-checkbox>
                     <div slot="footer"><small class="text-muted">{{ $t('com-default') }} = <b>{{cfg.def.tsdb}}</b></small></div>
                 </b-card>
@@ -134,6 +134,21 @@
             <br />
 
         </b-container>
+
+        <b-container fluid>
+            <b-card-group columns>
+
+                <b-card header="System Info" header-bg-variant="info" header-text-variant="white" no-body>
+                    <b-list-group flush>
+                        <b-list-group-item>System Version: {{sys.version}}</b-list-group-item>
+                        <b-list-group-item>Boost Version: {{sys.boostVersion}}</b-list-group-item>
+                        <b-list-group-item>SSL Version: {{sys.sslVersion}}</b-list-group-item>
+                    </b-list-group>
+                </b-card>
+            </b-card-group>
+
+        </b-container>
+
     </section>
 
 </template>
@@ -186,6 +201,11 @@
                         countryCode: 'AU',
                         languageCode: 'EN'
                     }
+                },
+                sys: {
+                    version: 'SMF/v0.0',
+                    boostVersion: '',
+                    sslVersion: ''
                 },
                 country: {
                     options: [
@@ -281,6 +301,15 @@
                         }
                         else if (obj.rec.key.name == "catch-lora-default") {
                             this.cfg.def.catch_lora = obj.rec.data.value;
+                        }
+                        else if (obj.rec.key.name == "sys-version") {
+                            this.sys.version = obj.rec.data.value;
+                        }
+                        else if (obj.rec.key.name == "boost-version") {
+                            this.sys.boostVersion = obj.rec.data.value;
+                        }
+                        else if (obj.rec.key.name == "ssl-version") {
+                            this.sys.sslVersion = obj.rec.data.value;
                         }
                         else {
                             console.log(this.$options.name + ' unhandled key ' + obj.cmd + ' / ' + obj.channel + ' / ' + obj.rec.key.name);
