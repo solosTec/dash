@@ -1528,18 +1528,37 @@ export default  {
                                 //  hide loading spinner
                                 this.spinner.iec = false;
 
-                                this.iec.params.active = obj.rec.values['8181C79301FF'];
-                                this.iec.params.loopTime = obj.rec.values['8181C79302FF'];
-                                this.iec.params.retries = obj.rec.values['8181C79303FF'];
-                                this.iec.params.minTimeout = obj.rec.values['8181C79304FF'];
-                                this.iec.params.maxTimeout = obj.rec.values['8181C79305FF'];
-                                this.iec.params.maxDataRate = obj.rec.values['8181C79306F'];
-                                this.iec.params.rs485 = Boolean(obj.rec.values['8181C79307FF']);
-                                this.iec.params.protocolMode = obj.rec.values['8181C79308FF'];
-                                this.iec.params.autoActivation = obj.rec.values['8181C79310FF'];
-                                this.iec.params.timeGrid = obj.rec.values['8181C79311FF'];
-                                this.iec.params.timeSync = obj.rec.values['8181C79313FF'];
-                                this.iec.params.maxVar = obj.rec.values['8181C79314FF'];
+                                this.iec.params.active = obj.rec.values[SML_CODES.IF_1107_ACTIVE];
+                                this.iec.params.loopTime = obj.rec.values[SML_CODES.IF_1107_LOOP_TIME];
+                                this.iec.params.retries = obj.rec.values[SML_CODES.IF_1107_RETRIES];
+                                this.iec.params.minTimeout = obj.rec.values[SML_CODES.IF_1107_MIN_TIMEOUT];
+                                this.iec.params.maxTimeout = obj.rec.values[SML_CODES.IF_1107_MAX_TIMEOUT];
+                                this.iec.params.maxDataRate = obj.rec.values[SML_CODES.IF_1107_MAX_DATA_RATE];
+                                this.iec.params.rs485 = Boolean(obj.rec.values[SML_CODES.IF_1107_RS485]);
+                                this.iec.params.autoActivation = obj.rec.values[SML_CODES.IF_1107_AUTO_ACTIVATION];
+                                this.iec.params.timeGrid = obj.rec.values[SML_CODES.IF_1107_TIME_GRID];
+                                this.iec.params.timeSync = obj.rec.values[SML_CODES.IF_1107_TIME_SYNC];
+                                this.iec.params.maxVar = obj.rec.values[SML_CODES.IF_1107_MAX_VARIATION];
+                                switch (obj.rec.values[SML_CODES.IF_1107_PROTOCOL_MODE]) {
+                                    case 0:
+                                        this.iec.params.protocolMode = 'A';
+                                        break;
+                                    case 1:
+                                        this.iec.params.protocolMode = 'B';
+                                        break;
+                                    case 2:
+                                        this.iec.params.protocolMode = 'C';
+                                        break;
+                                    case 3:
+                                        this.iec.params.protocolMode = 'D';
+                                        break;
+                                    case 4:
+                                        this.iec.params.protocolMode = 'E';
+                                        break;
+                                    default:
+                                        this.iec.params.protocolMode = obj.rec.values[SML_CODES.IF_1107_PROTOCOL_MODE];
+                                        break;
+                                }
                                 //  object
                                 const whatIsThis = obj.rec.values['8181C79309FF'];
                                 this.iec.params.devices = whatIsThis ? Array.from(whatIsThis) : [];
