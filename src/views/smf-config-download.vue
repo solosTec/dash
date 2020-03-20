@@ -269,7 +269,6 @@
             },
             onSubmitMeters(evt) {
                 evt.preventDefault()
-                //alert(JSON.stringify(this.meter))
                 this.$http.post("download.meters", this.meter, {
                     headers: {
                         'Accept': 'application/xml, application/json, application/csv, */*'
@@ -281,9 +280,9 @@
                         }
                     }
                 }).then(res => {
-                    console.log("response: " + res)
-                    console.log("response-body: " + res.body)
-                    saveOrOpenBlob(res.body, "file.txt");
+                    //console.log("response: " + res)
+                    //console.log("response-body: " + res.body)
+                    this.saveOrOpenBlob(res.body, "meter.xml");
                 }, res => {
                     console.log("error: " + res)
                 });
