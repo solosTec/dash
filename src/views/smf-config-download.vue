@@ -255,8 +255,8 @@
                         }
                     }
                 }).then(res => {
-                    console.log("response: " + res)
-                    console.log("response-body: " + res.body)
+                    //console.log("response: " + res)
+                    //console.log("response-body: " + res.body)
                     this.saveOrOpenBlob(res.body, "gateways." + this.gw.fmt.toLowerCase());
                 }, res => {
                     console.log("error: " + res)
@@ -282,7 +282,7 @@
                 }).then(res => {
                     //console.log("response: " + res)
                     //console.log("response-body: " + res.body)
-                    this.saveOrOpenBlob(res.body, "meter.xml");
+                    this.saveOrOpenBlob(res.body, "meter." + this.meter.fmt.toLowerCase());
                 }, res => {
                     console.log("error: " + res)
                 });
