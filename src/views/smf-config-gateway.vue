@@ -782,13 +782,35 @@
                         <!-- Access -->
                         <b-tab no-body title="Access">
                             <b-form @submit.prevent="">
-                                <b-form-input  type="number"
-                                              id="smf-form-gw-server"
-                                                required
-                                              v-model="access.meterNr"
-                                                placeholder="<meterId>"
-                                                maxlength="2" />
-                                <b-button type="submit" variant="primary" v-on:click.stop="onAuthUpdate">Query</b-button>
+                                <b-row class="p-3">
+                                    <b-col md="12">
+                                        <b-button type="submit" variant="primary" v-on:click.stop="onAuthServer">Query Server</b-button>
+                                    </b-col>
+                                </b-row>
+                                <b-row class="p-3">
+                                    <b-col md="4">
+                                        <b-form-input type="number"
+                                                      id="smf-form-gw-access-user"
+                                                      required
+                                                      v-model="access.meterNr"
+                                                      placeholder="<meterId>"
+                                                      maxlength="2"
+                                                      v-b-popover.hover="'User ID'" title="User" />
+                                    </b-col>
+                                    <b-col md="4">
+                                        <b-form-input type="number"
+                                                      id="smf-form-gw-access-role"
+                                                      required
+                                                      v-model="access.role"
+                                                      placeholder="<role>"
+                                                      maxlength="2"
+                                                      v-b-popover.hover="'Role ID'" title="Role" />
+                                    </b-col>
+                                    <b-col md="4">
+                                        <b-button type="submit" variant="primary" v-on:click.stop="onAuthUpdate">Query Meter</b-button>
+                                     </b-col>
+                                </b-row>
+
                             </b-form>
                         </b-tab>
 
@@ -1194,7 +1216,8 @@ export default  {
             },
 
         access: {
-            meterNr: 2
+            meterNr: 2,
+            role: 2
         },
 
         iec: {
@@ -1963,7 +1986,16 @@ export default  {
             this.ws_submit_request(MESSAGE_TYPES.getProcParameter,
                 SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
                 [this.form.pk],
-                { serverId: this.form.serverId, roleNr: 3, userNr: 1, meterNr: this.access.meterNr });
+                //  path is [role, user, meterID]
+                { serverId: this.form.serverId, path: [this.access.role, 1, this.access.meterNr] });
+        },
+        onAuthServer() {
+            console.log("onAuthServer: " + this.access.meterNr);
+            this.ws_submit_request(MESSAGE_TYPES.getProcParameter,
+                SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
+                [this.form.pk],
+                //  path is [role, user, meterID]
+                { serverId: this.form.serverId, path: [] });
         },
 
         meterTableComplete() {
