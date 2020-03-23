@@ -788,16 +788,16 @@
                                     </b-col>
                                 </b-row>
                                 <b-row class="p-3">
-                                    <b-col md="4">
+                                    <b-col md="3">
                                         <b-form-input type="number"
-                                                      id="smf-form-gw-access-user"
+                                                      id="smf-form-gw-access-meter"
                                                       required
                                                       v-model="access.meterNr"
                                                       placeholder="<meterId>"
                                                       maxlength="2"
                                                       v-b-popover.hover="'User ID'" title="User" />
                                     </b-col>
-                                    <b-col md="4">
+                                    <b-col md="3">
                                         <b-form-input type="number"
                                                       id="smf-form-gw-access-role"
                                                       required
@@ -806,9 +806,18 @@
                                                       maxlength="2"
                                                       v-b-popover.hover="'Role ID'" title="Role" />
                                     </b-col>
-                                    <b-col md="4">
+                                    <b-col md="3">
+                                        <b-form-input type="number"
+                                                      id="smf-form-gw-access-user"
+                                                      required
+                                                      v-model="access.user"
+                                                      placeholder="<user>"
+                                                      maxlength="2"
+                                                      v-b-popover.hover="'User ID'" title="User" />
+                                    </b-col>
+                                    <b-col md="3">
                                         <b-button type="submit" variant="primary" v-on:click.stop="onAuthUpdate">Query Meter</b-button>
-                                     </b-col>
+                                    </b-col>
                                 </b-row>
 
                             </b-form>
@@ -1216,8 +1225,9 @@ export default  {
             },
 
         access: {
-            meterNr: 2,
-            role: 2
+            meterNr: 1,
+            role: 3,
+            user: 1,
         },
 
         iec: {
@@ -1987,7 +1997,7 @@ export default  {
                 SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
                 [this.form.pk],
                 //  path is [role, user, meterID]
-                { serverId: this.form.serverId, path: [this.access.role, 1, this.access.meterNr] });
+                { serverId: this.form.serverId, path: [this.access.role, this.access.user, this.access.meterNr] });
         },
         onAuthServer() {
             console.log("onAuthServer: " + this.access.meterNr);
