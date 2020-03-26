@@ -12,7 +12,7 @@
             </div>
         </template>
 
-    <!-- <b-jumbotron fluid header="System Status" :lead="nodes.length + ' nodes online'" /> --> -->
+    <!-- <b-jumbotron fluid header="System Status" :lead="nodes.length + ' nodes online'" /> -->
     <b-jumbotron fluid :header="$t('header-monitor-system')" :lead="$t('lead-monitor-system', {count: this.nodes.length})" />
 
     <b-container fluid>
