@@ -279,11 +279,11 @@
                     else if (obj.cmd === 'modify') {
                         const modResponse = obj as WSModifyResponse<Device>;
                         // eslint-disable-next-line
-                        console.log('modify device ' + modResponse.key);
+                        //console.log('modify device ' + modResponse.key);
                         this.devices.forEach( (rec: UiDevice) => {
-                            if (rec.pk === modResponse.key) {
+                            if (rec.pk === modResponse.key[0]) {
                                 // eslint-disable-next-line
-                                console.log('modify record ' + rec.name);
+                                //console.log('modify record ' + rec.name);
                                 if (modResponse.value.name != null) {
                                     rec.name = modResponse.value.name;
                                     if (this.form.pk === rec.pk) {
