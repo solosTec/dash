@@ -408,7 +408,7 @@
             onDeviceInsert(event: Event) {
                 event.preventDefault();
                 // eslint-disable-next-line
-                console.log('onDeviceInsert: ' + event);
+                //console.log('onDeviceInsert: ' + event);
                 this.ws_submit_record("insert", "config.device", {
                     key: [this.form.pk],
                     data: {

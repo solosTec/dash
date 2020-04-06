@@ -819,6 +819,11 @@
                                         <b-button type="submit" variant="primary" v-on:click.stop="onAuthUpdate">Query Meter</b-button>
                                     </b-col>
                                 </b-row>
+                                <b-row class="p-3">
+                                    <b-col md="12">
+                                        <b-button type="submit" variant="primary" v-on:click.stop="onUpdateProxyCache">Update Cache</b-button>
+                                    </b-col>
+                                </b-row>
 
                             </b-form>
                         </b-tab>
@@ -2025,7 +2030,11 @@ export default  {
         getPlaceholder(str) {
             //console.log(str);
             return "<" + str + ">";
+        },
+        onUpdateProxyCache() {
+            this.ws_proxy("updateCache", [this.form.pk], ["access", "meter"]);
         }
+
    },
 
     computed: {

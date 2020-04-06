@@ -228,6 +228,24 @@ export const webSocket = Vue.extend({
             this.sx += msg.length;
             this.ws_emit_event_sx();
         },
+        //
+        //  pk_gw: primary key of selected object (gateway, meter)
+        //  job: job to execute
+        //  params: optional vector of strings to select specific sections
+        //  of the gateway
+        //
+        ws_proxy(job: string, pk_gw: string, params = new Array<string>()) {
+            if (!this.ws_is_open() || !this.ws) return;
+            const msg = JSON.stringify({
+                cmd: "com:proxy",
+                job: job,
+                gw: pk_gw,
+                params
+            });
+            this.ws.send(msg);
+            this.sx += msg.length;
+            this.ws_emit_event_sx();
+        },
         ws_emit_event_state(state: string | TranslateResult) {
             store.commit('websocket/eventState', state);
         },
