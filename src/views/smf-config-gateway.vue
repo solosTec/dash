@@ -376,7 +376,7 @@
                                 <b-spinner v-if="spinner.firmware" type="grow" small />
                             </template>
                             <!-- table -->
-                            <firmware ref="firmware" :items="fw.data.items" />
+                            <firmware ref="firmware" :items="fw.values" />
                         </b-tab>
 
                         <!-- Memory -->
@@ -885,7 +885,7 @@
                                 </b-row>
                                 <b-row class="p-3">
                                     <b-col md="12">
-                                        <snapshots ref="snapshots" :items="snapshots.data.items" :nav="snapshots.nav" />
+                                        <snapshots ref="snapshots" :items="tabSnapshots.data.items" :nav="tabSnapshots.nav" />
                                     </b-col>
                                 </b-row>
                             </b-form>
