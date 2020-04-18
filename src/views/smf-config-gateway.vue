@@ -376,24 +376,7 @@
                                 <b-spinner v-if="spinner.firmware" type="grow" small />
                             </template>
                             <!-- table -->
-                            <b-table ref="firmwareTable"
-                                     bordered
-                                     striped
-                                     small
-                                     hover
-                                     show-empty
-                                     stacked="md"
-                                     selectable
-                                     select-mode="single"
-                                     selectedVariant="info"
-                                     :fields="fw.fields"
-                                     :items="fw.values"
-                                     primary-key="ident"
-                                     :sort-by.sync="fw.sortBy"
-                                     :sort-desc.sync="fw.sortDesc"
-                                     :sort-direction="fw.sortDirection"
-                                     class="shadow">
-                            </b-table>
+                            <firmware ref="firmware" :items="fw.data.items" />
                         </b-tab>
 
                         <!-- Memory -->
@@ -819,9 +802,42 @@
                                         <b-button type="submit" variant="primary" v-on:click.stop="onAuthUpdate">Query Meter</b-button>
                                     </b-col>
                                 </b-row>
+
                                 <b-row class="p-3">
-                                    <b-col md="12">
-                                        <b-button type="submit" variant="primary" v-on:click.stop="onUpdateProxyCache">Update Cache</b-button>
+                                    <b-col md="3">
+                                        <b-button type="submit"
+                                                  variant="primary"
+                                                  v-b-tooltip.hover title="Clear cache and initialize it with gw/server ID"
+                                                  v-on:click.stop="onProxyCacheReset">Reset Cache</b-button>
+                                    </b-col>
+                                    <b-col md="3">
+                                        <b-button type="submit"
+                                                  variant="primary"
+                                                  v-b-tooltip.hover title="Fill cache with all access rights of the selected gateway"
+                                                  v-on:click.stop="onProxyCacheUpdate">Update Cache</b-button>
+                                    </b-col>
+                                    <b-col md="3">
+                                        <b-button type="submit"
+                                                  variant="primary"
+                                                  v-b-tooltip.hover title="Backup complete gateway configuration with setup service (not implemented yet)"
+                                                  v-on:click.stop="onProxyCacheSync">Sync Cache</b-button>
+                                    </b-col>
+                                    <b-col md="3">
+                                        <b-button type="submit"
+                                                  variant="outline-primary"
+                                                  v-b-tooltip.hover title="Get a list of all cached root sections"
+                                                  v-on:click.stop="onProxyCacheSections">Get Sections</b-button>
+                                    </b-col>
+                                </b-row>
+
+                                <b-row class="p-3">
+                                    <b-col md="3">
+                                        <b-button type="submit"
+                                                  variant="outline-success"
+                                                  v-b-tooltip.hover title="Query cache for all access rights for all meters of the selected gateway"
+                                                  v-on:click.stop="onProxyCacheQuery">Query Cache</b-button>
+                                    </b-col>
+                                    <b-col md="9">
                                     </b-col>
                                 </b-row>
 
@@ -850,6 +866,31 @@
                                 </b-row>
                             </b-form>
                         </b-tab>
+
+                        <!-- Snapshots -->
+                        <b-tab no-body title="Snapshots">
+                            <b-form @submit.prevent="">
+                                <b-row class="p-3">
+                                    <b-col md="3">
+                                        <b-button type="submit" 
+                                                  variant="primary"
+                                                  v-on:click.stop="onProxyCacheSync">Create Snapshot</b-button>
+                                    </b-col>
+                                    <b-col md="9">
+                                        <b-form-input type="text"
+                                                      id="smf-form-snapshot"
+                                                      placeholder="<description>"
+                                                      />
+                                    </b-col>
+                                </b-row>
+                                <b-row class="p-3">
+                                    <b-col md="12">
+                                        <snapshots ref="snapshots" :items="snapshots.data.items" :nav="snapshots.nav" />
+                                    </b-col>
+                                </b-row>
+                            </b-form>
+                        </b-tab>
+
                     </b-tabs>
                 </b-col>
 
@@ -909,6 +950,8 @@
 
     import {webSocket} from '../mixins/web-socket'
     import opLog from '@/components/smf-table-op-log.vue'
+    import snapshots from '@/components/smf-table-snapshots.vue'
+    import firmware from '@/components/smf-table-firmware.vue'
     import { MESSAGE_TYPES } from '@/constants/msgTypes'
     import { SML_CODES } from '@/constants/rootCodes.js'
     import {hasPrivilegesWaitForUser} from "../mixins/privileges";
@@ -924,7 +967,7 @@ export default  {
     mixins: [webSocket],
     components: {
         // eslint-disable-next-line vue/no-unused-components
-        opLog, MESSAGE_TYPES, SML_CODES
+        opLog, snapshots, firmware, MESSAGE_TYPES, SML_CODES
     },
 
     mounted() {
@@ -1156,9 +1199,6 @@ export default  {
                     key: 'serverId',
                     label: 'Server ID',
                     sortable: true
-                    //formatter: (value, key, item) => {
-                    //    return item.pk;
-                    //}
                 },
                 {
                     key: 'edit',
@@ -1174,45 +1214,7 @@ export default  {
         //  firmware
         fw: {
             values: [],
-            selected: [],
-            fields: [
-                {
-                    key: 'nr',
-                    label: 'Nr',
-                    sortable: true,
-                    class: 'text-right small'
-                },
-                {
-                    key: 'name',
-                    label: 'Name',
-                    sortable: true
-                },
-                {
-                    key: 'version',
-                    label: 'Version',
-                    sortable: true
-                },
-                {
-                    key: 'active',
-                    label: 'Active',
-                    sortable: true,
-                    formatter: (value) => {
-                        if (value)  return '✔';
-                        return '✖';
-                    },
-                    class: 'text-center'
-                },
-                {
-                    key: 'srv',
-                    label: 'Server',
-                    sortable: true
-                },
-            ],
-            sortBy: 'nr',
-            sortDesc: false,
-            sortDirection: 'desc',
-            currentPage: 1,
-            perPage: 50
+            selected: []
         },
 
         //  wireless M-Bus
@@ -1321,6 +1323,17 @@ export default  {
                       ]
                 }
             },
+            tabSnapshots: {
+                data: {
+                    //items: []
+                    items: [{ nr: 1, utc: new Date(), serverId: '0500153B02297E', remark: 'nice description' }]
+                },
+                nav: {
+                    currentPage: 1,
+                    visibleRows: 0,
+                    perPage: 5
+                },
+            }
         }
     },
 
@@ -1672,6 +1685,12 @@ export default  {
                         }
                         else if (obj.channel === 'table.gateway.count') {
                             //  unused
+                        }
+                        else if (obj.channel === 'cache.reset') {
+                        }
+                        else if (obj.channel === 'cache.sections') {
+                        }
+                        else if (obj.channel === 'cache.update') {
                         }
                         else {
                             console.error('update unknown channel ' + obj.channel);
@@ -2031,8 +2050,21 @@ export default  {
             //console.log(str);
             return "<" + str + ">";
         },
-        onUpdateProxyCache() {
-            this.ws_proxy("updateCache", [this.form.pk], ["access", "meter"]);
+        onProxyCacheReset() {
+            this.ws_proxy("cache.reset", [this.form.pk], [SML_CODES.CLASS_OP_LOG_STATUS_WORD, SML_CODES.CODE_ROOT_IPT_PARAM, SML_CODES.CODE_ROOT_ACCESS_RIGHTS, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, SML_CODES.CODE_ROOT_VISIBLE_DEVICES]);
+        },
+        onProxyCacheSections() {
+            this.ws_proxy("cache.sections", [this.form.pk]);
+        },
+        onProxyCacheUpdate() {
+            this.ws_proxy("cache.update", [this.form.pk], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]);
+        },
+        onProxyCacheSync() {
+            //  create snapshot of current configuration
+            this.ws_proxy("cache.sync", [this.form.pk], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, SML_CODES.CODE_ROOT_VISIBLE_DEVICES]);
+        },
+        onProxyCacheQuery() {
+            this.ws_proxy("cache.query", [this.form.pk], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]);
         }
 
    },

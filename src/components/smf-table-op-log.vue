@@ -53,23 +53,6 @@
                         key: 'index',
                         class: 'text-right small text-muted'
                     },
-                    //{
-                    //    key: 'actTime',
-                    //    label: 'actTime',
-                    //    sortable: true
-                    //},
-                    //{
-                    //    key: 'regPeriod',
-                    //    label: 'regPeriod',
-                    //    sortable: true,
-                    //    class: 'text-right'
-                    //},
-                    //{
-                    //    key: 'valTime',
-                    //    label: 'valTime',
-                    //    sortable: true,
-                    //    class: 'text-right'
-                    //},
                     {
                         key: 'status',
                         label: 'Status',

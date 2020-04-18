@@ -83,6 +83,8 @@
     "config-sys-15": "Empfangen Sie neue Zähler während der Gateway-Konfiguration ein.",
     "config-sys-16": "Empfange neue LoRa Geräte",
     "config-sys-17": "Unbekannte LoRa-Geräte automatisch einfügen",
+    "config-sys-18": "Caching Gateway Configuration",
+    "config-sys-19": "Einen Cache für Gateway-Konfigurationsdaten verwenden.",
     "config-device-01": "Geräte Name",
     "config-device-01-01": "<Geräte Name>",
     "config-device-02": "Passwort",

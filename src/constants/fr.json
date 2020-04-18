@@ -83,6 +83,8 @@
     "config-sys-15": "Recevoir de nouveaux compteurs pendant la configuration de la passerelle.",
     "config-sys-16": "Recevoir de nouveaux appareils LoRa",
     "config-sys-17": "Insertion automatique d'appareils LoRa inconnus",
+    "config-sys-18": "Configuration de la passerelle de mise en cache",
+    "config-sys-19": "Créer et maintenir un cache pour les données de configuration de la passerelle.",
     "config-device-01": "Nom de l'appareil",
     "config-device-01-01": "<Nom de l'appareil>",
     "config-device-02": "Mot de passe",

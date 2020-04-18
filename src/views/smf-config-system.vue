@@ -42,6 +42,34 @@
                     <div slot="footer"><small class="text-muted">{{ $t('com-default') }} = <b>{{cfg.def.supersede}}</b></small></div>
                 </b-card>
 
+                <b-card :title="$t('config-sys-18')" class="shadow">
+                    <b-form-checkbox switch v-model="cfg.gwConfigCaching" name="check-button" v-on:change="gwCacheChange($event)">
+                        {{ $t('config-sys-19') }}
+                        <!-- cachinf gateway configuration data -->
+                    </b-form-checkbox>
+                    <div slot="footer"><small class="text-muted">{{ $t('com-default') }} = <b>{{cfg.def.gwConfigCaching}}</b></small></div>
+                </b-card>
+
+            </b-card-group>
+
+            <br />
+
+            <b-card-group deck>
+
+                <b-card :title="$t('config-sys-14')" class="shadow">
+                    <b-form-checkbox switch v-model="cfg.catch_meters" name="check-button" v-on:change="catchMetersChange($event)">
+                        {{ $t('config-sys-15') }}
+                    </b-form-checkbox>
+                    <div slot="footer"><small class="text-muted">{{ $t('com-default') }} = <b>{{cfg.def.catch_meters}}</b></small></div>
+                </b-card>
+
+                <b-card :title="$t('config-sys-16')" class="shadow">
+                    <b-form-checkbox switch v-model="cfg.catch_lora" name="check-button" v-on:change="catchLoRaChange($event)">
+                        {{ $t('config-sys-17') }}
+                    </b-form-checkbox>
+                    <div slot="footer"><small class="text-muted">{{ $t('com-default') }} = <b>{{cfg.def.catch_lora}}</b></small></div>
+                </b-card>
+
             </b-card-group>
 
             <br />
@@ -113,26 +141,6 @@
 
             <br />
 
-            <b-card-group deck>
-
-                <b-card :title="$t('config-sys-14')" class="shadow">
-                    <b-form-checkbox switch v-model="cfg.catch_meters" name="check-button" v-on:change="catchMetersChange($event)">
-                        {{ $t('config-sys-15') }}
-                    </b-form-checkbox>
-                    <div slot="footer"><small class="text-muted">{{ $t('com-default') }} = <b>{{cfg.def.catch_meters}}</b></small></div>
-                </b-card>
-
-                <b-card :title="$t('config-sys-16')" class="shadow">
-                    <b-form-checkbox switch v-model="cfg.catch_lora" name="check-button" v-on:change="catchLoRaChange($event)">
-                        {{ $t('config-sys-17') }}
-                    </b-form-checkbox>
-                    <div slot="footer"><small class="text-muted">{{ $t('com-default') }} = <b>{{cfg.def.catch_lora}}</b></small></div>
-                </b-card>
-
-            </b-card-group>
-
-            <br />
-
         </b-container>
 
         <b-container fluid>
@@ -189,6 +197,7 @@
                     version: 'v0.0',
                     countryCode: '',
                     languageCode: '',
+                    gwConfigCaching: true,
                     def: {
                         auto_login: false,
                         auto_enabled: true,
@@ -199,7 +208,8 @@
                         catch_meters: false,
                         catch_lora: false,
                         countryCode: 'AU',
-                        languageCode: 'EN'
+                        languageCode: 'EN',
+                        gwConfigCaching: false,
                     }
                 },
                 sys: {
@@ -246,6 +256,9 @@
                         }
                         else if (obj.rec.key.name == 'connection-superseed') {
                             this.cfg.supersede = obj.rec.data.value;
+                        }
+                        else if (obj.rec.key.name == 'gw-cache') {
+                            this.cfg.gwConfigCaching = obj.rec.data.value;
                         }
                         else if (obj.rec.key.name == 'generate-time-series') {
                             this.cfg.tsdb = obj.rec.data.value;
@@ -327,6 +340,9 @@
                         else if (obj.key[0] == 'connection-superseed') {
                             this.cfg.supersede = obj.value;
                         }
+                        else if (obj.key[0] == 'gw-cache') {
+                            this.cfg.gwConfigCaching = obj.value;
+                        }
                         else if (obj.key[0] == 'generate-time-series') {
                             this.cfg.tsdb = obj.value;
                         }
@@ -381,6 +397,12 @@
             supersedeChange(targetState) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "connection-superseed" },
+                    data: { value: targetState }
+                });
+            },
+            gwCacheChange(targetState) {
+                this.ws_submit_record("modify", "config.system", {
+                    key: { name: "gw-cache" },
                     data: { value: targetState }
                 });
             },

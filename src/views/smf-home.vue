@@ -78,7 +78,7 @@
     mixins: [webSocket],
 
     mounted() {
-      this.ws_open("/smf/api/system/v0.7");
+      this.ws_open("/smf/api/system/v0.8");
     },
 
     beforeDestroy() {
