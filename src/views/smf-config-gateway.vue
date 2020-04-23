@@ -896,13 +896,24 @@
 
                 <b-col md="2" class="p-3 bg-light">
                     <b-form @submit.prevent="">
+
+                        <b-form-group label="Cached Sections" label-for="smf-form-dev-enabled">
+                            <b-form-checkbox-group id="sections"
+                                                   stacked
+                                                   v-model="sections.active"
+                                                   name="smf-form-gw-sections"
+                                                   :options="sections.options"
+                                                   class="ml-4"
+                                                   aria-label="Individual flavours" />
+
+                        </b-form-group>
+
+                        <!--obsolete-->
                         <!-- bg-warning -->
                         <b-alert show dismissible class="bg-warning" v-if="mode === 'production'">
                             <span style="font-weight: bold">Note:</span> No other IP-T connection can be active during the execution of the requests below.
                         </b-alert>
-
-
-                        <b-form-group label="LABEL" label-for="smf-form-dev-enabled">
+                        <b-form-group label="sections" label-for="smf-form-sections">
 
                             <template slot="label">
                                 <b-form-checkbox v-model="options.allSelected"
@@ -917,7 +928,6 @@
                                                    :options="options.channels"
                                                    class="ml-4"
                                                    aria-label="Individual flavours" />
-
                         </b-form-group>
 
                     </b-form>
@@ -1081,9 +1091,23 @@ export default  {
               { text: 'Access', value: 'auth' },
               { text: 'Operation Log', value: 'log' }
               ],
-          selected: [],
-          allSelected: false,
-          indeterminate: false
+            selected: [],
+            allSelected: false,
+            indeterminate: false,
+            },
+        // pure experimental - should be part of the gateway table, since this data are specific for every gateway
+        sections: {
+            options: [
+                { text: 'IP-T', value: SML_CODES.CODE_ROOT_IPT_PARAM, disabled: true },
+                { text: 'Firmware', value: SML_CODES.CODE_ROOT_DEVICE_IDENT, disabled: true },
+                { text: 'Visible devices', value: SML_CODES.CODE_ROOT_VISIBLE_DEVICES, disabled: true },
+                { text: 'Active devices', value: SML_CODES.CODE_ROOT_ACTIVE_DEVICES, disabled: true },
+                { text: 'Wireless mbus', value: SML_CODES.CODE_IF_wMBUS, disabled: true },
+                { text: 'IEC', value: SML_CODES.CODE_IF_1107, disabled: true },
+                { text: 'Access', value: SML_CODES.CODE_ROOT_ACCESS_RIGHTS, disabled: true }
+            ],
+            // active section
+            active: []
         },
 
         //  panel
@@ -1353,7 +1377,7 @@ export default  {
             // console.log('websocket received ' + obj.cmd);
                 if (obj.cmd === 'update') {
                     if (obj.channel != null) {
-                        // console.log('update channel ' + obj.channel);
+                        console.log('update channel: ' + obj.channel);
                         if (obj.channel === MESSAGE_TYPES.getProcParameter) {
                             //console.log("section :::" + obj.section + ":::");
                             //console.log(obj.rec.values);
@@ -1687,12 +1711,21 @@ export default  {
                             //  unused
                         }
                         else if (obj.channel === 'cache.reset') {
+                            //console.log(obj, ' new sections');
+                            this.sections.active = obj.section;
                         }
                         else if (obj.channel === 'cache.sections') {
+                            console.log(obj, ' new sections');
+                            this.sections.active = obj.section;
+
                         }
                         else if (obj.channel === 'cache.update') {
+                            console.log(obj, ' cache.update');
                         }
-                        else {
+                        else if (obj.channel === 'cache.update') {
+                            console.log(obj, ' cache.query');
+                        }
+                       else {
                             console.error('update unknown channel ' + obj.channel);
                         }
                     }
