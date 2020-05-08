@@ -1,7 +1,7 @@
 import store from '../store';
 import Vue from 'vue';
 import {TranslateResult} from 'vue-i18n';
-import {MESSAGE_TYPES} from '@/constants/msgTypes';
+import { MESSAGE_REQUEST } from '@/constants/msgTypes';
 
 interface WebSocketData {
     ws: WebSocket | null,
@@ -215,12 +215,12 @@ export const webSocket = Vue.extend({
         //  pk_meter: primary key of selected object (gateway, meter)
         //  params: optional parameters
         //
-        ws_submit_request(msgType: MESSAGE_TYPES, root: string, pk_gw: string, params = {params: null}) {
+        ws_submit_request(msgType: MESSAGE_REQUEST, root: string, pk_gw: string, params = {params: null}) {
             if (!this.ws_is_open() || !this.ws) return;
             const msg = JSON.stringify({
                 cmd: "com:sml",
-                msgType: msgType,
-                channel: root,
+                channel: msgType,
+                section: root,
                 gw: pk_gw,
                 params
             });
