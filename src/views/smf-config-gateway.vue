@@ -1722,7 +1722,7 @@ export default  {
                         else if (obj.channel === 'cache.update') {
                             console.log(obj, ' cache.update');
                         }
-                        else if (obj.channel === 'cache.update') {
+                        else if (obj.channel === 'cache.query') {
                             console.log(obj, ' cache.query');
                         }
                        else {
