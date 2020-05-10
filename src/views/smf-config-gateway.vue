@@ -606,13 +606,14 @@
                                 <b-spinner v-if="spinner.iec" type="grow" small />
                             </template>
 
-                            <b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params.active }">
+                            <b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params[SML_CODES.IF_1107_ACTIVE] }">
+                            <!--<b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params.active }">-->
 
                                 <b-row class="p-3">
                                     <b-col md="3">
                                         <b-form-group :label="$t('config-gateway-58')" label-for="smf-gw-iec-active">
-                                            <b-form-checkbox switch v-model="iec.params.active" name="smf-gw-iec-active">
-                                                {{ iec.params.active ? $t('config-gateway-59') : $t('config-gateway-60') }}
+                                            <b-form-checkbox switch v-model="iec.params[SML_CODES.IF_1107_ACTIVE]" name="smf-gw-iec-active">
+                                                {{ iec.params[SML_CODES.IF_1107_ACTIVE] ? $t('config-gateway-59') : $t('config-gateway-60') }}
                                             </b-form-checkbox>
                                         </b-form-group>
                                     </b-col>
@@ -1252,7 +1253,8 @@ export default  {
             protocol: 'S',
             active: true,
             sMode: 0,
-            tMode: 0
+            tMode: 0,
+            '123456': true
             },
 
         access: {
@@ -1263,7 +1265,8 @@ export default  {
 
         iec: {
             params: {
-                active: false,
+                // @michael: is i a good idea to use same OBIS codes here?
+                '8181C79300FF': false,  // active
                 autoActivation: true,
                 loopTime: 3600,
                 maxDataRate: 10240,
@@ -1603,7 +1606,7 @@ export default  {
                                 //  hide loading spinner
                                 this.spinner.iec = false;
 
-                                this.iec.params.active = obj.rec.values[SML_CODES.IF_1107_ACTIVE];
+                                this.iec.params[SML_CODES.IF_1107_ACTIVE] = obj.rec.values[SML_CODES.IF_1107_ACTIVE];
                                 this.iec.params.loopTime = obj.rec.values[SML_CODES.IF_1107_LOOP_TIME];
                                 this.iec.params.retries = obj.rec.values[SML_CODES.IF_1107_RETRIES];
                                 this.iec.params.minTimeout = obj.rec.values[SML_CODES.IF_1107_MIN_TIMEOUT];
