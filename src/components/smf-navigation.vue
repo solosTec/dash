@@ -21,6 +21,7 @@
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_DEVICES, PRIVILEGES.VIEW)" to="/config/device">{{ $t('nav-devices') }}</b-dropdown-item>
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_GATEWAY, PRIVILEGES.VIEW)" to="/config/gateway">{{ $t('nav-gateways') }}</b-dropdown-item>
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_METERS, PRIVILEGES.VIEW)" to="/config/meter">{{ $t('nav-meter') }}</b-dropdown-item>
+                    <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_IEC, PRIVILEGES.VIEW)" to="/config/iec">{{ $t('nav-iec') }}</b-dropdown-item>
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_LORA, PRIVILEGES.VIEW)" to="/config/lora">{{ $t('nav-LoRa') }}</b-dropdown-item>
                     <div class="dropdown-divider"></div>
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFOG_UPLOAD, PRIVILEGES.VIEW)" to="/config/upload">{{ $t('nav-upload') }}</b-dropdown-item>

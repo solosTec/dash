@@ -606,13 +606,14 @@
                                 <b-spinner v-if="spinner.iec" type="grow" small />
                             </template>
 
-                            <b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params.active }">
+                            <b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params[SML_CODES.IF_1107_ACTIVE] }">
+                            <!--<b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params.active }">-->
 
                                 <b-row class="p-3">
                                     <b-col md="3">
                                         <b-form-group :label="$t('config-gateway-58')" label-for="smf-gw-iec-active">
-                                            <b-form-checkbox switch v-model="iec.params.active" name="smf-gw-iec-active">
-                                                {{ iec.params.active ? $t('config-gateway-59') : $t('config-gateway-60') }}
+                                            <b-form-checkbox switch v-model="iec.params[SML_CODES.IF_1107_ACTIVE]" name="smf-gw-iec-active">
+                                                {{ iec.params[SML_CODES.IF_1107_ACTIVE] ? $t('config-gateway-59') : $t('config-gateway-60') }}
                                             </b-form-checkbox>
                                         </b-form-group>
                                     </b-col>
@@ -962,7 +963,7 @@
     import opLog from '@/components/smf-table-op-log.vue'
     import snapshots from '@/components/smf-table-snapshots.vue'
     import firmware from '@/components/smf-table-firmware.vue'
-    import { MESSAGE_TYPES } from '@/constants/msgTypes'
+    import { MESSAGE_REQUEST, MESSAGE_RESPONSE } from '@/constants/msgTypes'
     import { SML_CODES } from '@/constants/rootCodes.js'
     import {hasPrivilegesWaitForUser} from "../mixins/privileges";
     import store from "../store";
@@ -977,7 +978,7 @@ export default  {
     mixins: [webSocket],
     components: {
         // eslint-disable-next-line vue/no-unused-components
-        opLog, snapshots, firmware, MESSAGE_TYPES, SML_CODES
+        opLog, snapshots, firmware, MESSAGE_REQUEST, MESSAGE_RESPONSE, SML_CODES
     },
 
     mounted() {
@@ -1252,7 +1253,8 @@ export default  {
             protocol: 'S',
             active: true,
             sMode: 0,
-            tMode: 0
+            tMode: 0,
+            '123456': true
             },
 
         access: {
@@ -1263,7 +1265,8 @@ export default  {
 
         iec: {
             params: {
-                active: false,
+                // @michael: is i a good idea to use same OBIS codes here?
+                '8181C79300FF': false,  // active
                 autoActivation: true,
                 loopTime: 3600,
                 maxDataRate: 10240,
@@ -1378,7 +1381,7 @@ export default  {
                 if (obj.cmd === 'update') {
                     if (obj.channel != null) {
                         console.log('update channel: ' + obj.channel);
-                        if (obj.channel === MESSAGE_TYPES.getProcParameter) {
+                        if (obj.channel === MESSAGE_RESPONSE.getProcParameter) {
                             //console.log("section :::" + obj.section + ":::");
                             //console.log(obj.rec.values);
                             if (obj.section === SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
@@ -1603,7 +1606,7 @@ export default  {
                                 //  hide loading spinner
                                 this.spinner.iec = false;
 
-                                this.iec.params.active = obj.rec.values[SML_CODES.IF_1107_ACTIVE];
+                                this.iec.params[SML_CODES.IF_1107_ACTIVE] = obj.rec.values[SML_CODES.IF_1107_ACTIVE];
                                 this.iec.params.loopTime = obj.rec.values[SML_CODES.IF_1107_LOOP_TIME];
                                 this.iec.params.retries = obj.rec.values[SML_CODES.IF_1107_RETRIES];
                                 this.iec.params.minTimeout = obj.rec.values[SML_CODES.IF_1107_MIN_TIMEOUT];
@@ -1657,7 +1660,7 @@ export default  {
 
                             }
                         }
-                        else if (obj.channel === MESSAGE_TYPES.getProfileList) {
+                        else if (obj.channel === MESSAGE_RESPONSE.getProfileList) {
                             //console.log(obj.rec.values['8181C789E2FF'] + ", size: "+ this.tabOpLog.data.items.length);
                             if (obj.section === SML_CODES.CLASS_OP_LOG) {
 
@@ -1722,7 +1725,7 @@ export default  {
                         else if (obj.channel === 'cache.update') {
                             console.log(obj, ' cache.update');
                         }
-                        else if (obj.channel === 'cache.update') {
+                        else if (obj.channel === 'cache.query') {
                             console.log(obj, ' cache.query');
                         }
                        else {
@@ -1858,46 +1861,46 @@ export default  {
                         //console.log('option: ' + option);
                         if (option === 'status-word') {
                             //  810060050000
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CLASS_OP_LOG_STATUS_WORD, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CLASS_OP_LOG_STATUS_WORD, [items[0].pk]);
                             self.spinner.status = true;
                         }
                         else if (option === 'devices') {
                             //gw_req_vec.push("root-visible-devices");
                             //gw_req_vec.push("root-active-devices");
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_VISIBLE_DEVICES, [items[0].pk]);
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_VISIBLE_DEVICES, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, [items[0].pk]);
                             //  clear meter table
                             self.meters.values = [];
                             self.spinner.meters = true;
                         }
                         else if (option === 'firmware') {
                             //gw_req_vec.push("root-device-id");
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_DEVICE_IDENT, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_DEVICE_IDENT, [items[0].pk]);
                             self.fw.values = []; // ? self
                             self.spinner.firmware = true;
                         }
                         else if (option === 'memory-usage') {
                             //gw_req_vec.push("root-memory-usage");
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_MEMORY_USAGE, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_MEMORY_USAGE, [items[0].pk]);
                             self.spinner.memory = true;
                         }
                         else if (option === 'w-MBus') {
                             //gw_req_vec.push("root-wMBus-status");
                             //gw_req_vec.push("IF-wireless-mbus");
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_W_MBUS_STATUS, [items[0].pk]);
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_IF_wMBUS, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_W_MBUS_STATUS, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_IF_wMBUS, [items[0].pk]);
                             self.spinner.wmbus = true;
                         }
                         else if (option === 'ipt') {
                             //gw_req_vec.push("root-ipt-state");
                             //gw_req_vec.push("root-ipt-param");
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_IPT_PARAM, [items[0].pk]);
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_ROOT_IPT_STATE, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_IPT_PARAM, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_IPT_STATE, [items[0].pk]);
                             self.spinner.ipt = true;
                         }
                         else if (option === 'iec') {
                             //gw_req_vec.push("IF-IEC-62505-21");
-                            self.ws_submit_request(MESSAGE_TYPES.getProcParameter, SML_CODES.CODE_IF_1107, [items[0].pk]);
+                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_IF_1107, [items[0].pk]);
                             self.spinner.iec = true;
                         }
                         else if (option === 'log') {
@@ -1905,7 +1908,7 @@ export default  {
                             //  request operation log: 81 81 C7 89 E1 FF (OBIS_CLASS_OP_LOG)
                             //console.log("selected: " + this.tabOpLog.form.selected);
                             this.tabOpLog.data.items = [];
-                            self.ws_submit_request(MESSAGE_TYPES.getProfileList
+                            self.ws_submit_request(MESSAGE_REQUEST.getProfileList
                                 , SML_CODES.CLASS_OP_LOG
                                 , [items[0].pk]
                                 , {range: this.tabOpLog.form.selected * 24});   //  hours
@@ -1979,8 +1982,8 @@ export default  {
             event.preventDefault();
             this.selected.forEach(element => {
                 //this.ws_submit_command("com:sml", "set.proc.param", [element.pk], [], ["reboot"]);
-                //console.log('ws_submit_request: ' + MESSAGE_TYPES.setProcParameter + ' gateway:' + element.pk);
-                this.ws_submit_request(MESSAGE_TYPES.setProcParameter, SML_CODES.CODE_REBOOT, [element.pk]);
+                //console.log('ws_submit_request: ' + MESSAGE_REQUEST.setProcParameter + ' gateway:' + element.pk);
+                this.ws_submit_request(MESSAGE_REQUEST.setProcParameter, SML_CODES.CODE_REBOOT, [element.pk]);
             });
             this.$nextTick(() => {
                 // Wrapped in $nextTick to ensure DOM is rendered before closing
@@ -2006,26 +2009,26 @@ export default  {
 
         onIPTUpdate(event)   {
             event.preventDefault();
-            this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+            this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_ROOT_IPT_PARAM,
                 [this.form.pk],
                 { ipt: this.ipt.param });
         },
         onMeterDelete(item) {
-            this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+            this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_DELETE_DEVICE,
                 [this.form.pk],
                 { nr: item.nr, meter: item.ident });
         },
         onMeterActivate(item) {
             if (item.active) {
-                this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+                this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                     SML_CODES.CODE_DEACTIVATE_DEVICE,
                     [this.form.pk],
                     { nr: item.nr, meter: item.ident });
             }
             else {
-                this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+                this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                     SML_CODES.CODE_ACTIVATE_DEVICE,
                     [this.form.pk],
                     { nr: item.nr, meter: item.ident });
@@ -2035,14 +2038,14 @@ export default  {
            this.$router.push({ name: 'smfConfigMeter', params: { meterPk: item.pk }});
         },
         onWMbusUpdate() {
-            this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+            this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_IF_wMBUS,
                 [this.form.pk],
                 { wmbus: this.wmbus });
 
         },
         onIECUpdate() {
-            this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+            this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_IF_1107,
                 [this.form.pk],
                 { iec: this.iec.params });
@@ -2050,7 +2053,7 @@ export default  {
 
         onAuthUpdate() {
             console.log("onAuthUpdate: " + this.access.meterNr);
-            this.ws_submit_request(MESSAGE_TYPES.getProcParameter,
+            this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
                 SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
                 [this.form.pk],
                 //  path is [role, user, meterID]
@@ -2058,7 +2061,7 @@ export default  {
         },
         onAuthServer() {
             console.log("onAuthServer: " + this.access.meterNr);
-            this.ws_submit_request(MESSAGE_TYPES.getProcParameter,
+            this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
                 SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
                 [this.form.pk],
                 //  path is [role, user, meterID]

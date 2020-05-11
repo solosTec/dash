@@ -450,7 +450,7 @@
 <script lang="js">
 
     import { webSocket } from '../mixins/web-socket';
-    import { MESSAGE_TYPES } from '@/constants/msgTypes'
+    import { MESSAGE_REQUEST, MESSAGE_RESPONSE } from '@/constants/msgTypes'
     import { SML_CODES } from '@/constants/rootCodes.js'
     import dataMirror from '@/components/smf-table-data-mirror.vue'
     import pushTargets from '@/components/smf-table-push-targets.vue'
@@ -816,7 +816,7 @@
                             this.spinner.push = false;
                             this.spinner.mirror = false;
                         }
-                        else if (obj.channel === MESSAGE_TYPES.getList) {
+                        else if (obj.channel === MESSAGE_RESPONSE.getList) {
                             //console.log(obj.rec.values);
                             //  hide spinner
                             this.spinner.readout = false;
@@ -836,8 +836,8 @@
                                 this.readout.values.push(rec);
                             });
                         }
-                        else if (obj.channel === MESSAGE_TYPES.getProcParameter) {
-                            console.log(MESSAGE_TYPES.getProcParameter + ': ' + obj.section);
+                        else if (obj.channel === MESSAGE_RESPONSE.getProcParameter) {
+                            console.log(MESSAGE_RESPONSE.getProcParameter + ': ' + obj.section);
                             //console.log(obj.rec.values);
                             console.log(obj);
                             if (obj.section === SML_CODES.CODE_ROOT_SENSOR_PARAMS) {
@@ -961,7 +961,7 @@
                 event.preventDefault();
                 // console.log('onMeterQuery: ' + this.form.ident);
                 this.spinner.readout = true;
-                this.ws_submit_request(MESSAGE_TYPES.getList,
+                this.ws_submit_request(MESSAGE_REQUEST.getList,
                     SML_CODES.LIST_CURRENT_DATA_RECORD,
                     [this.form.gwKey],
                     { meter: this.form.ident });
@@ -969,7 +969,7 @@
             onParameterRefresh(event) {
                 event.preventDefault();
                 this.spinner.meter = true;
-                this.ws_submit_request(MESSAGE_TYPES.getProcParameter,
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
                     SML_CODES.CODE_ROOT_SENSOR_PARAMS,
                     [this.form.gwKey],
                     { meter: this.form.ident });
@@ -977,7 +977,7 @@
             onParameterUpdate(event) {
                 event.preventDefault();
                 this.spinner.meter = true;
-                this.ws_submit_request(MESSAGE_TYPES.setProcParameter,
+                this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                     SML_CODES.CODE_ROOT_SENSOR_PARAMS,
                     [this.form.gwKey],
                     { meter: this.form.ident, data: this.tabMeter.data });
@@ -988,7 +988,7 @@
                 this.spinner.mirror = true;
                 this.tabDataMirror.data.items = [];
                 //  81 81 C7 86 20 FF
-                this.ws_submit_request(MESSAGE_TYPES.getProcParameter,
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
                     SML_CODES.CODE_ROOT_DATA_COLLECTOR,
                     [this.form.gwKey],
                     { meter: this.form.ident });
@@ -999,7 +999,7 @@
                 this.spinner.push = true;
                 this.tabPush.data.items = [];
                 //  81 81 C7 8A 01 FF
-                this.ws_submit_request(MESSAGE_TYPES.getProcParameter,
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
                     SML_CODES.PUSH_OPERATIONS,
                     [this.form.gwKey],
                     { meter: this.form.ident });
