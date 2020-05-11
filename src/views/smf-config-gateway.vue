@@ -606,14 +606,14 @@
                                 <b-spinner v-if="spinner.iec" type="grow" small />
                             </template>
 
-                            <b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params[SML_CODES.IF_1107_ACTIVE] }">
+                            <b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params['8181C79301FF'] }">
                             <!--<b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params.active }">-->
 
                                 <b-row class="p-3">
                                     <b-col md="3">
                                         <b-form-group :label="$t('config-gateway-58')" label-for="smf-gw-iec-active">
-                                            <b-form-checkbox switch v-model="iec.params[SML_CODES.IF_1107_ACTIVE]" name="smf-gw-iec-active">
-                                                {{ iec.params[SML_CODES.IF_1107_ACTIVE] ? $t('config-gateway-59') : $t('config-gateway-60') }}
+                                            <b-form-checkbox switch v-model="iec.params['8181C79301FF']" name="smf-gw-iec-active">
+                                                {{ iec.params['8181C79301FF'] ? $t('config-gateway-59') : $t('config-gateway-60') }}
                                             </b-form-checkbox>
                                         </b-form-group>
                                     </b-col>
@@ -1266,7 +1266,7 @@ export default  {
         iec: {
             params: {
                 // @michael: is i a good idea to use same OBIS codes here?
-                '8181C79300FF': false,  // active
+                '8181C79301FF': false,  // active
                 autoActivation: true,
                 loopTime: 3600,
                 maxDataRate: 10240,
