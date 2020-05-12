@@ -220,22 +220,13 @@
         },
         watch: {
             gateways: {
-                // run on component init and add propagate the form data
+                // run on component init and propagate the form data
                 immediate: true,
                 // look inside the array for changes
                 deep: true,
                 handler(currentGateways) {
                     if (currentGateways.length > 0) {
-                        this.form.serverId = currentGateways[0].serverId;
-                        this.form.manufacturer = currentGateways[0].manufacturer;
-                        this.form.descr = currentGateways[0].descr;
-                        this.form.name = currentGateways[0].name;
-                        this.form.model = currentGateways[0].model;
-                        this.form.vFirmware = currentGateways[0].vFirmware;
-                        this.form.userName = currentGateways[0].userName;
-                        this.form.userPwd = currentGateways[0].userPwd;
-                        this.form.online = currentGateways[0].online;
-                        this.form.pk = currentGateways[0].pk;
+                        this.form = {...currentGateways[0]}
                     }
                 }
             }
