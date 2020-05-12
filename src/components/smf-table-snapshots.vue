@@ -85,7 +85,7 @@
                     }
 
                 ],
-                sortBy: 'nr',
+                sortBy: 'utc',
                 sortDesc: false,
                 sortDirection: 'desc',
             }

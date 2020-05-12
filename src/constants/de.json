@@ -22,10 +22,13 @@
     "nav-lora-uplink": "LoRa Uplink",
     "nav-tasks": "Aufgaben",
     "nav-plausibility": "Plausibility",
+
     "state-online": "online",
     "state-offline": "offline",
     "state-mounted": "mounted",
+
     "header-dashboard": "SMF Dashboard",
+
     "lead-dashboard": "Managen Sie Ihr Smart Metering Framework.",
     "header-system": "Konfiguration des Systems %{version}",
     "lead-system": "Das SMF Cluster wird vom %{node} Knoten verwaltet",
@@ -37,6 +40,8 @@
     "lead-gateway": "%{count} Gateways im Überblick",
     "header-meter": "Zähler-Verwaltung",
     "lead-meter": "%{count} Zähler im Überblick",
+    "header-iec": "IEC Konfiguration",
+    "lead-iec": "%{count} Geräte im Überblick",
     "header-LoRa": "LoRa Gateway Verwaltung",
     "lead-LoRa": "%{count} LoRa Gateways im Überblick",
     "header-upload": "Konfigurationsdaten einspielen",
@@ -65,6 +70,15 @@
 
     "com-default": "Voreinstellung",
 
+    "action-update": "Update",
+    "action-del": "Löschen",
+    "action-insert": "Einfügen",
+    "action-apply": "Übernehmen",
+
+    "tbl-filter": "Filter",
+    "tbl-search": "Klicke zum Suchen",
+    "tbl-lines-per-page": "Zeilen je Seite",
+
     "config-sys-01": "Automatische Anmeldung",
     "config-sys-02": "Akzeptieren Sie unbekannte Geräte und übertragen Sie die Zugangsdaten in die Konfigurationsdatenbank (nicht empfohlen).",
     "config-sys-03": "Automatische Aktivierung",
@@ -74,9 +88,7 @@
     "config-sys-07": "Ländercode",
     "config-sys-08": "Sprach Code",
     "config-sys-09": "Systemmeldungen",
-    "config-sys-09-2": "Übernehmen",
-    "config-sys-10": "System Evente",
-    "config-sys-10-2": "Übernehmen",
+    "config-sys-10": "System Events",
     "config-sys-11": "Zeitreihe generieren",
     "config-sys-12": "schreibe Statistiken hinein",
     "config-sys-13": " (Dies kann Leistungseinbusse zur Folge haben).",
@@ -94,12 +106,7 @@
     "config-device-03-03": "<Beschreibung>",
     "config-device-04": "Aktiviert",
     "config-device-05": "Deaktiviert",
-    "config-device-06": "Update",
-    "config-device-07": "Löschen",
-    "config-device-08": "Einfügen",
-    "config-gateway-01": "Filter",
-    "config-gateway-02": "Klicke zum Suchen",
-    "config-gateway-03": "löschen",
+
     "config-gateway-04": "Konfiguration",
     "config-gateway-05": "Server ID",
     "config-gateway-06": "Hersteller",
@@ -169,6 +176,5 @@
     "config-gateway-70-04": "D",
     "config-gateway-71": "Max. Zeitüberschreitung (msek)",
     "config-gateway-72": "<Datenausleseperiode>",
-    "config-gateway-73": "Übermitteln",
-    "count-of-rows": "Anzahl Zeilen"
+    "config-gateway-73": "Übermitteln"
 }

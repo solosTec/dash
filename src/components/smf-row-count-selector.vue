@@ -1,5 +1,5 @@
 <template>
-    <b-form-group label-cols-sm="5" class="mb-0" :label="$t('count-of-rows')">
+    <b-form-group label-cols-sm="5" class="mb-0" :label="$t('tbl-lines-per-page')">
         <b-form-select
                 :value="rowCount"
                 :options="options"
