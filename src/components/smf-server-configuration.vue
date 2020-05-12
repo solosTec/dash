@@ -222,6 +222,8 @@
             gateways: {
                 // run on component init and add propagate the form data
                 immediate: true,
+                // look inside the array for changes
+                deep: true,
                 handler(currentGateways) {
                     if (currentGateways.length > 0) {
                         this.form.serverId = currentGateways[0].serverId;
