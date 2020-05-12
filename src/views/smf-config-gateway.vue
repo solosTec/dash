@@ -82,97 +82,15 @@
             <!-- details -->
             <b-row>
                 <b-col md="10" class="p-3 shadow">
-                    <b-tabs pills card v-model="tabIndex">
+                    <div v-if="selected.length === 0">Please select a gateway.</div>
+                    <b-tabs v-if="selected.length > 0" pills card v-model="tabIndex">
 
+                        <!-- Configuration" -->
                         <b-tab :title="$t('config-gateway-04')" active>
-                            <b-form @submit.prevent="">
-
-                                <b-row>
-                                    <b-col md="10" class="shadow">
-
-                                        <b-row>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-05')" label-for="smf-form-gw-server">
-                                                    <b-form-input id="smf-form-gw-server"
-                                                                  type="text"
-                                                                  v-model="form.serverId"
-                                                                  :state="serverIdValidation"
-                                                                  required
-                                                                  :placeholder="getPlaceholder($t('config-gateway-05'))"
-                                                                  maxlength="14" />
-                                                    <b-form-invalid-feedback :state="serverIdValidation">
-                                                        A server ID must be a 14 characters long hexadecimal string
-                                                    </b-form-invalid-feedback>
-                                                    <b-form-valid-feedback :state="serverIdValidation">
-                                                        OK
-                                                    </b-form-valid-feedback>
-                                                </b-form-group>
-                                            </b-col>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-06')" label-for="smf-form-gw-manufacturer">
-                                                    <b-form-input id="smf-form-gw-manufacturer"
-                                                                  type="text"
-                                                                  v-model="form.manufacturer"
-                                                                  required
-                                                                  :placeholder="getPlaceholder($t('config-gateway-06'))" />
-                                                </b-form-group>
-                                            </b-col>
-                                        </b-row>
-
-                                        <b-row>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-07')" label-for="smf-form-gw-server">
-                                                    <b-form-input id="smf-form-gw-user"
-                                                                  type="text"
-                                                                  v-model="form.userName"
-                                                                  required
-                                                                  :placeholder="getPlaceholder($t('config-gateway-07'))"
-                                                                  maxlength="14" />
-                                                </b-form-group>
-                                            </b-col>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-08')" label-for="smf-form-gw-pwd">
-                                                    <b-input-group>
-                                                        <b-form-input id="smf-form-gw-pwd"
-                                                                      type="text"
-                                                                      v-model="form.userPwd"
-                                                                      required
-                                                                      :placeholder="getPlaceholder($t('config-gateway-08'))" />
-                                                        <b-input-group-append>
-                                                            <b-button variant="info" v-on:click.stop="generatePassword">&#x21ba;</b-button>
-                                                        </b-input-group-append>
-                                                    </b-input-group>
-                                                </b-form-group>
-                                            </b-col>
-                                        </b-row>
-
-
-                                    </b-col>
-                                    <b-col md="2">
-
-                                        <b-row class="p-3">
-                                            <b-col md="12">
-                                                <b-button type="submit" variant="primary" v-on:click.stop="onGatewayUpdate">{{btnUpdateTitle}}</b-button>&nbsp;
-                                            </b-col>
-                                        </b-row>
-
-                                        <b-row class="p-3">
-                                            <b-col md="12">
-                                                <b-button type="submit" variant="warning" v-on:click.stop="onGatewayReboot" v-b-popover.hover="'Connection will be lost during reboot!'" :title="btnRebootTitle">{{btnRebootTitle}}</b-button>
-                                            </b-col>
-                                        </b-row>
-
-                                        <b-row class="p-3">
-                                            <b-col md="12">
-                                                <b-button type="submit" variant="danger" v-on:click.stop="onGatewayDelete">{{btnDeleteTitle}}</b-button>
-                                            </b-col>
-                                        </b-row>
-
-                                    </b-col>
-                                </b-row>
-
-
-                            </b-form>
+                            <smf-server-configuration
+                                    :gateways="selected"
+                                    :wsDelegate="createWsDelegate"
+                            ></smf-server-configuration>
                         </b-tab>
 
                         <!-- Status -->
@@ -873,7 +791,7 @@
                             <b-form @submit.prevent="">
                                 <b-row class="p-3">
                                     <b-col md="3">
-                                        <b-button type="submit" 
+                                        <b-button type="submit"
                                                   variant="primary"
                                                   v-on:click.stop="onProxyCacheSync">Create Snapshot</b-button>
                                     </b-col>
@@ -938,21 +856,6 @@
 
         </b-container>
 
-        <!-- Modal Components -->
-        <b-modal ref="dlgDeleteGateway"
-                 :title=btnDeleteTitle
-                 @ok="handleDeleteGatewayOk"
-                 header-bg-variant="danger">
-            <p>Proceed?</p>
-        </b-modal>
-
-        <b-modal ref="dlgRebootGateway"
-                 :title=btnRebootTitle
-                 @ok="handleRebootGatewayOk"
-                 header-bg-variant="warning">
-            <p>Proceed?</p>
-        </b-modal>
-
     </section>
 
 </template>
@@ -969,6 +872,7 @@
     import store from "../store";
     import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
     import {generatePassword} from "@/shared/generate-password";
+    import smfServerConfiguration from '@/components/smf-server-configuration.vue';
 
     let tmpGateways = [];
 
@@ -977,6 +881,7 @@ export default  {
     props: [],
     mixins: [webSocket],
     components: {
+        smfServerConfiguration,
         // eslint-disable-next-line vue/no-unused-components
         opLog, snapshots, firmware, MESSAGE_REQUEST, MESSAGE_RESPONSE, SML_CODES
     },
@@ -1838,14 +1743,7 @@ export default  {
                 //console.log('selected ' + items[0].serverId);
 
                 this.form.serverId = items[0].serverId;
-                this.form.manufacturer = items[0].manufacturer;
-                this.form.descr = items[0].descr;
                 this.form.name = items[0].name;
-                this.form.model = items[0].model;
-                this.form.vFirmware = items[0].vFirmware;
-                this.form.userName = items[0].userName;
-                this.form.userPwd = items[0].userPwd;
-                this.form.online = items[0].online;
                 this.form.pk = items[0].pk;
 
                 //    collect gateway requests
@@ -1921,14 +1819,7 @@ export default  {
             else {
                 console.log('nothing selected');
                 this.form.serverId = "";
-                this.form.manufacturer = null;
-                this.form.descr = null;
                 this.form.name = '';
-                this.form.model = null;
-                this.form.vFirmware = null;
-                this.form.userName = null;
-                this.form.userPwd = null;
-                this.form.online = false;
                 this.form.pk = null;
             }
         },
@@ -1950,52 +1841,6 @@ export default  {
                 });
             }
         },
-        onGatewayUpdate(event) {
-            event.preventDefault();
-            // console.log('onGatewayUpdate: ' + this.form.name);
-            this.ws_submit_record("modify", "config.gateway", {
-                key: [this.form.pk],
-                data: { serverId: this.form.serverId, manufacturer: this.form.manufacturer, userName: this.form.userName, userPwd: this.form.userPwd }
-            });
-        },
-        onGatewayDelete(event) {
-            event.preventDefault();
-            console.log('onGatewayDelete: ' + this.selected.length + ' gateway(s)');
-            this.$refs.dlgDeleteGateway.show();
-        },
-        handleDeleteGatewayOk(event) {
-            event.preventDefault();
-            this.selected.forEach(element => {
-                this.ws_submit_key("delete", "config.gateway", { tag: [element.pk] });
-            });
-            this.$nextTick(() => {
-                // Wrapped in $nextTick to ensure DOM is rendered before closing
-                this.$refs.dlgDeleteGateway.hide();
-            });
-        },
-        onGatewayReboot(event) {
-            event.preventDefault();
-            //console.log('onGatewayReboot: ' + this.selected.length + ' gateway(s)');
-            this.$refs.dlgRebootGateway.show();
-        },
-        handleRebootGatewayOk(event) {
-            event.preventDefault();
-            this.selected.forEach(element => {
-                //this.ws_submit_command("com:sml", "set.proc.param", [element.pk], [], ["reboot"]);
-                //console.log('ws_submit_request: ' + MESSAGE_REQUEST.setProcParameter + ' gateway:' + element.pk);
-                this.ws_submit_request(MESSAGE_REQUEST.setProcParameter, SML_CODES.CODE_REBOOT, [element.pk]);
-            });
-            this.$nextTick(() => {
-                // Wrapped in $nextTick to ensure DOM is rendered before closing
-                this.$refs.dlgRebootGateway.hide();
-            });
-        },
-
-        generatePassword(event) {
-            event.preventDefault();
-            this.form.userPwd = generatePassword();
-        },
-
         generatePasswordIPT(event, element) {
             event.preventDefault();
             this.ipt.param[element].pwd = generatePassword();
@@ -2139,16 +1984,11 @@ export default  {
         isRecordSelected() {
             return this.selected.length !== 0;
         },
-        isRecordNew() {
+        isRecordNew() { // FIXME is this method unused?
             if (this.selected.length !== 0) {
                 return this.form.name !== this.selected[0].name;
             }
             return this.form.name.length > 0;
-        },
-        serverIdValidation() {
-            if (this.form.serverId == null) return false;
-            const rex = /[0-9A-Fa-f]{14}/g;   //  test for hexadecimal string with 14 characters
-            return rex.test(this.form.serverId);
         },
         wmbusRebootPrep() {
             if (this.wmbus.reboot > 3600) {
@@ -2167,6 +2007,19 @@ export default  {
                 return "Download " + this.meters.values.length + " meter records from gateway " + this.selected[0].name;
             }
             return "Download meter table";
+        },
+        createWsDelegate() {
+            return {
+                ws_submit_record: (cmd, channel, obj) => {
+                    this.ws_submit_record(cmd, channel, obj)
+                },
+                ws_submit_key: (cmd, cahnnel, key) => {
+                    console.log(cmd, cahnnel, key)
+                },
+                ws_submit_request: (msgType, root, pk_gw, params) => {
+                    console.log(msgType, root, pk_gw, params);
+                }
+            }
         }
     },
 
