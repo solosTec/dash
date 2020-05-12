@@ -37,6 +37,8 @@
     "lead-gateway": "%{count} passerelles en un coup d'œil",
     "header-meter": "Gestion des compteurs",
     "lead-meter": "%{count} mètres en un coup d'œil",
+    "header-iec": "IEC1107 Paramétrage",
+    "lead-iec": "%{count} IEC Appareils en un coup d'œil",
     "header-LoRa": "Gestion de la passerelle LoRa",
     "lead-LoRa": "%{count} Passerelles LoRa en un coup d'œil",
     "header-upload": "Télécharger les fichiers de configuration",
@@ -65,6 +67,15 @@
 
     "com-default": "par défaut",
 
+    "action-del": "Supprimer",
+    "action-apply": "commettre",
+    "action-update": "Mise à jour",
+    "action-insert": "Insérer",
+
+    "tbl-filter": "Filtre",
+    "tbl-search": "Type de recherche",
+    "tbl-lines-per-page": "Nombre de rangées",
+
     "config-sys-01": "Connexion automatique",
     "config-sys-02": "Accepter les périphériques inconnus et transférer les données de connexion à la base de données de configuration (déconseillé).",
     "config-sys-03": "Activation automatique",
@@ -74,9 +85,8 @@
     "config-sys-07": "indicatif de pays",
     "config-sys-08": "Code de langue",
     "config-sys-09": "messages système",
-    "config-sys-09-2": "commettre",
+
     "config-sys-10": "Événements système",
-    "config-sys-10-2": "commettre",
     "config-sys-11": "Générer des séries chronologiques",
     "config-sys-12": "écrire des statistiques",
     "config-sys-13": " (Cela peut entraîner une perte de puissance).",
@@ -94,12 +104,7 @@
     "config-device-03-03": "<descriptif>",
     "config-device-04": "active",
     "config-device-05": "inactive",
-    "config-device-06": "Mise à jour",
-    "config-device-07": "Supprimer",
-    "config-device-08": "Insérer",
-    "config-gateway-01": "Filtre",
-    "config-gateway-02": "Type de recherche",
-    "config-gateway-03": "effacer",
+
     "config-gateway-04": "paramétrage",
     "config-gateway-05": "ID du serveur",
     "config-gateway-06": "Fabricant",
@@ -169,6 +174,5 @@
     "config-gateway-70-04": "D",
     "config-gateway-71": "Délai d'attente maximal (msec)",
     "config-gateway-72": "<Période de lecture des données>",
-    "config-gateway-73": "Soumettre",
-    "count-of-rows": "Nombre de rangées"
+    "config-gateway-73": "Soumettre"
 }
