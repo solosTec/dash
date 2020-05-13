@@ -80,9 +80,9 @@
     "tbl-lines-per-page": "Zeilen je Seite",
 
     "config-sys-01": "Automatische Anmeldung",
-    "config-sys-02": "Akzeptieren Sie unbekannte Geräte und übertragen Sie die Zugangsdaten in die Konfigurationsdatenbank (nicht empfohlen).",
+    "config-sys-02": "Die Logindaten unbekannter Teilnehmer werden automatisch in die Konfigurationsdatenbank übernommen (nicht empfohlen).",
     "config-sys-03": "Automatische Aktivierung",
-    "config-sys-04": "Setzt automatisch konfigurierte Geräte als aktiviert.",
+    "config-sys-04": "Automatisch konfigurierte Geräte sind sofort bereit.",
     "config-sys-05": "Ersetzen",
     "config-sys-06": "Neues Login beendet laufende Sitzung mit gleichen Zugangsdaten (empfohlen)",
     "config-sys-07": "Ländercode",
