@@ -11,6 +11,8 @@ jobs:
     steps:
       - checkout
 
+      - setup_remote_docker
+
       - restore_cache:
           keys:
             - node-10-dependencies-{{ checksum "package-lock.json" }}
@@ -30,6 +32,16 @@ jobs:
 
       - run: npm run build-no-auth
       - run: tar -zcvf dist-no-auth.tar.gz ./dist-no-auth
+
+      # build and push Docker image tagged with build-num, latest and branch name
+      - run: |
+          BUILD_TAG=commit-$CIRCLE_SHA1
+          docker build . -t solostec/smf:$BUILD_TAG -f docker/Dockerfile
+          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          for tag in {build-$CIRCLE_BUILD_NUM,latest,$CIRCLE_BRANCH}; do
+            docker tag solostec/smf:$BUILD_TAG solostec/smf:${tag}
+            docker push solostec/smf:${tag}
+          done
 
       - store_artifacts:
           path: ~/repo/coverage

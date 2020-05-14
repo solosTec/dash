@@ -83,7 +83,7 @@ $ npm i vue-toasted
 
 # create a docker container
 docker login -u "$DOCKER_USERNAME" --password-stdin
-docker build . -t seemann/smf -f docker/Dockerfile 
-docker push seemann/smf:latest
+docker build . -t solostec/smf -f docker/Dockerfile 
+docker push solostec/smf:latest
 
 
