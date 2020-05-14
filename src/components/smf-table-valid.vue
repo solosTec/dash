@@ -1,6 +1,6 @@
 ﻿﻿<template lang="html">
 
-     <b-container class="smf-table-iec" fluid>
+     <b-container class="smf-table-valid" fluid>
          <!--navigation-->
          <b-row>
              <b-col md="6">
@@ -15,7 +15,7 @@
              </b-col>
              <b-col md="6">
                  <b-form-row>
-                     <smf-row-count-selector v-model="nav.perPage" store-key="meter" class="col" />
+                     <smf-row-count-selector v-model="nav.perPage" store-key="valid" class="col" />
                      <b-pagination v-model="nav.currentPage" :total-rows="nav.visibleRows" :per-page="nav.perPage" class="justify-content-end" />
                  </b-form-row>
              </b-col>
@@ -23,7 +23,7 @@
          <!--table with IEC devices-->
          <b-row>
              <b-col md="12">
-                 <b-table ref="tableIEC"
+                 <b-table ref="tableValid"
                           bordered
                           striped
                           small
@@ -67,12 +67,11 @@
 <script lang="js">
 
     export default {
-        name: 'smf-table-iec',
+        name: 'smf-table-valid',
         props: {
             items: Array,
             nav: Object,
-            selected: Array,
-            form: Object
+            selected: Array
         },
         created() {
         },
@@ -93,33 +92,47 @@
                         sortable: true
                     },
                     {
-                        key: 'ep',
-                        label: 'IP Address',
+                        key: 'from',
+                        label: 'Start',
                         sortable: true
                     },
                     {
-                        key: 'direction',
-                        label: 'Direction',
-                        class: 'text-center',
+                        key: 'to',
+                        label: 'End',
+                        sortable: true
+                    },
+                    {
+                        key: 'type',
+                        label: 'Type',
+                        sortable: true,
                         formatter: (value, key, item) => {
-                            return value
-                                ? "↤ incoming"
-                                : "outgoing ↦";
+                            switch (value) {
+                                case 1: return "missing";
+                                case 2: return "implausible";
+                                case 3: return "out-of-range";
+                                default:
+                                    break;
+                            }
+                            return "other";
                         }
                     },
                     {
-                        key: 'interval',
-                        label: 'Interval',
-                        sortable: true,
-                        //formatter: (value, key, item) => {
-                        //    if (value > 100) {
-                        //        return Math.floor(value / 60) + " min " + (value % 60) + " sec";
-                        //    }
-                        //    return value + " sec";
-                        //}
+                        key: 'quantity',
+                        label: 'Quantity',
+                        sortable: true
+                    },
+                    {
+                        key: 'edited',
+                        label: 'Edited',
+                        class: 'text-center',
+                        formatter: (value, key, item) => {
+                            return value
+                                ? "YES"
+                                : "no";
+                        }
                     }
                 ],
-                sortBy: 'ep',
+                sortBy: 'meter',
                 sortDesc: false,
                 sortDirection: 'desc',
             }
@@ -131,16 +144,9 @@
                 this.nav.currentPage = 1
             },
             rowSelected(items) {
-                this.$emit('input', items);
+                //this.$emit('input', items);
                 //this.$emit('input', selected);
                 //this.selected = items;
-                if (items.length > 0) {
-                    //this.$emit('input', items);
-                //    this.form.pk = items[0].pk;
-                //    this.form.ep = items[0].ep;
-                //    this.form.direction = items[0].direction;
-                //    this.form.interval = items[0].interval;
-                }
             }
         },
         computed: {
