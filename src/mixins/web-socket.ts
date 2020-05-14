@@ -78,7 +78,8 @@ export const webSocket = Vue.extend({
             this.path = path;
             const self = this as any; //  save context
             if (process.env.NODE_ENV === 'production') {
-                this.ws = new WebSocket(`${protocol}://` + location.host + path, ['SMF']);
+                const extraBackendPath = process.env.VUE_APP_SMF_DOCKER === 'true' ? '/backend' : '';
+                this.ws = new WebSocket(`${protocol}://` + location.host+ extraBackendPath + path, ['SMF']);
             } else {
                 // VUE_APP_SMF_SERVER can be set in the .env file
                 console.log('VUE_APP_SMF_SERVER: ' + process.env.VUE_APP_SMF_SERVER);
