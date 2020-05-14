@@ -36,11 +36,11 @@ jobs:
       # build and push Docker image tagged with build-num, latest and branch name
       - run: |
           BUILD_TAG=commit-$CIRCLE_SHA1
-          docker build . -t solostec/smf:$BUILD_TAG -f docker/Dockerfile
+          docker build . -t solostec/dashboard:$BUILD_TAG -f docker/Dockerfile
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           for tag in {build-$CIRCLE_BUILD_NUM,latest,$CIRCLE_BRANCH}; do
-            docker tag solostec/smf:$BUILD_TAG solostec/smf:${tag}
-            docker push solostec/smf:${tag}
+            docker tag solostec/dashboard:$BUILD_TAG solostec/dashboard:${tag}
+            docker push solostec/dashboard:${tag}
           done
 
       - store_artifacts:
