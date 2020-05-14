@@ -74,8 +74,13 @@
 
 <script lang="ts">
 
-    import { webSocket } from '../mixins/web-socket'
+    import {
+        webSocket
+    } from '@/mixins/web-socket';
     import tblIEC from '@/components/smf-table-iec.vue'
+    import mixins from 'vue-typed-mixins';
+    import Vue from 'vue';
+
     import { TranslateResult } from 'vue-i18n';
 
     interface UiMeter  {
@@ -86,7 +91,7 @@
         interval: string;
     }
 
-    export default {
+    export default mixins(webSocket, Vue).extend( {
         name: 'smfConfigGateway',
         props: [],
         mixins: [webSocket],
@@ -162,7 +167,7 @@
                             this.cmd_update(obj.channel, obj.value);
                             break;
                         default:
-                            console.err('undefined cmd ', obj);
+                            console.warn('undefined cmd ', obj);
                             break;
                     }
                 }
@@ -224,23 +229,28 @@
                 }
                 return this.form.ep.length > 0;
             },
-            btnInsertTitle(): string | TranslateResult {
-                return this.$t('action-insert') + ' ' + this.form.meter;
+            btnInsertTitle(): string | TranslateResult { 
+                //return this.$t('action-insert') + ' ' + this.form.meter;
+                return 'Insert ' + this.form.meter;
             },
             btnDeleteTitle(): string | TranslateResult {
                 if (this.selected.length === 0) {
-                    return this.$t('action-del');
+                    //return this.$t('action-del');
+                    return 'Delete';
                 }
                 else if (this.selected.length === 1) {
-                    return this.$t('action-del') + ' ' + this.selected[0].meter;
+                    //return this.$t('action-del') + ' ' + this.selected[0].meter;
+                    return 'Delete ' + this.selected[0].meter;
                 }
-                return this.$t('action-del') + ' ' + this.selected.length + " record(s)";
+                //return this.$t('action-del') + ' ' + this.selected.length + " record(s)";
+                return 'Delete ' + this.selected.length + " record(s)";
             },
             btnUpdateTitle(): string | TranslateResult {
                 if (this.selected.length > 0) {
-                    return this.$t('action-update') + ' ' + this.selected[0].meter;
+                    //return this.$t('action-update') + ' ' + this.selected[0].meter;
+                    return 'Update ' + this.selected[0].meter;
                 }
-                return this.$t('action-update');
+                return 'Update';
             }
         },
 
@@ -249,7 +259,7 @@
             //    console.log('selected ', items);
             //}
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">
