@@ -15,10 +15,11 @@
         <b-container fluid>
             <b-row>
                 <b-col md="9">
-                    <iec ref="IEC" 
-                         :items="items" 
-                         :nav="nav" 
+                    <tblIEC ref="IEC"
+                         :items="items"
+                         :nav="nav"
                          v-model="selected"
+                         @rowSelected="rowSelected"
                          class="p-3 shadow" />
                 </b-col>
                 <b-col md="3">
@@ -31,7 +32,7 @@
                                           required
                                           placeholder="<IP address (dotted)>"
                                           minlength="7"
-                                          maxlength="15" 
+                                          maxlength="15"
                                           size="15" />
                         </b-form-group>
 
@@ -52,31 +53,45 @@
                         </b-form-group>
 
                         <b-input-group class="pt-1">
-                            <b-button type="submit" variant="primary" :disabled="!isRecordSelected" v-on:click.stop="onMeterUpdate">{{$t('action-update')}}</b-button>
+                            <b-button type="submit" variant="primary" :disabled="!isRecordSelected" v-on:click.stop="onMeterUpdate">{{btnUpdateTitle}}</b-button>
                         </b-input-group>
 
                         <b-input-group class="pt-3">
-                            <b-button type="submit" variant="danger" :disabled="!isRecordSelected" v-on:click.stop="onMeterDelete">{{$t('action-del')}}</b-button>
+                            <b-button type="submit" variant="danger" :disabled="!isRecordSelected" v-on:click.stop="onMeterDelete">{{btnDeleteTitle}}</b-button>
                         </b-input-group>
+
+                        <hr />
+
+                        <b-button type="submit" variant="success" :disabled="!isRecordNew" v-on:click.stop="onDeviceInsert">{{btnInsertTitle}}</b-button>
+
                     </b-form>
                 </b-col>
             </b-row>
         </b-container>
 
-</section>
+    </section>
 </template>
 
-<script lang="js">
+<script lang="ts">
 
     import { webSocket } from '../mixins/web-socket'
-    import iec from '@/components/smf-table-iec.vue'
+    import tblIEC from '@/components/smf-table-iec.vue'
+    import { TranslateResult } from 'vue-i18n';
+
+    interface UiMeter  {
+        pk: string;
+        meter: string;
+        ep: string;
+        direction: string;
+        interval: string;
+    }
 
     export default {
         name: 'smfConfigGateway',
         props: [],
         mixins: [webSocket],
         components: {
-            iec
+            tblIEC
         },
 
         mounted() {
@@ -85,8 +100,8 @@
 
         data() {
             return {
-                items:[],
-                selected: [],
+                items: [] as UiMeter[],
+                selected: [] as UiMeter[],
                 nav: {
                     currentPage: 1,
                     visibleRows: 0,
@@ -97,8 +112,9 @@
                 },
                 form: {
                     pk: '',
+                    meter: '',
                     ep: '0.0.0.0',
-                    direction: false,
+                    direction: 'in',
                     interval: '00:01:0.0'
                 }
             }
@@ -119,12 +135,12 @@
             },
             cmd_insert(channel, key, data) {
                 if (channel == 'config.iec') {
-                    let rec = {
+                    let rec: UiMeter = {
                         pk: key.pk,
                         meter: data.meter,
-                        ep: data.ep,
+                        ep: data.ep !== null ? data.ep : '0.0.0.0:4004',
                         interval: data.interval,
-                        direction: data.direction
+                        direction: data.direction ? 'in' : 'out'
                     };
                     this.items.push(rec);
                 }
@@ -151,19 +167,87 @@
                     }
                 }
             },
-            onMeterUpdate(event) {
+            onMeterUpdate(event: Event) {
+                event.preventDefault();
+                this.ws_submit_record("modify", "config.iec", {
+                    key: [this.form.pk],
+                    data: {
+                        pk: this.form.pk,
+                        ep: this.form.ep,
+                        direction: Boolean(this.form.direction == 'in'),
+                        interval: this.form.interval
+                    }
+                });
+            },
+            onMeterDelete(event: Event) {
                 event.preventDefault();
             },
-            onMeterDelete(event) {
+            onMeterInsert(event: Event) {
                 event.preventDefault();
+                this.ws_submit_record("insert", "config.iec", {
+                    key: [this.form.pk],
+                    data: {
+                        pk: this.form.pk,
+                        ep: this.form.ep,
+                        direction: Boolean(this.form.direction == 'in'),
+                        interval: this.form.interval
+                    }
+                });
             },
-            rowSelected(items) {
+            rowSelected(items: UiMeter[]) {
+                this.selected = items;
+                if (items.length > 0) {
+                    this.form.pk = items[0].pk;
+                    this.form.meter = items[0].meter;
+                    this.form.ep = items[0].ep;
+                    this.form.direction = items[0].direction ? 'in' : 'out';
+                    this.form.interval = items[0].interval;
+                }
+                else {
+                    // console.log('nothing selected');
+                    this.pk = '';
+                    this.form.meter = '';
+                    this.ep = '0.0.0.0';
+                    this.direction = 'out';
+                    this.interval = '00:01:0.0';
+                }
             }
         },
+
         computed: {
             isRecordSelected() {
                 return this.selected.length != 0;
+            },
+            isRecordNew(): boolean {
+                if (this.selected.length !== 0) {
+                    return this.form.ep !== this.selected[0].ep;
+                }
+                return this.form.ep.length > 0;
+            },
+            btnInsertTitle(): string | TranslateResult {
+                return this.$t('action-insert') + ' ' + this.form.meter;
+            },
+            btnDeleteTitle(): string | TranslateResult {
+                if (this.selected.length === 0) {
+                    return this.$t('action-del');
+                }
+                else if (this.selected.length === 1) {
+                    return this.$t('action-del') + ' ' + this.selected[0].meter;
+                }
+                return this.$t('action-del') + ' ' + this.selected.length + " record(s)";
+            },
+            btnUpdateTitle(): string | TranslateResult {
+                if (this.selected.length > 0) {
+                    return this.$t('action-update') + ' ' + this.selected[0].meter;
+                }
+                return this.$t('action-update');
             }
+        },
+
+        watch: {
+            //selected: function (items) {
+            //    console.log('selected ', items);
+            //}
         }
     }
 </script>

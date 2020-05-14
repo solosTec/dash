@@ -4,7 +4,7 @@
             <b-col md="6">
                 <b-form-group label-cols-sm="3" :label="$t('tbl-filter')" class="mb-0">
                     <b-input-group>
-                        <b-form-input v-model="filter" :placeholder="$t('config-gateway-02')" />
+                        <b-form-input v-model="filter" :placeholder="$t('tbl-search')" />
                         <b-input-group-append>
                             <b-button :disabled="!filter" @click="filter = ''">{{ $t('action-del') }}</b-button>
                         </b-input-group-append>

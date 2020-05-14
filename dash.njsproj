@@ -72,6 +72,7 @@
     <Content Include="src\views\smf-monitor-messages.vue" />
     <Content Include="src\views\smf-monitor-system.vue" />
     <Content Include="src\views\smf-monitor-tsdb.vue" />
+    <Content Include="src\views\smf-no-access.vue" />
     <Content Include="src\views\smf-status-connections.vue" />
     <Content Include="src\views\smf-status-sessions.vue" />
     <Content Include="src\views\smf-status-targets.vue" />

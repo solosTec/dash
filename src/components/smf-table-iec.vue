@@ -31,7 +31,7 @@
                           show-empty
                           stacked="md"
                           selectable
-                          select-mode="single"
+                          select-mode="range"
                           selectedVariant="info"
                           @row-selected="rowSelected"
                           :fields="fields"
@@ -73,10 +73,13 @@
             nav: Object,
             value: Array
         },
+
         created() {
         },
+
         mounted() {
         },
+
         data() {
             return {
                 isBusy: false,
@@ -130,11 +133,11 @@
                 this.nav.currentPage = 1
             },
             rowSelected(items) {
-                //this.selected = items;
                 //this.$emit('input', items);
                 this.$emit('rowSelected', items);
             }
         },
+
         computed: {
         }
     }
