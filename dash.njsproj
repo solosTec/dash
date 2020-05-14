@@ -60,10 +60,12 @@
     <Content Include="src\views\smf-config-device.vue" />
     <Content Include="src\views\smf-config-download.vue" />
     <Content Include="src\views\smf-config-gateway.vue" />
+    <Content Include="src\views\smf-config-iec.vue" />
     <Content Include="src\views\smf-config-lora.vue" />
     <Content Include="src\views\smf-config-meter.vue" />
     <Content Include="src\views\smf-config-system.vue" />
     <Content Include="src\views\smf-config-upload.vue" />
+    <Content Include="src\views\smf-config-user.vue" />
     <Content Include="src\views\smf-config-web.vue" />
     <Content Include="src\views\smf-home.vue" />
     <Content Include="src\views\smf-monitor-lora.vue" />
@@ -98,6 +100,9 @@
     <Content Include="src\constants\fr.json" />
     <Content Include="src\constants\languages.js" />
     <Content Include="src\constants\ru.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="src\main.ts" />
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>

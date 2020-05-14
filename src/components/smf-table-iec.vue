@@ -71,8 +71,7 @@
         props: {
             items: Array,
             nav: Object,
-            selected: Array,
-            form: Object
+            value: Array
         },
         created() {
         },
@@ -131,16 +130,9 @@
                 this.nav.currentPage = 1
             },
             rowSelected(items) {
-                this.$emit('input', items);
-                //this.$emit('input', selected);
                 //this.selected = items;
-                if (items.length > 0) {
-                    //this.$emit('input', items);
-                //    this.form.pk = items[0].pk;
-                //    this.form.ep = items[0].ep;
-                //    this.form.direction = items[0].direction;
-                //    this.form.interval = items[0].interval;
-                }
+                //this.$emit('input', items);
+                this.$emit('rowSelected', items);
             }
         },
         computed: {

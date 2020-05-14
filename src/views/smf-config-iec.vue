@@ -18,8 +18,7 @@
                     <iec ref="IEC" 
                          :items="items" 
                          :nav="nav" 
-                         :selected="selected"
-                         :form="form"
+                         v-model="selected"
                          class="p-3 shadow" />
                 </b-col>
                 <b-col md="3">
@@ -157,6 +156,8 @@
             },
             onMeterDelete(event) {
                 event.preventDefault();
+            },
+            rowSelected(items) {
             }
         },
         computed: {
