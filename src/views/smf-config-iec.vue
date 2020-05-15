@@ -134,11 +134,11 @@
                 this.ws_subscribe("config.iec");
                 this.ws_subscribe("table.iec.count");
             },
-            cmd_load(channel, show, level) {
+            cmd_load(channel: string, show: boolean, level: number) {
                 this.nav.busyLevel = level;
                 if (show != null) this.nav.isBusy = show;
             },
-            cmd_insert(channel, key, data) {
+            cmd_insert(channel: string, key: any, data: any) {
                 if (channel == 'config.iec') {
                     let rec: UiMeter = {
                         pk: key.pk,
@@ -150,10 +150,10 @@
                     this.items.push(rec);
                 }
             },
-            cmd_update(channel, value) {
+            cmd_update(channel: string, value: any) {
                 //  unused
             },
-            ws_on_data(obj) {
+            ws_on_data(obj: any) {
                 if (obj.cmd != null) {
                     console.log('websocket received ', obj);
                     switch (obj.cmd) {
@@ -199,7 +199,7 @@
                     }
                 });
             },
-            rowSelected(items: UiMeter[]) {
+            rowSelected(items: UiMeter[]): void {
                 this.selected = items;
                 if (items.length > 0) {
                     this.form.pk = items[0].pk;
@@ -210,17 +210,17 @@
                 }
                 else {
                     // console.log('nothing selected');
-                    this.pk = '';
+                    this.form.pk = '';
                     this.form.meter = '';
-                    this.ep = '0.0.0.0';
-                    this.direction = 'out';
-                    this.interval = '00:01:0.0';
+                    this.form.ep = '0.0.0.0';
+                    this.form.direction = 'out';
+                    this.form.interval = '00:01:0.0';
                 }
             }
         },
 
         computed: {
-            isRecordSelected() {
+            isRecordSelected(): boolean {
                 return this.selected.length != 0;
             },
             isRecordNew(): boolean {
@@ -229,7 +229,7 @@
                 }
                 return this.form.ep.length > 0;
             },
-            btnInsertTitle(): string | TranslateResult { 
+            btnInsertTitle(): string | TranslateResult {
                 //return this.$t('action-insert') + ' ' + this.form.meter;
                 return 'Insert ' + this.form.meter;
             },
