@@ -230,27 +230,22 @@
                 return this.form.ep.length > 0;
             },
             btnInsertTitle(): string | TranslateResult {
-                //return this.$t('action-insert') + ' ' + this.form.meter;
-                return 'Insert ' + this.form.meter;
+                return this.$t('action-insert') + ' ' + this.form.meter;
             },
             btnDeleteTitle(): string | TranslateResult {
                 if (this.selected.length === 0) {
-                    //return this.$t('action-del');
-                    return 'Delete';
+                    return this.$t('action-del');
                 }
                 else if (this.selected.length === 1) {
-                    //return this.$t('action-del') + ' ' + this.selected[0].meter;
-                    return 'Delete ' + this.selected[0].meter;
+                    return this.$t('action-del') + ' ' + this.selected[0].meter;
                 }
-                //return this.$t('action-del') + ' ' + this.selected.length + " record(s)";
-                return 'Delete ' + this.selected.length + " record(s)";
+                return this.$t('action-del') + ' ' + this.selected.length + " record(s)";
             },
             btnUpdateTitle(): string | TranslateResult {
                 if (this.selected.length > 0) {
-                    //return this.$t('action-update') + ' ' + this.selected[0].meter;
-                    return 'Update ' + this.selected[0].meter;
+                    return this.$t('action-update') + ' ' + this.selected[0].meter;
                 }
-                return 'Update';
+                return this.$t('action-update');
             }
         },
 
