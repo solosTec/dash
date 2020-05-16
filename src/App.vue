@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div v-if="userName">
-      <SMFNavigation brand="solos::Tec" logo="/logo.svg" />
+      <SMFNavigation brand="solos::Tec" logo="logo.svg" />
       <router-view/>
     </div>
     <div v-else>

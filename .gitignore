@@ -1,5 +1,6 @@
 .DS_Store
 node_modules
+package-lock.json
 /dist
 /dist-no-auth
 
@@ -15,6 +16,7 @@ yarn-error.log*
 # Editor directories and files
 .idea
 .vscode
+dash.njsproj.user
 *.suo
 *.ntvs*
 *.sw?

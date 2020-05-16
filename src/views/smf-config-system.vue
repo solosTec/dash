@@ -104,7 +104,7 @@
                         <b-form-input v-model.number="cfg.maxMessages" type="number" min="10" max="10000" step="10" placeholder="<max. Messages>" />
                         <b-input-group-append>
                             <b-button variant="secondary" @click="cfg.maxMessages = cfg.def.maxMessages">{{ $t('com-default') }}</b-button>
-                            <b-button variant="success" @click="changeMaxMessages(cfg.maxMessages)">{{ $t('config-sys-09-2') }}</b-button>
+                            <b-button variant="success" @click="changeMaxMessages(cfg.maxMessages)">{{ $t('action-apply') }}</b-button>
                         </b-input-group-append>
                     </b-input-group>
 
@@ -117,7 +117,7 @@
                         <b-form-input v-model.number="cfg.maxEvents" type="number" min="10" max="10000" step="10" placeholder="<max. Events>" />
                         <b-input-group-append>
                             <b-button variant="secondary" @click="cfg.maxEvents = cfg.def.maxEvents">{{ $t('com-default') }}</b-button>
-                            <b-button variant="success" @click="changeMaxEvents(cfg.maxEvents)">{{ $t('config-sys-10-2') }}</b-button>
+                            <b-button variant="success" @click="changeMaxEvents(cfg.maxEvents)">{{ $t('action-apply') }}</b-button>
                         </b-input-group-append>
                     </b-input-group>
 

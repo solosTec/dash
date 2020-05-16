@@ -37,6 +37,8 @@
     "lead-gateway": "%{count} gateways at a glance",
     "header-meter": "Meter Management",
     "lead-meter": "%{count} meters at a glance",
+    "header-iec": "IEC Configuration",
+    "lead-iec": "%{count} devices at a glance",
     "header-LoRa": "LoRa Gateway Management",
     "lead-LoRa": "%{count} LoRa gateways at a glance",
     "header-upload": "Upload Configuration Files",
@@ -65,6 +67,16 @@
 
     "com-default": "default",
 
+    "action-del": "Delete",
+    "action-apply": "Commit",
+    "action-update": "Update",
+    "action-insert": "Insert",
+
+    "tbl-filter": "Filter",
+    "tbl-search": "Type to search",
+    "tbl-lines-per-page": "Number of rows",
+
+
     "config-sys-01": "Auto Login",
     "config-sys-02": "Accept unknown devices and transfer the login data to the configuration database (not recommended).",
     "config-sys-03": "Auto Enabled",
@@ -74,9 +86,8 @@
     "config-sys-07": "Country Code",
     "config-sys-08": "Language Code",
     "config-sys-09": "System Messages",
-    "config-sys-09-2": "Commit",
+
     "config-sys-10": "System Events",
-    "config-sys-10-2": "Commit",
     "config-sys-11": "Generate Time-Series",
     "config-sys-12": "write statistics into",
     "config-sys-13": " (This may have a performance impact).",
@@ -94,12 +105,7 @@
     "config-device-03-03": "<Description>",
     "config-device-04": "active",
     "config-device-05": "inactive",
-    "config-device-06": "Update",
-    "config-device-07": "Delete",
-    "config-device-08": "Insert",
-    "config-gateway-01": "Filter",
-    "config-gateway-02": "Type to search",
-    "config-gateway-03": "clear",
+
     "config-gateway-04": "Configuration",
     "config-gateway-05": "Server ID",
     "config-gateway-06": "Manufacturer",
@@ -169,6 +175,5 @@
     "config-gateway-70-04": "D",
     "config-gateway-71": "Max. Timeout (msec)",
     "config-gateway-72": "<Data Readout Period>",
-    "config-gateway-73": "Submit",
-    "count-of-rows": "Number of rows"
+    "config-gateway-73": "Submit"
 }

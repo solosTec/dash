@@ -16,16 +16,16 @@
         <b-container fluid>
 
             <b-row>
-            <b-col md="6">
-                <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
-                    <b-input-group>
-                        <b-form-input v-model="filter" placeholder="Type to Search" />
-                        <b-input-group-append>
-                        <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-                </b-form-group>
-            </b-col>
+                <b-col md="6">
+                    <b-form-group label-cols-sm="3" :label="$t('tbl-filter')" class="mb-0">
+                        <b-input-group>
+                            <b-form-input v-model="filter" :placeholder="$t('tbl-search')" />
+                            <b-input-group-append>
+                                <b-button :disabled="!filter" @click="filter = ''">{{ $t('action-del') }}</b-button>
+                            </b-input-group-append>
+                        </b-input-group>
+                    </b-form-group>
+                </b-col>
 
             <b-col md="6">
                 <b-form-row>

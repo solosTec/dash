@@ -206,7 +206,6 @@
         mixins: [webSocket],
         mounted() {
             this.ws_open("/smf/api/device/v0.8");
-            console.log('devices view mounted')
         },
         data() {
             return {
@@ -434,21 +433,21 @@
         computed: {
             btnUpdateTitle(): string | TranslateResult {
                 if (this.selected.length > 0) {
-                    return this.$t('config-device-06') + ' ' + this.selected[0].name;
+                    return this.$t('action-update') + ' ' + this.selected[0].name;
                 }
-                return this.$t('config-device-06');
+                return this.$t('action-update');
             },
             btnDeleteTitle(): string | TranslateResult {
                 if (this.selected.length === 0) {
-                    return this.$t('config-device-07');
+                    return this.$t('action-del');
                 }
                 else if (this.selected.length === 1) {
-                    return this.$t('config-device-07') + ' ' + this.selected[0].name;
+                    return this.$t('action-del') + ' ' + this.selected[0].name;
                 }
-                return this.$t('config-device-07') + ' ' + this.selected.length + " record(s)";
+                return this.$t('action-del') + ' ' + this.selected.length + " record(s)";
             },
             btnInsertTitle(): string | TranslateResult {
-                return this.$t('config-device-08') + ' ' + this.form.name;
+                return this.$t('action-insert') + ' ' + this.form.name;
             },
             isRecordSelected(): boolean {
                 return this.selected.length !== 0;

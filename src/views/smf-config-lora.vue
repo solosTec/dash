@@ -315,7 +315,6 @@
                     this.form.appeui = items[0].appEUI;
                     this.form.devAddr = items[0].devAddr;
                     this.form.gweui = items[0].gwEUI;
-                    console.log('select ' + items[0].pk);
                 }
             },
             onDeviceUpdate(event) {
