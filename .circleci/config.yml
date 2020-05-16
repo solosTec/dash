@@ -94,6 +94,6 @@ workflows:
       - dockerize:
           requires:
             - test-dash
-      - deploy:
-          requires:
-            - dockerize
+      #- deploy:
+      #    requires:
+      #      - dockerize
