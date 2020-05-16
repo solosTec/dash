@@ -1,38 +1,65 @@
-version: 2
+version: 2.1
+
+# Most jobs will inherit these defaults
+var_1: &job_defaults
+  working_directory: ~/repo
+  docker:
+    # Use the -browsers version just to get the right .so files on the disk
+    - image: circleci/node:10-stretch-browsers
+      environment:
+        CHROME_BIN: "/usr/bin/google-chrome"
+
+references:
+  workspace_root: &workspace_root
+                    .
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+
 jobs:
-  build:
-    docker:
-      - image: circleci/node:10-stretch-browsers
-        environment:
-          CHROME_BIN: "/usr/bin/google-chrome"
-
-    working_directory: ~/repo
-
+  test-dash:
+    <<: *job_defaults
     steps:
       - checkout
-
-      - setup_remote_docker
-
-      - restore_cache:
-          keys:
-            - node-10-dependencies-{{ checksum "package-lock.json" }}
-
+      - *attach_workspace
       - run: npm version
       - run: npm ci
-
-      - save_cache:
+      - run: npm run test:unit
+      - store_artifacts:
+          path: ~/repo/coverage
+      - persist_to_workspace:
+          root: *workspace_root
           paths:
             - node_modules
-          key: node-10-dependencies-{{ checksum "package-lock.json" }}
-
-      - run: npm run test:unit
-
+  build-dash:
+    <<: *job_defaults
+    steps:
+      - checkout
+      - *attach_workspace
       - run: npm run build
       - run: tar -zcvf dist.tar.gz ./dist
+      - store_artifacts:
+          path: ~/repo/dist.tar.gz
 
+  build-no-auth-dash:
+    <<: *job_defaults
+    steps:
+      - checkout
+      - *attach_workspace
       - run: npm run build-no-auth
       - run: tar -zcvf dist-no-auth.tar.gz ./dist-no-auth
+      - store_artifacts:
+          path: ~/repo/dist-no-auth.tar.gz
 
+  dockerize:
+    docker:
+      - image: circleci/node:10-stretch-browsers
+    working_directory: ~/repo
+    steps:
+      - setup_remote_docker
+      - checkout
+      - *attach_workspace
       # build and push Docker image tagged with build-num, latest and branch name
       - run: |
           BUILD_TAG=commit-$CIRCLE_SHA1
@@ -43,11 +70,27 @@ jobs:
             docker push solostec/dashboard:${tag}
           done
 
-      - store_artifacts:
-          path: ~/repo/coverage
+  deploy:
+    docker:
+      - image: circleci/node:10-stretch-browsers
+    working_directory: ~/repo
+    steps:
+      - run: echo "todo"
 
-      - store_artifacts:
-          path: ~/repo/dist.tar.gz
-
-      - store_artifacts:
-          path: ~/repo/dist-no-auth.tar.gz
+workflows:
+  version: 2
+  build-and-push-on-commit:
+    jobs:
+      - test-dash
+      - build-dash:
+          requires:
+            - test-dash
+      - build-no-auth-dash:
+          requires:
+            - test-dash
+      - dockerize:
+          requires:
+            - test-dash
+      - deploy:
+          requires:
+            - dockerize
