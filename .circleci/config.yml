@@ -60,15 +60,20 @@ jobs:
       - setup_remote_docker
       - checkout
       - *attach_workspace
-      # build and push Docker image tagged with build-num, latest and branch name
+      # build and push Docker image tagged with build-num, latest (only if branch is master) and branch name
       - run: |
           BUILD_TAG=commit-$CIRCLE_SHA1
           docker build . -t solostec/dashboard:$BUILD_TAG -f docker/Dockerfile
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-          for tag in {build-$CIRCLE_BUILD_NUM,latest,$CIRCLE_BRANCH}; do
+          for tag in {build-$CIRCLE_BUILD_NUM,$CIRCLE_BRANCH}; do
             docker tag solostec/dashboard:$BUILD_TAG solostec/dashboard:${tag}
             docker push solostec/dashboard:${tag}
           done
+          if [ "${CIRCLE_BRANCH}" == "master" ];
+          then
+            docker tag solostec/dashboard:$BUILD_TAG solostec/dashboard:latest
+            docker push solostec/dashboard:latest
+          fi
 
   deploy:
     docker:
@@ -78,7 +83,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "52:21:f2:c8:77:89:f2:61:65:0f:5b:5b:08:50:a6:b6"
-      - run: ssh -t smf.solostec.net /opt/smf/deploy.sh
+      - run: ssh -o StrictHostKeyChecking=no -t smf.solostec.net /opt/smf/deploy.sh
 
 workflows:
   version: 2
@@ -94,6 +99,6 @@ workflows:
       - dockerize:
           requires:
             - test-dash
-      #- deploy:
-      #    requires:
-      #      - dockerize
+      - deploy:
+          requires:
+            - dockerize
