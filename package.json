@@ -7,7 +7,6 @@
     "build": "vue-cli-service build",
     "build-no-auth": "vue-cli-service build --mode no-auth --dest dist-no-auth",
     "build-docker": "vue-cli-service build --mode docker --dest dist-docker",
-    "build-docker-dev": "vue-cli-service build --mode docker-dev --dest dist-docker",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "pre-commit": "npm run test:unit && npm run build"
