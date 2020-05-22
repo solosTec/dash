@@ -83,10 +83,10 @@
             <b-row>
                 <b-col md="10" class="p-3 shadow">
                     <div v-if="selected.length === 0">Please select a gateway.</div>
-                    <b-tabs v-if="selected.length > 0" pills card v-model="tabIndex">
+                    <b-tabs v-if="selected.length > 0" pills card v-model="tabIndex" @input="tabSelected" ref="tabs">
 
                         <!-- Configuration" -->
-                        <b-tab :title="$t('config-gateway-04')" active>
+                        <b-tab :title="$t('config-gateway-04')" active :smf-context="smfContext.configuration">
                             <smf-server-configuration
                                     :gateways="selected"
                                     :wsDelegate="createWsDelegate"
@@ -94,26 +94,27 @@
                         </b-tab>
 
                         <!-- Status -->
-                        <b-tab no-body>
+                        <b-tab no-body :disabled="selected[0].online === 0"  :smf-context="smfContext.statusWord">
                             <template slot="title">
                                 {{ $t('config-gateway-09') }}
                                 <b-spinner v-if="spinner.status" type="grow" small />
                             </template>
-                            <b-list-group>
+                            <b-list-group v-if="!spinner.status">
                                 <template v-for="(state, index) in gw.status">
                                     <b-list-group-item :variant="state.variant" :key="index">{{state.value}}</b-list-group-item>
                                 </template>
                             </b-list-group>
                         </b-tab>
 
-                        <b-tab>
+                        <!-- IPT -->
+                        <b-tab :disabled="selected[0].online === 0" :smf-context="smfContext.ipt">
                             <template slot="title">
                                 {{ $t('config-gateway-10') }}
                                 <b-spinner v-if="spinner.ipt" type="grow" small />
                             </template>
                             <b-form @submit.prevent="">
 
-                                <b-row>
+                                <b-row v-if="!spinner.ipt">
                                     <b-col md="6" class="border">
 
                                         <b-row>
@@ -288,22 +289,22 @@
                         </b-tab>
 
                         <!-- Firmware -->
-                        <b-tab no-body>
+                        <b-tab :disabled="selected[0].online === 0" no-body :smf-context="smfContext.firmware">
                             <template slot="title">
                                 {{ $t('config-gateway-29') }}
                                 <b-spinner v-if="spinner.firmware" type="grow" small />
                             </template>
                             <!-- table -->
-                            <firmware ref="firmware" :items="fw.values" />
+                            <firmware v-if="!spinner.firmware" :items="fw.values" />
                         </b-tab>
 
                         <!-- Memory -->
-                        <b-tab title="">
+                        <b-tab :disabled="selected[0].online === 0" :smf-context="smfContext.memoryUsage">
                             <template slot="title">
                                 {{ $t('config-gateway-30') }}
                                 <b-spinner v-if="spinner.memory" type="grow" small />
                             </template>
-                            <b-row>
+                            <b-row v-if="!spinner.memory">
                                 <b-col md="6">
                                     <b-card-text>{{ $t('config-gateway-31') }}</b-card-text>
                                     <b-progress class="mt-2" height="2rem" :value="gw.memory.mirror" show-value />
@@ -316,216 +317,218 @@
                         </b-tab>
 
                         <!-- Meters -->
-                        <b-tab no-body>
+                        <b-tab :disabled="selected[0].online === 0" no-body :smf-context="smfContext.devices">
                             <template slot="title">
                                 {{ $t('config-gateway-33') }}
                                 <b-spinner v-if="spinner.meters" type="grow" small />
                             </template>
 
-                            <!-- table -->
-                            <b-table ref="meterTable"
-                                     bordered
-                                     striped
-                                     small
-                                     hover
-                                     show-empty
-                                     stacked="md"
-                                     selectable
-                                     select-mode="single"
-                                     selectedVariant="info"
-                                     @row-selected="meterSelected"
-                                     :fields="meters.fields"
-                                     :items="meters.values"
-                                     primary-key="ident"
-                                     :sort-by.sync="meters.sortBy"
-                                     :sort-desc.sync="meters.sortDesc"
-                                     :sort-direction="meters.sortDirection"
-                                     class="shadow">
+                            <div v-if="!spinner.meters">
+                                <!-- table -->
+                                <b-table ref="meterTable"
+                                         bordered
+                                         striped
+                                         small
+                                         hover
+                                         show-empty
+                                         stacked="md"
+                                         selectable
+                                         select-mode="single"
+                                         selectedVariant="info"
+                                         @row-selected="meterSelected"
+                                         :fields="meters.fields"
+                                         :items="meters.values"
+                                         primary-key="ident"
+                                         :sort-by.sync="meters.sortBy"
+                                         :sort-desc.sync="meters.sortDesc"
+                                         :sort-direction="meters.sortDirection"
+                                         class="shadow">
 
-                                <template v-slot:cell(visible)="row">
-                                    <b-button size="sm"
-                                              v-if="row.item.visible"
-                                              @click="onMeterDelete(row.item, row.index, $event.target)">✔ Delete</b-button>
-                                </template>
+                                    <template v-slot:cell(visible)="row">
+                                        <b-button size="sm"
+                                                  v-if="row.item.visible"
+                                                  @click="onMeterDelete(row.item, row.index, $event.target)">✔ Delete</b-button>
+                                    </template>
 
-                                <template v-slot:cell(active)="row">
-                                    <b-button size="sm"
-                                              @click="onMeterActivate(row.item, row.index, $event.target)">{{ row.item.active ? '✖ Deactivate' : '✔ Activate' }}</b-button>
-                                </template>
-                                <template v-slot:cell(edit)="row">
-                                    <b-button size="sm"
-                                              variant="info"
-                                              v-b-tooltip.hover :title="'meter code: ' + row.item.mc"
-                                              :disabled="btnEditStatus(row.item.mc)"
-                                              @click="onMeterEdit(row.item)">{{ btnEdit }}</b-button>
-                                </template>
-                            </b-table>
-                            <div>
-                                <b-link :href="meters.csv" download="meters.csv" type="text/csv">{{ linkMeterDownloadTitle }}</b-link>
+                                    <template v-slot:cell(active)="row">
+                                        <b-button size="sm"
+                                                  @click="onMeterActivate(row.item, row.index, $event.target)">{{ row.item.active ? '✖ Deactivate' : '✔ Activate' }}</b-button>
+                                    </template>
+                                    <template v-slot:cell(edit)="row">
+                                        <b-button size="sm"
+                                                  variant="info"
+                                                  v-b-tooltip.hover :title="'meter code: ' + row.item.mc"
+                                                  :disabled="btnEditStatus(row.item.mc)"
+                                                  @click="onMeterEdit(row.item)">{{ btnEdit }}</b-button>
+                                    </template>
+                                </b-table>
+                                <div>
+                                    <b-link :href="meters.csv" download="meters.csv" type="text/csv">{{ linkMeterDownloadTitle }}</b-link>
+                                </div>
                             </div>
                         </b-tab>
 
                         <!-- wireless M-Bus -->
-                        <b-tab no-body>
+                        <b-tab :disabled="selected[0].online === 0" no-body :smf-context="smfContext.wirlessMBus">
                             <template slot="title">
                                 {{ $t('config-gateway-27') }}
                                 <b-spinner v-if="spinner.wmbus" type="grow" small />
                             </template>
+                            <div v-if="!spinner.wmbus">
+                                <b-form @submit.prevent="" class="p-3 shadow">
 
-                            <b-form @submit.prevent="" class="p-3 shadow">
+                                    <b-row>
 
-                                <b-row>
+                                        <b-col md="3" class="d-flex justify-content-center">
+                                            <b-form-group :label="$t('config-gateway-34')">
+                                                <b-form-radio-group id="smf-gw-wmbus-protocol"
+                                                                    buttons
+                                                                    button-variant="outline-primary"
+                                                                    stacked
+                                                                    v-model="wmbus.protocol"
+                                                                    name="smf-gw-wmbus-protocol">
+                                                    <b-form-radio value="T">{{$t('config-gateway-35')}}</b-form-radio>
+                                                    <b-form-radio value="S">{{$t('config-gateway-36')}}</b-form-radio>
+                                                    <b-form-radio value="A" v-b-popover.hover="$t('config-gateway-37')" title="T2/S2 Automatic">T2/S2 Automatic</b-form-radio>
+                                                    <b-form-radio value="P">{{$t('config-gateway-38')}}</b-form-radio>
+                                                </b-form-radio-group>
+                                            </b-form-group>
+                                        </b-col>
 
-                                    <b-col md="3" class="d-flex justify-content-center">
-                                        <b-form-group :label="$t('config-gateway-34')">
-                                            <b-form-radio-group id="smf-gw-wmbus-protocol"
-                                                                buttons
-                                                                button-variant="outline-primary"
-                                                                stacked
-                                                                v-model="wmbus.protocol"
-                                                                name="smf-gw-wmbus-protocol">
-                                                <b-form-radio value="T">{{$t('config-gateway-35')}}</b-form-radio>
-                                                <b-form-radio value="S">{{$t('config-gateway-36')}}</b-form-radio>
-                                                <b-form-radio value="A" v-b-popover.hover="$t('config-gateway-37')" title="T2/S2 Automatic">T2/S2 Automatic</b-form-radio>
-                                                <b-form-radio value="P">{{$t('config-gateway-38')}}</b-form-radio>
-                                            </b-form-radio-group>
-                                        </b-form-group>
-                                    </b-col>
+                                        <b-col md="3">
+                                            <b-form-group :label="$t('config-gateway-39')" label-for="smf-gw-wmbus-active">
+                                                <b-form-checkbox switch v-model="wmbus.active" name="smf-gw-wmbus-active">
+                                                    {{ wmbus.active ? $t('config-gateway-40') : $t('config-gateway-41') }}
+                                                </b-form-checkbox>
+                                            </b-form-group>
+                                        </b-col>
 
-                                    <b-col md="3">
-                                        <b-form-group :label="$t('config-gateway-39')" label-for="smf-gw-wmbus-active">
-                                            <b-form-checkbox switch v-model="wmbus.active" name="smf-gw-wmbus-active">
-                                                {{ wmbus.active ? $t('config-gateway-40') : $t('config-gateway-41') }}
-                                            </b-form-checkbox>
-                                        </b-form-group>
-                                    </b-col>
+                                        <b-col md="3">
+                                            <b-form-group :label="$t('config-gateway-42')" label-for="smf-gw-wmbus-reboot">
+                                                <b-input-group :prepend="wmbusRebootPrep">
+                                                    <b-form-input id="smf-gw-wmbus-reboot"
+                                                                  type="number"
+                                                                  v-model.number="wmbus.reboot"
+                                                                  min="0"
+                                                                  max="‭60000"
+                                                                  step="60"
+                                                                  placeholder="<Reboot>" />
+                                                    <b-input-group-append>
+                                                        <b-button variant="info" v-on:click.stop="wmbus.reboot = 86400">{{$t('config-gateway-48')}}</b-button>
+                                                    </b-input-group-append>
+                                                </b-input-group>
+                                            </b-form-group>
 
-                                    <b-col md="3">
-                                        <b-form-group :label="$t('config-gateway-42')" label-for="smf-gw-wmbus-reboot">
-                                            <b-input-group :prepend="wmbusRebootPrep">
-                                                <b-form-input id="smf-gw-wmbus-reboot"
-                                                              type="number"
-                                                              v-model.number="wmbus.reboot"
-                                                              min="0"
-                                                              max="‭60000"
-                                                              step="60"
-                                                              placeholder="<Reboot>" />
-                                                <b-input-group-append>
-                                                    <b-button variant="info" v-on:click.stop="wmbus.reboot = 86400">{{$t('config-gateway-48')}}</b-button>
-                                                </b-input-group-append>
-                                            </b-input-group>
-                                        </b-form-group>
+                                            <b-form-group :label="$t('config-gateway-43')" label-for="smf-gw-wmbus-power">
+                                                <b-form-select v-model="wmbus.power" class="mb-3" disabled>
+                                                    <option value="low">{{$t('config-gateway-43-01')}}</option>
+                                                    <option value="basic">{{$t('config-gateway-43-02')}}</option>
+                                                    <option value="avg">{{$t('config-gateway-43-03')}}</option>
+                                                    <option value="strong">{{$t('config-gateway-43-04')}}</option>
+                                                </b-form-select>
+                                            </b-form-group>
 
-                                        <b-form-group :label="$t('config-gateway-43')" label-for="smf-gw-wmbus-power">
-                                            <b-form-select v-model="wmbus.power" class="mb-3" disabled>
-                                                <option value="low">{{$t('config-gateway-43-01')}}</option>
-                                                <option value="basic">{{$t('config-gateway-43-02')}}</option>
-                                                <option value="avg">{{$t('config-gateway-43-03')}}</option>
-                                                <option value="strong">{{$t('config-gateway-43-04')}}</option>
-                                            </b-form-select>
-                                        </b-form-group>
+                                        </b-col>
 
-                                    </b-col>
+                                        <b-col md="3">
+                                            <b-form-group :label="$t('config-gateway-44')" label-for="smf-gw-wmbus-smode">
+                                                <b-input-group>
+                                                    <b-form-input :disabled="wmbus.protocol !== 'A'"
+                                                                  id="smf-gw-wmbus-smode"
+                                                                  type="number"
+                                                                  v-model.number="wmbus.sMode"
+                                                                  min="0"
+                                                                  max="6000"
+                                                                  step="10"
+                                                                  :placeholder="getPlaceholder($t('config-gateway-44'))" />
+                                                    <b-input-group-append>
+                                                        <b-button variant="info" v-on:click.stop="wmbus.sMode = 30">{{$t('config-gateway-48')}}</b-button>
+                                                    </b-input-group-append>
+                                                </b-input-group>
+                                            </b-form-group>
 
-                                    <b-col md="3">
-                                        <b-form-group :label="$t('config-gateway-44')" label-for="smf-gw-wmbus-smode">
-                                            <b-input-group>
-                                                <b-form-input :disabled="wmbus.protocol !== 'A'"
-                                                              id="smf-gw-wmbus-smode"
-                                                              type="number"
-                                                              v-model.number="wmbus.sMode"
-                                                              min="0"
-                                                              max="6000"
-                                                              step="10"
-                                                              :placeholder="getPlaceholder($t('config-gateway-44'))" />
-                                                <b-input-group-append>
-                                                    <b-button variant="info" v-on:click.stop="wmbus.sMode = 30">{{$t('config-gateway-48')}}</b-button>
-                                                </b-input-group-append>
-                                            </b-input-group>
-                                        </b-form-group>
+                                            <b-form-group :label="$t('config-gateway-46')" label-for="smf-gw-wmbus-tmode">
+                                                <b-input-group>
+                                                    <b-form-input :disabled="wmbus.protocol !== 'A'"
+                                                                  id="smf-gw-wmbus-tmode"
+                                                                  type="number"
+                                                                  v-model.number="wmbus.tMode"
+                                                                  min="0"
+                                                                  max="6000"
+                                                                  step="10"
+                                                                  :placeholder="$t('config-gateway-47')" />
+                                                    <b-input-group-append>
+                                                        <b-button variant="info" v-on:click.stop="wmbus.tMode = 20">{{$t('config-gateway-48')}}</b-button>
+                                                    </b-input-group-append>
+                                                </b-input-group>
+                                            </b-form-group>
 
-                                        <b-form-group :label="$t('config-gateway-46')" label-for="smf-gw-wmbus-tmode">
-                                            <b-input-group>
-                                                <b-form-input :disabled="wmbus.protocol !== 'A'"
-                                                              id="smf-gw-wmbus-tmode"
-                                                              type="number"
-                                                              v-model.number="wmbus.tMode"
-                                                              min="0"
-                                                              max="6000"
-                                                              step="10"
-                                                              :placeholder="$t('config-gateway-47')" />
-                                                <b-input-group-append>
-                                                    <b-button variant="info" v-on:click.stop="wmbus.tMode = 20">{{$t('config-gateway-48')}}</b-button>
-                                                </b-input-group-append>
-                                            </b-input-group>
-                                        </b-form-group>
+                                        </b-col>
 
-                                    </b-col>
+                                    </b-row>
 
-                                </b-row>
+                                    <b-row class="p-3">
+                                        <b-col md="12">
+                                            <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onWMbusUpdate">Submit</b-button>
+                                        </b-col>
+                                    </b-row>
 
-                                <b-row class="p-3">
-                                    <b-col md="12">
-                                        <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onWMbusUpdate">Submit</b-button>
-                                    </b-col>
-                                </b-row>
+                                </b-form>
 
-                            </b-form>
+                                <b-form class="p-3">
+                                    <b-row>
+                                        <b-col md="3">
+                                            <b-form-group :label="$t('config-gateway-49')" label-for="smf-gw-wmbus-type">
+                                                <b-form-input id="smf-gw-wmbus-type"
+                                                              type="text"
+                                                              v-model="wmbus.type"
+                                                              readonly
+                                                              :placeholder="getPlaceholder($t('config-gateway-49'))" />
+                                            </b-form-group>
+                                        </b-col>
 
-                            <b-form class="p-3">
-                                <b-row>
-                                    <b-col md="3">
-                                        <b-form-group :label="$t('config-gateway-49')" label-for="smf-gw-wmbus-type">
-                                            <b-form-input id="smf-gw-wmbus-type"
-                                                          type="text"
-                                                          v-model="wmbus.type"
-                                                          readonly
-                                                          :placeholder="getPlaceholder($t('config-gateway-49'))" />
-                                        </b-form-group>
-                                    </b-col>
+                                        <b-col md="3">
+                                            <b-form-group :label="$t('config-gateway-51')" label-for="smf-gw-wmbus-id">
+                                                <b-form-input id="smf-gw-wmbus-id"
+                                                              type="text"
+                                                              v-model="wmbus.id"
+                                                              readonly
+                                                              :placeholder="getPlaceholder($t('config-gateway-51'))" />
+                                            </b-form-group>
+                                        </b-col>
 
-                                    <b-col md="3">
-                                        <b-form-group :label="$t('config-gateway-51')" label-for="smf-gw-wmbus-id">
-                                            <b-form-input id="smf-gw-wmbus-id"
-                                                          type="text"
-                                                          v-model="wmbus.id"
-                                                          readonly
-                                                          :placeholder="getPlaceholder($t('config-gateway-51'))" />
-                                        </b-form-group>
-                                    </b-col>
+                                        <b-col md="3">
+                                            <b-form-group :label="$t('config-gateway-53')" label-for="smf-gw-wmbus-host">
+                                                <b-form-input id="smf-gw-wmbus-host"
+                                                              type="text"
+                                                              v-model="wmbus.firmware"
+                                                              readonly
+                                                              :placeholder="getPlaceholder($t('config-gateway-53'))" />
+                                            </b-form-group>
+                                        </b-col>
 
-                                    <b-col md="3">
-                                        <b-form-group :label="$t('config-gateway-53')" label-for="smf-gw-wmbus-host">
-                                            <b-form-input id="smf-gw-wmbus-host"
-                                                          type="text"
-                                                          v-model="wmbus.firmware"
-                                                          readonly
-                                                          :placeholder="getPlaceholder($t('config-gateway-53'))" />
-                                        </b-form-group>
-                                    </b-col>
-
-                                    <b-col md="3">
-                                        <b-form-group :label="$t('config-gateway-55')" label-for="smf-gw-wmbus-hardware">
-                                            <b-form-input id="smf-gw-wmbus-hardware"
-                                                          type="text"
-                                                          v-model="wmbus.hardware"
-                                                          readonly
-                                                          :placeholder="getPlaceholder($t('config-gateway-55'))" />
-                                        </b-form-group>
-                                    </b-col>
-                                </b-row>
-                            </b-form>
+                                        <b-col md="3">
+                                            <b-form-group :label="$t('config-gateway-55')" label-for="smf-gw-wmbus-hardware">
+                                                <b-form-input id="smf-gw-wmbus-hardware"
+                                                              type="text"
+                                                              v-model="wmbus.hardware"
+                                                              readonly
+                                                              :placeholder="getPlaceholder($t('config-gateway-55'))" />
+                                            </b-form-group>
+                                        </b-col>
+                                    </b-row>
+                                </b-form>
+                            </div>
                         </b-tab>
 
                         <!-- IEC -->
-                        <b-tab no-body>
+                        <b-tab :disabled="selected[0].online === 0" no-body :smf-context="smfContext.iec">
                             <template slot="title">
                                 {{$t('config-gateway-57')}}
                                 <b-spinner v-if="spinner.iec" type="grow" small />
                             </template>
 
-                            <b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params['8181C79301FF'] }">
-                            <!--<b-form @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params.active }">-->
+                            <b-form v-if="!spinner.iec" @submit.prevent="" v-bind:class="{ 'bg-warning' : !iec.params['8181C79301FF'] }">
 
                                 <b-row class="p-3">
                                     <b-col md="3">
@@ -682,7 +685,7 @@
                         </b-tab>
 
                         <!-- Access -->
-                        <b-tab no-body title="Access">
+                        <b-tab no-body title="Access" :smf-context="smfContext.auth">
                             <b-form @submit.prevent="">
                                 <b-row class="p-3">
                                     <b-col md="12">
@@ -764,7 +767,7 @@
                         </b-tab>
 
                         <!-- logs -->
-                        <b-tab no-body title="Log">
+                        <b-tab :disabled="selected[0].online === 0" no-body title="Log" :smf-context="smfContext.log">
                             <b-form @submit.prevent="" class="p-3">
                                 <b-row>
                                     <b-col md="6">
@@ -787,7 +790,7 @@
                         </b-tab>
 
                         <!-- Snapshots -->
-                        <b-tab no-body title="Snapshots">
+                        <b-tab no-body title="Snapshots" :smf-context="smfContext.snapshots">
                             <b-form @submit.prevent="">
                                 <b-row class="p-3">
                                     <b-col md="3">
@@ -804,7 +807,7 @@
                                 </b-row>
                                 <b-row class="p-3">
                                     <b-col md="12">
-                                        <snapshots ref="snapshots" :items="tabSnapshots.data.items" :nav="tabSnapshots.nav" />
+                                        <snapshots :items="tabSnapshots.data.items" :nav="tabSnapshots.nav" />
                                     </b-col>
                                 </b-row>
                             </b-form>
@@ -830,24 +833,8 @@
                         <!--obsolete-->
                         <!-- bg-warning -->
                         <b-alert show dismissible class="bg-warning" v-if="mode === 'production'">
-                            <span style="font-weight: bold">Note:</span> No other IP-T connection can be active during the execution of the requests below.
+                            <span style="font-weight: bold">Note:</span> No other IP-T connection can be active during the execution of the requests.
                         </b-alert>
-                        <b-form-group label="sections" label-for="smf-form-sections">
-
-                            <template slot="label">
-                                <b-form-checkbox v-model="options.allSelected"
-                                                 :indeterminate="options.indeterminate"
-                                                 @change="toggleAll">{{ options.allSelected ? $t('config-gateway-20') : $t('config-gateway-21') }}</b-form-checkbox>
-                            </template>
-
-                            <b-form-checkbox-group id="options"
-                                                   stacked
-                                                   v-model="options.selected"
-                                                   name="smf-form-gw-channels"
-                                                   :options="options.channels"
-                                                   class="ml-4"
-                                                   aria-label="Individual flavours" />
-                        </b-form-group>
 
                     </b-form>
 
@@ -874,6 +861,65 @@
     import {generatePassword} from "@/shared/generate-password";
     import smfServerConfiguration from '@/components/smf-server-configuration.vue';
 
+    const gatewayTableFields = [
+        {
+            key: 'index',
+            class: 'text-right small text-muted'
+        },
+        // pk
+        {
+            key: 'serverId',
+            label: 'Server ID',
+            sortable: true
+        },
+        {
+            key: 'name',
+            label: 'Name',
+            sortable: true
+        },
+        {
+            key: 'descr',
+            label: 'Description',
+            sortable: true
+        },
+        {
+            key: 'manufacturer',
+            label: 'Manufacturer',
+            sortable: true
+        },
+        {
+            key: 'model',
+            label: 'Model',
+            sortable: true
+        },
+        {
+            key: 'vFirmware',
+            label: 'Firmware',
+            sortable: true
+        },
+        {
+            key: 'userName',
+            label: 'User',
+            sortable: true
+        },
+        {
+            key: 'userPwd',
+            label: 'Password',
+            sortable: true
+        },
+        {
+            key: 'online',
+            label: "Online",
+            formatter: (value) => {
+                if (value === 0)  return '║';
+                else if (value === 1)  return '⊶';
+                return '⇆';
+            },
+            class: 'text-center',
+            sortable: true
+        }
+    ];
+
     let tmpGateways = [];
 
 export default  {
@@ -897,340 +943,296 @@ export default  {
             currentPage: 1,
             perPage: 10,
             mode: process.env.NODE_ENV,
-            fields: [
-          {
-            key: 'index',
-            class: 'text-right small text-muted'
-          },
-          // pk
-          {
-            key: 'serverId',
-            label: 'Server ID',
-            sortable: true
-          },
-          {
-            key: 'name',
-            label: 'Name',
-            sortable: true
-          },
-          {
-            key: 'descr',
-            label: 'Description',
-            sortable: true
-          },
-          {
-            key: 'manufacturer',
-            label: 'Manufacturer',
-            sortable: true
-          },
-          {
-            key: 'model',
-            label: 'Model',
-            sortable: true
-          },
-          {
-            key: 'vFirmware',
-            label: 'Firmware',
-            sortable: true
-          },
-          {
-            key: 'userName',
-            label: 'User',
-            sortable: true
-          },
-          {
-            key: 'userPwd',
-            label: 'Password',
-            sortable: true
-          },
-          {
-            key: 'online',
-            label: "Online",
-            formatter: (value) => {
-                if (value === 0)  return '║';
-                else if (value === 1)  return '⊶';
-                return '⇆';
-            },
-            class: 'text-center',
-            sortable: true
-          }
-        ],
-        gateways:[],
-        selected: [],
-        sortBy: 'name',
-        sortDesc: false,
-        sortDirection: 'desc',
-        filter: null,
-        visibleRows: 0,
-        //  loading state of SML data
-        spinner: {
-            status: false,
-            ipt: false,
-            firmware: false,
-            memory: false,
-            meters: false,
-            wmbus: false,
-            iec: false,
-            log: false
-        },
-        form: {
-            pk: '',
-            serverId: '',
-            manufacturer: 'solos::Tec',
-            descr: '',
-            model: '',
-            vFirmware: '',
-            userName: '',
-            userPwd: '',
-            online: 0
-        },
-        //  gw options
-        options: {
-          channels: [
-              { text: 'Status Word', value: 'status-word' },
-              { text: 'IP-Telemetry', value: 'ipt' },
-              { text: 'Firmware', value: 'firmware' },
-              { text: 'Memory', value: 'memory-usage' },
-              { text: 'Meters', value: 'devices' },
-              { text: 'wireless M-Bus', value: 'w-MBus' },
-              { text: 'IEC', value: 'iec' },
-              { text: 'Access', value: 'auth' },
-              { text: 'Operation Log', value: 'log' }
-              ],
+            fields: gatewayTableFields,
+            gateways:[],
             selected: [],
-            allSelected: false,
-            indeterminate: false,
-            },
-        // pure experimental - should be part of the gateway table, since this data are specific for every gateway
-        sections: {
-            options: [
-                { text: 'IP-T', value: SML_CODES.CODE_ROOT_IPT_PARAM, disabled: true },
-                { text: 'Firmware', value: SML_CODES.CODE_ROOT_DEVICE_IDENT, disabled: true },
-                { text: 'Visible devices', value: SML_CODES.CODE_ROOT_VISIBLE_DEVICES, disabled: true },
-                { text: 'Active devices', value: SML_CODES.CODE_ROOT_ACTIVE_DEVICES, disabled: true },
-                { text: 'Wireless mbus', value: SML_CODES.CODE_IF_wMBUS, disabled: true },
-                { text: 'IEC', value: SML_CODES.CODE_IF_1107, disabled: true },
-                { text: 'Access', value: SML_CODES.CODE_ROOT_ACCESS_RIGHTS, disabled: true }
-            ],
-            // active section
-            active: []
-        },
-
-        //  panel
-        tabIndex: 1,
-
-        gw : {
-            status: [],
-            memory : {
-                mirror: 0,
-                tmp: 0
-          }
-        },
-
-        ipt : {
-            param: [
-                {
-                        host: '',
-                        port: 26862,
-                        user: '',
-                        pwd: ''
-                },
-                {
-                        host: '',
-                        port: 26862,
-                        user: '',
-                        pwd: ''
-                }
-            ],
-            status: {
-                host: '',
-                local: 0,
-                remote: 0
-            }
-        },
-
-        meters: {
-            values: [],
-            selected: [],
-            fields: [
-                {
-                    key: 'nr',
-                    label: 'Nr',
-                    sortable: true,
-                    class: 'text-right small'
-                },
-                {
-                    key: 'ident',
-                    label: 'Ident',
-                    sortable: true
-                },
-                // {
-                //     key: 'meterId',
-                //     label: 'Meter ID',
-                //     sortable: true
-                // },
-                {
-                    key: 'meter',
-                    label: 'Meter',
-                    sortable: true,
-                    formatter: (value) => {
-                        return value ? value.toUpperCase() : '?';
-                    }
-                },
-                {
-                    key: 'maker',
-                    label: 'Maker',
-                    sortable: true,
-                    formatter: (value) => {
-                        return (value) ? value : '-';
-                    }
-                },
-                {
-                    key: 'lastSeen',
-                    label: 'Last Seen',
-                    sortable: true,
-                    formatter: (value) => {
-                        return value.toLocaleString()
-                    }
-                },
-                {
-                    key: 'type',
-                    label: 'Type',
-                    sortable: true,
-                    formatter: (value) => {
-                        switch (value) {
-                            case 0: return "M-Bus (wired)";
-                            case 1: return "M-Bus (radio)";
-                            case 2: return "wM-Bus";
-                            case 3: return "Serial";
-                            case 4: return "Gateway";
-                            case 5: return "BCD";
-                            case 6: return "EON";
-                            case 7: return "DKE-1";
-                            case 8: return "IMEI";
-                            case 9: return "RWE";
-                            case 10: return "DKE-2";
-                            case 11: return "Switch";
-                            default:
-                                break;
-                        }
-                        return "Other";
-                    }
-                },
-                {
-                    key: 'visible',
-                    label: 'Visible'
-                },
-                {
-                    key: 'active',
-                    label: 'Active'
-                },
-                {
-                    key: 'serverId',
-                    label: 'Server ID',
-                    sortable: true
-                },
-                {
-                    key: 'edit',
-                    label: 'Edit'
-                }
-            ],
-            sortBy: 'meter',
+            sortBy: 'name',
             sortDesc: false,
             sortDirection: 'desc',
-            csv: ''
-        },
-
-        //  firmware
-        fw: {
-            values: [],
-            selected: []
-        },
-
-        //  wireless M-Bus
-        wmbus: {
-            type: '',
-            id: '',
-            firmware: '',
-            hardware: '',
-            power: 'basic',
-            reboot: 86400,
-            protocol: 'S',
-            active: true,
-            sMode: 0,
-            tMode: 0,
-            '123456': true
+            filter: null,
+            visibleRows: 0,
+            //  loading state of SML data
+            spinner: {
+                status: false,
+                ipt: false,
+                firmware: false,
+                memory: false,
+                meters: false,
+                wmbus: false,
+                iec: false,
+                log: false
+            },
+            form: {
+                pk: '',
+                serverId: '',
+                manufacturer: 'solos::Tec',
+                descr: '',
+                model: '',
+                vFirmware: '',
+                userName: '',
+                userPwd: '',
+                online: 0
+            },
+            //  gw options
+            smfContext: {
+                configuration: 'configuration',
+                statusWord: 'status-word',
+                ipt: 'ipt',
+                firmware: 'firmware',
+                memoryUsage: 'memory-usage',
+                devices: 'devices',
+                wirlessMBus: 'w-MBus',
+                iec: 'iec',
+                auth:  'auth',
+                log: 'log',
+                snapshots: 'snapshots'
+            },
+            options: {
+              channels: [
+                  { text: 'Status Word', value: 'status-word' },
+                  { text: 'IP-Telemetry', value: 'ipt' },
+                  { text: 'Firmware', value: 'firmware' },
+                  { text: 'Memory', value: 'memory-usage' },
+                  { text: 'Meters', value: 'devices' },
+                  { text: 'wireless M-Bus', value: 'w-MBus' },
+                  { text: 'IEC', value: 'iec' },
+                  { text: 'Access', value: 'auth' },
+                  { text: 'Operation Log', value: 'log' }
+                  ],
+                selected: [],
+                allSelected: false,
+                indeterminate: false,
+            },
+            // pure experimental - should be part of the gateway table, since this data are specific for every gateway
+            sections: {
+                options: [
+                    { text: 'IP-T', value: SML_CODES.CODE_ROOT_IPT_PARAM, disabled: true },
+                    { text: 'Firmware', value: SML_CODES.CODE_ROOT_DEVICE_IDENT, disabled: true },
+                    { text: 'Visible devices', value: SML_CODES.CODE_ROOT_VISIBLE_DEVICES, disabled: true },
+                    { text: 'Active devices', value: SML_CODES.CODE_ROOT_ACTIVE_DEVICES, disabled: true },
+                    { text: 'Wireless mbus', value: SML_CODES.CODE_IF_wMBUS, disabled: true },
+                    { text: 'IEC', value: SML_CODES.CODE_IF_1107, disabled: true },
+                    { text: 'Access', value: SML_CODES.CODE_ROOT_ACCESS_RIGHTS, disabled: true }
+                ],
+                // active section
+                active: []
             },
 
-        access: {
-            meterNr: 1,
-            role: 3,
-            user: 1,
-        },
+            //  the selected tab: -1 will ensure that teh active attribute forces a tabIndex change event on the first view
+            tabIndex: -1,
 
-        iec: {
-            params: {
-                // @michael: is i a good idea to use same OBIS codes here?
-                '8181C79301FF': false,  // active
-                autoActivation: true,
-                loopTime: 3600,
-                maxDataRate: 10240,
-                minTimeout: 200,
-                maxTimeout: 5000,
-                maxVar: 9,
-                protocolMode: 'C',
-                retries: 3,
-                rs485: null,
-                timeGrid: 900,
-                timeSync: 14400,
-                devices: []
+            gw : {
+                status: [],
+                memory : {
+                    mirror: 0,
+                    tmp: 0
+              }
             },
-            selected: [],
-            fields: [
-                {
-                    key: 'nr',
-                    label: 'Nr',
-                    sortable: true,
-                    class: 'text-right small'
-                },
-                {
-                    key: '8181C7930AFF',
-                    label: 'Name',
-                    sortable: true
-                },
-                {
-                    key: '8181C7930BFF',
-                    label: 'Baudrate',
-                    sortable: true
-                },
-                {
-                    key: '8181C7930CFF',
-                    label: 'Address',
-                    sortable: true
-                },
-                {
-                    key: '8181C7930DFF',
-                    label: 'P1',
-                    sortable: false,
-                    formatter: (value) => {
-                        if (value)  return value;
-                        return '-';
+
+            ipt : {
+                param: [
+                    {
+                            host: '',
+                            port: 26862,
+                            user: '',
+                            pwd: ''
+                    },
+                    {
+                            host: '',
+                            port: 26862,
+                            user: '',
+                            pwd: ''
                     }
-                },
-                {
-                    key: '8181C7930EFF',
-                    label: 'W5',
-                    sortable: false,
-                    formatter: (value) => {
-                        if (value)  return value;
-                        return '-';
-                    }
+                ],
+                status: {
+                    host: '',
+                    local: 0,
+                    remote: 0
                 }
-            ],
-            sortBy: '8181C7930AFF',
-            sortDesc: false,
-            sortDirection: 'desc'
             },
+
+            meters: {
+                values: [],
+                selected: [],
+                fields: [
+                    {
+                        key: 'nr',
+                        label: 'Nr',
+                        sortable: true,
+                        class: 'text-right small'
+                    },
+                    {
+                        key: 'ident',
+                        label: 'Ident',
+                        sortable: true
+                    },
+                    // {
+                    //     key: 'meterId',
+                    //     label: 'Meter ID',
+                    //     sortable: true
+                    // },
+                    {
+                        key: 'meter',
+                        label: 'Meter',
+                        sortable: true,
+                        formatter: (value) => {
+                            return value ? value.toUpperCase() : '?';
+                        }
+                    },
+                    {
+                        key: 'maker',
+                        label: 'Maker',
+                        sortable: true,
+                        formatter: (value) => {
+                            return (value) ? value : '-';
+                        }
+                    },
+                    {
+                        key: 'lastSeen',
+                        label: 'Last Seen',
+                        sortable: true,
+                        formatter: (value) => {
+                            return value.toLocaleString()
+                        }
+                    },
+                    {
+                        key: 'type',
+                        label: 'Type',
+                        sortable: true,
+                        formatter: (value) => {
+                            switch (value) {
+                                case 0: return "M-Bus (wired)";
+                                case 1: return "M-Bus (radio)";
+                                case 2: return "wM-Bus";
+                                case 3: return "Serial";
+                                case 4: return "Gateway";
+                                case 5: return "BCD";
+                                case 6: return "EON";
+                                case 7: return "DKE-1";
+                                case 8: return "IMEI";
+                                case 9: return "RWE";
+                                case 10: return "DKE-2";
+                                case 11: return "Switch";
+                                default:
+                                    break;
+                            }
+                            return "Other";
+                        }
+                    },
+                    {
+                        key: 'visible',
+                        label: 'Visible'
+                    },
+                    {
+                        key: 'active',
+                        label: 'Active'
+                    },
+                    {
+                        key: 'serverId',
+                        label: 'Server ID',
+                        sortable: true
+                    },
+                    {
+                        key: 'edit',
+                        label: 'Edit'
+                    }
+                ],
+                sortBy: 'meter',
+                sortDesc: false,
+                sortDirection: 'desc',
+                csv: ''
+            },
+
+            //  firmware
+            fw: {
+                values: [],
+                selected: []
+            },
+
+            //  wireless M-Bus
+            wmbus: {
+                type: '',
+                id: '',
+                firmware: '',
+                hardware: '',
+                power: 'basic',
+                reboot: 86400,
+                protocol: 'S',
+                active: true,
+                sMode: 0,
+                tMode: 0,
+                '123456': true
+                },
+
+            access: {
+                meterNr: 1,
+                role: 3,
+                user: 1,
+            },
+
+            iec: {
+                params: {
+                    // TODO @michael: is i a good idea to use same OBIS codes here?
+                    '8181C79301FF': false,  // active
+                    autoActivation: true,
+                    loopTime: 3600,
+                    maxDataRate: 10240,
+                    minTimeout: 200,
+                    maxTimeout: 5000,
+                    maxVar: 9,
+                    protocolMode: 'C',
+                    retries: 3,
+                    rs485: null,
+                    timeGrid: 900,
+                    timeSync: 14400,
+                    devices: []
+                },
+                selected: [],
+                fields: [
+                    {
+                        key: 'nr',
+                        label: 'Nr',
+                        sortable: true,
+                        class: 'text-right small'
+                    },
+                    {
+                        key: '8181C7930AFF',
+                        label: 'Name',
+                        sortable: true
+                    },
+                    {
+                        key: '8181C7930BFF',
+                        label: 'Baudrate',
+                        sortable: true
+                    },
+                    {
+                        key: '8181C7930CFF',
+                        label: 'Address',
+                        sortable: true
+                    },
+                    {
+                        key: '8181C7930DFF',
+                        label: 'P1',
+                        sortable: false,
+                        formatter: (value) => {
+                            if (value)  return value;
+                            return '-';
+                        }
+                    },
+                    {
+                        key: '8181C7930EFF',
+                        label: 'W5',
+                        sortable: false,
+                        formatter: (value) => {
+                            if (value)  return value;
+                            return '-';
+                        }
+                    }
+                ],
+                sortBy: '8181C7930AFF',
+                sortDesc: false,
+                sortDirection: 'desc'
+                },
             tabOpLog: {
                 data: {
                     items: []
@@ -1257,7 +1259,6 @@ export default  {
             },
             tabSnapshots: {
                 data: {
-                    //items: []
                     items: [{ nr: 1, utc: new Date(), serverId: '0500153B02297E', remark: 'nice description' }]
                 },
                 nav: {
@@ -1633,8 +1634,8 @@ export default  {
                         else if (obj.channel === 'cache.query') {
                             console.log(obj, ' cache.query');
                         }
-                       else {
-                            console.error('update unknown channel ' + obj.channel);
+                        else {
+                            console.warn('update unknown channel ' + obj.channel, obj);
                         }
                     }
                 }
@@ -1736,91 +1737,64 @@ export default  {
                 this.visibleRows = this.gateways.length;
             }
         },
-
+        updateSmfContext() {
+            const smfContext = this.$refs.tabs.tabs[this.tabIndex].$attrs['smf-context'];
+            console.log(smfContext);
+            const pkGateway = this.selected[0].pk;
+            if (smfContext === this.smfContext.statusWord) {
+                this.spinner.status = true;
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CLASS_OP_LOG_STATUS_WORD, [pkGateway]);
+            } else if (smfContext === this.smfContext.ipt) {
+                this.spinner.ipt = true;
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_IPT_PARAM, [pkGateway]);
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_IPT_STATE, [pkGateway]);
+            } else if (smfContext === this.smfContext.firmware) {
+                this.fw.values = [];
+                this.spinner.firmware = true;
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_DEVICE_IDENT, [pkGateway]);
+            }  else if (smfContext === this.smfContext.memoryUsage) {
+                this.spinner.memory = true;
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_MEMORY_USAGE, [pkGateway]);
+            } else if (smfContext === this.smfContext.devices) {
+                this.meters.values = [];
+                this.spinner.meters = true;
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_VISIBLE_DEVICES, [pkGateway]);
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, [pkGateway]);
+            } else if (smfContext === this.smfContext.wirlessMBus) {
+                this.spinner.wmbus = true;
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_W_MBUS_STATUS, [pkGateway]);
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_IF_wMBUS, [pkGateway]);
+            } else if (smfContext === this.smfContext.iec) {
+                this.spinner.iec = true;
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_IF_1107, [pkGateway]);
+            }
+            else if (smfContext === this.smfContext.log) {
+                this.tabOpLog.data.items = [];
+                this.spinner.log = true;
+                this.ws_submit_request(MESSAGE_REQUEST.getProfileList
+                    , SML_CODES.CLASS_OP_LOG
+                    , [pkGateway]
+                    , {range: this.tabOpLog.form.selected * 24});   //  hours
+            }
+        },
+        tabSelected() {
+            // at elast one item (e.g. gateway) is always selected
+            // get the context of the selected tab
+            this.updateSmfContext();
+        },
         rowSelected(items) {
             this.selected = items;
+            this.form.serverId = "";
+            this.form.name = '';
+            this.form.pk = null;
             if (items.length > 0) {
-                //console.log('selected ' + items[0].serverId);
-
                 this.form.serverId = items[0].serverId;
                 this.form.name = items[0].name;
                 this.form.pk = items[0].pk;
-
-                //    collect gateway requests
-                //console.log(this.options.selected.length + ' options selected ');
-
-                //
-                //  1 gateway selected
-                //
                 if (items.length === 1) {
-                    const self = this;
-                    this.options.selected.forEach(option => {
-                        //  channels: ['Status Word', 'Meters', 'Firmware', 'Memory', 'wireless M-Bus', 'IP-Telemtry', 'IEC'],
-                        //console.log('option: ' + option);
-                        if (option === 'status-word') {
-                            //  810060050000
-                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CLASS_OP_LOG_STATUS_WORD, [items[0].pk]);
-                            self.spinner.status = true;
-                        }
-                        else if (option === 'devices') {
-                            //gw_req_vec.push("root-visible-devices");
-                            //gw_req_vec.push("root-active-devices");
-                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_VISIBLE_DEVICES, [items[0].pk]);
-                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, [items[0].pk]);
-                            //  clear meter table
-                            self.meters.values = [];
-                            self.spinner.meters = true;
-                        }
-                        else if (option === 'firmware') {
-                            //gw_req_vec.push("root-device-id");
-                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_DEVICE_IDENT, [items[0].pk]);
-                            self.fw.values = []; // ? self
-                            self.spinner.firmware = true;
-                        }
-                        else if (option === 'memory-usage') {
-                            //gw_req_vec.push("root-memory-usage");
-                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_MEMORY_USAGE, [items[0].pk]);
-                            self.spinner.memory = true;
-                        }
-                        else if (option === 'w-MBus') {
-                            //gw_req_vec.push("root-wMBus-status");
-                            //gw_req_vec.push("IF-wireless-mbus");
-                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_W_MBUS_STATUS, [items[0].pk]);
-                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_IF_wMBUS, [items[0].pk]);
-                            self.spinner.wmbus = true;
-                        }
-                        else if (option === 'ipt') {
-                            //gw_req_vec.push("root-ipt-state");
-                            //gw_req_vec.push("root-ipt-param");
-                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_IPT_PARAM, [items[0].pk]);
-                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_IPT_STATE, [items[0].pk]);
-                            self.spinner.ipt = true;
-                        }
-                        else if (option === 'iec') {
-                            //gw_req_vec.push("IF-IEC-62505-21");
-                            self.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_IF_1107, [items[0].pk]);
-                            self.spinner.iec = true;
-                        }
-                        else if (option === 'log') {
-                            //   SML_GetProfileList_Req
-                            //  request operation log: 81 81 C7 89 E1 FF (OBIS_CLASS_OP_LOG)
-                            //console.log("selected: " + this.tabOpLog.form.selected);
-                            this.tabOpLog.data.items = [];
-                            self.ws_submit_request(MESSAGE_REQUEST.getProfileList
-                                , SML_CODES.CLASS_OP_LOG
-                                , [items[0].pk]
-                                , {range: this.tabOpLog.form.selected * 24});   //  hours
-
-                            self.spinner.log = true;
-                        }
-                    });
+                    // the tabs are rendered only if an item is selected - so wait a tick until the tabs-element is there
+                    setTimeout(() => this.updateSmfContext());
                 }
-            }
-            else {
-                console.log('nothing selected');
-                this.form.serverId = "";
-                this.form.name = '';
-                this.form.pk = null;
             }
         },
         meterSelected(items) {
@@ -1830,15 +1804,6 @@ export default  {
             }
             else {
                 //  ToDo: ...
-            }
-        },
-        toggleAll(checked) {
-            // this.options.selected = checked ? this.options.channels.slice() : []
-            this.options.selected = [];
-            if (checked) {
-                this.options.channels.forEach(option => {
-                    this.options.selected.push(option.value);
-                });
             }
         },
         generatePasswordIPT(event, element) {
@@ -1960,24 +1925,6 @@ export default  {
             }
             return "Update";
         },
-        btnDeleteTitle() {
-            if (this.selected.length === 0)  {
-                return "Delete";
-            }
-            else if(this.selected.length === 1) {
-                return "Delete " + this.selected[0].name;
-            }
-            return "Delete " + this.selected.length + " gateway(s)";
-        },
-        btnRebootTitle() {
-            if (this.selected.length === 0)  {
-                return "Reboot";
-            }
-            else if(this.selected.length === 1) {
-                return "Reboot " + this.selected[0].name;
-            }
-            return "Reboot " + this.selected.length + " gateway(s)";
-        },
         btnEdit() {
             return "Edit";
         },
@@ -2023,22 +1970,7 @@ export default  {
         }
     },
 
-    watch: {
-        'options.selected'(newVal) {
-            //console.log('selected ' + newVal + ", " + oldVal);
-            if (newVal.length === 0) {
-                this.options.indeterminate = false;
-                this.options.allSelected = false;
-            } else if (newVal.length === this.options.channels.length) {
-                this.options.indeterminate = false;
-                this.options.allSelected = true;
-            }
-            else {
-                this.options.indeterminate = true;
-                this.options.allSelected = false;
-            }
-        }
-    },
+    watch: {},
     beforeRouteEnter(to, from, next) {
         hasPrivilegesWaitForUser(store, MODULES.CONFIG_GATEWAY, PRIVILEGES.VIEW).then((result) => {
             next( result ? true: NO_ACCESS_ROUTE);
