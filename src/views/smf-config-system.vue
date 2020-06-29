@@ -43,6 +43,9 @@
                 </b-card>
 
                 <b-card :title="$t('config-sys-18')" class="shadow">
+                    <b-alert show dismissible class="bg-warning" v-if="mode === 'production'">
+                        <span style="font-weight: bold">Note:</span> May be expensive when connecting over cellular networks.
+                    </b-alert>
                     <b-form-checkbox switch v-model="cfg.gwConfigCaching" name="check-button" v-on:change="gwCacheChange($event)">
                         {{ $t('config-sys-19') }}
                         <!-- cachinf gateway configuration data -->

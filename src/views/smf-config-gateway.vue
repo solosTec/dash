@@ -80,8 +80,8 @@
             </b-row>
 
             <!-- details -->
-            <b-row>
-                <b-col md="10" class="p-3 shadow">
+            <b-row style="height: 50vh">
+                <b-col md="12" class="p-3 shadow">
                     <div v-if="selected.length === 0">Please select a gateway.</div>
                     <b-tabs v-if="selected.length > 0" pills card v-model="tabIndex" @input="tabSelected" ref="tabs">
 
@@ -793,16 +793,10 @@
                         <b-tab no-body title="Snapshots" :smf-context="smfContext.snapshots">
                             <b-form @submit.prevent="">
                                 <b-row class="p-3">
-                                    <b-col md="3">
+                                    <b-col md="12">
                                         <b-button type="submit"
                                                   variant="primary"
                                                   v-on:click.stop="onProxyCacheSync">Create Snapshot</b-button>
-                                    </b-col>
-                                    <b-col md="9">
-                                        <b-form-input type="text"
-                                                      id="smf-form-snapshot"
-                                                      placeholder="<description>"
-                                                      />
                                     </b-col>
                                 </b-row>
                                 <b-row class="p-3">
@@ -814,30 +808,6 @@
                         </b-tab>
 
                     </b-tabs>
-                </b-col>
-
-                <b-col md="2" class="p-3 bg-light">
-                    <b-form @submit.prevent="">
-
-                        <b-form-group label="Cached Sections" label-for="smf-form-dev-enabled">
-                            <b-form-checkbox-group id="sections"
-                                                   stacked
-                                                   v-model="sections.active"
-                                                   name="smf-form-gw-sections"
-                                                   :options="sections.options"
-                                                   class="ml-4"
-                                                   aria-label="Individual flavours" />
-
-                        </b-form-group>
-
-                        <!--obsolete-->
-                        <!-- bg-warning -->
-                        <b-alert show dismissible class="bg-warning" v-if="mode === 'production'">
-                            <span style="font-weight: bold">Note:</span> No other IP-T connection can be active during the execution of the requests.
-                        </b-alert>
-
-                    </b-form>
-
                 </b-col>
             </b-row>
 

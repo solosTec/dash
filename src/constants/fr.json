@@ -76,6 +76,20 @@
     "tbl-search": "Type de recherche",
     "tbl-lines-per-page": "Nombre de rangées",
 
+    "config-home-01": "Configuration du dispositif",
+    "config-home-02": "Passerelles",
+    "config-home-03": "Gestion des compteurs",
+    "config-home-04": "Réunions en cours",
+    "config-home-05": "Objectifs enregistrés",
+    "config-home-06": "Connexions actuelles",
+
+    "config-home-01a": "Gestion du parc d'appareils.",
+    "config-home-02a": "Gestion, configuration et mise en service.",
+    "config-home-03a": "Vue d'ensemble et données des compteurs.",
+    "config-home-04a": "Affiche une liste de tous les appareils actuellement en ligne et leur débit de données en temps réel.",
+    "config-home-05a": "Toutes les cibles enregistrées et leur débit de données en temps réel.",
+    "config-home-06a": "Voir les connexions et gérer les lignes louées.",
+
     "config-sys-01": "Connexion automatique",
     "config-sys-02": "Accepter les périphériques inconnus et transférer les données de connexion à la base de données de configuration (déconseillé).",
     "config-sys-03": "Activation automatique",
