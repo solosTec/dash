@@ -1694,8 +1694,10 @@ export default  {
                         this.isBusy = obj.show;
                         tmpGateways = [];
                     }
-                    else if (obj.level !== 0) {
+                    if (obj.level !== 100) {
                         this.busyLevel = obj.level;
+                    }
+                    else {
                         this.gateways = tmpGateways;
                     }
                 }
