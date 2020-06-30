@@ -344,12 +344,6 @@
                                          :sort-direction="meters.sortDirection"
                                          class="shadow">
 
-                                    <template v-slot:cell(visible)="row">
-                                        <b-button size="sm"
-                                                  v-if="row.item.visible"
-                                                  @click="onMeterDelete(row.item, row.index, $event.target)">✔ Delete</b-button>
-                                    </template>
-
                                     <template v-slot:cell(active)="row">
                                         <b-button size="sm"
                                                   @click="onMeterActivate(row.item, row.index, $event.target)">{{ row.item.active ? '✖ Deactivate' : '✔ Activate' }}</b-button>
@@ -973,22 +967,8 @@ export default  {
                 allSelected: false,
                 indeterminate: false,
             },
-            // pure experimental - should be part of the gateway table, since this data are specific for every gateway
-            sections: {
-                options: [
-                    { text: 'IP-T', value: SML_CODES.CODE_ROOT_IPT_PARAM, disabled: true },
-                    { text: 'Firmware', value: SML_CODES.CODE_ROOT_DEVICE_IDENT, disabled: true },
-                    { text: 'Visible devices', value: SML_CODES.CODE_ROOT_VISIBLE_DEVICES, disabled: true },
-                    { text: 'Active devices', value: SML_CODES.CODE_ROOT_ACTIVE_DEVICES, disabled: true },
-                    { text: 'Wireless mbus', value: SML_CODES.CODE_IF_wMBUS, disabled: true },
-                    { text: 'IEC', value: SML_CODES.CODE_IF_1107, disabled: true },
-                    { text: 'Access', value: SML_CODES.CODE_ROOT_ACCESS_RIGHTS, disabled: true }
-                ],
-                // active section
-                active: []
-            },
 
-            //  the selected tab: -1 will ensure that teh active attribute forces a tabIndex change event on the first view
+            //  the selected tab: -1 will ensure that the active attribute forces a tabIndex change event on the first view
             tabIndex: -1,
 
             gw : {
@@ -1091,7 +1071,8 @@ export default  {
                     },
                     {
                         key: 'visible',
-                        label: 'Visible'
+                        label: 'Visible',
+                        formatter: (value) => value ? '✔' : '✖'
                     },
                     {
                         key: 'active',
@@ -1344,7 +1325,7 @@ export default  {
                                     if (obj.rec.values.type < 2) {
                                         recVisible["_rowVariant"] = "success";
                                     }
-                                    console.log("visisble ", recVisible);
+                                    //console.log("visisble ", recVisible);
                                     this.meters.values.push(recVisible);
 
                                 });
@@ -1354,7 +1335,7 @@ export default  {
                                 this.spinner.meters = false;
 
                                 Object.values(obj.rec.values).forEach((e) => {
-                                    //console.log(e);
+                                    //console.log("active", e);
                                     let recActive = this.meters.values.find(meter => {
                                         //console.log('active device: compare ' + meter.ident + ' <> ' + e[SML_CODES.CODE_SERVER_ID]);
                                         if (meter.ident === e[SML_CODES.CODE_SERVER_ID]) {
@@ -1392,7 +1373,7 @@ export default  {
                                             recActive["_rowVariant"] = "success";
                                         }
 
-                                        console.log("active ", recActive);
+                                        //console.log("active ", recActive);
                                         this.meters.values.push(recActive);
                                     }
 
