@@ -694,7 +694,7 @@
                                                       v-model="access.meterNr"
                                                       placeholder="<meterId>"
                                                       maxlength="2"
-                                                      v-b-popover.hover="'User ID'" title="User" />
+                                                      v-b-popover.hover="'Meter ID'" title="Meter" />
                                     </b-col>
                                     <b-col md="3">
                                         <b-form-input type="number"
@@ -1571,13 +1571,12 @@ export default  {
                             //  unused
                         }
                         else if (obj.channel === 'cache.reset') {
-                            //console.log(obj, ' new sections');
-                            this.sections.active = obj.section;
+                            console.log(obj, ' cache reset');
+                            //this.sections.active = obj.section;
                         }
                         else if (obj.channel === 'cache.sections') {
-                            console.log(obj, ' new sections');
-                            this.sections.active = obj.section;
-
+                            console.log(obj, ' list sections');
+                            //this.sections.active = obj.section;
                         }
                         else if (obj.channel === 'cache.update') {
                             console.log(obj, ' cache.update');
