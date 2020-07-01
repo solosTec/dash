@@ -724,7 +724,8 @@
                                         <b-button type="submit"
                                                   variant="primary"
                                                   v-b-tooltip.hover title="Clear cache and initialize it with gw/server ID"
-                                                  v-on:click.stop="onProxyCacheReset">Reset Cache</b-button>
+                                                  v-on:click.stop="onProxyCacheReset">Reset Cache <b-spinner v-if="spinner.reset" type="grow" small />
+                                        </b-button>
                                     </b-col>
                                     <b-col md="3">
                                         <b-button type="submit"
@@ -924,7 +925,8 @@ export default  {
                 meters: false,
                 wmbus: false,
                 iec: false,
-                log: false
+                log: false,
+                reset: false,
             },
             form: {
                 pk: '',
@@ -1572,6 +1574,7 @@ export default  {
                         }
                         else if (obj.channel === 'cache.reset') {
                             console.log(obj, ' cache reset');
+                            this.spinner.reset = false;
                             //this.sections.active = obj.section;
                         }
                         else if (obj.channel === 'cache.sections') {
@@ -1849,6 +1852,7 @@ export default  {
             return "<" + str + ">";
         },
         onProxyCacheReset() {
+            this.spinner.reset = true;
             this.ws_proxy("cache.reset", [this.form.pk], [SML_CODES.CLASS_OP_LOG_STATUS_WORD, SML_CODES.CODE_ROOT_IPT_PARAM, SML_CODES.CODE_ROOT_ACCESS_RIGHTS, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, SML_CODES.CODE_ROOT_VISIBLE_DEVICES]);
         },
         onProxyCacheSections() {
