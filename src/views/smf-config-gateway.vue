@@ -679,7 +679,17 @@
                         </b-tab>
 
                         <!-- Access -->
-                        <b-tab no-body title="Access" :smf-context="smfContext.auth">
+                        <b-tab no-body :smf-context="smfContext.auth">
+                            <template slot="title">
+                                Access
+                                <b-spinner v-if="spinner.auth" type="grow" small />
+                            </template>
+
+                            <smfServerRootAccessRights
+                                    v-if="serverRootAccessRights"
+                                    :root-access-rights="serverRootAccessRights"
+                                    @queryMeter="onQueryMeter"></smfServerRootAccessRights>
+
                             <b-form @submit.prevent="">
                                 <b-row class="p-3">
                                     <b-col md="12">
@@ -825,6 +835,7 @@
     import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
     import {generatePassword} from "@/shared/generate-password";
     import smfServerConfiguration from '@/components/smf-server-configuration.vue';
+    import smfServerRootAccessRights from '@/components/smf-server-root-access-rights';
 
     const gatewayTableFields = [
         {
@@ -893,6 +904,7 @@ export default  {
     mixins: [webSocket],
     components: {
         smfServerConfiguration,
+        smfServerRootAccessRights,
         // eslint-disable-next-line vue/no-unused-components
         opLog, snapshots, firmware, MESSAGE_REQUEST, MESSAGE_RESPONSE, SML_CODES
     },
@@ -925,6 +937,7 @@ export default  {
                 meters: false,
                 wmbus: false,
                 iec: false,
+                auth: false,
                 log: false,
                 reset: false,
             },
@@ -1122,6 +1135,7 @@ export default  {
                 role: 3,
                 user: 1,
             },
+            serverRootAccessRights: null,
 
             iec: {
                 params: {
@@ -1502,8 +1516,10 @@ export default  {
 
                             }
                             else if (obj.section === SML_CODES.CODE_ROOT_ACCESS_RIGHTS) {
+                                this.spinner.auth = false;
                                 console.log('update channel ' + obj.channel + ', section ' + obj.section);
                                 console.log(obj.rec);
+                                this.serverRootAccessRights = obj.rec;
                             }
                             else if (obj.section === SML_CODES.CODE_DEVICE_CLASS) {
                                 console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
@@ -1722,6 +1738,12 @@ export default  {
             } else if (smfContext === this.smfContext.iec) {
                 this.spinner.iec = true;
                 this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_IF_1107, [pkGateway]);
+            } else if (smfContext === this.smfContext.auth) {
+                this.spinner.auth = true;
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
+                    SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
+                    [pkGateway],
+                    { serverId: this.form.serverId, path: [] });
             }
             else if (smfContext === this.smfContext.log) {
                 this.tabOpLog.data.items = [];
@@ -1867,8 +1889,29 @@ export default  {
         },
         onProxyCacheQuery() {
             this.ws_proxy("cache.query", [this.form.pk], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]);
-        }
+        },
+        onQueryMeter(params /* meter, user, role hex codes*/) {
+            /**
+             * FIXME @Sylko:
+             *  - it is not easy to distinguish the response for "query server" and "query meter". both have the same result structure
+             *  - see below the häcky code to determine the id's for role, user and meter :(
+             */
+            console.log(params);
+            const {roleHex, userHex, meterNrHex} = params;
+            // 818181600301
+            const user = (parseInt(userHex, 16) & 0xFF).toString(10);
+            // 8181816003FF
+            const role = ((parseInt(roleHex, 16) & 0xFF00) >> 8).toString(10);
+            // 818181640101
+            const meterNr = (parseInt(meterNrHex, 16) & 0xFF).toString(10);
+            console.log([role, user, meterNr]);
 
+            this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
+                SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
+                [this.form.pk],
+                //  path is [role, user, meterID]
+                { serverId: this.form.serverId, path: [role, user, meterNr] });
+        }
    },
 
     computed: {
