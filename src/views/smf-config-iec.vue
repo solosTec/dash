@@ -25,16 +25,20 @@
                 <b-col md="3">
                     <b-form v-on:submit.prevent class="p-3 shadow">
 
-                        <b-form-group label="IP address" label-for="smf-form-iec-ep">
-                            <b-form-input id="smf-form-iec-ep"
+                        <b-input-group label="IP address">
+                            <b-form-input id="smf-form-iec-address"
                                           type="text"
-                                          v-model="form.ep"
+                                          v-model="form.address"
                                           required
                                           placeholder="<IP address (dotted)>"
                                           minlength="7"
                                           maxlength="15"
                                           size="15" />
-                        </b-form-group>
+                            <b-form-input id="smf-form-iec-service"
+                                          type="number"
+                                          v-model="form.port"
+                                          required />
+                        </b-input-group>
 
                         <b-form-group label="Direction" label-for="smf-form-iec-direction">
                             <b-form-radio-group id="smf-form-iec-direction" v-model="form.direction" name="smf-form-iec-direction">
@@ -86,7 +90,8 @@
     interface UiMeter  {
         pk: string;
         meter: string;
-        ep: string;
+        address: string;
+        port: number;
         direction: string;
         interval: string;
     }
@@ -118,7 +123,8 @@
                 form: {
                     pk: '',
                     meter: '',
-                    ep: '0.0.0.0',
+                    address: '0.0.0.0',
+                    port: 7009,
                     direction: 'in',
                     interval: '00:01:0.0'
                 }
@@ -143,7 +149,8 @@
                     let rec: UiMeter = {
                         pk: key.pk,
                         meter: data.meter,
-                        ep: data.ep !== null ? data.ep : '0.0.0.0:4004',
+                        address: data.address !== null ? data.address : '0.0.0.0',
+                        port: data.port !== null ? data.port : 7009,
                         interval: data.interval,
                         direction: data.direction ? 'in' : 'out'
                     };
@@ -178,7 +185,8 @@
                     key: [this.form.pk],
                     data: {
                         pk: this.form.pk,
-                        ep: this.form.ep,
+                        address: this.form.address,
+                        port: this.form.port,
                         direction: Boolean(this.form.direction == 'in'),
                         interval: this.form.interval
                     }
@@ -193,7 +201,7 @@
                     key: [this.form.pk],
                     data: {
                         pk: this.form.pk,
-                        ep: this.form.ep,
+                        address: this.form.address,
                         direction: Boolean(this.form.direction == 'in'),
                         interval: this.form.interval
                     }
@@ -204,7 +212,8 @@
                 if (items.length > 0) {
                     this.form.pk = items[0].pk;
                     this.form.meter = items[0].meter;
-                    this.form.ep = items[0].ep;
+                    this.form.address = items[0].address;
+                    this.form.port = items[0].port;
                     this.form.direction = items[0].direction ? 'in' : 'out';
                     this.form.interval = items[0].interval;
                 }
@@ -212,7 +221,8 @@
                     // console.log('nothing selected');
                     this.form.pk = '';
                     this.form.meter = '';
-                    this.form.ep = '0.0.0.0';
+                    this.form.address = '0.0.0.0';
+                    this.form.port = 7009;
                     this.form.direction = 'out';
                     this.form.interval = '00:01:0.0';
                 }
@@ -225,9 +235,9 @@
             },
             isRecordNew(): boolean {
                 if (this.selected.length !== 0) {
-                    return this.form.ep !== this.selected[0].ep;
+                    return this.form.address !== this.selected[0].address;
                 }
-                return this.form.ep.length > 0;
+                return this.form.address.length > 0;
             },
             btnInsertTitle(): string | TranslateResult {
                 return this.$t('action-insert') + ' ' + this.form.meter;

@@ -188,5 +188,6 @@
     "config-gateway-70-04": "D",
     "config-gateway-71": "Макс. Таймаут (мс)",
     "config-gateway-72": "<Период считывания данных>",
-    "config-gateway-73": "Представить"
+    "config-gateway-73": "Представить",
+    "config-gateway-74": "Брокер"
 }

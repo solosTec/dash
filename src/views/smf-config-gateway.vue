@@ -87,14 +87,12 @@
 
                         <!-- Configuration" -->
                         <b-tab :title="$t('config-gateway-04')" active :smf-context="smfContext.configuration">
-                            <smf-server-configuration
-                                    :gateways="selected"
-                                    :wsDelegate="createWsDelegate"
-                            ></smf-server-configuration>
+                            <smf-server-configuration :gateways="selected"
+                                                      :wsDelegate="createWsDelegate"></smf-server-configuration>
                         </b-tab>
 
                         <!-- Status -->
-                        <b-tab no-body :disabled="selected[0].online === 0"  :smf-context="smfContext.statusWord">
+                        <b-tab no-body :disabled="selected[0].online === 0" :smf-context="smfContext.statusWord">
                             <template slot="title">
                                 {{ $t('config-gateway-09') }}
                                 <b-spinner v-if="spinner.status" type="grow" small />
@@ -285,6 +283,54 @@
                                     </b-col>
                                 </b-row>
 
+                            </b-form>
+                        </b-tab>
+
+                        <!-- Broker -->
+                        <b-tab :disabled="selected[0].online === 0" no-body :smf-context="smfContext.broker">
+                            <template slot="title">
+                                {{ $t('config-gateway-74') }}
+                                <b-spinner v-if="spinner.broker" type="grow" small />
+                            </template>
+                            <b-form @submit.prevent="">
+
+                                <b-card-group deck class="pt-4">
+                                    <b-card header="wireless LMN" title="Transparent mode" sub-title="Reconfiguration requires a restart">
+                                        <b-form-checkbox switch v-model="broker.ttyAPP0.transparent" name="smf-broker.ttyAPP0.transparent" class="mt-4">
+                                            {{ broker.ttyAPP0.transparent ? $t('config-gateway-40') : $t('config-gateway-41') }}
+                                        </b-form-checkbox>
+
+                                        <b-input-group prepend="Transparent host" label="LABEL" label-for="smf-broker.ttyAPP0.host" class="mt-2">
+                                            <b-form-input id="smf-broker.ttyAPP0.host"
+                                                          type="text"
+                                                          v-model="broker.ttyAPP0.host"
+                                                          placeholder="Hostname" />
+
+                                            <b-form-input id="smf-broker.ttyAPP1.host"
+                                                          type="number"
+                                                          v-model="broker.ttyAPP0.service"
+                                                          placeholder="IP port" />
+                                        </b-input-group>
+                                        <b-button href="#" variant="primary" class="mt-2">Apply</b-button>
+                                    </b-card>
+
+                                    <b-card header="wired LMN" title="Transparent mode" sub-title="Reconfiguration requires a restart">
+                                        <b-form-checkbox switch v-model="broker.ttyAPP1.transparent" name="smf-broker.ttyAPP1.transparent" class="mt-4">
+                                            {{ broker.ttyAPP1.transparent ? $t('config-gateway-40') : $t('config-gateway-41') }}
+                                        </b-form-checkbox>
+                                        <b-input-group prepend="Transparent host" label="LABEL" label-for="smf-broker.ttyAPP1.host" class="mt-2">
+                                            <b-form-input id="smf-broker.ttyAPP1.host"
+                                                          type="text"
+                                                          v-model="broker.ttyAPP1.host"
+                                                          placeholder="Hostname" />
+                                            <b-form-input id="smf-broker.ttyAPP1.host"
+                                                          type="number"
+                                                          v-model="broker.ttyAPP1.service"
+                                                          placeholder="IP port" />
+                                        </b-input-group>
+                                        <b-button href="#" variant="primary" class="mt-2">Apply</b-button>
+                                    </b-card>
+                                </b-card-group>
                             </b-form>
                         </b-tab>
 
@@ -685,10 +731,9 @@
                                 <b-spinner v-if="spinner.auth" type="grow" small />
                             </template>
 
-                            <smfServerRootAccessRights
-                                    v-if="serverRootAccessRights"
-                                    :root-access-rights="serverRootAccessRights"
-                                    @queryMeter="onQueryMeter"></smfServerRootAccessRights>
+                            <smfServerRootAccessRights v-if="serverRootAccessRights"
+                                                       :root-access-rights="serverRootAccessRights"
+                                                       @queryMeter="onQueryMeter"></smfServerRootAccessRights>
 
                             <b-form @submit.prevent="">
                                 <b-row class="p-3">
@@ -734,7 +779,8 @@
                                         <b-button type="submit"
                                                   variant="primary"
                                                   v-b-tooltip.hover title="Clear cache and initialize it with gw/server ID"
-                                                  v-on:click.stop="onProxyCacheReset">Reset Cache <b-spinner v-if="spinner.reset" type="grow" small />
+                                                  v-on:click.stop="onProxyCacheReset">
+                                            Reset Cache <b-spinner v-if="spinner.reset" type="grow" small />
                                         </b-button>
                                     </b-col>
                                     <b-col md="3">
@@ -932,6 +978,7 @@ export default  {
             spinner: {
                 status: false,
                 ipt: false,
+                broker: false,
                 firmware: false,
                 memory: false,
                 meters: false,
@@ -1013,6 +1060,19 @@ export default  {
                     host: '',
                     local: 0,
                     remote: 0
+                }
+            },
+
+            broker: {
+                ttyAPP0: {
+                    transparent: false,
+                    host: "segw.ch",
+                    service: 12000
+                },
+                ttyAPP1: {
+                    transparent: false,
+                    host: "segw.ch",
+                    service: 12001
                 }
             },
 

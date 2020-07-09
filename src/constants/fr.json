@@ -188,5 +188,7 @@
     "config-gateway-70-04": "D",
     "config-gateway-71": "Délai d'attente maximal (msec)",
     "config-gateway-72": "<Période de lecture des données>",
-    "config-gateway-73": "Soumettre"
+    "config-gateway-73": "Soumettre",
+    "config-gateway-74": "Courtier"
+
 }

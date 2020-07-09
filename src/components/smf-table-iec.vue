@@ -44,8 +44,7 @@
                           primary-key="pk"
                           :sort-by.sync="sortBy"
                           :sort-desc.sync="sortDesc"
-                          :sort-direction="sortDirection"
-                          class="shadow">
+                          :sort-direction="sortDirection">
 
                      <!-- A virtual column -->
                      <template v-slot:cell(index)="data">
@@ -95,11 +94,15 @@
                         sortable: true
                     },
                     {
-                        key: 'ep',
+                        key: 'address',
                         label: 'IP Address',
                         sortable: true
                     },
                     {
+                        key: 'port',
+                        label: 'IP Port',
+                        sortable: true
+                    },                    {
                         key: 'direction',
                         label: 'Direction',
                         class: 'text-center',

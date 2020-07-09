@@ -188,5 +188,6 @@
     "config-gateway-70-04": "D",
     "config-gateway-71": "Max. Timeout (msec)",
     "config-gateway-72": "<Data Readout Period>",
-    "config-gateway-73": "Submit"
+    "config-gateway-73": "Submit",
+    "config-gateway-74": "Broker"
 }
