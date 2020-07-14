@@ -2,17 +2,15 @@
 <template lang="html">
     <div>
         <smf-data-table
-                :busyLevel="100"
                 tableName="Meter Rights"
                 :items="uiMeterAccessRights"
-                :fields="fields"
-        >
+                :fields="fields">
         </smf-data-table>
     </div>
 </template>
 <script lang="ts">
     import Vue from 'vue';
-    import {MeterAccessRights, nonRightsCodes} from '../backend-api/meter-access-rights';
+    import {MeterAccessRights, nonRightsCodes} from '@/backend-api/meter-access-rights';
     import smfDataTable from '@/components/smf-data-table.vue';
 
     const OBIS_CODE_MAP: { [code: string]: string } = {
