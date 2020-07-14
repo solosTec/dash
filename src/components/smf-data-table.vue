@@ -115,8 +115,11 @@
             }
         },
         watch: {
-            items(newItems) {
-                this.visibleRows = (newItems || []).length;
+            items: {
+                immediate: true,
+                handler (newItems) {
+                    this.visibleRows = (newItems || []).length;
+                }
             },
             fields:{
                 // run on component init and add the default calumns

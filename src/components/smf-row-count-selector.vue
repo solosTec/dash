@@ -18,18 +18,8 @@
     export default Vue.extend({
         data() {
             return {
-                options: [5,10,15,20, 25,50,100].map( value => ({ value, text: `${value}` }))
-            }
-        },
-        computed: {
-            rowCount: {
-                set: function(val: number) {
-                    localStorage.setItem(createFullStoreKey(this.storeKey), String(val));
-                },
-                get: function(): number {
-                    const storedValue = localStorage.getItem(createFullStoreKey(this.storeKey));
-                    return storedValue  ? +storedValue : this.value;
-                }
+                options: [5,10,15,20, 25,50,100].map( value => ({ value, text: `${value}` })),
+                rowCount: 15
             }
         },
         props: {
@@ -46,6 +36,21 @@
             onRowSelectionChanged (rowCount: number) {
                 this.rowCount = rowCount;
                 this.$emit('input', rowCount);
+            }
+        },
+        watch: {
+            storeKey: {
+                immediate: true,
+                handler (newStoreKey) {
+                    const storedValue = localStorage.getItem(createFullStoreKey(newStoreKey));
+                    this.rowCount = storedValue  ? +storedValue : this.value;
+                    this.$emit('input', this.rowCount);
+                }
+            },
+            rowCount: {
+                handler (val) {
+                    localStorage.setItem(createFullStoreKey(this.storeKey), String(val));
+                }
             }
         }
     })

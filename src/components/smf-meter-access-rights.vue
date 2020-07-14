@@ -3,9 +3,10 @@
     <div>
         <smf-data-table
                 :busyLevel="100"
-                tableName="meterRights"
+                tableName="Meter Rights"
                 :items="uiMeterAccessRights"
-                :fields="fields">
+                :fields="fields"
+        >
         </smf-data-table>
     </div>
 </template>
