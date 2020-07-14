@@ -731,48 +731,17 @@
                                 <b-spinner v-if="spinner.auth" type="grow" small />
                             </template>
 
-                            <smfServerRootAccessRights v-if="serverRootAccessRights"
+
+                            <smfServerRootAccessRights class="smfServerRootAccessRights"
+                                                       v-if="serverRootAccessRights"
                                                        :root-access-rights="serverRootAccessRights"
                                                        @queryMeter="onQueryMeter"></smfServerRootAccessRights>
+                            <smf-meter-access-rights v-if="meterAccessRights"
+                                                     :meter-access-rights="meterAccessRights">
+                            </smf-meter-access-rights>
+
 
                             <b-form @submit.prevent="">
-                                <b-row class="p-3">
-                                    <b-col md="12">
-                                        <b-button type="submit" variant="primary" v-on:click.stop="onAuthServer">Query Server</b-button>
-                                    </b-col>
-                                </b-row>
-                                <b-row class="p-3">
-                                    <b-col md="3">
-                                        <b-form-input type="number"
-                                                      id="smf-form-gw-access-meter"
-                                                      required
-                                                      v-model="access.meterNr"
-                                                      placeholder="<meterId>"
-                                                      maxlength="2"
-                                                      v-b-popover.hover="'Meter ID'" title="Meter" />
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-input type="number"
-                                                      id="smf-form-gw-access-role"
-                                                      required
-                                                      v-model="access.role"
-                                                      placeholder="<role>"
-                                                      maxlength="2"
-                                                      v-b-popover.hover="'Role ID'" title="Role" />
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-input type="number"
-                                                      id="smf-form-gw-access-user"
-                                                      required
-                                                      v-model="access.user"
-                                                      placeholder="<user>"
-                                                      maxlength="2"
-                                                      v-b-popover.hover="'User ID'" title="User" />
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-button type="submit" variant="primary" v-on:click.stop="onAuthUpdate">Query Meter</b-button>
-                                    </b-col>
-                                </b-row>
 
                                 <b-row class="p-3">
                                     <b-col md="3">
@@ -882,6 +851,7 @@
     import {generatePassword} from "@/shared/generate-password";
     import smfServerConfiguration from '@/components/smf-server-configuration.vue';
     import smfServerRootAccessRights from '@/components/smf-server-root-access-rights';
+    import smfMeterAccessRights from '@/components/smf-meter-access-rights';
 
     const gatewayTableFields = [
         {
@@ -951,6 +921,7 @@ export default  {
     components: {
         smfServerConfiguration,
         smfServerRootAccessRights,
+        smfMeterAccessRights,
         // eslint-disable-next-line vue/no-unused-components
         opLog, snapshots, firmware, MESSAGE_REQUEST, MESSAGE_RESPONSE, SML_CODES
     },
@@ -1188,18 +1159,12 @@ export default  {
                 sMode: 0,
                 tMode: 0,
                 '123456': true
-                },
-
-            access: {
-                meterNr: 1,
-                role: 3,
-                user: 1,
             },
             serverRootAccessRights: null,
-
+            meterAccessRights: null,
             iec: {
                 params: {
-                    // TODO @michael: is i a good idea to use same OBIS codes here?
+                    // TODO @michael: is i a good idea to use same OBIS codes here? - no :)
                     '8181C79301FF': false,  // active
                     autoActivation: true,
                     loopTime: 3600,
@@ -1579,7 +1544,14 @@ export default  {
                                 this.spinner.auth = false;
                                 console.log('update channel ' + obj.channel + ', section ' + obj.section[0]);
                                 console.log(obj);
-                                this.serverRootAccessRights = obj.rec;
+                                if (obj.section.length === 1) {
+                                    this.serverRootAccessRights = obj.rec;
+                                } else {
+                                    // section contains the path
+                                    this.meterAccessRights = obj.rec;
+                                }
+
+
                             }
                             else if (obj.section[0] === SML_CODES.CODE_DEVICE_CLASS) {
                                 console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section[0]);
@@ -1644,6 +1616,7 @@ export default  {
                             this.spinner.meters = false;
                             this.spinner.wmbus = false;
                             this.spinner.iec = false;
+                            this.meterAccessRights = null
                         }
                         else if (obj.channel === 'table.gateway.count') {
                             //  unused
@@ -1898,23 +1871,6 @@ export default  {
                 { iec: this.iec.params });
         },
 
-        onAuthUpdate() {
-            console.log("onAuthUpdate: " + this.access.meterNr);
-            this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
-                SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
-                [this.form.pk],
-                //  path is [role, user, meterID]
-                { serverId: this.form.serverId, path: [this.access.role, this.access.user, this.access.meterNr] });
-        },
-        onAuthServer() {
-            console.log("onAuthServer: " + this.access.meterNr);
-            this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
-                SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
-                [this.form.pk],
-                //  path is [role, user, meterID]
-                { serverId: this.form.serverId, path: [] });
-        },
-
         meterTableComplete() {
             let csv = 'Ident;Meter;Maker;ServerId\n';
             this.meters.values.forEach(function(row) {
@@ -1950,27 +1906,16 @@ export default  {
         onProxyCacheQuery() {
             this.ws_proxy("cache.query", [this.form.pk], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]);
         },
-        onQueryMeter(params /* meter, user, role hex codes*/) {
-            /**
-             * FIXME @Sylko:
-             *  - it is not easy to distinguish the response for "query server" and "query meter". both have the same result structure
-             *  - see below the häcky code to determine the id's for role, user and meter :(
-             */
-            console.log(params);
-            const {roleHex, userHex, meterNrHex} = params;
-            // 818181600301
-            const user = (parseInt(userHex, 16) & 0xFF).toString(10);
-            // 8181816003FF
-            const role = ((parseInt(roleHex, 16) & 0xFF00) >> 8).toString(10);
-            // 818181640101
-            const meterNr = (parseInt(meterNrHex, 16) & 0xFF).toString(10);
-            console.log([role, user, meterNr]);
+        onQueryMeter({role, user, meter} /* meter, user, role */) {
+
+            // set the current visible meter access rights to null -> make them unvisible
+            this.meterAccessRights = null
 
             this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
                 SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
                 [this.form.pk],
                 //  path is [role, user, meterID]
-                { serverId: this.form.serverId, path: [role, user, meterNr] });
+                { serverId: this.form.serverId, path: [role.role, user.userId, meter.nr] });
         }
    },
 
@@ -2042,4 +1987,7 @@ export default  {
 /* div.tab-content {
         min-height: 320rem;
     } */
+    .smfServerRootAccessRights {
+        margin: 1em 0;
+    }
 </style>
