@@ -57,6 +57,7 @@
     <Content Include="src\store\index.ts" />
     <Content Include="src\store\modules\user.ts" />
     <Content Include="src\store\modules\websocket.ts" />
+    <Content Include="src\views\smf-collector-mbus-radio.vue" />
     <Content Include="src\views\smf-config-device.vue" />
     <Content Include="src\views\smf-config-download.vue" />
     <Content Include="src\views\smf-config-gateway.vue" />

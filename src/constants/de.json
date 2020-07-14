@@ -3,12 +3,15 @@
     "language": "Sprache",
     "nav-home": "Startseite",
     "nav-config": "Konfiguration",
+    "nav-collectors": "Sammler",
     "nav-system": "System",
     "nav-user": "Benutzer",
     "nav-devices": "Geräte",
     "nav-gateways": "Gateways",
     "nav-meter": "Zähler",
     "nav-iec": "IEC",
+    "nav-mbus": "M-Bus (Draht)",
+    "nav-wmbus": "M-Bus (Funk)",
     "nav-LoRa": "LoRa",
     "nav-upload": "Upload",
     "nav-download": "Download",
@@ -67,6 +70,7 @@
     "header-task-tsdb": "Übergang zu Zeit Serien Datenbanken",
     "lead-task-tsdb": "%{count} Zeit Serien Datenbanken aktiv",
     "header-task-plausibility": "Test Plausibilität",
+    "header-collector-mbus-radio": "Datensammler wireless M-Bus",
 
     "com-default": "Voreinstellung",
 

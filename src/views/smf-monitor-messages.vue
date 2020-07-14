@@ -88,28 +88,28 @@
             <b-row class="justify-content-md-left">
 
                 <b-col cols="12" md="auto">
-                    <b-list-group>
-                        <b-list-group-item class="d-flex justify-content-between align-items-center">
+                    <b-list-group horizontal="md">
+                        <b-list-group-item class="justify-content-between align-items-center">
                             TRACE
                             <b-badge variant="info" pill>{{stat.trace}}</b-badge>
                         </b-list-group-item>
-                        <b-list-group-item class="d-flex justify-content-between align-items-center">
+                        <b-list-group-item class="justify-content-between align-items-center">
                             DEBUG
                             <b-badge variant="info" pill>{{stat.debug}}</b-badge>
                         </b-list-group-item>
-                        <b-list-group-item class="d-flex justify-content-between align-items-center">
+                        <b-list-group-item class="justify-content-between align-items-center">
                             INFO
                             <b-badge variant="success" pill>{{stat.info}}</b-badge>
                         </b-list-group-item>
-                        <b-list-group-item class="d-flex justify-content-between align-items-center">
+                        <b-list-group-item class="justify-content-between align-items-center">
                             WARN
                             <b-badge variant="secondary" pill>{{stat.warn}}</b-badge>
                         </b-list-group-item>
-                        <b-list-group-item class="d-flex justify-content-between align-items-center">
+                        <b-list-group-item class="justify-content-between align-items-center">
                             ERROR
                             <b-badge variant="warning" pill>{{stat.error}}</b-badge>
                         </b-list-group-item>
-                        <b-list-group-item class="d-flex justify-content-between align-items-center">
+                        <b-list-group-item class="justify-content-between align-items-center">
                             FATAL
                             <b-badge variant="danger" pill>{{stat.fatal}}</b-badge>
                         </b-list-group-item>

@@ -3,12 +3,15 @@
     "language": "Язык",
     "nav-home": "Главная",
     "nav-config": "Конфигурация",
+    "nav-collectors": "Коллекционеры",
     "nav-system": "Система",
     "nav-user": "Пользователь",
     "nav-devices": "Устройства",
     "nav-gateways": "Шлюзы",
     "nav-meter": "Измеритель",
     "nav-iec": "IEC",
+    "nav-mbus": "M-Bus (проводной)",
+    "nav-wmbus": "M-Bus (радио)",
     "nav-LoRa": "ЛоРа",
     "nav-upload": "Загрузить",
     "nav-download": "Скачать",
@@ -64,6 +67,7 @@
     "header-task-tsdb": "Базы данных от моста к временным рядам",
     "lead-task-tsdb": "%{count} базы данных временных рядов в режиме онлайн",
     "header-task-plausibility": "Правдоподобность теста",
+    "header-collector-mbus-radio": "Сборщик данных беспроводная шина mBus",
 
     "com-default": "Стандарт",
 

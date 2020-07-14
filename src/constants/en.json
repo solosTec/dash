@@ -3,12 +3,15 @@
     "language": "Language",
     "nav-home": "Home",
     "nav-config": "Configuration",
+    "nav-collectors": "Collectors",
     "nav-system": "System",
     "nav-user": "User",
     "nav-devices": "Devices",
     "nav-gateways": "Gateways",
     "nav-meter": "Meter",
     "nav-iec": "IEC",
+    "nav-mbus": "mBus (wired)",
+    "nav-wmbus": "mBus (radio)",
     "nav-LoRa": "LoRa",
     "nav-upload": "Upload",
     "nav-download": "Download",
@@ -64,6 +67,7 @@
     "header-task-tsdb": "Bridge to Time Series Databases",
     "lead-task-tsdb": "%{count} time series databases online",
     "header-task-plausibility": "Test plausibility",
+    "header-collector-mbus-radio": "Data Collector wireless mBus",
 
     "com-default": "default",
 

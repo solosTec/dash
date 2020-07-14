@@ -3,12 +3,15 @@
     "language": "Langue",
     "nav-home": "Accueil",
     "nav-config": "Configuration",
+    "nav-collectors": "Collecteurs",
     "nav-system": "Système",
     "nav-user": "Utilisateur",
     "nav-devices": "Appareils",
     "nav-gateways": "Passerelles",
     "nav-meter": "Compteur",
     "nav-iec": "IEC",
+    "nav-mbus": "M-Bus (câblé)",
+    "nav-wmbus": "M-Bus (radio)",
     "nav-LoRa": "LoRa",
     "nav-upload": "Chargement",
     "nav-download": "Télécharger",
@@ -64,6 +67,7 @@
     "header-task-tsdb": "Bases de données Bridge to Time Series",
     "lead-task-tsdb": "%{count} bases de données de séries chronologiques en ligne",
     "header-task-plausibility": "Plausibilité du test",
+    "header-collector-mbus-radio": "Collecteur de données sans fil mBus",
 
     "com-default": "par défaut",
 

@@ -1317,7 +1317,7 @@ export default  {
                         if (obj.channel === MESSAGE_RESPONSE.getProcParameter) {
                             //console.log("section :::" + obj.section + ":::");
                             //console.log(obj.rec.values);
-                            if (obj.section === SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
+                            if (obj.section[0] === SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
                                 //  hide loading spinner
                                 this.spinner.status = false;
                                 this.gw.status = [];
@@ -1378,7 +1378,7 @@ export default  {
                                     this.gw.status.push({ value: 'NTP is running (Time base is secure)', variant: "success" });
                                 }
                             }
-                            else if (obj.section === SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
+                            else if (obj.section[0] === SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
                                 Object.values(obj.rec.values).forEach((e) => {
                                     //console.log(e);
                                     const lastSeenVisible = (e[SML_CODES.CURRENT_UTC] != null)
@@ -1406,7 +1406,7 @@ export default  {
 
                                 });
                             }
-                            else if (obj.section === SML_CODES.CODE_ROOT_ACTIVE_DEVICES) {
+                            else if (obj.section[0] === SML_CODES.CODE_ROOT_ACTIVE_DEVICES) {
                                 //  hide loading spinner
                                 this.spinner.meters = false;
 
@@ -1460,7 +1460,7 @@ export default  {
                                 //
                                 this.meterTableComplete();
                             }
-                            else if (obj.section === SML_CODES.CODE_ROOT_DEVICE_IDENT) {
+                            else if (obj.section[0] === SML_CODES.CODE_ROOT_DEVICE_IDENT) {
                                 //  hide loading spinner
                                 this.spinner.firmware = false;
                                 //  firmware
@@ -1481,19 +1481,19 @@ export default  {
                                     this.fw.values.push(rec);
                                 });
                             }
-                            else if (obj.section === SML_CODES.CODE_ROOT_MEMORY_USAGE) {
+                            else if (obj.section[0] === SML_CODES.CODE_ROOT_MEMORY_USAGE) {
                                 //  hide loading spinner
                                 this.spinner.memory = false;
                                 this.gw.memory.mirror = obj.rec.values['0080800011FF'];
                                 this.gw.memory.tmp = obj.rec.values['0080800012FF'];
                             }
-                            else if (obj.section === SML_CODES.CODE_ROOT_W_MBUS_STATUS) {
+                            else if (obj.section[0] === SML_CODES.CODE_ROOT_W_MBUS_STATUS) {
                                 this.wmbus.type = obj.rec.values['810600000100'];
                                 this.wmbus.id = obj.rec.values['810600000300'];
                                 this.wmbus.firmware = obj.rec.values['810600020000'];
                                 this.wmbus.hardware = obj.rec.values['8106000203FF'];
                             }
-                            else if (obj.section === SML_CODES.CODE_IF_wMBUS) {
+                            else if (obj.section[0] === SML_CODES.CODE_IF_wMBUS) {
                                 //  hide loading spinner
                                 this.spinner.wmbus = false;
 
@@ -1516,12 +1516,12 @@ export default  {
                                 this.wmbus.sMode = obj.rec.values[SML_CODES.W_MBUS_MODE_S];
                                 this.wmbus.tMode = obj.rec.values[SML_CODES.W_MBUS_MODE_T];
                             }
-                            else if (obj.section === SML_CODES.CODE_ROOT_IPT_STATE) {
+                            else if (obj.section[0] === SML_CODES.CODE_ROOT_IPT_STATE) {
                                 this.ipt.status.host = obj.rec.values['814917070000'];
                                 this.ipt.status.local = obj.rec.values['81491A070000'];
                                 this.ipt.status.remote = obj.rec.values['814919070000'];
                             }
-                            else if (obj.section === SML_CODES.CODE_ROOT_IPT_PARAM) {
+                            else if (obj.section[0] === SML_CODES.CODE_ROOT_IPT_PARAM) {
                                 //console.log(obj.rec.values);
                                 //  hide loading spinner
                                 this.spinner.ipt = false;
@@ -1535,7 +1535,7 @@ export default  {
                                 this.ipt.param[1].user = obj.rec.values['81490D070002']['8149633C0102'];
                                 this.ipt.param[1].pwd = obj.rec.values['81490D070002']['8149633C0202'];
                             }
-                            else if (obj.section === SML_CODES.CODE_IF_1107) {
+                            else if (obj.section[0] === SML_CODES.CODE_IF_1107) {
                                 //  hide loading spinner
                                 this.spinner.iec = false;
 
@@ -1575,20 +1575,20 @@ export default  {
                                 this.iec.params.devices = whatIsThis ? Array.from(whatIsThis) : [];
 
                             }
-                            else if (obj.section === SML_CODES.CODE_ROOT_ACCESS_RIGHTS) {
+                            else if (obj.section[0] === SML_CODES.CODE_ROOT_ACCESS_RIGHTS) {
                                 this.spinner.auth = false;
-                                console.log('update channel ' + obj.channel + ', section ' + obj.section);
-                                console.log(obj.rec);
+                                console.log('update channel ' + obj.channel + ', section ' + obj.section[0]);
+                                console.log(obj);
                                 this.serverRootAccessRights = obj.rec;
                             }
-                            else if (obj.section === SML_CODES.CODE_DEVICE_CLASS) {
-                                console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
+                            else if (obj.section[0] === SML_CODES.CODE_DEVICE_CLASS) {
+                                console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section[0]);
                             }
-                            else if (obj.section === SML_CODES.DATA_MANUFACTURER) {
-                                console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
+                            else if (obj.section[0] === SML_CODES.DATA_MANUFACTURER) {
+                                console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section[0]);
                             }
-                            else if (obj.section === SML_CODES.CODE_SERVER_ID) {
-                                console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section);
+                            else if (obj.section[0] === SML_CODES.CODE_SERVER_ID) {
+                                console.log('update channel ' + obj.channel + ' ToDo: ' + obj.section[0]);
                             }
                             else {
                                 console.error('update channel ' + obj.channel + ' with unknown section ' + obj.section);
@@ -1597,7 +1597,7 @@ export default  {
                         }
                         else if (obj.channel === MESSAGE_RESPONSE.getProfileList) {
                             //console.log(obj.rec.values['8181C789E2FF'] + ", size: "+ this.tabOpLog.data.items.length);
-                            if (obj.section === SML_CODES.CLASS_OP_LOG) {
+                            if (obj.section[0] === SML_CODES.CLASS_OP_LOG) {
 
                                 //  get timestamp
                                 const utc = (obj.rec.values['010000090B00'] != null)
@@ -1628,7 +1628,7 @@ export default  {
                         }
                         else if (obj.channel === 'attention.code') {
                             // Vue.toasted.show('ATTENTION please!');
-                            if (obj.section === '8181c7c7fd00') {
+                            if (obj.section[0] === '8181c7c7fd00') {
                                 //  OK
                                 this.$toasted.global.sml_attention_ok(obj.rec.srv + " modification accepted", "info");
                             }

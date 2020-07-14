@@ -16,6 +16,7 @@ import smfMonitorSystem from "./views/smf-monitor-system.vue"
 import smfMonitorMessages from "./views/smf-monitor-messages.vue"
 import smfMonitorTSDB from "./views/smf-monitor-tsdb.vue"
 import smfMonitorLora from "./views/smf-monitor-lora.vue"
+import smfCollectorMBusRadio from "./views/smf-collector-mbus-radio.vue"
 import smfTaskCSV from "./views/smf-task-csv.vue"
 import smfTaskTSDB from "./views/smf-task-tsdb.vue"
 import smfNoAccess from "./views/smf-no-access.vue"
@@ -90,6 +91,20 @@ export default new Router({
             },
 
             //
+            //  collector
+            //
+            {
+                path: "/collector/lora",
+                name: "smfMonitorLora",
+                component: smfMonitorLora
+            },
+            {
+                path: "/collector/mbusRadio",
+                name: "smfCollectorMBusRadio",
+                component: smfCollectorMBusRadio
+            },
+
+            //
             //  status
             //
             {
@@ -125,11 +140,6 @@ export default new Router({
                 path: "/monitor/tsdb",
                 name: "smfMonitorTsdb",
                 component: smfMonitorTSDB
-            },
-            {
-                path: "/monitor/lora",
-                name: "smfMonitorLora",
-                component: smfMonitorLora
             },
 
             //

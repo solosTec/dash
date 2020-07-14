@@ -32,6 +32,12 @@
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_WEB, PRIVILEGES.VIEW)" to="/config/web">Web</b-dropdown-item>
                 </b-nav-item-dropdown>
 
+                <b-nav-item-dropdown :text="$t('nav-collectors')">
+                    <b-dropdown-item :disabled="!hasPrivs(MODULES.MONITOR_LORA, PRIVILEGES.VIEW)" to="/collector/lora">{{ $t('nav-lora-uplink') }}</b-dropdown-item>
+                    <!--<b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_IEC, PRIVILEGES.VIEW)" to="/config/mbusWired">{{ $t('nav-mbus') }}</b-dropdown-item>-->
+                    <b-dropdown-item :disabled="!hasPrivs(MODULES.CONFIG_IEC, PRIVILEGES.VIEW)" to="/collector/mbusRadio">{{ $t('nav-wmbus') }}</b-dropdown-item>
+                </b-nav-item-dropdown>
+
                 <b-nav-item-dropdown :text="$t('nav-status')">
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.STATUS_SESSION, PRIVILEGES.VIEW)" to="/status/sessions">{{ $t('nav-sessions') }}</b-dropdown-item>
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.STATUS_TARGET, PRIVILEGES.VIEW)" to="/status/targets">{{ $t('nav-targets') }}</b-dropdown-item>
@@ -41,13 +47,12 @@
                 <b-nav-item-dropdown :text="$t('nav-monitoring')">
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.MONITOR_SYSTEM, PRIVILEGES.VIEW)" to="/monitor/system">{{ $t('nav-system') }}</b-dropdown-item>
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.MONITOR_MESSAGES, PRIVILEGES.VIEW)" to="/monitor/messages">{{ $t('nav-messages') }}</b-dropdown-item>
-                    <b-dropdown-item :disabled="!hasPrivs(MODULES.MONITOR_TSDB, PRIVILEGES.VIEW)" to="/monitor/tsdb">{{ $t('nav-tsdb') }}</b-dropdown-item>
-                    <b-dropdown-item :disabled="!hasPrivs(MODULES.MONITOR_LORA, PRIVILEGES.VIEW)" to="/monitor/lora">{{ $t('nav-lora-uplink') }}</b-dropdown-item>
+                    <!--<b-dropdown-item :disabled="!hasPrivs(MODULES.MONITOR_TSDB, PRIVILEGES.VIEW)" to="/monitor/tsdb">{{ $t('nav-tsdb') }}</b-dropdown-item>-->
                 </b-nav-item-dropdown>
 
                 <b-nav-item-dropdown :text="$t('nav-tasks')">
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.TASK_CSV, PRIVILEGES.VIEW)" to="/task/csv">CSV</b-dropdown-item>
-<!--                    <b-dropdown-item :disabled="!hasPrivs(MODULES.TASK_TSDB, PRIVILEGES.VIEW)" to="/task/tsdb">{{ $t('nav-tsdb') }}</b-dropdown-item>-->
+                    <!--                    <b-dropdown-item :disabled="!hasPrivs(MODULES.TASK_TSDB, PRIVILEGES.VIEW)" to="/task/tsdb">{{ $t('nav-tsdb') }}</b-dropdown-item>-->
                     <b-dropdown-item :disabled="!hasPrivs(MODULES.TASK_PLAUSIBILITY, PRIVILEGES.VIEW)" to="/task/plausibility">{{ $t('nav-plausibility') }}</b-dropdown-item>
                 </b-nav-item-dropdown>
 
