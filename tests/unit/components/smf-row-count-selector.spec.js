@@ -52,8 +52,8 @@ describe('smfRowCountSelector.vue', () => {
             wrapper.find('select').trigger('change');
             // wait for vue to complete the change detection
             await localVue.nextTick();
-            // ensure that the value of the firs element is emitted.
-            expect(wrapper.emitted().input[0]).toEqual([5]);
+            // ensure that the value of the firs element is emitted as last value.
+            expect(wrapper.emitted().input.pop()).toEqual([5]);
             // the value must be stored in the store
             const storedValue = localStorage.getItem('smf-anyKey-rowCount');
             expect(storedValue).toEqual('5');

@@ -111,6 +111,9 @@
                         - ${this.visibleRows} ${this.tableName}(s) filtered`;
             },
             isBusy(): boolean {
+                if (this.busyLevel === undefined){
+                    return false;
+                }
                 return this.busyLevel !== 100;
             }
         },
