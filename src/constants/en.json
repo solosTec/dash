@@ -134,7 +134,7 @@
     "config-gateway-12": "Name",
     "config-gateway-14": "Port",
     "config-gateway-16": "Password",
-    "config-gateway-18": "local Port",
+    "config-gateway-18": "Local Port",
     "config-gateway-19": "Remote Port",
     "config-gateway-20": "Un-Select All",
     "config-gateway-21": "Select All",

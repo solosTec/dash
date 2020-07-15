@@ -105,181 +105,191 @@
                         </b-tab>
 
                         <!-- IPT -->
-                        <b-tab :disabled="selected[0].online === 0" :smf-context="smfContext.ipt">
+                        <b-tab :disabled="selected[0].online === 0" no-body :smf-context="smfContext.ipt">
                             <template slot="title">
                                 {{ $t('config-gateway-10') }}
                                 <b-spinner v-if="spinner.ipt" type="grow" small />
                             </template>
                             <b-form @submit.prevent="">
 
-                                <b-row v-if="!spinner.ipt">
-                                    <b-col md="6" class="border">
-
-                                        <b-row>
-                                            <b-col md="12" class="d-flex justify-content-start">
-                                                <h2>&#9312;</h2>
-                                            </b-col>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-11')" label-for="smf-gw-ipt-host-0">
-                                                    <b-form-input id="smf-gw-ipt-host-0"
-                                                                  type="text"
-                                                                  v-model="ipt.param[0].host"
-                                                                  required
-                                                                  v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Primary IP-T Master"
-                                                                  :placeholder="getPlaceholder($t('config-gateway-11'))" />
-                                                </b-form-group>
-                                            </b-col>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-12')" label-for="smf-gw-ipt-name-0">
-                                                    <b-form-input id="smf-gw-ipt-name-0"
-                                                                  type="text"
-                                                                  v-model="ipt.param[0].user"
-                                                                  required
-                                                                  :placeholder="getPlaceholder($t('config-gateway-12'))" />
-                                                </b-form-group>
-                                            </b-col>
-                                        </b-row>
-
-                                        <b-row>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-14')" label-for="smf-gw-ipt-port-0">
-                                                    <b-input-group>
-                                                        <b-form-input id="smf-gw-ipt-port-0"
-                                                                      type="number"
-                                                                      v-model.number="ipt.param[0].port"
-                                                                      required
-                                                                      min="1024"
-                                                                      max="‭65535‬"
-                                                                      :placeholder="getPlaceholder($t('config-gateway-14'))" />
-                                                        <b-input-group-append>
-                                                            <b-button variant="info" v-on:click.stop="ipt.param[0].port = 26862">{{ $t('com-default') }}</b-button>
-                                                        </b-input-group-append>
-                                                    </b-input-group>
-                                                </b-form-group>
-                                            </b-col>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-16')" label-for="smf-gw-ipt-pwd-0">
-                                                    <b-input-group>
-                                                        <b-form-input id="smf-gw-ipt-pwd-0"
-                                                                      type="text"
-                                                                      v-model="ipt.param[0].pwd"
-                                                                      required
-                                                                      :placeholder="getPlaceholder($t('config-gateway-16'))" />
-                                                        <b-input-group-append>
-                                                            <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 0)">&#x21ba;</b-button>
-                                                        </b-input-group-append>
-                                                    </b-input-group>
-                                                </b-form-group>
-                                            </b-col>
-                                        </b-row>
-
-                                    </b-col>
-                                    <b-col md="6" class="border">
-
-                                        <b-row>
-                                            <b-col md="12" class="d-flex justify-content-end">
-                                                <h2>&#9313;</h2>
-                                            </b-col>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-11')" label-for="smf-gw-ipt-host-1">
-                                                    <b-form-input id="smf-gw-ipt-host-1"
-                                                                  type="text"
-                                                                  v-model="ipt.param[1].host"
-                                                                  required
-                                                                  v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Secondary IP-T Master"
-                                                                  :placeholder="$t('config-gateway-11')" />
-                                                </b-form-group>
-                                            </b-col>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-12')" label-for="smf-gw-ipt-name-1">
-                                                    <b-form-input id="smf-gw-ipt-name-1"
-                                                                  type="text"
-                                                                  v-model="ipt.param[1].user"
-                                                                  required
-                                                                  :placeholder="getPlaceholder($t('config-gateway-12'))" />
-                                                </b-form-group>
-                                            </b-col>
-                                        </b-row>
-
-                                        <b-row>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-14')" label-for="smf-gw-ipt-port-1">
-                                                    <b-input-group>
-                                                        <b-form-input id="smf-gw-ipt-port-1"
-                                                                      type="number"
-                                                                      v-model.number="ipt.param[1].port"
-                                                                      required
-                                                                      min="1024"
-                                                                      max="‭65535‬"
-                                                                      :placeholder="getPlaceholder($t('config-gateway-14'))" />
-                                                        <b-input-group-append>
-                                                            <b-button variant="info" v-on:click.stop="ipt.param[1].port = 26863">{{ $t('com-default') }}</b-button>
-                                                        </b-input-group-append>
-                                                    </b-input-group>
-                                                </b-form-group>
-                                            </b-col>
-                                            <b-col md="6">
-                                                <b-form-group :label="$t('config-gateway-16')" label-for="smf-gw-ipt-pwd-1">
-                                                    <b-input-group>
-                                                        <b-form-input id="smf-gw-ipt-pwd-1"
-                                                                      type="text"
-                                                                      v-model="ipt.param[1].pwd"
-                                                                      required
-                                                                      :placeholder="getPlaceholder($t('config-gateway-16'))" />
-                                                        <b-input-group-append>
-                                                            <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 1)">&#x21ba;</b-button>
-                                                        </b-input-group-append>
-                                                    </b-input-group>
-                                                </b-form-group>
-                                            </b-col>
-                                        </b-row>
-
-                                    </b-col>
-                                </b-row>
-
                                 <b-row class="pt-4">
-                                    <b-col md="2">
-                                        <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onIPTUpdate">{{btnUpdateTitle}}</b-button>
-                                    </b-col>
-                                    <b-col md="10">
+                                    <b-col md="12">
                                         <b-alert variant="warning" show dismissible>
                                             <span style="font-weight: bold">Note:</span> Changing the IP-T configuration can lead to connection breakdown.
                                         </b-alert>
                                     </b-col>
                                 </b-row>
 
-                                <b-row class="border">
-                                    <b-col md="6">
-                                        <b-form-group :label="$t('config-gateway-11')" label-for="smf-gw-ipt-host">
-                                            <b-form-input id="smf-gw-ipt-host"
+                                <b-card-group deck v-if="!spinner.ipt">
+
+                                    <b-card header="① Redundancy" title="Primary Host" sub-title="Access Parameters">
+                                        <b-form-group label="TCP/IP Address"
+                                                      label-for="smf-broker.ttyAPP0.host"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3"
+                                                      description="Dotted decimal notation or hostname">
+                                            <b-input-group prepend="Host" label="LABEL" name="smf-broker.ttyAPP0.host" class="mt-2">
+                                                <b-form-input id="smf-gw-ipt-host-0"
+                                                              type="text"
+                                                              v-model="ipt.param[0].host"
+                                                              required
+                                                              v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Primary IP-T Master"
+                                                              :placeholder="getPlaceholder($t('config-gateway-11'))" />
+
+                                                <b-form-input id="smf-gw-ipt-port-0"
+                                                              type="number"
+                                                              v-model.number="ipt.param[0].port"
+                                                              required
+                                                              min="1024"
+                                                              max="‭65535‬"
+                                                              :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="ipt.param[0].port = 26862; ipt.param[0].host='localhost'">{{ $t('com-default') }}</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+                                        <b-form-group :label="$t('config-gateway-12')"
+                                                      label-for="smf-gw-ipt-name-0"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3"
+                                                      description="Device Name">
+                                            <b-form-input id="smf-gw-ipt-name-0"
                                                           type="text"
-                                                          v-model="ipt.status.host"
-                                                          v-b-popover.hover="'Current IP address'" title="Hostname" placement="top"
-                                                          readonly
-                                                          :placeholder="getPlaceholder($t('config-gateway-11'))" />
+                                                          v-model="ipt.param[0].user"
+                                                          required
+                                                          :placeholder="getPlaceholder($t('config-gateway-12'))" />
                                         </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group :label="$t('config-gateway-18')" label-for="smf-gw-ipt-port-local">
-                                            <b-form-input id="smf-gw-ipt-port-local"
-                                                          type="number"
-                                                          v-model.number="ipt.status.local"
-                                                          readonly
-                                                          min="1024"
-                                                          max="‭65535‬"
-                                                          :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                        <b-form-group :label="$t('config-gateway-16')"
+                                                      label-for="smf-gw-ipt-pwd-0"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3"
+                                                      description="Choose a safe password">
+                                            <b-input-group>
+                                                <b-form-input id="smf-gw-ipt-pwd-0"
+                                                              type="text"
+                                                              v-model="ipt.param[0].pwd"
+                                                              required
+                                                              :placeholder="getPlaceholder($t('config-gateway-16'))" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 0)">&#x21ba;</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
                                         </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group :label="$t('config-gateway-19')" label-for="smf-gw-ipt-port-remote">
-                                            <b-form-input id="smf-gw-ipt-port-remote"
-                                                          type="number"
-                                                          v-model.number="ipt.status.remote"
-                                                          readonly
-                                                          min="1024"
-                                                          max="‭65535‬"
-                                                          :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                        <b-form-group label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-button type="submit" variant="primary" v-on:click.stop="onIPTUpdate($event, 0)">{{btnUpdateTitle}}</b-button>
                                         </b-form-group>
+                                    </b-card>
+
+                                    <b-card header="② Redundancy" title="Secondary Host" sub-title="Access Parameters">
+                                        <b-form-group label="TCP/IP Address"
+                                                      label-for="smf-broker.ttyAPP1.host"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3"
+                                                      description="Dotted decimal notation or hostname">
+                                            <b-input-group prepend="Host" label="LABEL" name="smf-broker.ttyAPP1.host" class="mt-2">
+                                                <b-form-input id="smf-gw-ipt-host-1"
+                                                              type="text"
+                                                              v-model="ipt.param[1].host"
+                                                              required
+                                                              v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Secondary IP-T Master"
+                                                              :placeholder="$t('config-gateway-11')" />
+                                                <b-form-input id="smf-gw-ipt-port-1"
+                                                              type="number"
+                                                              v-model.number="ipt.param[1].port"
+                                                              required
+                                                              min="1024"
+                                                              max="‭65535‬"
+                                                              :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="ipt.param[1].port = 26863; ipt.param[1].host='localhost'">{{ $t('com-default') }}</b-button>
+                                                </b-input-group-append>
+
+                                            </b-input-group>
+                                        </b-form-group>
+                                        <b-form-group :label="$t('config-gateway-12')"
+                                                      label-for="smf-gw-ipt-name-1"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3"
+                                                      description="Device Name">
+                                            <b-form-input id="smf-gw-ipt-name-1"
+                                                          type="text"
+                                                          v-model="ipt.param[1].user"
+                                                          required
+                                                          :placeholder="getPlaceholder($t('config-gateway-12'))" />
+                                        </b-form-group>
+                                        <b-form-group :label="$t('config-gateway-16')"
+                                                      label-for="smf-gw-ipt-pwd-1"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3"
+                                                      description="Choose a safe password">
+                                            <b-input-group>
+                                                <b-form-input id="smf-gw-ipt-pwd-1"
+                                                              type="text"
+                                                              v-model="ipt.param[1].pwd"
+                                                              required
+                                                              :placeholder="getPlaceholder($t('config-gateway-16'))" />
+                                                <b-input-group-append>
+                                                    <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 1)">&#x21ba;</b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+                                        <b-form-group label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-button type="submit" variant="primary" v-on:click.stop="onIPTUpdate($event, 1)">{{btnUpdateTitle}}</b-button>
+                                        </b-form-group>
+                                    </b-card>
+
+                                </b-card-group>
+
+                                <b-row class="pt-2">
+                                    <b-col md="12">
+                                        <b-button v-b-toggle.sidebar-footer>Show Connection State</b-button>
+                                        <b-sidebar id="sidebar-footer" aria-label="Sidebar with custom footer" no-header shadow>
+                                            <template v-slot:footer="{ hide }">
+                                                <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
+                                                    <strong class="mr-auto">IP-T Connection State</strong>
+                                                    <b-button size="sm" @click="hide">Close</b-button>
+                                                </div>
+                                            </template>
+                                            <div class="px-3 py-2">
+                                                <b-form-group :label="$t('config-gateway-11')" 
+                                                              label-for="smf-gw-ipt-host" 
+                                                              label-cols-sm="4"
+                                                              label-cols-lg="3">
+                                                    <b-form-input id="smf-gw-ipt-host"
+                                                                  type="text"
+                                                                  v-model="ipt.status.host"
+                                                                  v-b-popover.hover="'Current IP address'" title="Hostname" placement="top"
+                                                                  readonly
+                                                                  :placeholder="getPlaceholder($t('config-gateway-11'))" />
+                                                </b-form-group>
+                                                <b-form-group :label="$t('config-gateway-18')" 
+                                                              label-for="smf-gw-ipt-port-local"
+                                                              label-cols-sm="4"
+                                                              label-cols-lg="3">
+                                                    <b-form-input id="smf-gw-ipt-port-local"
+                                                                  type="number"
+                                                                  v-model.number="ipt.status.local"
+                                                                  readonly
+                                                                  min="1024"
+                                                                  max="‭65535‬"
+                                                                  :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                </b-form-group>
+                                                <b-form-group :label="$t('config-gateway-19')" 
+                                                              label-for="smf-gw-ipt-port-remote"
+                                                              label-cols-sm="4"
+                                                              label-cols-lg="3">
+                                                    <b-form-input id="smf-gw-ipt-port-remote"
+                                                                  type="number"
+                                                                  v-model.number="ipt.status.remote"
+                                                                  readonly
+                                                                  min="1024"
+                                                                  max="‭65535‬"
+                                                                  :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                </b-form-group>
+                                            </div>
+                                        </b-sidebar>
                                     </b-col>
                                 </b-row>
 
@@ -296,38 +306,48 @@
 
                                 <b-card-group deck class="pt-4">
                                     <b-card header="wireless LMN" title="Transparent mode" sub-title="Reconfiguration requires a restart">
-                                        <b-form-checkbox switch v-model="broker.ttyAPP0.transparent" name="smf-broker.ttyAPP0.transparent" class="mt-4">
-                                            {{ broker.ttyAPP0.transparent ? $t('config-gateway-40') : $t('config-gateway-41') }}
-                                        </b-form-checkbox>
 
-                                        <b-input-group prepend="Transparent host" label="LABEL" label-for="smf-broker.ttyAPP0.host" class="mt-2">
-                                            <b-form-input id="smf-broker.ttyAPP0.host"
-                                                          type="text"
-                                                          v-model="broker.ttyAPP0.host"
-                                                          placeholder="Hostname" />
+                                        <b-form-group label="ToDo" label-for="smf-broker.ttyAPP0.transparent">
+                                            <b-form-checkbox switch v-model="broker.ttyAPP0.transparent" name="smf-broker.ttyAPP0.transparent">
+                                                {{ broker.ttyAPP0.transparent ? $t('config-gateway-40') : $t('config-gateway-41') }}
+                                            </b-form-checkbox>
+                                        </b-form-group>
 
-                                            <b-form-input id="smf-broker.ttyAPP1.host"
-                                                          type="number"
-                                                          v-model="broker.ttyAPP0.service"
-                                                          placeholder="IP port" />
-                                        </b-input-group>
+                                        <b-form-group label="ToDo" label-for="smf-broker.ttyAPP0.host">
+                                            <b-input-group prepend="Transparent host" label="LABEL" name="smf-broker.ttyAPP0.host" class="mt-2">
+                                                <b-form-input id="smf-broker.ttyAPP0.host"
+                                                              type="text"
+                                                              v-model="broker.ttyAPP0.host"
+                                                              placeholder="Hostname" />
+
+                                                <b-form-input id="smf-broker.ttyAPP1.host"
+                                                              type="number"
+                                                              v-model="broker.ttyAPP0.service"
+                                                              placeholder="IP port" />
+                                            </b-input-group>
+                                        </b-form-group>
                                         <b-button href="#" variant="primary" class="mt-2">Apply</b-button>
                                     </b-card>
 
                                     <b-card header="wired LMN" title="Transparent mode" sub-title="Reconfiguration requires a restart">
-                                        <b-form-checkbox switch v-model="broker.ttyAPP1.transparent" name="smf-broker.ttyAPP1.transparent" class="mt-4">
-                                            {{ broker.ttyAPP1.transparent ? $t('config-gateway-40') : $t('config-gateway-41') }}
-                                        </b-form-checkbox>
-                                        <b-input-group prepend="Transparent host" label="LABEL" label-for="smf-broker.ttyAPP1.host" class="mt-2">
-                                            <b-form-input id="smf-broker.ttyAPP1.host"
-                                                          type="text"
-                                                          v-model="broker.ttyAPP1.host"
-                                                          placeholder="Hostname" />
-                                            <b-form-input id="smf-broker.ttyAPP1.host"
-                                                          type="number"
-                                                          v-model="broker.ttyAPP1.service"
-                                                          placeholder="IP port" />
-                                        </b-input-group>
+
+                                        <b-form-group label="ToDo" label-for="smf-broker.ttyAPP1.transparent">
+                                            <b-form-checkbox switch v-model="broker.ttyAPP1.transparent" name="smf-broker.ttyAPP1.transparent">
+                                                {{ broker.ttyAPP1.transparent ? $t('config-gateway-40') : $t('config-gateway-41') }}
+                                            </b-form-checkbox>
+                                        </b-form-group>
+                                        <b-form-group label="ToDo" label-for="smf-broker.ttyAPP1.host">
+                                            <b-input-group prepend="Transparent host" label="LABEL" name="smf-broker.ttyAPP1.host" class="mt-2">
+                                                <b-form-input id="smf-broker.ttyAPP1.host"
+                                                              type="text"
+                                                              v-model="broker.ttyAPP1.host"
+                                                              placeholder="Hostname" />
+                                                <b-form-input id="smf-broker.ttyAPP1.host"
+                                                              type="number"
+                                                              v-model="broker.ttyAPP1.service"
+                                                              placeholder="IP port" />
+                                            </b-input-group>
+                                        </b-form-group>
                                         <b-button href="#" variant="primary" class="mt-2">Apply</b-button>
                                     </b-card>
                                 </b-card-group>
@@ -975,6 +995,7 @@ export default  {
                 configuration: 'configuration',
                 statusWord: 'status-word',
                 ipt: 'ipt',
+                broker: 'broker',
                 firmware: 'firmware',
                 memoryUsage: 'memory-usage',
                 devices: 'devices',
@@ -1827,12 +1848,13 @@ export default  {
             this.currentPage = 1
         },
 
-        onIPTUpdate(event)   {
+        onIPTUpdate(event, index)   {
             event.preventDefault();
+            console.log(this.ipt.param[index]);
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_ROOT_IPT_PARAM,
                 [this.form.pk],
-                { ipt: this.ipt.param });
+                { index: index, ipt: this.ipt.param[index] });
         },
         onMeterDelete(item) {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
@@ -1925,7 +1947,7 @@ export default  {
         },
         btnUpdateTitle() {
             if(this.selected.length > 0) {
-                return "Update " + this.selected[0].name;
+                return "Update " + this.selected[0].serverId;
             }
             return "Update";
         },
