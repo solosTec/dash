@@ -99,15 +99,17 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-import {webSocket} from '../mixins/web-socket'
+import {webSocket} from '@/mixins/web-socket'
 import {mapState} from "vuex";
-import {hasPrivilegesWaitForUser} from "../mixins/privileges";
-import store from "../store";
-import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
+import store, {AppState} from "../store";
+import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+import mixins from 'vue-typed-mixins';
+import Vue from 'vue';
 
-export default  {
+export default mixins(webSocket, Vue).extend({
     name: 'smfMonitorSystem',
     props: [],
     mixins: [webSocket],
@@ -164,7 +166,7 @@ export default  {
                 class: 'text-right'
             }
             ],
-            nodes: [],
+            nodes: [] as any[],
             sortBy: 'class',
             sortDesc: false,
             sortDirection: 'desc',
@@ -184,7 +186,7 @@ export default  {
                 nodeCount: 0,
                 max: 100
             },
-            sysTimer: null
+            sysTimer: null as any,
         }
     },
 
@@ -194,7 +196,7 @@ export default  {
     },
 
     methods: {
-        rowSelected(items) {
+        rowSelected(items: any[]) {
         },
 
         ws_on_open() {
@@ -212,7 +214,7 @@ export default  {
             this.onSysTimer();
         },
 
-        ws_on_data(obj) {
+        ws_on_data(obj: any) {
             if (obj.cmd != null) {
                 console.log(this.$options.name + ' websocket received ' + obj.cmd + ' [' + obj.channel + ']');
                 if (obj.cmd == 'update') {
@@ -322,30 +324,30 @@ export default  {
         }
     },
     computed: {
-        tableCaption() {
+        tableCaption(): string {
             return "Showing " + this.nodes.length + " cluster nodes";
         },
-        virtualMemoryTotalFormatted() {
+        virtualMemoryTotalFormatted(): string {
             return this.ws_format_bytes(this.stat.virtualMemory.total);
         },
         ...mapState({
-            totalIoFormatted: function (state) {
+            totalIoFormatted: function (state: AppState) {
               return this.ws_format_bytes(state.websocket.sx + state.websocket.rx);
             },
-            received: function(state) {
+            received: function(state: AppState) {
                 return this.ws_format_bytes(state.websocket.rx);
             },
-            send: function(state){
+            send: function(state: AppState){
                 return this.ws_format_bytes(state.websocket.sx);
             }
         })
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to: any, from: any, next: any) {
         hasPrivilegesWaitForUser(store, MODULES.MONITOR_SYSTEM, PRIVILEGES.VIEW).then((result) => {
             next( result ? true: NO_ACCESS_ROUTE);
         });
     }
-}
+})
 </script>
 
 <style scoped lang="css">

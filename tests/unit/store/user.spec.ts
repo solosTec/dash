@@ -4,7 +4,7 @@ const { loaded } = user.mutations;
 
 describe('websocket store', () => {
 
-    let state;
+    let state: any;
 
     beforeEach(() => {
         state = {

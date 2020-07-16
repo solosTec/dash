@@ -1,4 +1,4 @@
-﻿﻿<template lang="html">
+﻿<template lang="html">
 
      <b-container class="smf-table-iec" fluid>
          <!--navigation-->
@@ -63,9 +63,11 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    export default {
+    import Vue from 'vue';
+
+    export default Vue.extend({
         name: 'smf-table-iec',
         props: {
             items: Array,
@@ -106,7 +108,7 @@
                         key: 'direction',
                         label: 'Direction',
                         class: 'text-center',
-                        formatter: (value, key, item) => {
+                        formatter: (value: boolean) => {
                             return value
                                 ? "↤ incoming"
                                 : "outgoing ↦";
@@ -130,12 +132,12 @@
             }
         },
         methods: {
-            onFiltered(filteredItems) {
+            onFiltered(filteredItems: any[]) {
                 // Trigger pagination to update the number of buttons/pages due to filtering
                 this.nav.visibleRows = filteredItems.length;
                 this.nav.currentPage = 1
             },
-            rowSelected(items) {
+            rowSelected(items: any) {
                 //this.$emit('input', items);
                 this.$emit('rowSelected', items);
             }
@@ -143,7 +145,7 @@
 
         computed: {
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

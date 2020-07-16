@@ -1,4 +1,4 @@
-﻿﻿<template lang="html">
+﻿<template lang="html">
 
      <b-container class="smf-table-valid" fluid>
          <!--navigation-->
@@ -64,9 +64,11 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    export default {
+    import Vue from 'vue';
+
+    export default Vue.extend({
         name: 'smf-table-valid',
         props: {
             items: Array,
@@ -105,7 +107,7 @@
                         key: 'type',
                         label: 'Type',
                         sortable: true,
-                        formatter: (value, key, item) => {
+                        formatter: (value: number) => {
                             switch (value) {
                                 case 1: return "missing";
                                 case 2: return "implausible";
@@ -125,7 +127,7 @@
                         key: 'edited',
                         label: 'Edited',
                         class: 'text-center',
-                        formatter: (value, key, item) => {
+                        formatter: (value: boolean) => {
                             return value
                                 ? "YES"
                                 : "no";
@@ -138,12 +140,12 @@
             }
         },
         methods: {
-            onFiltered(filteredItems) {
+            onFiltered(filteredItems: any[]) {
                 // Trigger pagination to update the number of buttons/pages due to filtering
                 this.nav.visibleRows = filteredItems.length;
                 this.nav.currentPage = 1
             },
-            rowSelected(items) {
+            rowSelected(items: any) {
                 //this.$emit('input', items);
                 //this.$emit('input', selected);
                 //this.selected = items;
@@ -151,7 +153,7 @@
         },
         computed: {
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

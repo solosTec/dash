@@ -195,7 +195,7 @@ export const webSocket = Vue.extend({
             this.sx += msg.length;
             this.ws_emit_event_sx();
         },
-        ws_submit_command(cmd: string, channel: string, key: string, params: any, section: string) {
+        ws_submit_command(cmd: string, channel: string, key: string, params: any, section: string | string[]) {
             if (!this.ws_is_open() || !this.ws) return;
             const msg = JSON.stringify({
                 cmd: cmd,
@@ -216,7 +216,7 @@ export const webSocket = Vue.extend({
         //  pk_meter: primary key of selected object (gateway, meter)
         //  params: optional parameters
         //
-        ws_submit_request(msgType: MESSAGE_REQUEST, root: string, pk_gw: string, params = {params: null}) {
+        ws_submit_request(msgType: MESSAGE_REQUEST, root: string, pk_gw: string | string[], params: any = {params: null}) {
             if (!this.ws_is_open() || !this.ws) return;
             const msg = JSON.stringify({
                 cmd: "com:sml",
@@ -235,7 +235,7 @@ export const webSocket = Vue.extend({
         //  params: optional vector of strings to select specific sections
         //  of the gateway
         //
-        ws_proxy(job: string, pk_gw: string, sections = new Array<string>()) {
+        ws_proxy(job: string, pk_gw: string | string[], sections = new Array<string>()) {
             if (!this.ws_is_open() || !this.ws) return;
             const msg = JSON.stringify({
                 cmd: "com:proxy",

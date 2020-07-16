@@ -113,14 +113,16 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    import { webSocket } from '../mixins/web-socket'
-    import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+    import {webSocket} from '@/mixins/web-socket'
+    import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
     import store from "../store";
-    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+    import Vue from 'vue';
+    import mixins from 'vue-typed-mixins';
 
-    export default {
+    export default mixins(webSocket, Vue).extend({
         name: 'smfConfigDownload',
         props: [],
         mixins: [webSocket],
@@ -179,7 +181,7 @@
                 this.ws_subscribe("table.LoRa.count");
                 this.ws_subscribe("table.uplink.count");
             },
-            ws_on_data(obj) {
+            ws_on_data(obj: any) {
                 if (obj.cmd != null) {
                     console.log('websocket received ' + obj.cmd);
                     if (obj.cmd == 'update') {
@@ -206,7 +208,7 @@
                     }
                 }
             },
-            onSubmitDevices(evt) {
+            onSubmitDevices(evt: Event) {
                 evt.preventDefault()
                 // alert(JSON.stringify(this.dev))
                 //var formData = new FormData();
@@ -217,24 +219,25 @@
                     headers: {
                         'Accept': 'application/xml,application/json,application/csv,*/*'
                     },
+                    // @ts-ignore
                     responseType: 'blob',
                     progress(e) {
                         if (e.lengthComputable) {
                             console.log(e.loaded / e.total * 100);
                         }
                     }
-                }).then(res => {
+                }).then((res: any) => {
                     this.saveOrOpenBlob(res.body, "devices." + this.dev.fmt.toLowerCase());
-                }, res => {
+                }, (res: any) => {
                     console.log("error: " + res)
                 });
             },
-            onResetDevices(evt) {
+            onResetDevices(evt: Event) {
                 evt.preventDefault()
                 this.dev.type = 'XML';
                 this.dev.version = 'v50';
             },
-            onSubmitGateways(evt) {
+            onSubmitGateways(evt: Event) {
                 evt.preventDefault()
                 //alert(JSON.stringify(this.gw))
                 //var formData = new FormData();
@@ -248,132 +251,137 @@
                         'Accept': 'application/xml, application/json, application/csv, */*'
                         //'Access-Control-Request-Headers': 'x-requested-with'
                     },
+                    // @ts-ignore
                     responseType: 'blob',
                     progress(e) {
                         if (e.lengthComputable) {
                             console.log((e.loaded / e.total * 100) + '%');
                         }
                     }
-                }).then(res => {
+                }).then((res: any) => {
                     //console.log("response: " + res)
                     //console.log("response-body: " + res.body)
                     this.saveOrOpenBlob(res.body, "gateways." + this.gw.fmt.toLowerCase());
-                }, res => {
+                }, (res: any) => {
                     console.log("error: " + res)
                 });
 
             },
-            onResetGateways(evt) {
+            onResetGateways(evt: Event) {
                 evt.preventDefault()
                 this.gw.type = 'XML';
             },
-            onSubmitMeters(evt) {
+            onSubmitMeters(evt: Event) {
                 evt.preventDefault()
                 this.$http.post("download.meters", this.meter, {
                     headers: {
                         'Accept': 'application/xml, application/json, application/csv, */*'
                     },
+                    // @ts-ignore
                     responseType: 'blob',
                     progress(e) {
                         if (e.lengthComputable) {
                             console.log(e.loaded / e.total * 100);
                         }
                     }
-                }).then(res => {
+                }).then((res: any) => {
                     //console.log("response: " + res)
                     //console.log("response-body: " + res.body)
                     this.saveOrOpenBlob(res.body, "meter." + this.meter.fmt.toLowerCase());
-                }, res => {
+                }, (res: any) => {
                     console.log("error: " + res)
                 });
 
             },
-            onResetMeters(evt) {
+            onResetMeters(evt: Event) {
                 evt.preventDefault()
                 this.meter.type = 'XML';
             },
-            onSubmitLoRa(evt) {
+            onSubmitLoRa(evt: Event) {
                 evt.preventDefault()
                 //alert(JSON.stringify(this.LoRa))
                 this.$http.post("download.LoRa", this.LoRa, {
                     headers: {
                         'Accept': 'application/xml, application/json, application/csv, */*'
                     },
+                    // @ts-ignore
                     responseType: 'blob',
                     progress(e) {
                         if (e.lengthComputable) {
                             console.log(e.loaded / e.total * 100);
                         }
                     }
-                }).then(res => {
+                }).then((res: any) => {
                     this.saveOrOpenBlob(res.body, "LoRa." + this.LoRa.fmt.toLowerCase());
-                }, res => {
+                }, (res: any) => {
                     console.log("error: " + res)
                 });
             },
-            onResetLoRa(evt) {
+            onResetLoRa(evt: Event) {
                 evt.preventDefault()
                 this.LoRa.type = 'XML';
                 this.LoRa.vendor = 'swisscom';
             },
-            onSubmitUplink(evt) {
+            onSubmitUplink(evt: Event) {
                 evt.preventDefault()
                 //alert(JSON.stringify(this.uplink))
                 this.$http.post("download.uplink", this.uplink, {
                     headers: {
                         'Accept': 'application/xml, application/json, application/csv, */*'
                     },
+                    // @ts-ignore
                     responseType: 'blob',
                     progress(e) {
                         if (e.lengthComputable) {
                             console.log(e.loaded / e.total * 100);
                         }
                     }
-                }).then(res => {
+                }).then((res: any) => {
                     this.saveOrOpenBlob(res.body, "uplink." + this.uplink.fmt.toLowerCase());
-                }, res => {
+                }, (res: any) => {
                     console.log("error: " + res)
                 });
             },
-            onResetUplink(evt) {
+            onResetUplink(evt: Event) {
                 evt.preventDefault()
                 this.uplink.type = 'XML';
             },
-            onSubmitMsg(evt) {
+            onSubmitMsg(evt: Event) {
                 evt.preventDefault()
                 //alert(JSON.stringify(this.msg))
                 this.$http.post("download.messages", this.msg, {
                     headers: {
                         'Accept': 'application/xml, application/json, application/csv, */*'
                     },
+                    // @ts-ignore
                     responseType: 'blob',
                     progress(e) {
                         if (e.lengthComputable) {
                             console.log(e.loaded / e.total * 100);
                         }
                     }
-                }).then(res => {
+                }).then((res: any) => {
                     this.saveOrOpenBlob(res.body, "messages." + this.msg.fmt.toLowerCase());
-                }, res => {
+                }, (res: any) => {
                     console.log("error: " + res)
                 });
             },
-            onResetMsg(evt) {
+            onResetMsg(evt: Event) {
                 evt.preventDefault();
                 this.msg.type = 'XML';
             },
-            saveOrOpenBlob(blob, fileName) {
+            saveOrOpenBlob(blob: Blob, fileName: string) {
                 var a = document.createElement('a');
                 a.href = window.URL.createObjectURL(blob);
                 a.download = fileName;
                 a.dispatchEvent(new MouseEvent('click'));
             }
         },
-        async beforeRouteEnter(to, from, next) {
+        async beforeRouteEnter(to: any, from: any, next: any) {
             const result = await hasPrivilegesWaitForUser(store, MODULES.CONFIG_DOWNLOAD, PRIVILEGES.VIEW);
             next( result ? true : NO_ACCESS_ROUTE);
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

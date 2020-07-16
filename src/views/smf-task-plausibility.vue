@@ -21,13 +21,14 @@
 
 </template>
 
-<script lang="js">
-    import { hasPrivilegesWaitForUser } from "../mixins/privileges";
+<script lang="ts">
+    import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
     import store from "../store";
-    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
     import tblValid from '@/components/smf-table-valid.vue'
+    import Vue from 'vue';
 
-    export default {
+    export default  Vue.extend({
         name: 'smfTaskPlausibility',
         props: [],
         components: {
@@ -56,12 +57,12 @@
         computed: {
 
         },
-        beforeRouteEnter(to, from, next) {
+        beforeRouteEnter(to: any, from: any, next: any) {
             hasPrivilegesWaitForUser(store, MODULES.TASK_PLAUSIBILITY, PRIVILEGES.VIEW).then((result) => {
                 next(result ? true : NO_ACCESS_ROUTE);
             });
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

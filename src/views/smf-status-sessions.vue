@@ -103,16 +103,18 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    import { webSocket } from '../mixins/web-socket'
-    import { hasPrivilegesWaitForUser } from "../mixins/privileges";
+    import { webSocket } from '@/mixins/web-socket'
+    import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
     import store from "../store";
-    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
+    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
+    import mixins from 'vue-typed-mixins';
+    import Vue from 'vue';
 
-    let tmpSessions = [];
+    let tmpSessions = [] as any[];
 
-    export default {
+    export default  mixins(webSocket, Vue).extend({
         name: 'smfStatusSession',
         props: [],
         mixins: [webSocket],
@@ -148,7 +150,7 @@
                         label: 'RX',
                         sortable: true,
                         class: 'text-right',
-                        formatter: (value, key, item) => {
+                        formatter: (value: number) => {
                             return this.ws_format_bytes(value);
                         }
                     },
@@ -157,7 +159,7 @@
                         label: 'SX',
                         sortable: true,
                         class: 'text-right',
-                        formatter: (value, key, item) => {
+                        formatter: (value: number) => {
                             return this.ws_format_bytes(value);
                         },
                     },
@@ -166,7 +168,7 @@
                         label: 'PX',
                         sortable: true,
                         class: 'text-right',
-                        formatter: (value, key, item) => {
+                        formatter: (value: number) => {
                             return this.ws_format_bytes(value);
                         },
                     },
@@ -174,7 +176,7 @@
                         key: 'login',
                         label: 'Login',
                         sortable: true,
-                        formatter: (value, key, item) => {
+                        formatter: (value: any) => {
                             return value.toUTCString();
                         }
                     },
@@ -183,7 +185,7 @@
                         label: 'Source',
                         sortable: true,
                         class: 'text-right',
-                        formatter: (value, key, item) => {
+                        formatter: (value: any) => {
                             return value.toString().padStart(10, '0');
                         }
                     },
@@ -196,14 +198,14 @@
                         key: 'lastSeen',
                         label: 'Last Activity',
                         sortable: true,
-                        formatter: (value, key, item) => {
+                        formatter: (value: any) => {
                             return ('00' + value.getUTCHours()).slice(-2) + ":" + ('00' + value.getUTCMinutes()).slice(-2) + ":" + ('00' + value.getUTCSeconds()).slice(-2);
                         },
                         class: 'text-right'
                     }
                 ],
-                sessions: [],
-                selected: [],
+                sessions: [] as any[],
+                selected: [] as any[],
                 sortBy: 'name',
                 sortDesc: false,
                 sortDirection: 'desc',
@@ -224,7 +226,7 @@
                 this.ws_subscribe("status.session");
                 this.ws_subscribe("table.device.count");
             },
-            ws_on_data(obj) {
+            ws_on_data(obj: any) {
                 if (obj.cmd != null) {
                     console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                     if (obj.cmd == 'insert') {
@@ -304,24 +306,24 @@
                     }
                 }
             },
-            rowSelected(items) {
+            rowSelected(items: any[]) {
                 this.selected = items;
             },
-            onSessionStop(evt) {
+            onSessionStop(evt: Event) {
                 this.selected.forEach(element => {
                     this.ws_submit_key("stop", "status.session", [element.pk]);
                 });
             },
-            onSessionAction(item, index, button) {
+            onSessionAction(item: any) {
                 this.ws_submit_key("stop", "status.session", [item.pk]);
             }
         },
 
         computed: {
-            isRecordSelected() {
+            isRecordSelected(): boolean {
                 return this.selected.length != 0;
             },
-            btnStopTitle() {
+            btnStopTitle(): string {
                 if (this.selected.length == 0) {
                     return "Stop";
                 }
@@ -331,12 +333,12 @@
                 return "Stop " + this.selected.length + " Sessions";
             }
         },
-        beforeRouteEnter(to, from, next) {
+        beforeRouteEnter(to: any, from: any, next: any) {
             hasPrivilegesWaitForUser(store, MODULES.STATUS_SESSION, PRIVILEGES.VIEW).then((result) => {
                 next(result ? true : NO_ACCESS_ROUTE);
             });
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

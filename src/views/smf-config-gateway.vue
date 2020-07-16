@@ -1,4 +1,4 @@
-﻿﻿<template lang="html">
+﻿<template lang="html">
 
     <section class="smf-config-gateway">
 
@@ -251,8 +251,8 @@
                                                 </div>
                                             </template>
                                             <div class="px-3 py-2">
-                                                <b-form-group :label="$t('config-gateway-11')" 
-                                                              label-for="smf-gw-ipt-host" 
+                                                <b-form-group :label="$t('config-gateway-11')"
+                                                              label-for="smf-gw-ipt-host"
                                                               label-cols-sm="4"
                                                               label-cols-lg="3">
                                                     <b-form-input id="smf-gw-ipt-host"
@@ -262,7 +262,7 @@
                                                                   readonly
                                                                   :placeholder="getPlaceholder($t('config-gateway-11'))" />
                                                 </b-form-group>
-                                                <b-form-group :label="$t('config-gateway-18')" 
+                                                <b-form-group :label="$t('config-gateway-18')"
                                                               label-for="smf-gw-ipt-port-local"
                                                               label-cols-sm="4"
                                                               label-cols-lg="3">
@@ -274,7 +274,7 @@
                                                                   max="‭65535‬"
                                                                   :placeholder="getPlaceholder($t('config-gateway-14'))" />
                                                 </b-form-group>
-                                                <b-form-group :label="$t('config-gateway-19')" 
+                                                <b-form-group :label="$t('config-gateway-19')"
                                                               label-for="smf-gw-ipt-port-remote"
                                                               label-cols-sm="4"
                                                               label-cols-lg="3">
@@ -880,21 +880,25 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    import {webSocket} from '../mixins/web-socket'
+    import {webSocket} from '@/mixins/web-socket'
     import opLog from '@/components/smf-table-op-log.vue'
     import snapshots from '@/components/smf-table-snapshots.vue'
     import firmware from '@/components/smf-table-firmware.vue'
     import { MESSAGE_REQUEST, MESSAGE_RESPONSE } from '@/constants/msgTypes'
-    import { SML_CODES } from '@/constants/rootCodes.js'
-    import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+    import { SML_CODES } from '@/constants/rootCodes'
+    import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
     import store from "../store";
-    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
     import {generatePassword} from "@/shared/generate-password";
     import smfServerConfiguration from '@/components/smf-server-configuration.vue';
-    import smfServerRootAccessRights from '@/components/smf-server-root-access-rights';
-    import smfMeterAccessRights from '@/components/smf-meter-access-rights';
+    import smfServerRootAccessRights from '@/components/smf-server-root-access-rights.vue';
+    import smfMeterAccessRights from '@/components/smf-meter-access-rights.vue';
+    import mixins from 'vue-typed-mixins';
+    import Vue from 'vue';
+    import {UIRootAccessMeter, UIRootAccessRightsRole, UIRootAccessUser} from '@/ui-api/root-access-rights';
+    import {BTabs} from 'bootstrap-vue';
 
     const gatewayTableFields = [
         {
@@ -945,7 +949,7 @@
         {
             key: 'online',
             label: "Online",
-            formatter: (value) => {
+            formatter: (value: number) => {
                 if (value === 0)  return '║';
                 else if (value === 1)  return '⊶';
                 return '⇆';
@@ -955,9 +959,9 @@
         }
     ];
 
-    let tmpGateways = [];
+    let tmpGateways: any[] = [];
 
-export default  {
+export default  mixins(webSocket, Vue).extend({
     name: 'smfConfigGateway',
     props: [],
     mixins: [webSocket],
@@ -965,8 +969,9 @@ export default  {
         smfServerConfiguration,
         smfServerRootAccessRights,
         smfMeterAccessRights,
-        // eslint-disable-next-line vue/no-unused-components
-        opLog, snapshots, firmware, MESSAGE_REQUEST, MESSAGE_RESPONSE, SML_CODES
+        opLog,
+        snapshots,
+        firmware
     },
 
     mounted() {
@@ -981,8 +986,8 @@ export default  {
             perPage: 10,
             mode: process.env.NODE_ENV,
             fields: gatewayTableFields,
-            gateways:[],
-            selected: [],
+            gateways:[] as any,
+            selected: [] as any,
             sortBy: 'name',
             sortDesc: false,
             sortDirection: 'desc',
@@ -1003,7 +1008,7 @@ export default  {
                 reset: false,
             },
             form: {
-                pk: '',
+                pk: '' as string | null,
                 serverId: '',
                 manufacturer: 'solos::Tec',
                 descr: '',
@@ -1011,7 +1016,8 @@ export default  {
                 vFirmware: '',
                 userName: '',
                 userPwd: '',
-                online: 0
+                online: 0,
+                name: ''
             },
             //  gw options
             smfContext: {
@@ -1049,7 +1055,7 @@ export default  {
             tabIndex: -1,
 
             gw : {
-                status: [],
+                status: [] as any[],
                 memory : {
                     mirror: 0,
                     tmp: 0
@@ -1092,7 +1098,7 @@ export default  {
             },
 
             meters: {
-                values: [],
+                values: [] as any,
                 selected: [],
                 fields: [
                     {
@@ -1115,7 +1121,7 @@ export default  {
                         key: 'meter',
                         label: 'Meter',
                         sortable: true,
-                        formatter: (value) => {
+                        formatter: (value: string) => {
                             return value ? value.toUpperCase() : '?';
                         }
                     },
@@ -1123,7 +1129,7 @@ export default  {
                         key: 'maker',
                         label: 'Maker',
                         sortable: true,
-                        formatter: (value) => {
+                        formatter: (value: any) => {
                             return (value) ? value : '-';
                         }
                     },
@@ -1131,7 +1137,7 @@ export default  {
                         key: 'lastSeen',
                         label: 'Last Seen',
                         sortable: true,
-                        formatter: (value) => {
+                        formatter: (value: any) => {
                             return value.toLocaleString()
                         }
                     },
@@ -1139,7 +1145,7 @@ export default  {
                         key: 'type',
                         label: 'Type',
                         sortable: true,
-                        formatter: (value) => {
+                        formatter: (value: number) => {
                             switch (value) {
                                 case 0: return "M-Bus (wired)";
                                 case 1: return "M-Bus (radio)";
@@ -1162,7 +1168,7 @@ export default  {
                     {
                         key: 'visible',
                         label: 'Visible',
-                        formatter: (value) => value ? '✔' : '✖'
+                        formatter: (value: boolean) => value ? '✔' : '✖'
                     },
                     {
                         key: 'active',
@@ -1186,7 +1192,7 @@ export default  {
 
             //  firmware
             fw: {
-                values: [],
+                values: [] as any,
                 selected: []
             },
 
@@ -1222,7 +1228,7 @@ export default  {
                     timeGrid: 900,
                     timeSync: 14400,
                     devices: []
-                },
+                } as any,
                 selected: [],
                 fields: [
                     {
@@ -1250,7 +1256,7 @@ export default  {
                         key: '8181C7930DFF',
                         label: 'P1',
                         sortable: false,
-                        formatter: (value) => {
+                        formatter: (value: any) => {
                             if (value)  return value;
                             return '-';
                         }
@@ -1259,7 +1265,7 @@ export default  {
                         key: '8181C7930EFF',
                         label: 'W5',
                         sortable: false,
-                        formatter: (value) => {
+                        formatter: (value: any) => {
                             if (value)  return value;
                             return '-';
                         }
@@ -1271,7 +1277,7 @@ export default  {
                 },
             tabOpLog: {
                 data: {
-                    items: []
+                    items: [] as any
                     //items: [{nr:1, active: true, entries: 101, period: 3, OBIS:'8181c78614ff', name:'name'}]
                 },
                 nav: {
@@ -1317,7 +1323,7 @@ export default  {
             this.ws_subscribe("table.gateway.count");
         },
 
-        ws_on_data(obj) {
+        ws_on_data(obj: any) {
             if (obj.cmd != null) {
             // console.log('websocket received ' + obj.cmd);
                 if (obj.cmd === 'update') {
@@ -1388,7 +1394,7 @@ export default  {
                                 }
                             }
                             else if (obj.section[0] === SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
-                                Object.values(obj.rec.values).forEach((e) => {
+                                Object.values(obj.rec.values).forEach((e: any) => {
                                     //console.log(e);
                                     const lastSeenVisible = (e[SML_CODES.CURRENT_UTC] != null)
                                         ? new Date(e[SML_CODES.CURRENT_UTC].substring(0, 19))
@@ -1405,7 +1411,7 @@ export default  {
                                         visible: true,
                                         active: false,
                                         serverId: obj.rec.srv
-                                    };
+                                    } as any;
 
                                     if (obj.rec.values.type < 2) {
                                         recVisible["_rowVariant"] = "success";
@@ -1419,9 +1425,9 @@ export default  {
                                 //  hide loading spinner
                                 this.spinner.meters = false;
 
-                                Object.values(obj.rec.values).forEach((e) => {
+                                Object.values(obj.rec.values).forEach((e: any) => {
                                     //console.log("active", e);
-                                    let recActive = this.meters.values.find(meter => {
+                                    let recActive = this.meters.values.find((meter: any) => {
                                         //console.log('active device: compare ' + meter.ident + ' <> ' + e[SML_CODES.CODE_SERVER_ID]);
                                         if (meter.ident === e[SML_CODES.CODE_SERVER_ID]) {
                                             meter.active = true;
@@ -1478,7 +1484,7 @@ export default  {
                                 const srv = obj.rec.values['8181C78204FF'];
                                 const values = Object.values(obj.rec.values['8181C78206FF']);
                                 //console.log(values);
-                                values.forEach((e, idx) => {
+                                values.forEach((e: any, idx: number) => {
                                     //console.log(e);
                                     const rec = {
                                         nr: idx,
@@ -1686,7 +1692,7 @@ export default  {
                     }
                 }
                 else if (obj.cmd === 'insert') {
-                    let rec = {
+                    let rec: any = {
                         pk: obj.rec.key.pk,
                         serverId: obj.rec.data.serverId,
                         manufacturer: obj.rec.data.manufacturer,
@@ -1717,7 +1723,7 @@ export default  {
                 }
                 else if (obj.cmd === 'modify') {
                     //console.log('lookup gateway ' + obj.key[0]);
-                    this.gateways.find(function(rec) {
+                    this.gateways.find(function(rec: any) {
                         //console.log('compare ' + obj.key[0] + ' <==> ' + rec.pk);
                         if(rec.pk === obj.key[0]) {
                             //console.log('modify record ' + rec.name);
@@ -1761,7 +1767,7 @@ export default  {
                     this.tabOpLog.data.items = [];
                 }
                 else if (obj.cmd === 'delete') {
-                    const idx = this.gateways.findIndex(rec => rec.pk === obj.key[0]);
+                    const idx = this.gateways.findIndex((rec: any) => rec.pk === obj.key[0]);
                     this.gateways.splice(idx, 1);
                 }
                 else if (obj.cmd === 'load') {
@@ -1786,9 +1792,11 @@ export default  {
             }
         },
         updateSmfContext() {
-            const smfContext = this.$refs.tabs.tabs[this.tabIndex].$attrs['smf-context'];
-            console.log(smfContext);
-            const pkGateway = this.selected[0].pk;
+            const bTabs = this.$refs.tabs as BTabs;
+            const smfContext = bTabs.tabs[this.tabIndex].$attrs['smf-context'];
+            console.log(`${smfContext} selected`);
+
+            const pkGateway = this.selected[0].pk as string;
             if (smfContext === this.smfContext.statusWord) {
                 this.spinner.status = true;
                 this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CLASS_OP_LOG_STATUS_WORD, [pkGateway]);
@@ -1828,7 +1836,7 @@ export default  {
                 this.ws_submit_request(MESSAGE_REQUEST.getProfileList
                     , SML_CODES.CLASS_OP_LOG
                     , [pkGateway]
-                    , {range: this.tabOpLog.form.selected * 24});   //  hours
+                    , {range: Number(this.tabOpLog.form.selected) * 24});   //  hours
             }
         },
         tabSelected() {
@@ -1836,7 +1844,7 @@ export default  {
             // get the context of the selected tab
             this.updateSmfContext();
         },
-        rowSelected(items) {
+        rowSelected(items: any) {
             this.selected = items;
             this.form.serverId = "";
             this.form.name = '';
@@ -1851,7 +1859,7 @@ export default  {
                 }
             }
         },
-        meterSelected(items) {
+        meterSelected(items: any) {
             this.meters.selected = items;
             if (items.length > 0) {
                 console.log('selected ' + items[0].ident);
@@ -1860,23 +1868,23 @@ export default  {
                 //  ToDo: ...
             }
         },
-        generatePasswordIPT(event, element) {
+        generatePasswordIPT(event: Event, element: any) {
             event.preventDefault();
             this.ipt.param[element].pwd = generatePassword();
         },
 
-        onFiltered(filteredItems) {
+        onFiltered(filteredItems: any[]) {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.visibleRows = filteredItems.length;
             this.currentPage = 1
         },
 
-        onIPTUpdate(event, index)   {
+        onIPTUpdate(event: Event, index: number)   {
             event.preventDefault();
             //console.log(this.ipt.param[index]);
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_ROOT_IPT_PARAM,
-                [this.form.pk],
+                [this.form.pk!],
                 { index: index, ipt: this.ipt.param[index] });
         },
         onBrokerUpdate(event, port) {
@@ -1887,96 +1895,96 @@ export default  {
                 [this.form.pk],
                 { port: port, broker: this.broker[port] });
         },
-        onMeterDelete(item) {
+        onMeterDelete(item: any) {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_DELETE_DEVICE,
-                [this.form.pk],
+                [this.form.pk!],
                 { nr: item.nr, meter: item.ident });
         },
-        onMeterActivate(item) {
+        onMeterActivate(item: any) {
             if (item.active) {
                 this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                     SML_CODES.CODE_DEACTIVATE_DEVICE,
-                    [this.form.pk],
+                    [this.form.pk!],
                     { nr: item.nr, meter: item.ident });
             }
             else {
                 this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                     SML_CODES.CODE_ACTIVATE_DEVICE,
-                    [this.form.pk],
+                    [this.form.pk!],
                     { nr: item.nr, meter: item.ident });
             }
         },
-        onMeterEdit(item) {
+        onMeterEdit(item: any) {
            this.$router.push({ name: 'smfConfigMeter', params: { meterPk: item.pk }});
         },
         onWMbusUpdate() {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_IF_wMBUS,
-                [this.form.pk],
+                [this.form.pk!],
                 { wmbus: this.wmbus });
 
         },
         onIECUpdate() {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_IF_1107,
-                [this.form.pk],
+                [this.form.pk!],
                 { iec: this.iec.params });
         },
 
         meterTableComplete() {
             let csv = 'Ident;Meter;Maker;ServerId\n';
-            this.meters.values.forEach(function(row) {
+            this.meters.values.forEach(function(row: any) {
                 //console.log(row.ident);
                 csv += row.ident + ';' + row.meter + ';' + row.maker + ';' + row.serverId + '\n';
             });
             const data = new Blob([csv]);
             this.meters.csv = URL.createObjectURL(data);
         },
-        btnEditStatus(mc) {
+        btnEditStatus(mc: any) {
             // console.log("btnEditStatus " , mc);
             if (typeof mc == 'undefined') return true;
             return (mc.length > 2) && mc.startsWith("MC");
         },
-        getPlaceholder(str) {
+        getPlaceholder(str: string) {
             //console.log(str);
             return "<" + str + ">";
         },
         onProxyCacheReset() {
             this.spinner.reset = true;
-            this.ws_proxy("cache.reset", [this.form.pk], [SML_CODES.CLASS_OP_LOG_STATUS_WORD, SML_CODES.CODE_ROOT_IPT_PARAM, SML_CODES.CODE_ROOT_ACCESS_RIGHTS, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, SML_CODES.CODE_ROOT_VISIBLE_DEVICES]);
+            this.ws_proxy("cache.reset", [this.form.pk!], [SML_CODES.CLASS_OP_LOG_STATUS_WORD, SML_CODES.CODE_ROOT_IPT_PARAM, SML_CODES.CODE_ROOT_ACCESS_RIGHTS, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, SML_CODES.CODE_ROOT_VISIBLE_DEVICES]);
         },
         onProxyCacheSections() {
-            this.ws_proxy("cache.sections", [this.form.pk]);
+            this.ws_proxy("cache.sections", [this.form.pk!]);
         },
         onProxyCacheUpdate() {
-            this.ws_proxy("cache.update", [this.form.pk], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]);
+            this.ws_proxy("cache.update", [this.form.pk!], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]);
         },
         onProxyCacheSync() {
             //  create snapshot of current configuration
-            this.ws_proxy("cache.sync", [this.form.pk], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, SML_CODES.CODE_ROOT_VISIBLE_DEVICES]);
+            this.ws_proxy("cache.sync", [this.form.pk!], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS, SML_CODES.CODE_ROOT_ACTIVE_DEVICES, SML_CODES.CODE_ROOT_VISIBLE_DEVICES]);
         },
         onProxyCacheQuery() {
-            this.ws_proxy("cache.query", [this.form.pk], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]);
+            this.ws_proxy("cache.query", [this.form.pk!], [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]);
         },
-        onQueryMeter({role, user, meter} /* meter, user, role */) {
+        onQueryMeter({role, user, meter} : {role: UIRootAccessRightsRole, user: UIRootAccessUser, meter: UIRootAccessMeter}/* meter, user, role */) {
 
             // set the current visible meter access rights to null -> make them unvisible
             this.meterAccessRights = null
 
             this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
                 SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
-                [this.form.pk],
+                [this.form.pk!],
                 //  path is [role, user, meterID]
                 { serverId: this.form.serverId, path: [role.role, user.userId, meter.nr] });
         }
    },
 
     computed: {
-        tableCaption() {
+        tableCaption(): string {
             return this.selected.length + "/" + this.gateways.length + " item(s) selected";
         },
-        btnUpdateTitle() {
+        btnUpdateTitle(): string {
             if(this.selected.length > 0) {
                 return "Update " + this.selected[0].serverId;
             }
@@ -1985,16 +1993,16 @@ export default  {
         btnEdit() {
             return "Edit";
         },
-        isRecordSelected() {
+        isRecordSelected(): boolean {
             return this.selected.length !== 0;
         },
-        isRecordNew() { // FIXME is this method unused?
+        isRecordNew(): boolean { // FIXME is this method unused?
             if (this.selected.length !== 0) {
                 return this.form.name !== this.selected[0].name;
             }
             return this.form.name.length > 0;
         },
-        wmbusRebootPrep() {
+        wmbusRebootPrep(): string {
             if (this.wmbus.reboot > 3600) {
                 return (this.wmbus.reboot / 3600).toFixed(2) + ' h';
             }
@@ -2006,7 +2014,7 @@ export default  {
             }
             return this.wmbus.reboot + ' sec.';
         },
-        linkMeterDownloadTitle() {
+        linkMeterDownloadTitle(): string {
             if(this.selected.length > 0) {
                 return "Download " + this.meters.values.length + " meter records from gateway " + this.selected[0].name;
             }
@@ -2014,26 +2022,26 @@ export default  {
         },
         createWsDelegate() {
             return {
-                ws_submit_record: (cmd, channel, obj) => {
+                ws_submit_record: (cmd: any, channel: any, obj: any) => {
                     this.ws_submit_record(cmd, channel, obj)
                 },
-                ws_submit_key: (cmd, cahnnel, key) => {
-                    console.log(cmd, cahnnel, key)
+                ws_submit_key: (cmd: any, channel: any, key: any) => {
+                    this.ws_submit_key(cmd, channel, key);
                 },
-                ws_submit_request: (msgType, root, pk_gw, params) => {
-                    console.log(msgType, root, pk_gw, params);
+                ws_submit_request: (msgType: any, root: any, pk_gw: any, params: any) => {
+                    this.ws_submit_request(msgType, root, pk_gw, params);
                 }
             }
         }
     },
 
     watch: {},
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to: any, from: any, next: any) {
         hasPrivilegesWaitForUser(store, MODULES.CONFIG_GATEWAY, PRIVILEGES.VIEW).then((result) => {
             next( result ? true: NO_ACCESS_ROUTE);
         });
     }
-}
+})
 </script>
 
 <style scoped lang="css">

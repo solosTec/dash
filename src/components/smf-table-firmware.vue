@@ -1,4 +1,4 @@
-﻿﻿<template lang="html">
+﻿<template lang="html">
 
     <section class="smf-table-firmware">
         <b-table ref="tableFirmware"
@@ -29,10 +29,12 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
 
-    export default {
+    import Vue from 'vue';
+
+    export default Vue.extend({
         name: 'smf-table-firmware',
         props: {
             items: Array
@@ -67,7 +69,7 @@
                         key: 'active',
                         label: 'Active',
                         sortable: true,
-                        formatter: (value) => {
+                        formatter: (value: boolean) => {
                             if (value) return '✔';
                             return '✖';
                         },
@@ -90,7 +92,7 @@
         },
         computed: {
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

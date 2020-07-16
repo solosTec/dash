@@ -72,14 +72,16 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-import {webSocket} from '../mixins/web-socket'
-import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+import {webSocket} from '@/mixins/web-socket'
+import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
 import store from "../store";
-import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+import mixins from 'vue-typed-mixins';
+import Vue from 'vue';
 
-export default  {
+export default mixins(webSocket, Vue).extend({
 
     name: 'smfStatusTarget',
     props: [],
@@ -120,7 +122,7 @@ export default  {
                     label: 'PX',
                     sortable: true,
                     class: 'text-right',
-                    formatter: (value, key, item) => {
+                    formatter: (value: number) => {
                         return this.ws_format_bytes(value);
                     }
                 },
@@ -129,7 +131,7 @@ export default  {
                     label: 'Messages',
                     sortable: true,
                     class: 'text-right',
-                    formatter: (value, key, item) => {
+                    formatter: (value: number) => {
                         return (value == 0) ? '' : value.toString();
                     }
                 },
@@ -139,7 +141,7 @@ export default  {
                     label: 'Channel',
                     sortable: true,
                     class: 'text-right',
-                    formatter: (value, key, item) => {
+                    formatter: (value: any) => {
                         return value.toString().padStart(10, '0');
                     }
                 },
@@ -147,13 +149,13 @@ export default  {
                     key: 'regTime',
                     label: 'Registered',
                     sortable: true,
-                    formatter: (value, key, item) => {
+                    formatter: (value: any) => {
                         return value.toUTCString();
                     }
                 },
             ],
-            targets: [],
-            selected: [],
+            targets: [] as any[],
+            selected: [] as any[],
             sortBy: 'name',
             sortDesc: false,
             sortDirection: 'desc'
@@ -170,7 +172,7 @@ export default  {
             this.targets = [];
             this.ws_subscribe("status.target");
         },
-        ws_on_data(obj) {
+        ws_on_data(obj: any) {
             if (obj.cmd != null) {
                 console.log('websocket received ' + obj.cmd);
                 if (obj.cmd == 'insert') {
@@ -215,16 +217,16 @@ export default  {
                 }
             }
         },
-        rowSelected(items) {
+        rowSelected(items: any[]) {
             this.selected = items;
         }
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to: any, from: any, next: any) {
         hasPrivilegesWaitForUser(store, MODULES.STATUS_TARGET, PRIVILEGES.VIEW).then((result) => {
             next( result ? true: NO_ACCESS_ROUTE);
         });
     }
-}
+})
 </script>
 
 <style scoped lang="scss">

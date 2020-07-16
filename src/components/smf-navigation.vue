@@ -80,14 +80,16 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
   import { AVAILABLE_LANGUAGES } from '@/constants/languages'
   import { mapState } from 'vuex'
   import {privileges} from "@/mixins/privileges";
-  import {MODULES, PRIVILEGES} from "../store/modules/user";
+  import {MODULES, PRIVILEGES} from "@/store/modules/user";
+  import Vue from 'vue';
+  import {AppState} from '@/store';
 
-  export default  {
+  export default Vue.extend({
     name: 'smf-navigation',
     mixins: [privileges],
     props: {
@@ -98,8 +100,8 @@
         //this.$store.commit('websocket/eventState', 'mounted');
     },
     computed: mapState({
-        connection_state: state => state.websocket.state,
-        user: state => state.user
+        connection_state: state => (state as AppState).websocket.state,
+        user: state => (state as AppState).user
     }),
     data() {
       return {
@@ -115,7 +117,7 @@
             return "grey";
         }
     }
-}
+})
 </script>
 
 <style scoped lang="css">

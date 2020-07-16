@@ -6,11 +6,13 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    export default  {
+   import Vue from 'vue';
+
+   export default Vue.extend({
        name: 'smfNoAccess'
-    }
+   })
 
 </script>
 

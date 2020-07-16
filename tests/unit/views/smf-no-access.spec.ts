@@ -9,7 +9,7 @@ localVue.use(BootstrapVue);
 
 describe('SmfNoAccess.vue', () => {
 
-    let wrapper;
+    let wrapper: any;
 
     beforeEach( ()=>{
         wrapper = shallowMount(SmfNoAccess, {

@@ -1,5 +1,4 @@
-﻿﻿
-<template lang="html">
+﻿<template lang="html">
 
     <section class="smf-config-meter">
 
@@ -447,21 +446,37 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    import { webSocket } from '../mixins/web-socket';
+    import { webSocket } from '@/mixins/web-socket';
     import { MESSAGE_REQUEST, MESSAGE_RESPONSE } from '@/constants/msgTypes'
-    import { SML_CODES } from '@/constants/rootCodes.js'
+    import { SML_CODES } from '@/constants/rootCodes'
     import dataMirror from '@/components/smf-table-data-mirror.vue'
     import pushTargets from '@/components/smf-table-push-targets.vue'
-    import { hasPrivilegesWaitForUser } from "../mixins/privileges";
+    import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
     import store from "../store";
-    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
+    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
     import {generatePassword} from "@/shared/generate-password";
+    import mixins from 'vue-typed-mixins';
+    import Vue from 'vue';
 
-    let tmpMeters = [];
+    let tmpMeters: any[] = [];
 
-    export default {
+    const getUnitName = (code: number): string | number => {
+        switch (code) {
+            case 9: return "°C";
+            case 13: return "m³";
+            case 19: return "L";
+            case 27: return "W";
+            case 30: return "Wh";
+            case 38: return "Ω";
+            default:
+                break;
+        }
+        return code;
+    }
+
+    export default mixins(webSocket, Vue).extend({
         name: 'smfConfigMeter',
         props: [],
         mixins: [webSocket],
@@ -509,7 +524,7 @@
                         key: 'tom',
                         label: 'TOM',
                         sortable: true,
-                        formatter: (value) => {
+                        formatter: (value: any) => {
                             return value.toUTCString();
                         }
                     },
@@ -542,7 +557,7 @@
                         key: 'online',
                         label: 'Online',
                         sortable: true,
-                        formatter: (value) => {
+                        formatter: (value: number) => {
                             if (value === 0) return '║';
                             else if (value === 1) return '⊶';
                             return '⇆';
@@ -550,12 +565,12 @@
                         class: 'text-center'
                     },
                 ],
-                meters: [],
-                selected: [],
+                meters: [] as any[],
+                selected: [] as any[],
                 sortBy: 'name',
                 sortDesc: false,
                 sortDirection: 'desc',
-                filter: null,
+                filter: null as string | null,
                 visibleRows: 0,
                 //  panel
                 tabIndex: 1,
@@ -575,8 +590,8 @@
                     gwKey: ''
                 },
                 readout: {
-                    values: [],
-                    selected: [],
+                    values: [] as any[],
+                    selected: [] as any[],
                     fields: [
                         {
                             key: 'obis',
@@ -592,8 +607,8 @@
                             key: 'unit',
                             label: 'Unit',
                             sortable: true,
-                            formatter: (value) => {
-                                return this.getUnitName(value);
+                            formatter: (value: number) => {
+                                return getUnitName(value);
                             }
                         },
                         {
@@ -620,7 +635,7 @@
                         status: 0,
                         bitmask: '00 00',
                         interval: 0,
-                        lastRecord: "1964-04-20",
+                        lastRecord: "1964-04-20" as string | null,
                         pubKey: '',
                         aesKey: '',
                         user: '',
@@ -631,12 +646,12 @@
                 tabPush: {
                     data: {
                         //items: [{nr:1, interval: 15, delay: 101, OBIS:'8181c78611ff', name:'water@solosTec'}]
-                        items: []
+                        items: [] as any[]
                     }
                 },
                 tabDataMirror: {
                     data: {
-                        items: []
+                        items: [] as any[]
                         // items: [{nr:1, active: true, entries: 101, period: 3, OBIS:'8181c78614ff', name:'name'}]
                     }
                 },
@@ -660,13 +675,13 @@
                 this.meters = [];
                 this.ws_subscribe("config.meter");
             },
-            ws_on_data(obj) {
+            ws_on_data(obj: any) {
                 if (obj.cmd != null) {
                     //console.log('websocket received command ' + obj.cmd);
                     if (obj.cmd === 'insert') {
                         const tom = new Date(obj.rec.data.tom.substring(0, 19));
                         //console.log('insert meter ' + obj.rec.key.pk + " - "+ obj.rec.data.ident);
-                        let rec = {
+                        let rec: any = {
                             pk: obj.rec.key.pk,
                             ident: obj.rec.data.ident,
                             meter: obj.rec.data.meter,
@@ -793,7 +808,7 @@
                                 // wait a tick to let the view update itself and the table is filtered
                                 // after that the forst row must be the matching meter
                                 setTimeout(()=> {
-                                    this.$refs.meterTable.selectRow(0);
+                                    (this.$refs.meterTable as any).selectRow(0);
                                 },1);
                             }
                         }
@@ -871,7 +886,7 @@
                             }
                             else if (obj.section === SML_CODES.CODE_ROOT_DATA_COLLECTOR) {
                                 this.spinner.mirror = false;
-                                Object.values(obj.rec.values).forEach((e, idx) => {
+                                Object.values(obj.rec.values).forEach((e: any, idx: number) => {
                                     //console.log(e);
 
                                     const rec = {
@@ -891,7 +906,7 @@
                             }
                             else if (obj.section === SML_CODES.PUSH_OPERATIONS) {
                                 this.spinner.push = false;
-                                Object.values(obj.rec.values).forEach((e, idx) => {
+                                Object.values(obj.rec.values).forEach((e: any, idx: number) => {
                                     console.log(e);
                                     const rec = {
                                         nr: idx + 1,
@@ -915,7 +930,7 @@
                 }
             },
 
-            rowSelected(items) {
+            rowSelected(items: any[]) {
                 this.selected = items;
                 if (items.length > 0) {
                     console.log(items.length + ' rows selected ');
@@ -935,7 +950,7 @@
                     this.form.gwKey = items[0].gwKey;
                 }
             },
-            onMeterUpdate(event) {
+            onMeterUpdate(event: Event) {
                 event.preventDefault();
                 console.log('onMeterUpdate: ' + this.form.ident);
                 this.ws_submit_record("modify", "config.meter", {
@@ -952,12 +967,12 @@
                     }
                 });
             },
-            onMeterDelete(event) {
+            onMeterDelete(event: Event) {
                 event.preventDefault();
                 console.log('onMeterDelete: ' + this.selected.length + ' meters');
-                this.$refs.dlgDeleteMeter.show();
+                (this.$refs.dlgDeleteMeter as any).show();
             },
-            onMeterQuery(event) {
+            onMeterQuery(event: Event) {
                 event.preventDefault();
                 // console.log('onMeterQuery: ' + this.form.ident);
                 this.spinner.readout = true;
@@ -966,7 +981,7 @@
                     [this.form.gwKey],
                     { meter: this.form.ident });
             },
-            onParameterRefresh(event) {
+            onParameterRefresh(event: Event) {
                 event.preventDefault();
                 this.spinner.meter = true;
                 this.ws_submit_request(MESSAGE_REQUEST.getProcParameter,
@@ -974,7 +989,7 @@
                     [this.form.gwKey],
                     { meter: this.form.ident });
             },
-            onParameterUpdate(event) {
+            onParameterUpdate(event: Event) {
                 event.preventDefault();
                 this.spinner.meter = true;
                 this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
@@ -982,7 +997,7 @@
                     [this.form.gwKey],
                     { meter: this.form.ident, data: this.tabMeter.data });
             },
-            onDataMirrorQuery(event) {
+            onDataMirrorQuery(event: Event) {
                 event.preventDefault();
                 //console.log('onDataMirrorQuery: ' + this.form.ident);
                 this.spinner.mirror = true;
@@ -993,7 +1008,7 @@
                     [this.form.gwKey],
                     { meter: this.form.ident });
             },
-            onPushTargetQuery(event) {
+            onPushTargetQuery(event: Event) {
                 event.preventDefault();
                 //console.log('onDataMirrorQuery: ' + this.form.ident);
                 this.spinner.push = true;
@@ -1004,57 +1019,44 @@
                     [this.form.gwKey],
                     { meter: this.form.ident });
             },
-            handleDeleteMeterOk(event) {
+            handleDeleteMeterOk(event: Event) {
                 event.preventDefault();
                 this.selected.forEach(element => {
                     this.ws_submit_key("delete", "config.meter", { tag: [element.pk] });
                 });
                 this.$nextTick(() => {
                     // Wrapped in $nextTick to ensure DOM is rendered before closing
-                    this.$refs.dlgDeleteMeter.hide();
+                    (this.$refs.dlgDeleteMeter as any).hide();
                 })
             },
-            generatePassword(event) {
+            generatePassword(event: Event) {
                 event.preventDefault();
                 this.tabMeter.data.pwd = generatePassword();
             },
-            onFiltered(filteredItems) {
+            onFiltered(filteredItems: any[]) {
                 // Trigger pagination to update the number of buttons/pages due to filtering
                 this.visibleRows = filteredItems.length;
                 this.currentPage = 1
-            },
-            getUnitName(code) {
-                switch (code) {
-                    case 9: return "°C";
-                    case 13: return "m³";
-                    case 19: return "L";
-                    case 27: return "W";
-                    case 30: return "Wh";
-                    case 38: return "Ω";
-                    default:
-                        break;
-                }
-                return code;
             }
         },
 
         computed: {
-            tableCaption() {
+            tableCaption(): string {
                 return this.selected.length + "/" + this.visibleRows + " item(s) selected";
             },
-            btnUpdateTitle() {
+            btnUpdateTitle(): string {
                 if (this.selected.length > 0) {
                     return "Update " + this.selected[0].ident;
                 }
                 return "Update";
             },
-            btnRefreshTitle() {
+            btnRefreshTitle(): string {
                 if (this.selected.length > 0) {
                     return "Refresh " + this.selected[0].ident;
                 }
                 return "Refresh";
             },
-            btnDeleteTitle() {
+            btnDeleteTitle(): string {
                 if (this.selected.length === 0) {
                     return "Delete";
                 }
@@ -1063,19 +1065,19 @@
                 }
                 return "Delete " + this.selected.length + " record(s)";
             },
-            btnQueryTitle() {
+            btnQueryTitle(): string {
                 if (this.selected.length > 0) {
                     return "Query " + this.selected[0].ident;
                 }
                 return "Query";
             },
-            aesKeyValidation() {
+            aesKeyValidation(): boolean {
                 if (this.tabMeter.data.aesKey == null) return true;
                 if (this.tabMeter.data.aesKey.length === 0) return true;
                 var rex = /[0-9A-Fa-f]{32}/g;   //  test for hexadecimal string
                 return rex.test(this.tabMeter.data.aesKey);
             },
-            isOnline() {
+            isOnline(): boolean {
                 if (this.selected.length === 0) return false;
 
                 var self = this;
@@ -1088,12 +1090,12 @@
                 return (rec == null) ? true : (rec.online === 1);
             }
         },
-        beforeRouteEnter(to, from, next) {
+        beforeRouteEnter(to: any, from: any, next: any) {
             hasPrivilegesWaitForUser(store, MODULES.CONFIG_METERS, PRIVILEGES.VIEW).then((result) => {
                 next(result ? true : NO_ACCESS_ROUTE);
             });
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

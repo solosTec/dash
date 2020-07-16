@@ -118,15 +118,17 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-  import {webSocket} from '../mixins/web-socket'
-  import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+  import {webSocket} from '@/mixins/web-socket'
+  import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
   import store from "../store";
-  import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+  import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+  import mixins from "vue-typed-mixins";
+  import Vue from "vue";
 
 
-  export default  {
+  export default  mixins(webSocket, Vue).extend({
     name: 'smfConfigUpload',
     props: [],
     mixins: [webSocket],
@@ -143,20 +145,20 @@
         meterCount: 0,
         LoRaCount: 0,
         dev: {
-            file: null,
+            file: null as any,
             policy: 'append',
             version: 'v0.8'
         },
         gw: {
-            file: null,
+            file: null as any,
             policy: 'append'
         },
         meter: {
-            file: null,
+            file: null as any,
             policy: 'append'
         },
         LoRa: {
-            file: null,
+            file: null as any,
             policy: 'append'
         }
       }
@@ -174,7 +176,7 @@
             this.ws_subscribe("table.msg.count");
             this.ws_subscribe("table.LoRa.count");
         },
-        ws_on_data(obj) {
+        ws_on_data(obj: any) {
             if (obj.cmd != null) {
             console.log('websocket received ' + obj.cmd);
                 if (obj.cmd == 'update') {
@@ -195,44 +197,43 @@
                 }
             }
        },
-       onSubmitDevices(evt) {
+       onSubmitDevices(evt: Event) {
             evt.preventDefault();
             //alert(JSON.stringify(this.dev))
             //console.log(this.dev);
             let formData = new FormData();
-           formData.append('file', this.dev.file);
+           formData.append('file', this.dev.file!);
            formData.append('policy', this.dev.policy);
            formData.append('version', this.dev.version);
 
             this.$http.post("/upload/config/device/", formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
-            progress(e) {
-                if (e.lengthComputable) {
-                    console.log(e.loaded / e.total * 100);
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                progress(e) {
+                    if (e.lengthComputable) {
+                        console.log(e.loaded / e.total * 100);
+                    }
                 }
-            }
-        })
+            })
             .then(res =>{
                 console.log(res)
-            })
-            .catch((err) => {
+            }, (err: any) => {
                 console.log(err)
             })
       },
-      onResetDevices(evt) {
+      onResetDevices(evt: Event) {
         evt.preventDefault()
         this.dev.file = null;
         this.dev.policy = 'append';
         this.dev.version = 'v0.8';
       },
 
-      onSubmitGateway(evt) {
+      onSubmitGateway(evt: Event) {
         evt.preventDefault()
         // alert(JSON.stringify(this.gw))
         let formData = new FormData();
-        formData.append('file', this.gw.file);
+        formData.append('file', this.gw.file!);
         formData.append('policy', this.gw.policy);
         this.$http.post("/upload/config/gw/", formData, {
             headers: {
@@ -246,21 +247,20 @@
         })
             .then(res =>{
                 console.log(res)
-            })
-            .catch((err) => {
+            }, (err) => {
                 console.log(err)
             })
       },
-      onResetGateway(evt) {
+      onResetGateway(evt: Event) {
         evt.preventDefault()
         this.gw.file = null;
         this.gw.policy = 'append';
       },
-      onSubmitMeter(evt) {
+      onSubmitMeter(evt: Event) {
         evt.preventDefault()
         // alert(JSON.stringify(this.meter))
         let formData = new FormData();
-        formData.append('file', this.meter.file);
+        formData.append('file', this.meter.file!);
         formData.append('policy', this.meter.policy);
           this.$http.post("/upload/config/meter/", formData, {
             headers: {
@@ -274,21 +274,20 @@
         })
             .then(res =>{
                 console.log(res)
-            })
-            .catch((err) => {
+            }, (err) => {
                 console.log(err)
             })
       },
-      onResetMeter(evt) {
+      onResetMeter(evt: Event) {
         evt.preventDefault()
         this.meter.file = null;
         this.meter.policy = 'append';
       },
-      onSubmitLoRa(evt) {
+      onSubmitLoRa(evt: Event) {
         evt.preventDefault()
         // alert(JSON.stringify(this.LoRa))
         let formData = new FormData();
-        formData.append('file', this.LoRa.file);
+        formData.append('file', this.LoRa.file!);
         formData.append('policy', this.LoRa.policy);
         this.$http.post("/upload/config/LoRa/", formData, {
             headers: {
@@ -302,12 +301,11 @@
         })
             .then(res =>{
                 console.log(res)
-            })
-            .catch((err) => {
+            }, (err) => {
                 console.log(err)
             })
       },
-      onResetLoRa(evt) {
+      onResetLoRa(evt: Event) {
         evt.preventDefault()
         this.LoRa.file = null;
         this.LoRa.policy = 'append';
@@ -315,32 +313,32 @@
     },
 
     computed: {
-        device_text() {
+        device_text(): string {
             if (!this.dev.file)   {
                 return "Select a device configuration file.";
             }
             return this.dev.file.name + " with " + this.dev.file.size + " bytes selected.";
         },
-        gateway_text() {
+        gateway_text(): string {
             if (!this.gw.file)   {
                 return "Select a gateway configuration file.";
             }
             return this.gw.file.name + " with " + this.gw.file.size + " bytes selected.";
         },
-        meter_text() {
+        meter_text(): string {
             if (!this.meter.file)   {
                 return "Select a meter configuration file.";
             }
             return this.meter.file.name + " with " + this.meter.file.size + " bytes selected.";
         },
-        lora_text() {
+        lora_text(): string {
             if (!this.LoRa.file)   {
                 return "Select a LoRa configuration file.";
             }
             return this.LoRa.file.name + " with " + this.LoRa.file.size + " bytes selected.";
         }
     },
-      beforeRouteEnter(to, from, next) {
+      beforeRouteEnter(to: any, from: any, next: any) {
           hasPrivilegesWaitForUser(store, MODULES.CONFOG_UPLOAD, PRIVILEGES.VIEW).then((result) => {
               next( result ? true: NO_ACCESS_ROUTE);
           });
@@ -352,7 +350,7 @@
     //    }
     //}
 
-}
+})
 </script>
 
 <style scoped lang="css">

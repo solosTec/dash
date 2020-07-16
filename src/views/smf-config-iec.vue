@@ -1,5 +1,4 @@
-﻿﻿
-<template lang="html">
+﻿<template lang="html">
     <section class="smf-config-iec">
 
         <template>

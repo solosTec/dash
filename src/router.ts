@@ -20,7 +20,7 @@ import smfCollectorMBusRadio from "./views/smf-collector-mbus-radio.vue"
 import smfTaskCSV from "./views/smf-task-csv.vue"
 import smfTaskTSDB from "./views/smf-task-tsdb.vue"
 import smfNoAccess from "./views/smf-no-access.vue"
-import smfHome from "./views/smf-home"
+import smfHome from "./views/smf-home.vue"
 
 Vue.use(Router);
 

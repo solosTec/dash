@@ -1,5 +1,4 @@
-﻿﻿/* eslint-disable no-console */
-<template lang="html">
+﻿<template lang="html">
 
     <section class="smf-config-system">
 
@@ -165,14 +164,16 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    import { webSocket } from '../mixins/web-socket'
-    import { hasPrivilegesWaitForUser } from "../mixins/privileges";
+    import { webSocket } from '@/mixins/web-socket'
+    import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
     import store from "../store";
-    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
+    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
+    import mixins from 'vue-typed-mixins';
+    import Vue from 'vue';
 
-    export default {
+    export default mixins(webSocket, Vue).extend({
         name: 'smfConfigSystem',
         props: [],
         mixins: [webSocket],
@@ -214,6 +215,7 @@
                         countryCode: 'AU',
                         languageCode: 'EN',
                         gwConfigCaching: false,
+                        auto_supersede: false,
                     }
                 },
                 sys: {
@@ -248,7 +250,7 @@
             ws_on_open() {
                 this.ws_subscribe("config.system");
             },
-            ws_on_data(obj) {
+            ws_on_data(obj: any) {
                 if (obj.cmd != null) {
                     // console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                     if (obj.cmd == 'insert') {
@@ -374,68 +376,68 @@
                     }
                 }
             },
-            changeMaxMessages(newValue) {
+            changeMaxMessages(newValue: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "max-messages" },
                     data: { value: newValue }
                 });
             },
-            changeMaxEvents(newValue) {
+            changeMaxEvents(newValue: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "max-events" },
                     data: { value: newValue }
                 });
             },
-            autoLoginChange(targetState) {
+            autoLoginChange(targetState: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "connection-auto-login" },
                     data: { value: targetState }
                 });
             },
-            autoEnabledChange(targetState) {
+            autoEnabledChange(targetState: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "connection-auto-enabled" },
                     data: { value: targetState }
                 });
             },
-            supersedeChange(targetState) {
+            supersedeChange(targetState: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "connection-superseed" },
                     data: { value: targetState }
                 });
             },
-            gwCacheChange(targetState) {
+            gwCacheChange(targetState: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "gw-cache" },
                     data: { value: targetState }
                 });
             },
-            tsdbChange(targetState) {
+            tsdbChange(targetState: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "generate-time-series" },
                     data: { value: targetState }
                 });
             },
-            catchMetersChange(targetState) {
+            catchMetersChange(targetState: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "catch-meters" },
                     data: { value: targetState }
                 });
             },
-            catchLoRaChange(targetState) {
+            catchLoRaChange(targetState: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "catch-lora" },
                     data: { value: targetState }
                 });
             },
-            countryCodeChange(newValue) {
+            countryCodeChange(newValue: any) {
                 console.log("new country code " + newValue);
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "country-code" },
                     data: { value: newValue }
                 });
             },
-            languageCodeChange(newValue) {
+            languageCodeChange(newValue: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "language-code" },
                     data: { value: newValue }
@@ -449,12 +451,12 @@
         watch: {
         },
 
-        beforeRouteEnter(to, from, next) {
+        beforeRouteEnter(to: any, from: any, next: any) {
             hasPrivilegesWaitForUser(store, MODULES.CONFIG_SYSTEM, PRIVILEGES.VIEW).then((result) => {
                 next(result ? true : NO_ACCESS_ROUTE);
             });
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

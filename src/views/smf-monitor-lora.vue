@@ -67,14 +67,16 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-import {webSocket} from '../mixins/web-socket'
-import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+import {webSocket} from '@/mixins/web-socket'
+import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
 import store from "../store";
-import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+import mixins from 'vue-typed-mixins';
+import Vue from 'vue';
 
-export default  {
+export default mixins(webSocket, Vue).extend({
     name: 'smfMonitorLora',
     props: [],
     mixins: [webSocket],
@@ -99,7 +101,7 @@ export default  {
                 key: 'ts',
                 label: 'Timestamp (UTC)',
                 sortable: true,
-                formatter: (value, key, item) => {
+                formatter: (value: any) => {
                     return value.toUTCString();
                 }
             },
@@ -150,8 +152,8 @@ export default  {
                 sortable: true
             },
             ],
-            uplinks:[],
-            selected: [],
+            uplinks:[] as any[],
+            selected: [] as any[],
             sortBy: 'id',
             sortDesc: false,
             sortDirection: 'desc',
@@ -163,7 +165,7 @@ export default  {
     },
 
     methods: {
-        rowSelected(items) {
+        rowSelected(items: any[]) {
             this.selected = items
         },
         ws_on_open() {
@@ -171,13 +173,13 @@ export default  {
             this.uplinks = [];
             this.ws_subscribe("monitor.lora");
         },
-        ws_on_data(obj) {
+        ws_on_data(obj: any) {
             if (obj.cmd != null) {
                 console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                 if (obj.cmd == 'insert') {
-                    var ts = new Date(obj.rec.data.ts.substring(0, 19));
+                    const ts = new Date(obj.rec.data.ts.substring(0, 19));
                     // var rowNode = table_msg.row.add([obj.rec.key.id, ts, obj.rec.data.DevEUI, obj.rec.data.FPort, obj.rec.data.FCntUp, obj.rec.data.ADRbit, obj.rec.data.MType, obj.rec.data.FCntDn, obj.rec.data.CustomerID, payload]).draw().node();
-                    var rec = {
+                    const rec = {
                         id: obj.rec.key.id,
                         ts: ts,
                         DevEUI: obj.rec.data.DevEUI,
@@ -197,12 +199,12 @@ export default  {
              }
         }
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to: any, from: any, next: any) {
         hasPrivilegesWaitForUser(store, MODULES.MONITOR_LORA, PRIVILEGES.VIEW).then((result) => {
             next( result ? true: NO_ACCESS_ROUTE);
         });
     }
-}
+})
 </script>
 
 <style scoped lang="css">

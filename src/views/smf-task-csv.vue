@@ -68,14 +68,16 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-import {webSocket} from '../mixins/web-socket'
-import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+import {webSocket} from '@/mixins/web-socket'
+import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
 import store from "../store";
-import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+import mixins from 'vue-typed-mixins';
+import Vue from 'vue';
 
-export default  {
+export default mixins(webSocket, Vue).extend({
     name: 'smfTaskCSV',
     props: [],
     mixins: [webSocket],
@@ -114,21 +116,21 @@ export default  {
             {
                 key: 'start15min',
                 label: 'Last run (15min)',
-                formatter: (value, key, item) => {
+                formatter: (value: any) => {
                     return value.toUTCString();
                 }
             },
             {
                 key: 'start60min',
                 label: 'Last run (60min)',
-                formatter: (value, key, item) => {
+                formatter: (value: any) => {
                     return value.toUTCString();
                 }
             },
             {
                 key: 'start24h',
                 label: 'Last run (24h)',
-                formatter: (value, key, item) => {
+                formatter: (value: any) => {
                     return value.toUTCString();
                 }
             },
@@ -148,8 +150,8 @@ export default  {
                 class: 'text-right'
             }
             ],
-            csv: [],
-            selected: [],
+            csv: [] as any[],
+            selected: [] as any[],
             sortBy: 'name',
             sortDesc: false,
             sortDirection: 'desc'
@@ -161,7 +163,7 @@ export default  {
             this.csv = [];
             this.ws_subscribe("task.csv");
         },
-        ws_on_data(obj) {
+        ws_on_data(obj: any) {
             if (obj.cmd != null) {
                 console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                 if (obj.cmd == 'insert') {
@@ -182,7 +184,7 @@ export default  {
                     }
                 }
                 else if (obj.cmd == 'modify') {
-                    this.csv.find(function(rec) {
+                    this.csv.find(function(rec: any) {
                         if(rec.pk == obj.key[0]) {
                             console.log('modify csv ' + rec.pk);
                             if (obj.value.start15min != null) {
@@ -226,28 +228,28 @@ export default  {
                 }
             }
         },
-        rowSelected(items) {
+        rowSelected(items: any[]) {
             this.selected = items;
         }
 
     },
     computed: {
-        jumboLead: function() {
+        jumboLead: function(): string {
             switch (this.csv.length ) {
-                case 0: return this.$t('lead-task-csv-0');
-                case 1: return this.$t('lead-task-csv-1');
+                case 0: return this.$t('lead-task-csv-0') as string;
+                case 1: return this.$t('lead-task-csv-1') as string;
                 default:
                 break;
             }
             return "There are " + this.csv.length + " nodes that creating CSV reports";
         }
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to: any, from: any, next: any) {
         hasPrivilegesWaitForUser(store, MODULES.TASK_CSV, PRIVILEGES.VIEW).then((result) => {
             next( result ? true: NO_ACCESS_ROUTE);
         });
     }
-}
+})
 </script>
 
 <style scoped lang="css">

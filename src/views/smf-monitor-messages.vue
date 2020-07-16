@@ -125,22 +125,24 @@
     </section>
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    import { webSocket } from '../mixins/web-socket'
-    import { hasPrivilegesWaitForUser } from "../mixins/privileges";
+    import { webSocket } from '@/mixins/web-socket'
+    import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
     import store from "../store";
-    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
+    import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
+    import mixins from 'vue-typed-mixins';
+    import Vue from 'vue';
 
-    let tmpMsg = [];
+    let tmpMsg = [] as any[];
 
-    export default {
+    export default mixins(webSocket, Vue).extend({
         name: 'smfMonitorMessages',
         props: [],
         mixins: [webSocket],
 
         mounted() {
-            var rec = { id: 0, ts: new Date(), severity: 3, msg: "mounted" };
+            let rec = { id: 0, ts: new Date(), severity: 3, msg: "mounted" } as any;
             rec["_rowVariant"] = 'success';
             this.messages.push(rec);
             this.ws_open("/smf/api/gw/v0.8");
@@ -158,7 +160,7 @@
                     {
                         key: 'id',
                         label: 'ID',
-                        formatter: (value, key, item) => {
+                        formatter: (value: string) => {
                             return value + 1;
                         },
                         sortable: true
@@ -166,7 +168,7 @@
                     {
                         key: 'ts',
                         label: 'TimeStamp',
-                        formatter: (value, key, item) => {
+                        formatter: (value: any) => {
                             return value.toLocaleString()
                         },
                         sortable: true
@@ -174,7 +176,7 @@
                     {
                         key: 'severity',
                         label: 'Severity',
-                        formatter: (value, key, item) => {
+                        formatter: (value: number) => {
                             switch (value) {
                                 case 1: return "TRACE";
                                 case 2: return "DEBUG";
@@ -195,7 +197,7 @@
                     }
 
                 ],
-                messages: [],
+                messages: [] as any[],
                 sortBy: 'id',
                 sortDesc: true,
                 sortDirection: 'desc',
@@ -217,7 +219,7 @@
         },
 
         methods: {
-            rowSelected(items) {
+            rowSelected(items: any[]) {
             },
 
             ws_on_open() {
@@ -227,7 +229,7 @@
                 this.ws_subscribe("table.msg.count");
             },
 
-            ws_on_data(obj) {
+            ws_on_data(obj: any) {
                 if (obj.cmd != null) {
                     console.log('websocket received ' + obj.cmd);
                     if (obj.cmd == 'update') {
@@ -241,7 +243,7 @@
                         //  {"rec": {"key": {"id":0}, "data": {"msg":"startup","severity":3,"ts":"2018-03-20 18:05:24.71590930"}}}
                         console.log('message ' + obj.rec.key.id);
                         // rec._rowVariant = 'warning';
-                        var rec = { id: obj.rec.key.id, ts: obj.rec.data.ts, severity: obj.rec.data.severity, msg: obj.rec.data.msg };
+                        let rec = { id: obj.rec.key.id, ts: obj.rec.data.ts, severity: obj.rec.data.severity, msg: obj.rec.data.msg } as any;
                         switch (obj.rec.data.severity) {
                             case 1:
                                 this.stat.trace++;
@@ -301,7 +303,7 @@
                     }
                 }
             },
-            onFiltered(filteredItems) {
+            onFiltered(filteredItems: any[]) {
                 // Trigger pagination to update the number of buttons/pages due to filtering
                 this.visibleRows = filteredItems.length
                 this.currentPage = 1
@@ -309,17 +311,17 @@
 
         },
         computed: {
-            tableCaption() {
+            tableCaption(): string {
                 return "Showing " + this.msgCount + " messages";
             }
 
         },
-        beforeRouteEnter(to, from, next) {
+        beforeRouteEnter(to: any, from: any, next: any) {
             hasPrivilegesWaitForUser(store, MODULES.MONITOR_MESSAGES, PRIVILEGES.VIEW).then((result) => {
                 next(result ? true : NO_ACCESS_ROUTE);
             });
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

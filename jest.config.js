@@ -15,7 +15,7 @@ module.exports = {
         '^@/(.*)$': '<rootDir>/src/$1'
     },
 
-    collectCoverage: true,
+    collectCoverage: false,
 
     collectCoverageFrom: ['**/*.{js|jsx|ts|tsx|vue}', '!**/node_modules/**',
         '!<rootDir>/dist/**',

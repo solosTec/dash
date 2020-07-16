@@ -265,14 +265,16 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-import {webSocket} from '../mixins/web-socket'
-import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+import {webSocket} from '@/mixins/web-socket'
+import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
 import store from "../store";
-import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+import mixins from 'vue-typed-mixins';
+import Vue from 'vue';
 
-export default  {
+export default mixins(webSocket, Vue).extend({
     name: 'smfTaskTSDB',
     props: [],
     mixins: [webSocket],
@@ -314,8 +316,8 @@ export default  {
                 sortable: true
             }
             ],
-            tsdbs: [],
-            selected: [],
+            tsdbs: [] as any[],
+            selected: [] as any[],
             sortBy: 'ep',
             sortDesc: false,
             sortDirection: 'desc',
@@ -352,7 +354,7 @@ export default  {
                 {
                     key: 'name',
                     label: 'Name',
-                    formatter: (value, key, item) => {
+                    formatter: (value: string) => {
                         if (value == 'sessionCount')  return 'Session Count';
                         else if (value == 'demo')  return 'Demo Rule';
                         return value;
@@ -387,7 +389,7 @@ export default  {
                 form: {
                     rule: 'sessionCount',
                     limit: 0,
-                    apply: [],
+                    apply: [] as any[],
                     value: 0,
                     totalHours: 0
                 }
@@ -395,7 +397,7 @@ export default  {
         };
     },
     methods: {
-        rowSelected(items) {
+        rowSelected(items: any[]) {
             this.selected = items;
             if (items.length > 0) {
                 console.log('selected ' + items[0].key);
@@ -409,7 +411,7 @@ export default  {
             // this.ws_subscribe("task.tsdb");
             this.ws_subscribe("status.cluster");
         },
-        ws_on_data(obj) {
+        ws_on_data(obj: any) {
             if (obj.cmd != null) {
                 console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                 if (obj.cmd == 'insert') {
@@ -451,7 +453,7 @@ export default  {
                 }
             }
         },
-        ruleSelected(items) {
+        ruleSelected(items: any) {
             this.monitor.selected = items;
             if (items.length > 0) {
                 console.log('selected rule ' + items[0].name);
@@ -459,21 +461,19 @@ export default  {
                 this.monitor.form.limit = items[0].limit;
                 this.monitor.form.apply = [];
                 //  convert integer into string array
-                var idx;
-                for (idx = 1; idx < 25; idx++) {
+                for (let idx = 1; idx < 25; idx++) {
                     var n = Math.pow(2, idx);
                     if ((items[0].apply & n) == n)  this.monitor.form.apply.push(idx.toString());
                 }
             }
         },
-        onRuleUpdate(event) {
+        onRuleUpdate(event: Event) {
             event.preventDefault();
         },
-        calculateTotalHours(val) {
-            var idx;
-            var total = 0;
-            for (idx = 1; idx < 25; idx++) {
-                var n = Math.pow(2, idx);
+        calculateTotalHours(val: number) {
+            let total = 0;
+            for (let idx = 1; idx < 25; idx++) {
+                const n = Math.pow(2, idx);
                 if ((val & n) == n)  total++;
             }
             return total;
@@ -498,12 +498,12 @@ export default  {
             // alert(val);
         }
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to: any, from: any, next: any) {
         hasPrivilegesWaitForUser(store, MODULES.TASK_TSDB, PRIVILEGES.VIEW).then((result) => {
             next( result ? true: NO_ACCESS_ROUTE);
         });
     }
-}
+})
 </script>
 
 <style scoped lang="css">

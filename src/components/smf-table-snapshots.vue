@@ -1,4 +1,4 @@
-﻿﻿<template lang="html">
+﻿<template lang="html">
 
     <section class="smf-table-snapshots">
         <b-table ref="tableSnapshots"
@@ -36,10 +36,12 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
 
-    export default {
+    import Vue from 'vue';
+
+    export default Vue.extend({
         name: 'smf-table-snapshots',
         props: {
             items: Array,
@@ -64,7 +66,7 @@
                         key: 'utc',
                         label: 'UTC',
                         sortable: true,
-                        formatter: (value, key, item) => {
+                        formatter: (value: any) => {
                             return value.toLocaleString()
                         }
                     },
@@ -94,7 +96,7 @@
         },
         computed: {
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

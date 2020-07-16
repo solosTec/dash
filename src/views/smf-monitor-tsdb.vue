@@ -81,14 +81,16 @@
     </section>
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-import {webSocket} from '../mixins/web-socket'
-import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+import {webSocket} from '@/mixins/web-socket'
+import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
 import store from "../store";
-import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+import mixins from 'vue-typed-mixins';
+import Vue from 'vue';
 
-export default  {
+export default  mixins(webSocket, Vue).extend({
     name: 'smfMonitorTSDB',
     props: [],
     mixins: [webSocket],
@@ -106,7 +108,7 @@ export default  {
                 {
                     key: 'id',
                     class: 'text-right small text-muted',
-                    formatter: (value, key, item) => {
+                    formatter: (value: any) => {
                         return value + 1;
                     }
                 },
@@ -114,7 +116,7 @@ export default  {
                     key: 'ts',
                     label: 'Timestamp',
                     sortable: true,
-                    formatter: (value, key, item) => {
+                    formatter: (value: any) => {
                         return value.toLocaleString()
                     }
                 },
@@ -134,7 +136,7 @@ export default  {
                     sortable: true
                 }
             ],
-            timeSeries: [],
+            timeSeries: [] as any[],
             sortBy: 'id',
             sortDesc: true,
             sortDirection: 'asc',
@@ -143,7 +145,7 @@ export default  {
         }
     },
     methods: {
-        rowSelected(items) {
+        rowSelected(items: any[]) {
         },
         ws_on_open() {
             //  clear table
@@ -152,7 +154,7 @@ export default  {
             this.ws_subscribe("monitor.tsdb");
 
         },
-        ws_on_data(obj) {
+        ws_on_data(obj: any) {
             if (obj.cmd != null) {
                 console.log(this.$options.name + ' websocket received ' + obj.cmd);
                 if (obj.cmd == 'update') {
@@ -161,13 +163,13 @@ export default  {
                     }
                 }
                 else if (obj.cmd == 'insert') {
-                    var ts = new Date(obj.rec.data.ts.substring(0, 19));
-                    var rec = {
+                    const ts = new Date(obj.rec.data.ts.substring(0, 19));
+                    const rec = {
                         id: obj.rec.key.id,
                         account: obj.rec.data.account,
                         evt: obj.rec.data.evt,
                         obj: obj.rec.data.obj,
-                        ts: ts };
+                        ts: ts } as any;
 
                     if (obj.rec.data.evt == 'login') {
                         rec["_rowVariant"] = "success";
@@ -178,7 +180,7 @@ export default  {
                     this.timeSeries.push(rec);
                 }
                 else if (obj.cmd == 'clear') {
-                    timeSeries = [];
+                    this.timeSeries = [];
                 }
                 // eslint-disable-next-line no-empty
                 else if (obj.cmd == 'delete') {
@@ -205,19 +207,19 @@ export default  {
 
             }
         },
-        onFiltered(filteredItems) {
+        onFiltered(filteredItems: any[]) {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.visibleRows = filteredItems.length
             this.currentPage = 1
         },
 
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to: any, from: any, next: any) {
         hasPrivilegesWaitForUser(store, MODULES.MONITOR_TSDB, PRIVILEGES.VIEW).then((result) => {
             next( result ? true: NO_ACCESS_ROUTE);
         });
     }
-}
+})
 </script>
 
 <style scoped lang="css">
