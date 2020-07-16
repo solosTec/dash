@@ -1994,7 +1994,7 @@ export default  mixins(webSocket, Vue).extend({
                 ws_submit_record: (cmd: any, channel: any, obj: any) => {
                     this.ws_submit_record(cmd, channel, obj)
                 },
-                ws_submit_key: (cmd: any, cahnnel: any, key: any) => {
+                ws_submit_key: (cmd: any, channel: any, key: any) => {
                     this.ws_submit_key(cmd, channel, key);
                 },
                 ws_submit_request: (msgType: any, root: any, pk_gw: any, params: any) => {
