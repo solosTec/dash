@@ -48,7 +48,7 @@
     <Content Include="src\components\smf-table-snapshots.vue" />
     <Content Include="src\components\smf-table-valid.vue" />
     <Content Include="src\constants\msgTypes.ts" />
-    <Content Include="src\constants\rootCodes.js" />
+    <Content Include="src\constants\rootCodes.ts" />
     <Content Include="src\mixins\privileges.ts" />
     <Content Include="src\mixins\web-socket.ts" />
     <Content Include="src\plugins\bootstrap-vue.js" />

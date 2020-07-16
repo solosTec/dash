@@ -1,5 +1,4 @@
-﻿﻿
-<template lang="html">
+﻿<template lang="html">
 
     <section class="smf-config-meter">
 
@@ -451,7 +450,7 @@
 
     import { webSocket } from '../mixins/web-socket';
     import { MESSAGE_REQUEST, MESSAGE_RESPONSE } from '@/constants/msgTypes'
-    import { SML_CODES } from '@/constants/rootCodes.js'
+    import { SML_CODES } from '@/constants/rootCodes'
     import dataMirror from '@/components/smf-table-data-mirror.vue'
     import pushTargets from '@/components/smf-table-push-targets.vue'
     import { hasPrivilegesWaitForUser } from "../mixins/privileges";

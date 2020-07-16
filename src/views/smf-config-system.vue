@@ -1,5 +1,4 @@
-﻿﻿/* eslint-disable no-console */
-<template lang="html">
+﻿<template lang="html">
 
     <section class="smf-config-system">
 

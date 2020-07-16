@@ -1,4 +1,4 @@
-﻿﻿<template lang="html">
+﻿<template lang="html">
 
     <section class="smf-table-push-targets">
         <b-table ref="tablePushTargets"

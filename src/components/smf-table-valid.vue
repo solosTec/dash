@@ -1,4 +1,4 @@
-﻿﻿<template lang="html">
+﻿<template lang="html">
 
      <b-container class="smf-table-valid" fluid>
          <!--navigation-->

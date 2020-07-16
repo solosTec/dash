@@ -1,5 +1,4 @@
-﻿﻿
-<template lang="html">
+﻿<template lang="html">
     <div>
         <b-row>
             <b-col md="4">

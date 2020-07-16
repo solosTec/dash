@@ -20,13 +20,11 @@
     import { hasPrivilegesWaitForUser } from "../mixins/privileges";
     import store from "../store";
     import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "../store/modules/user";
-    import tblValid from '@/components/smf-table-valid.vue'
 
     export default {
         name: 'smfTaskPlausibility',
         props: [],
         components: {
-            tblValid
         },
         mounted() {
 

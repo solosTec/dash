@@ -1,5 +1,4 @@
-﻿﻿
-<template lang="html">
+﻿<template lang="html">
     <div>
         <smf-data-table
                 tableName="Meter Rights"
