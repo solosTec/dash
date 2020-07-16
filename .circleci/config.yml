@@ -5,7 +5,7 @@ var_1: &job_defaults
   working_directory: ~/repo
   docker:
     # Use the -browsers version just to get the right .so files on the disk
-    - image: circleci/node:10-stretch-browsers
+    - image: circleci/node:14-stretch-browsers
       environment:
         CHROME_BIN: "/usr/bin/google-chrome"
 
