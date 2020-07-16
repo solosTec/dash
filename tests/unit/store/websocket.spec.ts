@@ -4,7 +4,7 @@ const { eventState, eventRx, eventSx } = websocketModule.mutations;
 
 describe('websocket store', () => {
 
-    let state;
+    let state: any;
 
     beforeEach(() => {
         state = {

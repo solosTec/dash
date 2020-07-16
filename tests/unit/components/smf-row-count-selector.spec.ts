@@ -1,6 +1,6 @@
 import { createLocalVue, mount } from '@vue/test-utils'
 import BootstrapVue from "bootstrap-vue";
-import smfRowCountSelector from "@/components/smf-row-count-selector";
+import smfRowCountSelector from "@/components/smf-row-count-selector.vue";
 
 import '../localStorageMock';
 
@@ -10,7 +10,7 @@ localVue.use(BootstrapVue);
 
 describe('smfRowCountSelector.vue', () => {
 
-    let wrapper;
+    let wrapper: any;
 
     function deferWrapperCreation() {
         return mount(smfRowCountSelector, {

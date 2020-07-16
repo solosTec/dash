@@ -1,9 +1,9 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils'
+import SmfNavigation from '@/components/smf-navigation.vue'
 import BootstrapVue from "bootstrap-vue";
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 import store from '@/store/index';
-import App from "../../src/App";
 
 const localVue = createLocalVue();
 
@@ -13,10 +13,12 @@ localVue.use(Vuex);
 
 const router = new VueRouter();
 
-describe('App.vue', () => {
+describe('SmfNavigation.vue', () => {
 
-  it('should be a vue component instance', () => {
-    const wrapper = shallowMount(App, {
+  let wrapper: any;
+
+  beforeEach( ()=>{
+    wrapper = shallowMount(SmfNavigation, {
       localVue,
       router,
       store,
@@ -24,8 +26,10 @@ describe('App.vue', () => {
         $t: () => {}
       }
     });
+  });
 
-    expect(wrapper.isVueInstance());
+  it('should be a vue component instance', () => {
+    expect(wrapper.isVueInstance())
   });
 
 });
