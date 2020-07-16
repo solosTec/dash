@@ -40,10 +40,12 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
 
-    export default {
+    import Vue from 'vue';
+
+    export default Vue.extend({
         name: 'smf-table-push-targets',
         props: {
             items: Array,
@@ -65,7 +67,7 @@
                         key: 'interval',
                         label: 'Interval',
                         sortable: true,
-                        formatter: (value) => {
+                        formatter: (value: number) => {
                             if (value > 60*60) return (value / (60*60)) + " h";
                             if (value > 60) return (value / 60) + " min";
                             return value + " sec";
@@ -76,7 +78,7 @@
                         key: 'delay',
                         label: 'Delay',
                         sortable: true,
-                        formatter: (value) => {
+                        formatter: (value: number) => {
                             if (value > 60*60) return (value / (60*60)) + " h";
                             if (value > 60) return (value / 60) + " min";
                             if (value === 0) return "-";
@@ -94,7 +96,7 @@
                         label: 'Service',
                         sortable: true,
                         class: 'text-right',
-                        formatter: (value) => {
+                        formatter: (value: string) => {
                             if (value === '8181c78a21ff') return 'IP-Telemetry';
                             else if (value === '8181c78a22ff') return 'Service Interface';
                             else if (value === '8181c78a23ff') return 'OBIS List';
@@ -115,7 +117,7 @@
                         key: "source",
                         label: "Push Source",
                         sortable: true,
-                        formatter: (value) => {
+                        formatter: (value: string) => {
                             if (value === '8181c78a42ff') return 'Push Source';
                             else if (value === '8181c78a43ff') return 'Install Parameters';
                             else if (value === '8181c78a44ff') return 'Visible Devices';
@@ -139,7 +141,7 @@
         },
         computed: {
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

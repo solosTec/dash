@@ -23,7 +23,7 @@
 
                 <b-card :title="$t('config-home-02')" class="shadow">
                     <b-card-text>{{$t('config-home-02a')}}</b-card-text>
-                    <b-button to="/config/gateway" href="#" variant="primary">{{$t('nav-gateways')}}</b-button>                  
+                    <b-button to="/config/gateway" href="#" variant="primary">{{$t('nav-gateways')}}</b-button>
                     <div slot="footer"><small class="text-muted">{{$t('lead-gateway', {count: gatewayCount})}}</small></div>
                 </b-card>
 
@@ -47,7 +47,7 @@
 
                 <b-card :title="$t('config-home-05')" class="shadow">
                     <b-card-text>{{$t('config-home-05a')}}</b-card-text>
-                    <b-button to="/status/targets" href="status.targets.html" variant="primary">{{$t('nav-targets')}}</b-button>       
+                    <b-button to="/status/targets" href="status.targets.html" variant="primary">{{$t('nav-targets')}}</b-button>
                     <div slot="footer"><small class="text-muted">{{$t('lead-status-targets', {count: targetCount})}}</small></div>
                 </b-card>
 
@@ -64,12 +64,13 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    // import vueHeadful from 'vue-headful'
-    import { webSocket } from '../mixins/web-socket'
+    import { webSocket } from '@/mixins/web-socket'
+    import mixins from 'vue-typed-mixins';
+    import Vue from 'vue';
 
-    export default {
+    export default mixins(webSocket, Vue).extend({
         name: 'smfHome',
         props: [],
         mixins: [webSocket],
@@ -102,7 +103,7 @@
                 this.ws_subscribe("table.target.count");
                 this.ws_subscribe("table.connection.count");
             },
-            ws_on_data(obj) {
+            ws_on_data(obj: any) {
                 if (obj.cmd != null) {
                     if (obj.cmd == 'update') {
                         if (obj.channel != null) {
@@ -132,7 +133,7 @@
 
         computed: {
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

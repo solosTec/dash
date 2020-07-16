@@ -21,13 +21,13 @@
 </template>
 <script lang="ts">
     import Vue from 'vue';
+    import {RootAccessRights} from '@/backend-api/root-access-rights';
     import {
-        RootAccessRights,
         UIRootAccessMeter,
         UIRootAccessRights,
         UIRootAccessRightsRole,
         UIRootAccessUser
-    } from '@/backend-api/root-access-rights';
+    } from '@/ui-api/root-access-rights';
 
     const roleNames = (accessRights: RootAccessRights): string[] => Object.keys(accessRights.values);
 
@@ -41,7 +41,7 @@
         },
         data() {
             return {
-                uiRootAccessRights: {}  as UIRootAccessRights,
+                uiRootAccessRights: {} as UIRootAccessRights,
                 currentUser: null as UIRootAccessUser | null,
                 currentRole: null as UIRootAccessRightsRole | null,
                 currentMeter: null as UIRootAccessMeter | null,
@@ -84,7 +84,7 @@
         watch: {
             rootAccessRights: {
                 immediate: true,
-                handler (accessRights: RootAccessRights) {
+                handler(accessRights: RootAccessRights) {
 
                     const roles = roleNames(accessRights).map(roleName => ({
                             roleName,
@@ -112,9 +112,9 @@
                         meters
                     };
 
-                    this.currentRole = roles.find(role => role.devices && role.devices.length > 0) ||  null
+                    this.currentRole = roles.find(role => role.devices && role.devices.length > 0) || null
                     this.currentUser = users.length > 0 ? users[0] : null;
-                    this.currentMeter = meters.length > 0 ? meters[0]: null;
+                    this.currentMeter = meters.length > 0 ? meters[0] : null;
                     this.queryMeter();
                 }
             }

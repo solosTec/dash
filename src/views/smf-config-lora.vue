@@ -132,14 +132,16 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    import { webSocket } from '../mixins/web-socket'
-    import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+    import { webSocket } from '@/mixins/web-socket'
+    import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
     import store from "../store";
-    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+    import mixins from 'vue-typed-mixins';
+    import Vue from 'vue';
 
-    export default {
+    export default mixins(webSocket, Vue).extend({
         name: 'smfConfigLora',
         props: [],
         mixins: [webSocket],
@@ -179,7 +181,7 @@
                         key: 'activation',
                         label: 'Activation',
                         sortable: true,
-                        formatter: (value, key, item) => {
+                        formatter: (value: string) => {
                             return value.toUpperCase();
                         }
                     },
@@ -200,8 +202,8 @@
                         sortable: true
                     }
                 ],
-                gateways: [],
-                selected: [],
+                gateways: [] as any[],
+                selected: [] as any[],
                 sortBy: 'name',
                 sortDesc: false,
                 sortDirection: 'desc',
@@ -212,7 +214,12 @@
                     driver: 'ascii',
                     activation: "otaa",
                     appeui: '',
-                    gweui: ''
+                    gweui: '',
+                    euid: '',
+                    devAddr: '',
+                    appEUI: '',
+                    gwEUI: '',
+                    name: ''
                 }
             }
         },
@@ -230,7 +237,7 @@
                 this.ws_subscribe("config.lora");
             },
 
-            ws_on_data(obj) {
+            ws_on_data(obj: any) {
                 if (obj.cmd != null) {
                     console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
                     if (obj.cmd == 'insert') {
@@ -304,7 +311,7 @@
                 }
             },
 
-            rowSelected(items) {
+            rowSelected(items: any[]) {
                 this.selected = items;
                 if (items.length > 0) {
                     this.form.pk = items[0].pk;
@@ -317,7 +324,7 @@
                     this.form.gweui = items[0].gwEUI;
                 }
             },
-            onDeviceUpdate(event) {
+            onDeviceUpdate(event: Event) {
                 event.preventDefault();
                 console.log('onDeviceUpdate: ' + this.form.eui);
                 this.ws_submit_record("modify", "config.lora", {
@@ -333,7 +340,7 @@
                     }
                 });
             },
-            onDeviceDelete(event) {
+            onDeviceDelete(event: Event) {
                 event.preventDefault();
                 console.log('onDeviceDelete: ' + this.selected.length + ' devices');
                 // this.$refs.dlgDeleteDevice.show();
@@ -341,19 +348,19 @@
 
         },
         computed: {
-            isRecordSelected() {
+            isRecordSelected(): boolean {
                 return this.selected.length != 0;
             },
-            tableCaption() {
+            tableCaption(): string {
                 return this.selected.length + "/" + this.selected.length + " item(s) selected";
             },
-            btnUpdateTitle() {
+            btnUpdateTitle(): string {
                 if (this.selected.length > 0) {
                     return "Update " + this.form.eui;
                 }
                 return "Update";
             },
-            btnDeleteTitle() {
+            btnDeleteTitle(): string {
                 if (this.selected.length == 0) {
                     return "Delete";
                 }
@@ -363,12 +370,12 @@
                 return "Delete " + this.selected.length + " record(s)";
             }
         },
-        beforeRouteEnter(to, from, next) {
+        beforeRouteEnter(to: any, from: any, next: any) {
             hasPrivilegesWaitForUser(store, MODULES.CONFIG_LORA, PRIVILEGES.VIEW).then((result) => {
                 next( result ? true: NO_ACCESS_ROUTE);
             });
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

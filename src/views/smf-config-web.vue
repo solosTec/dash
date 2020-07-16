@@ -1,5 +1,4 @@
-﻿/* eslint-disable no-console */
-<template lang="html">
+﻿<template lang="html">
 
     <section class="smf-config-system">
 
@@ -144,14 +143,16 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    import { webSocket } from '../mixins/web-socket'
-    import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+    import { webSocket } from '@/mixins/web-socket'
+    import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
     import store from "../store";
-    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+    import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+    import mixins from 'vue-typed-mixins';
+    import Vue from 'vue';
 
-    export default {
+    export default mixins(webSocket, Vue).extend({
         name: 'smfConfigWeb',
         props: [],
         mixins: [webSocket],
@@ -205,7 +206,7 @@
                         {
                             key: 'start',
                             label: 'Start',
-                            formatter: (value, key, item) => {
+                            formatter: (value: any) => {
                                 return value.toLocaleString()
                             },
                             sortable: true
@@ -226,13 +227,15 @@
                             sortable: false
                         }
                     ],
-                    data: [],
-                    selected: [],
+                    data: [] as any[],
+                    selected: [] as any[],
                     sortBy: 'name',
                     sortDesc: false,
                     sortDirection: 'desc',
                     filter: null
-                }
+                },
+                ssl: false,
+                selected: [] as any[],
             }
         },
 
@@ -242,7 +245,7 @@
                 this.table.data = [];
                 this.ws_subscribe("web.sessions");
             },
-            ws_on_data(obj) {
+            ws_on_data(obj: any) {
                 console.log(obj);
                 if (obj.cmd != null && obj.channel != null) {
                     console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
@@ -347,7 +350,7 @@
                     }
                 }
             },
-            changeHTTPSessionTimeout(evt) {
+            changeHTTPSessionTimeout(evt: Event) {
                 console.log('changeSessionTimeout ' + this.cfg.http_sessionTimeout);
                 this.ws_submit_record("modify", "config.web", {
                     key: { name: "http-session-timeout" },
@@ -355,7 +358,7 @@
                 });
 
             },
-            changeHTTPMaxUploadSize(evt) {
+            changeHTTPMaxUploadSize(evt: Event) {
                 console.log('changeMaxUploadSize ' + this.cfg.http_maxUploadSize);
                 this.ws_submit_record("modify", "config.web", {
                     key: { name: "http-max-upload-size" },
@@ -363,7 +366,7 @@
                 });
 
             },
-            changeHTTPsSessionTimeout(evt) {
+            changeHTTPsSessionTimeout(evt: Event) {
                 console.log('changeSessionTimeout ' + this.cfg.http_sessionTimeout);
                 this.ws_submit_record("modify", "config.web", {
                     key: { name: "https-session-timeout" },
@@ -371,7 +374,7 @@
                 });
 
             },
-            changeHTTPsMaxUploadSize(evt) {
+            changeHTTPsMaxUploadSize(evt: Event) {
                 console.log('changeMaxUploadSize ' + this.cfg.http_maxUploadSize);
                 this.ws_submit_record("modify", "config.web", {
                     key: { name: "https-max-upload-size" },
@@ -379,7 +382,7 @@
                 });
 
             },
-            rowSelected(items) {
+            rowSelected(items: any[]) {
                 this.selected = items
             }
         },
@@ -404,12 +407,12 @@
                 });
             }
         },
-        beforeRouteEnter(to, from, next) {
+        beforeRouteEnter(to: any, from: any, next: any) {
             hasPrivilegesWaitForUser(store, MODULES.CONFIG_WEB, PRIVILEGES.VIEW).then((result) => {
                 next( result ? true: NO_ACCESS_ROUTE);
             });
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

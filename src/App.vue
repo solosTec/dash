@@ -10,13 +10,16 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 
   import {webSocket} from './mixins/web-socket'
   import SMFNavigation from '@/components/smf-navigation.vue'
   import {mapState} from 'vuex';
+  import mixins from 'vue-typed-mixins';
+  import Vue from 'vue';
+  import {AppState} from '@/store';
 
-  export default {
+  export default mixins(webSocket, Vue).extend({
     name: 'app',
     mixins: [webSocket],
     components: {
@@ -39,7 +42,7 @@
       ws_on_open() {
         this.ws_subscribe("config.user");
       },
-      ws_on_data(obj) {
+      ws_on_data(obj: any) {
         if (obj.cmd === 'insert') {
           this.$store.commit('user/loaded', obj.rec.data);
         }
@@ -48,11 +51,11 @@
     computed: {
       ...mapState({
         userName: state => {
-          return state.user.username;
+          return (state as AppState).user.username;
         }
       })
     }
-  }
+  })
 </script>
 
 <style>

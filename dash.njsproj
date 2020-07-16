@@ -51,9 +51,9 @@
     <Content Include="src\constants\rootCodes.ts" />
     <Content Include="src\mixins\privileges.ts" />
     <Content Include="src\mixins\web-socket.ts" />
-    <Content Include="src\plugins\bootstrap-vue.js" />
-    <Content Include="src\plugins\i18n.js" />
-    <Content Include="src\router.js" />
+    <Content Include="src\plugins\bootstrap-vue.ts" />
+    <Content Include="src\plugins\i18n.ts" />
+    <Content Include="src\router.ts" />
     <Content Include="src\store\index.ts" />
     <Content Include="src\store\modules\user.ts" />
     <Content Include="src\store\modules\websocket.ts" />
@@ -100,7 +100,7 @@
     <Content Include="src\constants\de.json" />
     <Content Include="src\constants\en.json" />
     <Content Include="src\constants\fr.json" />
-    <Content Include="src\constants\languages.js" />
+    <Content Include="src\constants\languages.ts" />
     <Content Include="src\constants\ru.json" />
   </ItemGroup>
   <ItemGroup>

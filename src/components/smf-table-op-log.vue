@@ -32,10 +32,12 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
 
-    export default {
+    import Vue from 'vue';
+
+    export default Vue.extend({
         name: 'smf-table-op-log',
         props: {
             items: Array,
@@ -57,7 +59,7 @@
                         key: 'status',
                         label: 'Status',
                         sortable: true,
-                        formatter: (value, key, item) => {
+                        formatter: (value: number) => {
                             return value.toString(16);
                         },
                         class: 'text-right'
@@ -66,7 +68,7 @@
                         key: 'event',
                         label: 'Event',
                         //class: 'text-center',
-                        formatter: (value, key, item) => {
+                        formatter: (value: number) => {
                             if (value == 8388608) return 'cyclic log entry';
                             else if (value == 1048577) return 'power return';
                             else if (value == 1048578) return 'power failure';
@@ -85,7 +87,7 @@
                         key: 'peer',
                         label: 'Peer',
                         sortable: true,
-                        formatter: (value, key, item) => {
+                        formatter: (value: string) => {
                             if (value == '8101000000FF') return 'ETH (ext)';
                             else if (value == '8102000000FF') return "ETH (custom)";
                             else if (value == '8103000000FF') return "RS232 (service)";
@@ -140,7 +142,7 @@
                         key: 'utc',
                         label: 'UTC',
                         sortable: true,
-                        formatter: (value, key, item) => {
+                        formatter: (value: any) => {
                             return value.toLocaleString()
                         }
                     },
@@ -175,7 +177,7 @@
         },
         computed: {
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

@@ -48,9 +48,11 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-    export default {
+    import Vue from 'vue';
+
+    export default Vue.extend({
         name: 'smf-table-data-mirror',
         props: {
             items: Array,
@@ -91,7 +93,7 @@
                         label: 'Profile',
                         sortable: true,
                         class: 'text-right',
-                        formatter: (value) => {
+                        formatter: (value: string) => {
                             if (value === '8181c78610ff') return '1 minute values';
                             else if (value === '8181c78611ff') return '15 minute values';
                             else if (value === '8181c78612ff') return 'hourly values';
@@ -121,7 +123,7 @@
                 sortDirection: 'desc',
             }
         }
-    }
+    })
 </script>
 
 <style scoped lang="css">

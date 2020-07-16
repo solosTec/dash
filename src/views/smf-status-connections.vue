@@ -71,14 +71,16 @@
 
 </template>
 
-<script lang="js">
+<script lang="ts">
 
-import {webSocket} from '../mixins/web-socket'
-import {hasPrivilegesWaitForUser} from "../mixins/privileges";
+import {webSocket} from '@/mixins/web-socket'
+import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
 import store from "../store";
-import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "../store/modules/user";
+import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
+import mixins from 'vue-typed-mixins';
+import Vue from 'vue';
 
-export default  {
+export default  mixins(webSocket, Vue).extend({
     name: 'smfStatusConnection',
     props: [],
     mixins: [webSocket],
@@ -113,7 +115,7 @@ export default  {
                     key: 'local',
                     label: 'Type',
                     sortable: true,
-                    formatter: (value, key, item) => {
+                    formatter: (value: boolean) => {
                         return value ? "local" : "remote";
                     }
                 },
@@ -132,7 +134,7 @@ export default  {
                     label: 'Throughput',
                     sortable: true,
                     class: 'text-right',
-                    formatter: (value, key, item) => {
+                    formatter: (value: number) => {
                         return this.ws_format_bytes(value);
                     }
                 },
@@ -140,13 +142,13 @@ export default  {
                     key: 'start',
                     label: 'Start',
                     sortable: true,
-                    formatter: (value, key, item) => {
+                    formatter: (value: any) => {
                         return value.toUTCString();
                     }
                 },
             ],
-            connections: [],
-            selected: [],
+            connections: [] as any[],
+            selected: [] as any[],
             sortBy: 'caller',
             sortDesc: false,
             sortDirection: 'desc',
@@ -163,7 +165,7 @@ export default  {
             this.connections = [];
             this.ws_subscribe("status.connection");
         },
-        ws_on_data(obj) {
+        ws_on_data(obj: any) {
             if (obj.cmd != null) {
                 console.log('websocket received ' + obj.cmd);
                 if (obj.cmd == 'insert') {
@@ -209,16 +211,16 @@ export default  {
                 }
             }
         },
-        rowSelected(items) {
+        rowSelected(items: any[]) {
             this.selected = items;
         }
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to: any, from: any, next: any) {
         hasPrivilegesWaitForUser(store, MODULES.STATUS_CONNECTION, PRIVILEGES.VIEW).then((result) => {
             next( result ? true: NO_ACCESS_ROUTE);
         });
     }
-}
+})
 </script>
 
 <style scoped lang="css">

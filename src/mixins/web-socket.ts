@@ -195,7 +195,7 @@ export const webSocket = Vue.extend({
             this.sx += msg.length;
             this.ws_emit_event_sx();
         },
-        ws_submit_command(cmd: string, channel: string, key: string, params: any, section: string) {
+        ws_submit_command(cmd: string, channel: string, key: string, params: any, section: string | string[]) {
             if (!this.ws_is_open() || !this.ws) return;
             const msg = JSON.stringify({
                 cmd: cmd,
