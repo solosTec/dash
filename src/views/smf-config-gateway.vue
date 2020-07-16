@@ -1550,6 +1550,16 @@ export default  mixins(webSocket, Vue).extend({
                                 this.ipt.param[1].user = obj.rec.values['81490D070002']['8149633C0102'];
                                 this.ipt.param[1].pwd = obj.rec.values['81490D070002']['8149633C0202'];
                             }
+                            else if (obj.section[0] === SML_CODES.CODE_ROOT_BROKER) {
+                                console.log(obj);
+                                this.spinner.broker = false;
+                                this.broker.ttyAPP0.transparent = obj.rec.values['9000000001FF']['900000000101'];
+                                this.broker.ttyAPP1.transparent = obj.rec.values['9000000001FF']['900000000102'];
+                                this.broker.ttyAPP0.host = obj.rec.values['9000000002FF']['900000000201'];
+                                this.broker.ttyAPP1.host = obj.rec.values['9000000002FF']['900000000202'];
+                                this.broker.ttyAPP0.service = obj.rec.values['9000000003FF']['900000000301'];
+                                this.broker.ttyAPP1.service = obj.rec.values['9000000003FF']['900000000302'];
+                            }
                             else if (obj.section[0] === SML_CODES.CODE_IF_1107) {
                                 //  hide loading spinner
                                 this.spinner.iec = false;
@@ -1804,6 +1814,9 @@ export default  mixins(webSocket, Vue).extend({
                 this.spinner.ipt = true;
                 this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_IPT_PARAM, [pkGateway]);
                 this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_IPT_STATE, [pkGateway]);
+            } else if (smfContext === this.smfContext.broker) {
+                this.spinner.broker = true;
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_BROKER, [pkGateway]);
             } else if (smfContext === this.smfContext.firmware) {
                 this.fw.values = [];
                 this.spinner.firmware = true;
@@ -1887,13 +1900,14 @@ export default  mixins(webSocket, Vue).extend({
                 [this.form.pk!],
                 { index: index, ipt: this.ipt.param[index] });
         },
-        onBrokerUpdate(event, port) {
+        onBrokerUpdate(event: Event, port: string) {
             event.preventDefault();
-            console.log(this.broker[port]);
+            //console.log(this.broker[port]);
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
-                SML_CODES.CODE_ROOT_IPT_PARAM,
-                [this.form.pk],
-                { port: port, broker: this.broker[port] });
+                SML_CODES.CODE_ROOT_BROKER,
+                [this.form.pk!],
+                { port: port, broker: this.broker });
+            //  this.broker[port] wäre cool
         },
         onMeterDelete(item: any) {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
