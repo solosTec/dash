@@ -124,11 +124,10 @@
 
                                     <b-card header="① Redundancy" title="Primary Host" sub-title="Access Parameters">
                                         <b-form-group label="TCP/IP Address"
-                                                      label-for="smf-broker.ttyAPP0.host"
                                                       label-cols-sm="4"
                                                       label-cols-lg="3"
                                                       description="Dotted decimal notation or hostname">
-                                            <b-input-group prepend="Host" label="LABEL" name="smf-broker.ttyAPP0.host" class="mt-2">
+                                            <b-input-group prepend="Host" class="mt-2">
                                                 <b-form-input id="smf-gw-ipt-host-0"
                                                               type="text"
                                                               v-model="ipt.param[0].host"
@@ -183,11 +182,10 @@
 
                                     <b-card header="② Redundancy" title="Secondary Host" sub-title="Access Parameters">
                                         <b-form-group label="TCP/IP Address"
-                                                      label-for="smf-broker.ttyAPP1.host"
                                                       label-cols-sm="4"
                                                       label-cols-lg="3"
                                                       description="Dotted decimal notation or hostname">
-                                            <b-input-group prepend="Host" label="LABEL" name="smf-broker.ttyAPP1.host" class="mt-2">
+                                            <b-input-group prepend="Host" class="mt-2">
                                                 <b-form-input id="smf-gw-ipt-host-1"
                                                               type="text"
                                                               v-model="ipt.param[1].host"
@@ -305,50 +303,75 @@
                             <b-form @submit.prevent="">
 
                                 <b-card-group deck class="pt-4">
-                                    <b-card header="wireless LMN" title="Transparent mode" sub-title="Reconfiguration requires a restart">
+                                    <b-card header="wireless LMN" title="Transparent mode ttyAPP0" sub-title="Reconfiguration requires a restart">
 
-                                        <b-form-group label="ToDo" label-for="smf-broker.ttyAPP0.transparent">
-                                            <b-form-checkbox switch v-model="broker.ttyAPP0.transparent" name="smf-broker.ttyAPP0.transparent">
-                                                {{ broker.ttyAPP0.transparent ? $t('config-gateway-40') : $t('config-gateway-41') }}
-                                            </b-form-checkbox>
-                                        </b-form-group>
-
-                                        <b-form-group label="ToDo" label-for="smf-broker.ttyAPP0.host">
-                                            <b-input-group prepend="Transparent host" label="LABEL" name="smf-broker.ttyAPP0.host" class="mt-2">
+                                        <b-form-group label="TCP/IP Address"
+                                                      label-for="smf-broker.ttyAPP0.host"
+                                                      description="Dotted decimal notation or hostname"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-input-group name="smf-broker.ttyAPP0.host" class="mt-2">
+                                                <b-input-group-prepend is-text>
+                                                    <b-form-checkbox v-model="broker.ttyAPP0.transparent" class="mr-n2" switch>
+                                                        <span class="sr-only">Switch for following text input</span>
+                                                    </b-form-checkbox>
+                                                </b-input-group-prepend>
                                                 <b-form-input id="smf-broker.ttyAPP0.host"
                                                               type="text"
+                                                              :disabled="!broker.ttyAPP0.transparent"
                                                               v-model="broker.ttyAPP0.host"
                                                               placeholder="Hostname" />
 
-                                                <b-form-input id="smf-broker.ttyAPP1.host"
+                                                <b-form-input id="smf-broker.ttyAPP0.host"
                                                               type="number"
+                                                              :disabled="!broker.ttyAPP0.transparent"
                                                               v-model="broker.ttyAPP0.service"
                                                               placeholder="IP port" />
                                             </b-input-group>
                                         </b-form-group>
-                                        <b-button href="#" variant="primary" class="mt-2">Apply</b-button>
+                                        <b-form-group label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-button 
+                                                      type="submit" 
+                                                      variant="primary"
+                                                      v-on:click.stop="onBrokerUpdate($event, 'ttyAPP0')">{{btnUpdateTitle}}</b-button>
+                                        </b-form-group>
+
                                     </b-card>
 
-                                    <b-card header="wired LMN" title="Transparent mode" sub-title="Reconfiguration requires a restart">
+                                    <b-card header="wired LMN" title="Transparent mode ttyAPP1" sub-title="Reconfiguration requires a restart">
 
-                                        <b-form-group label="ToDo" label-for="smf-broker.ttyAPP1.transparent">
-                                            <b-form-checkbox switch v-model="broker.ttyAPP1.transparent" name="smf-broker.ttyAPP1.transparent">
-                                                {{ broker.ttyAPP1.transparent ? $t('config-gateway-40') : $t('config-gateway-41') }}
-                                            </b-form-checkbox>
-                                        </b-form-group>
-                                        <b-form-group label="ToDo" label-for="smf-broker.ttyAPP1.host">
-                                            <b-input-group prepend="Transparent host" label="LABEL" name="smf-broker.ttyAPP1.host" class="mt-2">
+                                        <b-form-group label="TCP/IP Address"
+                                                      label-for="smf-broker.ttyAPP1.host"
+                                                      description="Dotted decimal notation or hostname"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-input-group name="smf-broker.ttyAPP1.host" class="mt-2">
+                                                <b-input-group-prepend is-text>
+                                                    <b-form-checkbox v-model="broker.ttyAPP1.transparent" class="mr-n2" switch>
+                                                        <span class="sr-only">Switch for following text input</span>
+                                                    </b-form-checkbox>
+                                                </b-input-group-prepend>
+
                                                 <b-form-input id="smf-broker.ttyAPP1.host"
                                                               type="text"
+                                                              :disabled="!broker.ttyAPP1.transparent"
                                                               v-model="broker.ttyAPP1.host"
                                                               placeholder="Hostname" />
                                                 <b-form-input id="smf-broker.ttyAPP1.host"
                                                               type="number"
+                                                              :disabled="!broker.ttyAPP1.transparent"
                                                               v-model="broker.ttyAPP1.service"
                                                               placeholder="IP port" />
                                             </b-input-group>
                                         </b-form-group>
-                                        <b-button href="#" variant="primary" class="mt-2">Apply</b-button>
+                                        <b-form-group label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-button 
+                                                      type="submit" 
+                                                      variant="primary"
+                                                      v-on:click.stop="onBrokerUpdate($event, 'ttyAPP1')">{{btnUpdateTitle}}</b-button>
+                                        </b-form-group>
                                     </b-card>
                                 </b-card-group>
                             </b-form>
@@ -1850,11 +1873,19 @@ export default  {
 
         onIPTUpdate(event, index)   {
             event.preventDefault();
-            console.log(this.ipt.param[index]);
+            //console.log(this.ipt.param[index]);
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_ROOT_IPT_PARAM,
                 [this.form.pk],
                 { index: index, ipt: this.ipt.param[index] });
+        },
+        onBrokerUpdate(event, port) {
+            event.preventDefault();
+            console.log(this.broker[port]);
+            this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
+                SML_CODES.CODE_ROOT_IPT_PARAM,
+                [this.form.pk],
+                { port: port, broker: this.broker[port] });
         },
         onMeterDelete(item) {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
