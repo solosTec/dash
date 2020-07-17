@@ -331,8 +331,8 @@
                                         </b-form-group>
                                         <b-form-group label-cols-sm="4"
                                                       label-cols-lg="3">
-                                            <b-button 
-                                                      type="submit" 
+                                            <b-button
+                                                      type="submit"
                                                       variant="primary"
                                                       v-on:click.stop="onBrokerUpdate($event, 'ttyAPP0')">{{btnUpdateTitle}}</b-button>
                                         </b-form-group>
@@ -367,8 +367,8 @@
                                         </b-form-group>
                                         <b-form-group label-cols-sm="4"
                                                       label-cols-lg="3">
-                                            <b-button 
-                                                      type="submit" 
+                                            <b-button
+                                                      type="submit"
                                                       variant="primary"
                                                       v-on:click.stop="onBrokerUpdate($event, 'ttyAPP1')">{{btnUpdateTitle}}</b-button>
                                         </b-form-group>
@@ -1900,9 +1900,9 @@ export default  mixins(webSocket, Vue).extend({
                 [this.form.pk!],
                 { index: index, ipt: this.ipt.param[index] });
         },
-        onBrokerUpdate(event: Event, port: string) {
+        onBrokerUpdate(event: Event, port: 'ttyAPP0' | 'ttyAPP1') {
             event.preventDefault();
-            //console.log(this.broker[port]);
+            console.log(this.broker[port]);
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_ROOT_BROKER,
                 [this.form.pk!],
