@@ -24,29 +24,53 @@
                 <b-col md="3">
                     <b-form v-on:submit.prevent class="p-3 shadow">
 
-                        <b-input-group label="IP address">
-                            <b-form-input id="smf-form-iec-address"
-                                          type="text"
-                                          v-model="form.address"
-                                          required
-                                          placeholder="<IP address (dotted)>"
-                                          minlength="7"
-                                          maxlength="15"
-                                          size="15" />
-                            <b-form-input id="smf-form-iec-service"
-                                          type="number"
-                                          v-model="form.port"
-                                          required />
-                        </b-input-group>
+                        <b-form-group label="Meter"
+                                      description="Meter ID"
+                                      label-cols-sm="4"
+                                      label-cols-lg="3">
+                            <b-input-group label="IP address">
+                                <b-form-input id="smf-form-iec-address"
+                                              type="text"
+                                              v-model="form.meter"
+                                              required
+                                              placeholder="<Meter ID>"
+                                              size="15" />
+                            </b-input-group>
+                        </b-form-group>
+                        <b-form-group label="TCP/IP Address"
+                                      description="Dotted decimal notation or hostname"
+                                      label-cols-sm="4"
+                                      label-cols-lg="3">
+                            <b-input-group label="IP address">
+                                <b-form-input id="smf-form-iec-address"
+                                              type="text"
+                                              v-model="form.address"
+                                              required
+                                              placeholder="<IP address (dotted)>"
+                                              minlength="7"
+                                              maxlength="15"
+                                              size="15" />
+                                <b-form-input id="smf-form-iec-service"
+                                              type="number"
+                                              v-model="form.port"
+                                              required />
+                            </b-input-group>
+                        </b-form-group>
 
-                        <b-form-group label="Direction" label-for="smf-form-iec-direction">
+                        <b-form-group label="Direction"
+                                      description="Working as server or client"
+                                      label-cols-sm="4"
+                                      label-cols-lg="3">
                             <b-form-radio-group id="smf-form-iec-direction" v-model="form.direction" name="smf-form-iec-direction">
                                 <b-form-radio value="in" v-b-popover.hover="'The TCP/IP connection will be established by the meter device.'" title="Incoming connection">↤ Incoming</b-form-radio>
                                 <b-form-radio value="out" v-b-popover.hover="'The TCP/IP connection will be established by the IEC node.'" title="Outgoing connection">Outgoing ↦</b-form-radio>
                             </b-form-radio-group>
                         </b-form-group>
 
-                        <b-form-group label="Readout Interval" label-for="smf-form-iec-interval">
+                        <b-form-group label="Readout Interval"
+                                      description="Format is hh:mm::ss"
+                                      label-cols-sm="4"
+                                      label-cols-lg="3">
                             <b-form-input id="smf-form-iec-interval"
                                           type="text"
                                           v-model="form.interval"
@@ -65,7 +89,7 @@
 
                         <hr />
 
-                        <b-button type="submit" variant="success" :disabled="!isRecordNew" v-on:click.stop="onDeviceInsert">{{btnInsertTitle}}</b-button>
+                        <b-button type="submit" variant="success" :disabled="!isRecordNew" v-on:click.stop="onMeterInsert">{{btnInsertTitle}}</b-button>
 
                     </b-form>
                 </b-col>
@@ -156,8 +180,32 @@
                     this.items.push(rec);
                 }
             },
-            cmd_update(channel: string, value: any) {
-                //  unused
+            cmd_update(channel: string, cmd: string, value: any) {
+                console.log("update", channel, cmd, value);
+            },
+            cmd_modify(channel: string, pk: any, value: any) {
+                if (channel == 'config.iec') {
+                    this.items.forEach((rec: UiMeter) => {
+                        console.log(rec.pk, pk);
+                        if (rec.pk === pk) {
+                            if (value.port !== null) {
+                                rec.port = value.port;
+                            }
+                            else if (value.meter !== null) {
+                                rec.meter = value.meter;
+                            }
+                            else if (value.address !== null) {
+                                rec.address = value.address;
+                            }
+                            else if (value.interval !== null) {
+                                rec.interval = value.interval;
+                            }
+                            else if (value.direction !== null) {
+                                rec.direction = value.direction;
+                            }
+                        }
+                    });
+                }
             },
             ws_on_data(obj: any) {
                 if (obj.cmd != null) {
@@ -170,7 +218,10 @@
                             this.cmd_insert(obj.channel, obj.rec.key, obj.rec.data);
                             break;
                         case 'update':
-                            this.cmd_update(obj.channel, obj.value);
+                            this.cmd_update(obj.channel, obj.cmd, obj.value);
+                            break;
+                        case 'modify':
+                            this.cmd_modify(obj.channel, obj.key[0], obj.value);
                             break;
                         default:
                             console.warn('undefined cmd ', obj);
@@ -193,6 +244,14 @@
             },
             onMeterDelete(event: Event) {
                 event.preventDefault();
+                console.log("insert");
+                this.ws_submit_record("remove", "config.iec", {
+                    key: [this.form.pk],
+                    data: {
+                        pk: this.form.pk,
+                        address: this.form.address
+                    }
+                });
             },
             onMeterInsert(event: Event) {
                 event.preventDefault();
@@ -234,7 +293,7 @@
             },
             isRecordNew(): boolean {
                 if (this.selected.length !== 0) {
-                    return this.form.address !== this.selected[0].address;
+                    return this.form.meter !== this.selected[0].meter;
                 }
                 return this.form.address.length > 0;
             },

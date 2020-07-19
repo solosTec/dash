@@ -110,8 +110,8 @@
                                                           type="text"
                                                           v-model="form.code"
                                                           placeholder="<Metering Code>"
-                                                          pattern="[a-zA-Z0-9]{33}" required
-                                                          maxlength="33" />
+                                                          pattern="[A-Z]{2}[a-zA-Z0-9]{17,46}" required
+                                                          maxlength="48" />
                                         </b-form-group>
                                     </b-col>
                                     <b-col md="3">

@@ -1907,7 +1907,7 @@ export default  mixins(webSocket, Vue).extend({
                 SML_CODES.CODE_ROOT_BROKER,
                 [this.form.pk!],
                 { port: port, broker: this.broker });
-            //  this.broker[port] wäre cool
+                //{ port: port, broker: this.broker[port] });
         },
         onMeterDelete(item: any) {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
