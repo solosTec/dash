@@ -198,78 +198,6 @@
                             </b-form>
                         </b-tab>
 
-                        <b-tab>
-                            <template slot="title">
-                                Gateway
-                                <b-spinner v-if="spinner.readout" type="grow" small />
-                            </template>
-
-                            <b-form @:submit.prevent="">
-                                <b-row>
-                                    <b-col md="6">
-                                        <b-form-group label="Ident" label-for="smf-form-meter-ident-a">
-                                            <b-form-input id="smf-form-meter-ident-a"
-                                                          type="text"
-                                                          v-model="form.ident"
-                                                          readonly
-                                                          placeholder="<Ident>"
-                                                          maxlength="22" />
-                                        </b-form-group>
-                                    </b-col>
-                                    <b-col md="6">
-                                        <b-form-group label="Gateway" label-for="smf-form-meter-gw">
-                                            <b-form-input id="smf-form-meter-gw"
-                                                          type="text"
-                                                          v-model="form.serverId"
-                                                          readonly
-                                                          placeholder="<Ident>" />
-                                        </b-form-group>
-                                    </b-col>
-                                </b-row>
-
-                                <b-row>
-                                    <b-col md="6">
-                                        <!-- table -->
-                                        <b-table ref="readoutTable"
-                                                 bordered
-                                                 striped
-                                                 small
-                                                 hover
-                                                 show-empty
-                                                 stacked="md"
-                                                 selectable
-                                                 select-mode="single"
-                                                 selectedVariant="info"
-                                                 @row-selected="rowSelected"
-                                                 :fields="readout.fields"
-                                                 :items="readout.values"
-                                                 :busy="isBusy"
-                                                 :current-page="readout.currentPage"
-                                                 :per-page="readout.perPage"
-                                                 primary-key="obis"
-                                                 :sort-by.sync="readout.sortBy"
-                                                 :sort-desc.sync="readout.sortDesc"
-                                                 :sort-direction="readout.sortDirection"
-                                                 class="shadow">
-
-                                            <!-- A custom formatted column descr -->
-                                            <template v-slot:cell(obis)="data">
-                                                <span v-b-popover.hover="data.item.value + ' ' + getUnitName(data.item.unit)" :title="data.value | toRegisterName">{{ data.item.obis }}</span>
-                                                <!--                                                <span v-b-popover.hover="data.value" :title="data.item.obis">{{ formatDescription(data.value) }}</span>-->
-                                            </template>
-
-                                        </b-table>
-                                    </b-col>
-                                    <b-col md="6">
-                                        <b-form-group label="Query last record">
-                                            <b-button type="submit" variant="success" v-on:click.stop="onMeterQuery">{{btnQueryTitle}}</b-button>
-                                        </b-form-group>
-                                    </b-col>
-                                </b-row>
-
-                            </b-form>
-                        </b-tab>
-
                         <b-tab no-body>
                             <template slot="title">
                                 Meter
@@ -394,6 +322,77 @@
                                 </b-row>
                             </b-form>
 
+                        </b-tab>
+
+                        <b-tab>
+                            <template slot="title">
+                                Gateway
+                                <b-spinner v-if="spinner.readout" type="grow" small />
+                            </template>
+
+                            <b-form @:submit.prevent="">
+                                <b-row>
+                                    <b-col md="6">
+                                        <b-form-group label="Ident" label-for="smf-form-meter-ident-a">
+                                            <b-form-input id="smf-form-meter-ident-a"
+                                                          type="text"
+                                                          v-model="form.ident"
+                                                          readonly
+                                                          placeholder="<Ident>"
+                                                          maxlength="22" />
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col md="6">
+                                        <b-form-group label="Gateway" label-for="smf-form-meter-gw">
+                                            <b-form-input id="smf-form-meter-gw"
+                                                          type="text"
+                                                          v-model="form.serverId"
+                                                          readonly
+                                                          placeholder="<Ident>" />
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+
+                                <b-row>
+                                    <b-col md="6">
+                                        <!-- table -->
+                                        <b-table ref="readoutTable"
+                                                 bordered
+                                                 striped
+                                                 small
+                                                 hover
+                                                 show-empty
+                                                 stacked="md"
+                                                 selectable
+                                                 select-mode="single"
+                                                 selectedVariant="info"
+                                                 @row-selected="rowSelected"
+                                                 :fields="readout.fields"
+                                                 :items="readout.values"
+                                                 :busy="isBusy"
+                                                 :current-page="readout.currentPage"
+                                                 :per-page="readout.perPage"
+                                                 primary-key="obis"
+                                                 :sort-by.sync="readout.sortBy"
+                                                 :sort-desc.sync="readout.sortDesc"
+                                                 :sort-direction="readout.sortDirection"
+                                                 class="shadow">
+
+                                            <!-- A custom formatted column descr -->
+                                            <template v-slot:cell(obis)="data">
+                                                <span v-b-popover.hover="data.item.value + ' ' + getUnitName(data.item.unit)" :title="data.value | toRegisterName">{{ data.item.obis }}</span>
+                                            </template>
+
+                                        </b-table>
+                                    </b-col>
+                                    <b-col md="6">
+                                        <b-form-group label="Query last record">
+                                            <b-button type="submit" variant="success" v-on:click.stop="onMeterQuery">{{btnQueryTitle}}</b-button>
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+
+                            </b-form>
                         </b-tab>
 
                         <b-tab no-body>
