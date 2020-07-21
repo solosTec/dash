@@ -531,6 +531,7 @@
 
         data() {
             return {
+                getUnitName,
                 isBusy: false,
                 busyLevel: 0,
                 currentPage: 1,
