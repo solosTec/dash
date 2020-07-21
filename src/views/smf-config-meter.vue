@@ -85,8 +85,11 @@
                         <b-tab title="Configuration" active>
                             <b-form @:submit.prevent="">
                                 <b-row>
-                                    <b-col md="3">
-                                        <b-form-group label="Ident" label-for="smf-form-meter-ident">
+                                    <b-col md="6">
+                                        <b-form-group label="Ident"
+                                                      description="Meter identifier in full length"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
                                             <b-form-input id="smf-form-meter-ident"
                                                           type="text"
                                                           v-model="form.ident"
@@ -94,18 +97,20 @@
                                                           placeholder="<Ident>"
                                                           maxlength="22" />
                                         </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group label="Meter" label-for="smf-form-meter-meter">
+                                        <b-form-group label="Meter"
+                                                      description="Short Identifier"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
                                             <b-form-input id="smf-form-meter-meter"
                                                           type="text"
                                                           v-model="form.meter"
                                                           readonly
                                                           placeholder="<Meter>" />
                                         </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group label="Metering Code" label-for="smf-form-meter-code">
+                                        <b-form-group label="Metering Code"
+                                                      description="Unique metering code"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
                                             <b-form-input id="smf-form-meter-code"
                                                           type="text"
                                                           v-model="form.code"
@@ -113,81 +118,83 @@
                                                           pattern="[A-Z]{2}[a-zA-Z0-9]{17,46}" required
                                                           maxlength="48" />
                                         </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group label="Manufacturer" label-for="smf-form-meter-maker-1">
-                                            <b-form-input id="smf-form-meter-maker-1"
+                                        <b-form-group label="Manufacturer"
+                                                      description="3 character code"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-form-input id="smf-form-meter-maker"
                                                           type="text"
                                                           v-model="form.maker"
                                                           placeholder="<Manufacturer>" />
                                         </b-form-group>
-                                    </b-col>
-                                </b-row>
-
-                                <b-row>
-                                    <b-col md="3">
-                                        <b-form-group label="Firmware" label-for="smf-form-meter-fw">
-                                            <b-form-input id="smf-form-meter-fw"
-                                                          type="text"
-                                                          v-model="form.fw"
-                                                          placeholder="<Firmware>" />
-                                        </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group label="Parameterization" label-for="smf-form-meter-param">
-                                            <b-form-input id="smf-form-meter-param"
-                                                          type="text"
-                                                          v-model="form.vParam"
-                                                          placeholder="<Parameterization>" />
-                                        </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group label="Factory Number" label-for="smf-form-meter-factory-nr">
-                                            <b-form-input id="smf-form-meter-factory-nr"
-                                                          type="text"
-                                                          v-model="form.factoryNr"
-                                                          placeholder="<Factory Number>" />
-                                        </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group label="Item" label-for="smf-form-meter-item">
+                                        <b-form-group label="Item"
+                                                      description="Articel description"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
                                             <b-form-input id="smf-form-meter-item"
                                                           type="text"
                                                           v-model="form.item"
                                                           placeholder="<Item>" />
                                         </b-form-group>
+                                        <b-form-group description="Update meter configuration"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-button type="submit" id="smf-form-meter-update" variant="info" v-on:click.stop="onMeterUpdate">{{btnUpdateTitle}}</b-button>
+                                        </b-form-group>
                                     </b-col>
-                                </b-row>
-
-                                <b-row>
-                                    <b-col md="3">
-                                        <b-form-group label="Metrological Class" label-for="smf-form-meter-class">
+                                    <b-col md="6">
+                                        <b-form-group label="Firmware"
+                                                      description="Current bootstream software/version"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-form-input id="smf-form-meter-fw"
+                                                          type="text"
+                                                          v-model="form.fw"
+                                                          placeholder="<Firmware>" />
+                                        </b-form-group>
+                                        <b-form-group label="Parameterization"
+                                                      description="Active parameterization file"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-form-input id="smf-form-meter-param"
+                                                          type="text"
+                                                          v-model="form.vParam"
+                                                          placeholder="<Parameterization>" />
+                                        </b-form-group>
+                                        <b-form-group label="Factory Number"
+                                                      description="Production number from manufacturer"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-form-input id="smf-form-meter-factory-nr"
+                                                          type="text"
+                                                          v-model="form.factoryNr"
+                                                          placeholder="<Factory Number>" />
+                                        </b-form-group>
+                                        <b-form-group label="Metrological Class"
+                                                      description="Q3/Q1 ratio"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
                                             <b-form-input id="smf-form-meter-class"
                                                           type="text"
                                                           v-model="form.mClass"
                                                           placeholder="<Metrological Class>" />
                                         </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group label="Time of Manufactoring (TOM)" label-for="smf-form-meter-tom">
+                                        <b-form-group label="TOM"
+                                                      description="Time of Manufactoring"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
                                             <b-form-input id="smf-form-meter-tom"
                                                           type="date"
                                                           v-model="form.tom"
                                                           placeholder="<Time of Manufactoring>" />
                                         </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group label="Update meter configuration" label-for="smf-form-meter-update">
-                                            <b-button type="submit" id="smf-form-meter-update" variant="info" v-on:click.stop="onMeterUpdate">{{btnUpdateTitle}}</b-button>
-                                        </b-form-group>
-                                    </b-col>
-                                    <b-col md="3">
-                                        <b-form-group label="Delete meter configuration" label-for="smf-form-meter-delete">
+                                        <b-form-group description="Delete meter configuration"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
                                             <b-button type="submit" id="smf-form-meter-delete" variant="danger" v-on:click.stop="onMeterDelete">{{btnDeleteTitle}}</b-button>
                                         </b-form-group>
                                     </b-col>
                                 </b-row>
-
                             </b-form>
                         </b-tab>
 
@@ -427,6 +434,40 @@
                             </b-form>
                         </b-tab>
 
+                        <b-tab no-body>
+                            <template slot="title">
+                                Broker Mode
+                                <b-spinner v-if="spinner.broker" type="grow" small />
+                            </template>
+                            <b-form @:submit.prevent="" class="p-3">
+                                <b-row>
+                                    <b-col md="6">
+                                        <b-form-group description="IEC broker state"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-form-checkbox switch size="lg">IEC Broker</b-form-checkbox>
+                                        </b-form-group>
+                                        <b-form-group description="M-Bus broker state"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-form-checkbox switch size="lg">M-Bus Broker</b-form-checkbox>
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col md="6">
+                                        <b-form-group description="Add to or remove from IEC broker"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-button type="submit" id="smf-form-meter-broker" variant="secondary" v-on:click.stop="onBrokerUpdate('iec')">Apply</b-button>
+                                        </b-form-group>
+                                        <b-form-group description="Add to or remove from M-Bus broker"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3">
+                                            <b-button type="submit" id="smf-form-meter-broker" variant="secondary" v-on:click.stop="onBrokerUpdate('mbus')">Apply</b-button>
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+                            </b-form>
+                        </b-tab>
                     </b-tabs>
                 </b-col>
             </b-row>
@@ -660,7 +701,8 @@
                     readout: false,
                     meter: false,
                     push: false,
-                    mirror: false
+                    mirror: false,
+                    broker: false
                 },
             }
         },
@@ -1037,6 +1079,9 @@
                 // Trigger pagination to update the number of buttons/pages due to filtering
                 this.visibleRows = filteredItems.length;
                 this.currentPage = 1
+            },
+            onBrokerUpdate(type: 'iec' | 'mbus') {
+
             }
         },
 

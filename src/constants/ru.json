@@ -72,6 +72,7 @@
     "com-default": "Стандарт",
 
     "action-del": "Удалить",
+    "action-remove": "Удалить",
     "action-apply": "поручаться",
     "action-update": "Обновить",
     "action-insert": "Вставить",

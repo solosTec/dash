@@ -76,6 +76,7 @@
 
     "action-update": "Update",
     "action-del": "Löschen",
+    "action-remove": "Entfernen",
     "action-insert": "Einfügen",
     "action-apply": "Übernehmen",
 

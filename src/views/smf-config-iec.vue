@@ -24,19 +24,6 @@
                 <b-col md="3">
                     <b-form v-on:submit.prevent class="p-3 shadow">
 
-                        <b-form-group label="Meter"
-                                      description="Meter ID"
-                                      label-cols-sm="4"
-                                      label-cols-lg="3">
-                            <b-input-group label="IP address">
-                                <b-form-input id="smf-form-iec-address"
-                                              type="text"
-                                              v-model="form.meter"
-                                              required
-                                              placeholder="<Meter ID>"
-                                              size="15" />
-                            </b-input-group>
-                        </b-form-group>
                         <b-form-group label="TCP/IP Address"
                                       description="Dotted decimal notation or hostname"
                                       label-cols-sm="4"
@@ -86,10 +73,6 @@
                         <b-input-group class="pt-3">
                             <b-button type="submit" variant="danger" :disabled="!isRecordSelected" v-on:click.stop="onMeterDelete">{{btnDeleteTitle}}</b-button>
                         </b-input-group>
-
-                        <hr />
-
-                        <b-button type="submit" variant="success" :disabled="!isRecordNew" v-on:click.stop="onMeterInsert">{{btnInsertTitle}}</b-button>
 
                     </b-form>
                 </b-col>
@@ -258,8 +241,8 @@
                 this.ws_submit_record("insert", "config.iec", {
                     key: [this.form.pk],
                     data: {
-                        pk: this.form.pk,
                         address: this.form.address,
+                        port: this.form.port,
                         direction: Boolean(this.form.direction == 'in'),
                         interval: this.form.interval
                     }
@@ -291,23 +274,17 @@
             isRecordSelected(): boolean {
                 return this.selected.length != 0;
             },
-            isRecordNew(): boolean {
-                if (this.selected.length !== 0) {
-                    return this.form.meter !== this.selected[0].meter;
-                }
-                return this.form.address.length > 0;
-            },
             btnInsertTitle(): string | TranslateResult {
                 return this.$t('action-insert') + ' ' + this.form.meter;
             },
             btnDeleteTitle(): string | TranslateResult {
                 if (this.selected.length === 0) {
-                    return this.$t('action-del');
+                    return this.$t('action-remove');
                 }
                 else if (this.selected.length === 1) {
-                    return this.$t('action-del') + ' ' + this.selected[0].meter;
+                    return this.$t('action-remove') + ' ' + this.selected[0].meter;
                 }
-                return this.$t('action-del') + ' ' + this.selected.length + " record(s)";
+                return this.$t('action-remove') + ' ' + this.selected.length + " record(s)";
             },
             btnUpdateTitle(): string | TranslateResult {
                 if (this.selected.length > 0) {

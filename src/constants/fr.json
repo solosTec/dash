@@ -72,7 +72,8 @@
     "com-default": "par défaut",
 
     "action-del": "Supprimer",
-    "action-apply": "commettre",
+    "action-remove": "Retirer",
+    "action-apply": "Commettre",
     "action-update": "Mise à jour",
     "action-insert": "Insérer",
 

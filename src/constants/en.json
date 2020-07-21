@@ -72,6 +72,7 @@
     "com-default": "default",
 
     "action-del": "Delete",
+    "action-remove": "Remove",
     "action-apply": "Commit",
     "action-update": "Update",
     "action-insert": "Insert",
