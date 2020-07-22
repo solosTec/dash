@@ -14,9 +14,9 @@
 
         <b-container fluid>
 
-            <b-form-row>
-                <b-col class="m-2 p-2 shadow">
-                    <h4>Download {{deviceCount}} devices</h4>
+            <b-card-group columns>
+                <b-card title="Download Devices" class="shadow">
+                    <div slot="footer"><small class="text-muted">{{deviceCount}} device(s) configured</small></div>
                     <b-form @submit="onSubmitDevices" @reset="onResetDevices">
                         <b-form-radio-group id="dev-download-type" v-model="dev.fmt" name="smf-download-device-format" class="mt-3">
                             <b-form-radio value="XML">XML</b-form-radio>
@@ -32,10 +32,10 @@
                         <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="deviceCount == 0">Download &#8681;</b-button>
                         <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
                     </b-form>
-                </b-col>
+                </b-card>
 
-                <b-col class="m-2 p-2 shadow">
-                    <h4>Download {{ gatewayCount }} gateways</h4>
+                <b-card title="Download Gateways" class="shadow">
+                    <div slot="footer"><small class="text-muted">{{gatewayCount}} gateway(s) configured</small></div>
                     <b-form @submit="onSubmitGateways" @reset="onResetGateways">
                         <b-form-radio-group id="gw-download-type" v-model="gw.fmt" name="gw-download-type" class="mt-3">
                             <b-form-radio value="XML">XML</b-form-radio>
@@ -45,10 +45,10 @@
                         <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="gatewayCount == 0">Download &#8681;</b-button>
                         <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
                     </b-form>
-                </b-col>
+                </b-card>
 
-                <b-col class="m-2 p-2 shadow">
-                    <h4>Download {{ meterCount }} meters</h4>
+                <b-card title="Download Meters" class="shadow">
+                    <div slot="footer"><small class="text-muted">{{meterCount}} meter(s) configured</small></div>
                     <b-form @submit="onSubmitMeters" @reset="onResetMeters">
                         <b-form-radio-group id="meter-download-type" v-model="meter.fmt" name="meter-download-type" class="mt-3">
                             <b-form-radio value="XML">XML</b-form-radio>
@@ -58,12 +58,10 @@
                         <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="meterCount == 0">Download &#8681;</b-button>
                         <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
                     </b-form>
-                </b-col>
-            </b-form-row>
+                </b-card>
 
-            <b-form-row>
-                <b-col class="m-2 p-2 shadow">
-                    <h4>Download {{ LoRaCount }} LoRa devices</h4>
+                <b-card title="Download LoRa Devices" class="shadow">
+                    <div slot="footer"><small class="text-muted">{{ LoRaCount }} LoRa devices(s) configured</small></div>
                     <b-form @submit="onSubmitLoRa" @reset="onResetLoRa">
                         <b-form-radio-group id="meter-download-type" v-model="LoRa.fmt" name="LoRa-download-type" class="mt-3">
                             <b-form-radio value="XML">XML</b-form-radio>
@@ -78,10 +76,10 @@
                         <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="LoRaCount == 0">Download &#8681;</b-button>
                         <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
                     </b-form>
-                </b-col>
+                </b-card>
 
-                <b-col class="m-2 p-2 shadow">
-                    <h4>Download {{ uplinkCount }} LoRa uplink records</h4>
+                <b-card title="Download LoRa uplink records" class="shadow">
+                    <div slot="footer"><small class="text-muted">{{ uplinkCount }} uplink records available</small></div>
                     <b-form @submit="onSubmitUplink" @reset="onResetUplink">
                         <b-form-radio-group id="meter-uplink-type" v-model="uplink.fmt" name="uplink-download-type" class="mt-3">
                             <b-form-radio value="XML">XML</b-form-radio>
@@ -91,10 +89,10 @@
                         <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="uplinkCount == 0">Download &#8681;</b-button>
                         <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
                     </b-form>
-                </b-col>
+                </b-card>
 
-                <b-col class="m-2 p-2 shadow">
-                    <h4>Download {{ msgCount }} system messages</h4>
+                <b-card title="Download System Messages" class="shadow">
+                    <div slot="footer"><small class="text-muted">{{ msgCount }} messages available</small></div>
                     <b-form @submit="onSubmitMsg" @reset="onResetMsg">
                         <b-form-radio-group id="msg-uplink-type" v-model="msg.fmt" name="msg-download-type" class="mt-3">
                             <b-form-radio value="XML">XML</b-form-radio>
@@ -104,8 +102,9 @@
                         <b-button type="submit" variant="primary" class="mt-3 mr-3" :disabled="msgCount == 0">Download &#8681;</b-button>
                         <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
                     </b-form>
-                </b-col>
-            </b-form-row>
+                </b-card>
+
+            </b-card-group>
 
         </b-container>
 
