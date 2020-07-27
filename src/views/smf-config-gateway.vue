@@ -295,7 +295,10 @@
                         </b-tab>
 
                         <!-- Broker -->
-                        <b-tab :disabled="selected[0].online === 0" no-body :smf-context="smfContext.broker">
+                        <b-tab
+                                :disabled="selected[0].online === 0 || !selected[0].model.startsWith('SMF-GW:')"
+                                no-body
+                                :smf-context="smfContext.broker">
                             <template slot="title">
                                 {{ $t('config-gateway-74') }}
                                 <b-spinner v-if="spinner.broker" type="grow" small />
