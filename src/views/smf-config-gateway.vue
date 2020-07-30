@@ -829,9 +829,9 @@
     import smfMeterAccessRights from '@/components/smf-meter-access-rights.vue';
     import smfBrokerConfiguration from '@/components/smf-broker-configuration.vue';
     import mixins from 'vue-typed-mixins';
-    import {UIRootAccessMeter, UIRootAccessRightsRole, UIRootAccessUser} from '@/ui-api/root-access-rights';
+    import {UIRootAccessMeter, UIRootAccessRightsRole, UIRootAccessUser} from '@/api/root-access-rights';
     import {BTabs} from 'bootstrap-vue';
-    import {Gateway} from '@/backend-api/gateway';
+    import {Gateway} from '@/api/gateway';
 
     const gatewayTableFields = [
         {

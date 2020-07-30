@@ -81,7 +81,7 @@
 
 <script lang="ts">
     import Vue, {PropType} from 'vue';
-    import {Gateway} from '@/backend-api/gateway';
+    import {Gateway} from '@/api/gateway';
 
     export default Vue.extend({
         name: 'smfBrokerConfiguration',

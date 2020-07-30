@@ -9,7 +9,7 @@
 </template>
 <script lang="ts">
     import Vue from 'vue';
-    import {MeterAccessRights, nonRightsCodes} from '@/backend-api/meter-access-rights';
+    import {MeterAccessRights, nonRightsCodes} from '@/api/meter-access-rights';
     import smfDataTable from '@/components/smf-data-table.vue';
 
     const OBIS_CODE_MAP: { [code: string]: string } = {

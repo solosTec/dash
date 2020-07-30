@@ -122,7 +122,7 @@
     import Vue from 'vue';
     import {BModal} from 'bootstrap-vue';
     import {TranslateResult} from 'vue-i18n';
-    import {Device} from '@/backend-api/device';
+    import {Device} from '@/api/device';
     import {Route} from 'vue-router';
 
     interface BTableItem {

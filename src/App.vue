@@ -12,14 +12,15 @@
 
 <script lang="ts">
 
-  import {webSocket} from './mixins/web-socket'
-  import SMFNavigation from '@/components/smf-navigation.vue'
-  import {mapState} from 'vuex';
-  import mixins from 'vue-typed-mixins';
-  import Vue from 'vue';
-  import {AppState} from '@/store';
+import {webSocket, WSInsertResponse} from './mixins/web-socket'
+import SMFNavigation from '@/components/smf-navigation.vue'
+import {mapState} from 'vuex';
+import mixins from 'vue-typed-mixins';
+import Vue from 'vue';
+import {AppState} from '@/store';
+import {BUser} from '@/api/user';
 
-  export default mixins(webSocket, Vue).extend({
+export default mixins(webSocket, Vue).extend({
     name: 'app',
     mixins: [webSocket],
     components: {
@@ -42,8 +43,9 @@
       ws_on_open() {
         this.ws_subscribe("config.user");
       },
-      ws_on_data(obj: any) {
-        if (obj.cmd === 'insert') {
+      ws_on_data(obj: WSInsertResponse<BUser>) {
+        console.log(obj)
+        if (obj.cmd === 'insert' && obj.channel === 'config.user') {
           this.$store.commit('user/loaded', obj.rec.data);
         }
       }

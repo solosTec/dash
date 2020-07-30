@@ -18,3 +18,22 @@ export interface RootAccessRights {
     srv: string; // "00:15:3b:02:17:74"
     values: {[roleName: string]: RootAccessRightsRole};
 }
+
+export interface UIRootAccessRightsRole extends RootAccessRightsRole {
+    roleName: string;
+}
+
+export interface UIRootAccessUser {
+    userName: string;
+    userId: number;
+}
+
+export interface UIRootAccessMeter extends RootAccessDevice {
+}
+
+export interface UIRootAccessRights {
+    server: string;
+    roles: UIRootAccessRightsRole[];
+    users: UIRootAccessUser[];
+    meters: UIRootAccessMeter[]; // no type 11 and no type 4
+}
