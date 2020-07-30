@@ -295,89 +295,18 @@
                         </b-tab>
 
                         <!-- Broker -->
-                        <b-tab
-                                :disabled="selected[0].online === 0 || !selected[0].model.startsWith('SMF-GW:')"
+                        <b-tab :disabled="selected[0].online === 0 || !selected[0].model.startsWith('SMF-GW:')"
                                 no-body
                                 :smf-context="smfContext.broker">
+
                             <template slot="title">
-                                {{ $t('config-gateway-74') }}
-                                <b-spinner v-if="spinner.broker" type="grow" small />
+                                {{ $t('config-gateway-74') }} <b-spinner v-if="spinner.broker" type="grow" small />
                             </template>
-                            <b-form @submit.prevent="">
 
-                                <b-card-group deck class="pt-4">
-                                    <b-card header="wireless LMN" title="Transparent mode ttyAPP0" sub-title="Reconfiguration requires a restart">
-
-                                        <b-form-group label="TCP/IP Address"
-                                                      label-for="smf-broker.ttyAPP0.host"
-                                                      description="Dotted decimal notation or hostname"
-                                                      label-cols-sm="4"
-                                                      label-cols-lg="3">
-                                            <b-input-group name="smf-broker.ttyAPP0.host" class="mt-2">
-                                                <b-input-group-prepend is-text>
-                                                    <b-form-checkbox v-model="broker.ttyAPP0.transparent" class="mr-n2" switch>
-                                                        <span class="sr-only">Switch for following text input</span>
-                                                    </b-form-checkbox>
-                                                </b-input-group-prepend>
-                                                <b-form-input id="smf-broker.ttyAPP0.host"
-                                                              type="text"
-                                                              :disabled="!broker.ttyAPP0.transparent"
-                                                              v-model="broker.ttyAPP0.host"
-                                                              placeholder="Hostname" />
-
-                                                <b-form-input id="smf-broker.ttyAPP0.host"
-                                                              type="number"
-                                                              :disabled="!broker.ttyAPP0.transparent"
-                                                              v-model="broker.ttyAPP0.service"
-                                                              placeholder="IP port" />
-                                            </b-input-group>
-                                        </b-form-group>
-                                        <b-form-group label-cols-sm="4"
-                                                      label-cols-lg="3">
-                                            <b-button
-                                                      type="submit"
-                                                      variant="primary"
-                                                      v-on:click.stop="onBrokerUpdate($event, 'ttyAPP0')">{{btnUpdateTitle}}</b-button>
-                                        </b-form-group>
-
-                                    </b-card>
-
-                                    <b-card header="wired LMN" title="Transparent mode ttyAPP1" sub-title="Reconfiguration requires a restart">
-
-                                        <b-form-group label="TCP/IP Address"
-                                                      label-for="smf-broker.ttyAPP1.host"
-                                                      description="Dotted decimal notation or hostname"
-                                                      label-cols-sm="4"
-                                                      label-cols-lg="3">
-                                            <b-input-group name="smf-broker.ttyAPP1.host" class="mt-2">
-                                                <b-input-group-prepend is-text>
-                                                    <b-form-checkbox v-model="broker.ttyAPP1.transparent" class="mr-n2" switch>
-                                                        <span class="sr-only">Switch for following text input</span>
-                                                    </b-form-checkbox>
-                                                </b-input-group-prepend>
-
-                                                <b-form-input id="smf-broker.ttyAPP1.host"
-                                                              type="text"
-                                                              :disabled="!broker.ttyAPP1.transparent"
-                                                              v-model="broker.ttyAPP1.host"
-                                                              placeholder="Hostname" />
-                                                <b-form-input id="smf-broker.ttyAPP1.host"
-                                                              type="number"
-                                                              :disabled="!broker.ttyAPP1.transparent"
-                                                              v-model="broker.ttyAPP1.service"
-                                                              placeholder="IP port" />
-                                            </b-input-group>
-                                        </b-form-group>
-                                        <b-form-group label-cols-sm="4"
-                                                      label-cols-lg="3">
-                                            <b-button
-                                                      type="submit"
-                                                      variant="primary"
-                                                      v-on:click.stop="onBrokerUpdate($event, 'ttyAPP1')">{{btnUpdateTitle}}</b-button>
-                                        </b-form-group>
-                                    </b-card>
-                                </b-card-group>
-                            </b-form>
+                            <smfBrokerConfiguration
+                                    :gateway="selected[0]"
+                                    :broker="broker"
+                                    @brokerUpdate="onBrokerUpdate"></smfBrokerConfiguration>
                         </b-tab>
 
                         <!-- Firmware -->
@@ -898,10 +827,11 @@
     import smfServerConfiguration from '@/components/smf-server-configuration.vue';
     import smfServerRootAccessRights from '@/components/smf-server-root-access-rights.vue';
     import smfMeterAccessRights from '@/components/smf-meter-access-rights.vue';
+    import smfBrokerConfiguration from '@/components/smf-broker-configuration.vue';
     import mixins from 'vue-typed-mixins';
-    import Vue from 'vue';
     import {UIRootAccessMeter, UIRootAccessRightsRole, UIRootAccessUser} from '@/ui-api/root-access-rights';
     import {BTabs} from 'bootstrap-vue';
+    import {Gateway} from '@/backend-api/gateway';
 
     const gatewayTableFields = [
         {
@@ -964,7 +894,10 @@
 
     let tmpGateways: any[] = [];
 
-export default  mixins(webSocket, Vue).extend({
+    // workaround: https://youtrack.jetbrains.com/issue/WEB-43243
+    const Vue = mixins(webSocket)
+
+export default Vue.extend({
     name: 'smfConfigGateway',
     props: [],
     mixins: [webSocket],
@@ -972,6 +905,7 @@ export default  mixins(webSocket, Vue).extend({
         smfServerConfiguration,
         smfServerRootAccessRights,
         smfMeterAccessRights,
+        smfBrokerConfiguration,
         opLog,
         snapshots,
         firmware
@@ -989,8 +923,8 @@ export default  mixins(webSocket, Vue).extend({
             perPage: 10,
             mode: process.env.NODE_ENV,
             fields: gatewayTableFields,
-            gateways:[] as any,
-            selected: [] as any,
+            gateways:[] as Gateway[],
+            selected: [] as Gateway[],
             sortBy: 'name',
             sortDesc: false,
             sortDirection: 'desc',
@@ -1021,7 +955,7 @@ export default  mixins(webSocket, Vue).extend({
                 userPwd: '',
                 online: 0,
                 name: ''
-            },
+            } as Gateway,
             //  gw options
             smfContext: {
                 configuration: 'configuration',
@@ -1860,7 +1794,7 @@ export default  mixins(webSocket, Vue).extend({
             // get the context of the selected tab
             this.updateSmfContext();
         },
-        rowSelected(items: any) {
+        rowSelected(items: Gateway[]) {
             this.selected = items;
             this.form.serverId = "";
             this.form.name = '';
@@ -1903,14 +1837,13 @@ export default  mixins(webSocket, Vue).extend({
                 [this.form.pk!],
                 { index: index, ipt: this.ipt.param[index] });
         },
-        onBrokerUpdate(event: Event, port: 'ttyAPP0' | 'ttyAPP1') {
-            event.preventDefault();
-            console.log(this.broker[port]);
+      onBrokerUpdate({port, broker}: {port: 'ttyAPP0' | 'ttyAPP1', broker: any}) {
+            console.log(broker[port]);
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_ROOT_BROKER,
                 [this.form.pk!],
-                { port: port, broker: this.broker });
-                //{ port: port, broker: this.broker[port] });
+                { port: port, broker });
+                //{ port: port, broker: broker[port] });
         },
         onMeterDelete(item: any) {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
