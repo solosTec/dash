@@ -1,6 +1,6 @@
 export interface BBrokerAddress {
     host: string;
-    service: number;
+    service: number | undefined;
 }
 
 export interface BBroker {

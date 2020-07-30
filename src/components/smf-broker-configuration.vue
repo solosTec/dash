@@ -114,7 +114,7 @@ export default Vue.extend({
             return JSON.stringify(originalBroker) === JSON.stringify(uiBroker);
         },
         addAddress(uiBroker: UIBroker): void {
-            uiBroker.addresses.push({host: '', service: ''});
+            uiBroker.addresses.push({host: '', service: undefined});
         },
         removeAddress(address: BBrokerAddress, uiBroker: UIBroker): void {
             uiBroker.addresses = uiBroker.addresses.filter(a => a !== address);
