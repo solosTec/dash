@@ -305,7 +305,7 @@
 
                             <smfBrokerConfiguration
                                     :gateway="selected[0]"
-                                    :broker="broker"
+                                    :brokers="brokers"
                                     @brokerUpdate="onBrokerUpdate"></smfBrokerConfiguration>
                         </b-tab>
 
@@ -832,6 +832,7 @@
     import {UIRootAccessMeter, UIRootAccessRightsRole, UIRootAccessUser} from '@/api/root-access-rights';
     import {BTabs} from 'bootstrap-vue';
     import {Gateway} from '@/api/gateway';
+    import {BBroker} from '@/api/broker';
 
     const gatewayTableFields = [
         {
@@ -1020,20 +1021,7 @@ export default Vue.extend({
                     remote: 0
                 }
             },
-
-            broker: {
-                ttyAPP0: {
-                    transparent: false,
-                    host: "segw.ch",
-                    service: 12000
-                },
-                ttyAPP1: {
-                    transparent: false,
-                    host: "segw.ch",
-                    service: 12001
-                }
-            },
-
+            brokers: [] as  BBroker[],
             meters: {
                 values: [] as any,
                 selected: [],
@@ -1490,12 +1478,31 @@ export default Vue.extend({
                             else if (obj.section[0] === SML_CODES.CODE_ROOT_BROKER) {
                                 console.log(obj);
                                 this.spinner.broker = false;
-                                this.broker.ttyAPP0.transparent = obj.rec.values['9000000001FF']['900000000101'];
-                                this.broker.ttyAPP1.transparent = obj.rec.values['9000000001FF']['900000000102'];
-                                this.broker.ttyAPP0.host = obj.rec.values['9000000002FF']['900000000201'];
-                                this.broker.ttyAPP1.host = obj.rec.values['9000000002FF']['900000000202'];
-                                this.broker.ttyAPP0.service = obj.rec.values['9000000003FF']['900000000301'];
-                                this.broker.ttyAPP1.service = obj.rec.values['9000000003FF']['900000000302'];
+                                // this.broker.ttyAPP0.transparent = obj.rec.values['9000000001FF']['900000000101'];
+                                // this.broker.ttyAPP1.transparent = obj.rec.values['9000000001FF']['900000000102'];
+                                // this.broker.ttyAPP0.host = obj.rec.values['9000000002FF']['900000000201'];
+                                // this.broker.ttyAPP1.host = obj.rec.values['9000000002FF']['900000000202'];
+                                // this.broker.ttyAPP0.service = obj.rec.values['9000000003FF']['900000000301'];
+                                // this.broker.ttyAPP1.service = obj.rec.values['9000000003FF']['900000000302'];
+                                //FIXME @Sylko: this should be the result. is this possible?
+                                this.brokers = [
+                                  {
+                                    hardwarePort: 'ttyAPP0',
+                                    transparent: false,
+                                    addresses: [{
+                                      host: 'segw.ch',
+                                      service: 12000
+                                    }]
+                                  },
+                                  {
+                                    hardwarePort: 'ttyAPP1',
+                                    transparent: false,
+                                    addresses: [{
+                                      host: 'segw.ch',
+                                      service: 12001
+                                    }]
+                                  }
+                                ];
                             }
                             else if (obj.section[0] === SML_CODES.CODE_IF_1107) {
                                 //  hide loading spinner
@@ -1837,12 +1844,12 @@ export default Vue.extend({
                 [this.form.pk!],
                 { index: index, ipt: this.ipt.param[index] });
         },
-      onBrokerUpdate({port, broker}: {port: 'ttyAPP0' | 'ttyAPP1', broker: any}) {
-            console.log(broker[port]);
+      onBrokerUpdate(broker: BBroker) {
+            console.log(JSON.stringify(broker));
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_ROOT_BROKER,
                 [this.form.pk!],
-                { port: port, broker });
+                { port: broker.hardwarePort, broker });
                 //{ port: port, broker: broker[port] });
         },
         onMeterDelete(item: any) {
