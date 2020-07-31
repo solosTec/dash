@@ -815,19 +815,19 @@
 <script lang="ts">
 
     import {webSocket} from '@/mixins/web-socket'
-    import opLog from '@/components/smf-table-op-log.vue'
-    import snapshots from '@/components/smf-table-snapshots.vue'
-    import firmware from '@/components/smf-table-firmware.vue'
+    import opLog from '@/components/gateway/smf-table-op-log.vue'
+    import snapshots from '@/components/gateway/smf-table-snapshots.vue'
+    import firmware from '@/components/gateway/smf-table-firmware.vue'
     import { MESSAGE_REQUEST, MESSAGE_RESPONSE } from '@/constants/msgTypes'
     import { SML_CODES } from '@/constants/rootCodes'
     import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
     import store from "../store";
     import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
     import {generatePassword} from "@/shared/generate-password";
-    import smfServerConfiguration from '@/components/smf-server-configuration.vue';
-    import smfServerRootAccessRights from '@/components/smf-server-root-access-rights.vue';
-    import smfMeterAccessRights from '@/components/smf-meter-access-rights.vue';
-    import smfBrokerConfiguration from '@/components/smf-broker-configuration.vue';
+    import smfServerConfiguration from '@/components/gateway/smf-server-configuration.vue';
+    import smfServerRootAccessRights from '@/components/gateway/smf-server-root-access-rights.vue';
+    import smfMeterAccessRights from '@/components/gateway/smf-meter-access-rights.vue';
+    import smfBrokerConfiguration from '@/components/gateway/smf-broker-configuration.vue';
     import mixins from 'vue-typed-mixins';
     import {UIRootAccessMeter, UIRootAccessRightsRole, UIRootAccessUser} from '@/api/root-access-rights';
     import {BTabs} from 'bootstrap-vue';
