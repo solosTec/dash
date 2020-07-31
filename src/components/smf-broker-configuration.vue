@@ -1,56 +1,87 @@
 <template lang="html">
     <b-form @submit.prevent="">
         <b-card-group deck class="pt-4">
-            <b-card v-for="uiBroker in uiBrokers" :key="uiBroker.hardwarePort"
-                    :header="' Hardware Port ' + uiBroker.hardwarePort + '  ('+uiBroker.name+')'">
 
-                <b-form-group label="Transparent mode" label-cols-sm="4"
-                              label-cols-lg="3">
+            <b-card v-for="uiBroker in $v.uiBrokers.$each.$iter" :key="uiBroker.hardwarePort.$model"
+                    class="broker-card"
+                    :header="' Hardware Port ' + uiBroker.hardwarePort.$model + '  ('+uiBroker.name.$model+')'">
+
+                <b-form-group label="Transparent mode" label-cols-sm="4" label-cols-lg="3">
                     <b-input-group-prepend is-text>
-                        <b-form-checkbox v-model="uiBroker.transparent" class="mr-n2" switch>
-                            <span class="sr-only">Switch for following text input</span>
+                        <b-form-checkbox v-model="uiBroker.transparent.$model" class="mr-n2" switch>
+                            <span class="sr-only">Enable trasnparent mode</span>
                         </b-form-checkbox>
                     </b-input-group-prepend>
                 </b-form-group>
 
                 <b-form-group label="TCP/IP Addresses"
-                              description="Dotted decimal notation or hostname"
+                              description="Dotted decimal notation for IP-address or hostname"
                               label-cols-sm="4"
                               label-cols-lg="3">
 
-                    <b-table striped hover :items="uiBroker.addresses" :fields="fields" foot-clone>
-                        <template v-slot:cell(host)="row">
-                            <b-form-input v-model="row.item.host"/>
-                        </template>
-                        <template v-slot:cell(service)="row">
-                            <b-form-input v-model="row.item.service"/>
-                        </template>
-                        <template v-slot:cell(action)="row">
-                            <b-button size="sm"
-                                      variant="danger"
-                                      @click="removeAddress(row.item, uiBroker)">Delete</b-button>
-                        </template>
-                        <template v-slot:foot()="row">
-                            <div class="text-right">
-                                <b-button v-if="row.column === 'action'"
-                                          size="sm"
-                                          variant="success"
-                                          @click="addAddress(uiBroker)">Add</b-button>
-                            </div>
-                            <!-- do not clone the header -->
-                            <span v-if="row.column !== 'action'"></span>
-                        </template>
-                    </b-table>
+                    <b-table-simple hover small caption-top>
+                        <b-thead>
+                            <b-tr>
+                                <b-th>Hostname or IP-Address</b-th>
+                                <b-th>Service</b-th>
+                                <b-th></b-th>
+                            </b-tr>
+                        </b-thead>
+                        <b-tbody>
+                            <b-tr v-for="(address, idx) in uiBroker.addresses.$each.$iter" :key="idx">
+                                <b-td>
+                                    <b-form-group>
+                                        <b-form-input
+                                            type="text"
+                                            v-model.trim="address.host.$model"
+                                            :state="address.host.$invalid ? false: null">
+                                        </b-form-input>
+                                        <b-form-invalid-feedback v-if="!address.host.required">
+                                            Host is required.
+                                        </b-form-invalid-feedback>
+                                        <b-form-invalid-feedback v-if="!address.host.hostValidator">
+                                            Invalid input.
+                                        </b-form-invalid-feedback>
+                                    </b-form-group>
+                                </b-td>
+                                <b-td>
+                                    <b-form-group>
+                                        <b-form-input
+                                            type="text"
+                                            v-model.trim="address.service.$model"
+                                            :state="address.service.$invalid ? false : null">
+                                        </b-form-input>
+                                        <b-form-invalid-feedback v-if="!address.service.required">
+                                            Service is required.
+                                        </b-form-invalid-feedback>
+                                        <b-form-invalid-feedback v-if="!address.service.integer">
+                                            Input is not a number.
+                                        </b-form-invalid-feedback>
+                                    </b-form-group>
+                                </b-td>
+                                <b-td class="text-right">
+                                    <b-button size="sm" variant="danger" @click="removeAddress(address.$model, uiBroker.$model)">
+                                        Delete
+                                    </b-button>
+                                </b-td>
+                            </b-tr>
+                        </b-tbody>
+                        <b-tfoot>
+                            <b-td colspan="3" class="text-right">
+                                <b-button size="sm" variant="success" @click="addAddress(uiBroker.$model)">
+                                    Add
+                                </b-button>
+                            </b-td>
+                        </b-tfoot>
+                    </b-table-simple>
 
                 </b-form-group>
                 <b-form-group label-cols-sm="4"
                               label-cols-lg="3"
-                              class="update-button-group">
-                    <b-button
-                        type="submit"
-                        variant="primary"
-                        :disabled="uiBrokerHasNotChanged(uiBroker)"
-                        @click.stop.prevent="onBrokerUpdate(uiBroker)">{{ btnUpdateTitle(uiBroker) }}
+                              class="text-right">
+                    <b-button type="submit" variant="primary"
+                        :disabled="!uiBrokerHasChanged(uiBroker.$model) || uiBroker.addresses.$invalid"
+                        @click.stop.prevent="onBrokerUpdate(uiBroker.$model)">{{ btnUpdateTitle(uiBroker.$model) }}
                     </b-button>
                 </b-form-group>
 
@@ -65,6 +96,11 @@ import {Gateway} from '@/api/gateway';
 import {mapState} from 'vuex';
 import {AppState} from '@/store';
 import {BBroker, BBrokerAddress} from '@/api/broker';
+import {required, integer, ipAddress, or, helpers} from 'vuelidate/lib/validators'
+
+const hostName = helpers.regex(
+    'alpha',
+    /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/);
 
 interface UIBroker {
     hardwarePort: string;
@@ -98,6 +134,28 @@ export default Vue.extend({
             originalUiBrokers: [] as UIBroker[],
         }
     },
+    validations: {
+        uiBrokers: {
+            $each: {
+                hardwarePort: {},
+                name: {},
+                transparent: {},
+                addresses: {
+                    required,
+                    $each: {
+                        host: {
+                            required,
+                            hostValidator: or(hostName, ipAddress)
+                        },
+                        service: {
+                            required,
+                            integer
+                        }
+                    }
+                }
+            }
+        }
+    },
     computed: {
         ...mapState({
             hardwareBrokers: state => {
@@ -109,9 +167,9 @@ export default Vue.extend({
         btnUpdateTitle(uiBroker: UIBroker): string {
             return "Update " + uiBroker.hardwarePort + '  on ' + this.gateway.serverId;
         },
-        uiBrokerHasNotChanged(uiBroker: UIBroker): boolean {
+        uiBrokerHasChanged(uiBroker: UIBroker): boolean {
             const originalBroker = this.originalUiBrokers.find(ob => ob.hardwarePort === uiBroker.hardwarePort)
-            return JSON.stringify(originalBroker) === JSON.stringify(uiBroker);
+            return JSON.stringify(originalBroker) !== JSON.stringify(uiBroker);
         },
         addAddress(uiBroker: UIBroker): void {
             uiBroker.addresses.push({host: '', service: undefined});
@@ -125,7 +183,7 @@ export default Vue.extend({
                 transparent: uiBroker.transparent,
                 addresses: uiBroker.addresses
             }
-            this.$emit('brokerUpdate', {bBroker});
+            this.$emit('brokerUpdate', bBroker);
         }
     },
     watch: {
@@ -151,19 +209,17 @@ export default Vue.extend({
                     } as UIBroker
                 });
                 this.originalUiBrokers = JSON.parse(JSON.stringify(this.uiBrokers));
+                // reset the form - resets the dirty state to false and removes all validation infos
+                this.$v.uiBrokers.$reset();
             }
         }
     }
 });
 </script>
 <style scoped>
-.card-deck .card {
+.broker-card {
     min-width: calc(50% - 30px);
     max-width: calc(50% - 30px);
     margin-bottom: 30px;
-}
-
-.update-button-group {
-    text-align: right;
 }
 </style>

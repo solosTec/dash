@@ -310,6 +310,7 @@ export const webSocket = Vue.extend({
             }
             this.ws_emit_event_state("online");
             //  restart timer
+            // @ts-ignore
             this.timer = setTimeout(this.onTimer, 5000);
         },
         ws_is_open() {

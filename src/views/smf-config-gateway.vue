@@ -1485,6 +1485,9 @@ export default Vue.extend({
                                 // this.broker.ttyAPP0.service = obj.rec.values['9000000003FF']['900000000301'];
                                 // this.broker.ttyAPP1.service = obj.rec.values['9000000003FF']['900000000302'];
                                 //FIXME @Sylko: this should be the result. is this possible?
+                                // even better. inlcude the name of the port and also send broker without addreesses.
+                                // in this way we do not need a special hardware configuration that needs to be queried
+                                // first.
                                 this.brokers = [
                                   {
                                     hardwarePort: 'ttyAPP0',
@@ -1646,6 +1649,8 @@ export default Vue.extend({
                     }
                 }
                 else if (obj.cmd === 'insert') {
+                    // FIXME @Slyko instead of checking the name of ther server we should have
+                    // a flag hasBroker - this is way more flexible.
                     let rec: any = {
                         pk: obj.rec.key.pk,
                         serverId: obj.rec.data.serverId,
@@ -1851,6 +1856,9 @@ export default Vue.extend({
                 [this.form.pk!],
                 { port: broker.hardwarePort, broker });
                 //{ port: port, broker: broker[port] });
+                // FIXME @Sylko: if one broker is  updated all brokers are resend - this results in a refresh
+                //  of the broker ui and user inputs may be overridden. solution: 1. resend only the changed broker
+                //  2. we save all broker at once - so we also  only need one update button in the broker UI.
         },
         onMeterDelete(item: any) {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
