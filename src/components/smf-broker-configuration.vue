@@ -14,55 +14,55 @@
                     </b-input-group-prepend>
                 </b-form-group>
 
-                <b-form-group label="TCP/IP Addresses"
-                              description="Dotted decimal notation for IP-address or hostname"
-                              label-cols-sm="4"
-                              label-cols-lg="3">
+                <b-form-group description="Dotted decimal notation for IP-address or hostname">
 
                     <b-table-simple hover small caption-top>
-                        <b-thead>
-                            <b-tr>
-                                <b-th>Hostname or IP-Address</b-th>
-                                <b-th>Service</b-th>
-                                <b-th></b-th>
-                            </b-tr>
-                        </b-thead>
                         <b-tbody>
                             <b-tr v-for="(address, idx) in uiBroker.addresses.$each.$iter" :key="idx">
                                 <b-td>
                                     <b-form-group>
-                                        <b-form-input
-                                            type="text"
-                                            v-model.trim="address.host.$model"
-                                            :state="address.host.$invalid ? false: null">
-                                        </b-form-input>
-                                        <b-form-invalid-feedback v-if="!address.host.required">
-                                            Host is required.
-                                        </b-form-invalid-feedback>
-                                        <b-form-invalid-feedback v-if="!address.host.hostValidator">
-                                            Invalid input.
-                                        </b-form-invalid-feedback>
+                                        <b-input-group prepend="Host" class="mt-2">
+                                            <b-form-input
+                                                type="text"
+                                                v-model.trim="address.host.$model"
+                                                v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'"
+                                                :placeholder="'Hostname or IP-address' | fmtPlaceholder"
+                                                :state="address.host.$invalid ? false: null">
+                                            </b-form-input>
+                                            <b-form-invalid-feedback v-if="!address.host.required">
+                                                Host is required.
+                                            </b-form-invalid-feedback>
+                                            <b-form-invalid-feedback v-if="!address.host.hostValidator">
+                                                Invalid input.
+                                            </b-form-invalid-feedback>
+                                        </b-input-group>
                                     </b-form-group>
                                 </b-td>
                                 <b-td>
                                     <b-form-group>
-                                        <b-form-input
-                                            type="text"
-                                            v-model.trim="address.service.$model"
-                                            :state="address.service.$invalid ? false : null">
-                                        </b-form-input>
-                                        <b-form-invalid-feedback v-if="!address.service.required">
-                                            Service is required.
-                                        </b-form-invalid-feedback>
-                                        <b-form-invalid-feedback v-if="!address.service.integer">
-                                            Input is not a number.
-                                        </b-form-invalid-feedback>
+                                        <b-input-group prepend="Service" class="mt-2">
+                                            <b-form-input
+                                                type="number"
+                                                v-model.trim="address.service.$model"
+                                                :placeholder="'Service' | fmtPlaceholder"
+                                                :state="address.service.$invalid ? false : null">
+                                            </b-form-input>
+                                            <b-form-invalid-feedback v-if="!address.service.required">
+                                                Service is required.
+                                            </b-form-invalid-feedback>
+                                            <b-form-invalid-feedback v-if="!address.service.integer">
+                                                Input is not a number.
+                                            </b-form-invalid-feedback>
+                                        </b-input-group>
                                     </b-form-group>
                                 </b-td>
                                 <b-td class="text-right">
-                                    <b-button size="sm" variant="danger" @click="removeAddress(address.$model, uiBroker.$model)">
+                                    <b-input-group class="mt-2">
+                                    <b-button size="sm" variant="danger" class="button-delete"
+                                              @click="removeAddress(address.$model, uiBroker.$model)">
                                         Delete
                                     </b-button>
+                                    </b-input-group>
                                 </b-td>
                             </b-tr>
                         </b-tbody>
@@ -80,8 +80,10 @@
                               label-cols-lg="3"
                               class="text-right">
                     <b-button type="submit" variant="primary"
-                        :disabled="!uiBrokerHasChanged(uiBroker.$model) || uiBroker.addresses.$invalid"
-                        @click.stop.prevent="onBrokerUpdate(uiBroker.$model)">{{ btnUpdateTitle(uiBroker.$model) }}
+                              :disabled="!uiBrokerHasChanged(uiBroker.$model) || uiBroker.addresses.$invalid"
+                              @click.stop.prevent="onBrokerUpdate(uiBroker.$model)">{{
+                            btnUpdateTitle(uiBroker.$model)
+                        }}
                     </b-button>
                 </b-form-group>
 
@@ -221,5 +223,9 @@ export default Vue.extend({
     min-width: calc(50% - 30px);
     max-width: calc(50% - 30px);
     margin-bottom: 30px;
+}
+.button-delete {
+    margin-top: 0.25rem;
+    margin-right: -0.25rem;
 }
 </style>

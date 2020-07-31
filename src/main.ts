@@ -12,6 +12,7 @@ import store from './store'
 import smfRowCountSelector from "@/components/smf-row-count-selector.vue";
 import './shared/formatter/registerNames';
 import Vuelidate from 'vuelidate'
+import {fmtPlaceholder} from '@/filter/fmtPlaceholder';
 
 Vue.config.productionTip = false;
 Vue.component("vue-headful", vueHeadful);
@@ -19,6 +20,8 @@ Vue.component('smf-row-count-selector', smfRowCountSelector);
 Vue.use(Toasted);
 Vue.use(VueResource);
 Vue.use(Vuelidate)
+
+Vue.filter('fmtPlaceholder', fmtPlaceholder);
 
 // Let's Register a Global Error Notification Toast.
 Vue.toasted.register(

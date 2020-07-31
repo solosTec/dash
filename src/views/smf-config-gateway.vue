@@ -133,7 +133,7 @@
                                                               v-model="ipt.param[0].host"
                                                               required
                                                               v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Primary IP-T Master"
-                                                              :placeholder="getPlaceholder($t('config-gateway-11'))" />
+                                                              :placeholder="$t('config-gateway-11')  | fmtPlaceholder" />
 
                                                 <b-form-input id="smf-gw-ipt-port-0"
                                                               type="number"
@@ -141,7 +141,7 @@
                                                               required
                                                               min="1024"
                                                               max="‭65535‬"
-                                                              :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                              :placeholder="$t('config-gateway-14') | fmtPlaceholder" />
                                                 <b-input-group-append>
                                                     <b-button variant="info" v-on:click.stop="ipt.param[0].port = 26862; ipt.param[0].host='localhost'">{{ $t('com-default') }}</b-button>
                                                 </b-input-group-append>
@@ -156,7 +156,7 @@
                                                           type="text"
                                                           v-model="ipt.param[0].user"
                                                           required
-                                                          :placeholder="getPlaceholder($t('config-gateway-12'))" />
+                                                          :placeholder="$t('config-gateway-12') | fmtPlaceholder" />
                                         </b-form-group>
                                         <b-form-group :label="$t('config-gateway-16')"
                                                       label-for="smf-gw-ipt-pwd-0"
@@ -168,7 +168,7 @@
                                                               type="text"
                                                               v-model="ipt.param[0].pwd"
                                                               required
-                                                              :placeholder="getPlaceholder($t('config-gateway-16'))" />
+                                                              :placeholder="$t('config-gateway-16') | fmtPlaceholder" />
                                                 <b-input-group-append>
                                                     <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 0)">&#x21ba;</b-button>
                                                 </b-input-group-append>
@@ -198,7 +198,7 @@
                                                               required
                                                               min="1024"
                                                               max="‭65535‬"
-                                                              :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                              :placeholder="$t('config-gateway-14') | fmtPlaceholder" />
                                                 <b-input-group-append>
                                                     <b-button variant="info" v-on:click.stop="ipt.param[1].port = 26863; ipt.param[1].host='localhost'">{{ $t('com-default') }}</b-button>
                                                 </b-input-group-append>
@@ -214,7 +214,7 @@
                                                           type="text"
                                                           v-model="ipt.param[1].user"
                                                           required
-                                                          :placeholder="getPlaceholder($t('config-gateway-12'))" />
+                                                          :placeholder="$t('config-gateway-12') | fmtPlaceholder" />
                                         </b-form-group>
                                         <b-form-group :label="$t('config-gateway-16')"
                                                       label-for="smf-gw-ipt-pwd-1"
@@ -226,7 +226,7 @@
                                                               type="text"
                                                               v-model="ipt.param[1].pwd"
                                                               required
-                                                              :placeholder="getPlaceholder($t('config-gateway-16'))" />
+                                                              :placeholder="$t('config-gateway-16') | fmtPlaceholder" />
                                                 <b-input-group-append>
                                                     <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 1)">&#x21ba;</b-button>
                                                 </b-input-group-append>
@@ -260,7 +260,7 @@
                                                                   v-model="ipt.status.host"
                                                                   v-b-popover.hover="'Current IP address'" title="Hostname" placement="top"
                                                                   readonly
-                                                                  :placeholder="getPlaceholder($t('config-gateway-11'))" />
+                                                                  :placeholder="$t('config-gateway-11') | fmtPlaceholder" />
                                                 </b-form-group>
                                                 <b-form-group :label="$t('config-gateway-18')"
                                                               label-for="smf-gw-ipt-port-local"
@@ -272,7 +272,7 @@
                                                                   readonly
                                                                   min="1024"
                                                                   max="‭65535‬"
-                                                                  :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                                  :placeholder="$t('config-gateway-14') | fmtPlaceholder" />
                                                 </b-form-group>
                                                 <b-form-group :label="$t('config-gateway-19')"
                                                               label-for="smf-gw-ipt-port-remote"
@@ -284,7 +284,7 @@
                                                                   readonly
                                                                   min="1024"
                                                                   max="‭65535‬"
-                                                                  :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                                  :placeholder="$t('config-gateway-14') | fmtPlaceholder" />
                                                 </b-form-group>
                                             </div>
                                         </b-sidebar>
@@ -455,7 +455,7 @@
                                                                   min="0"
                                                                   max="6000"
                                                                   step="10"
-                                                                  :placeholder="getPlaceholder($t('config-gateway-44'))" />
+                                                                  :placeholder="$t('config-gateway-44') | fmtPlaceholder" />
                                                     <b-input-group-append>
                                                         <b-button variant="info" v-on:click.stop="wmbus.sMode = 30">{{$t('config-gateway-48')}}</b-button>
                                                     </b-input-group-append>
@@ -498,7 +498,7 @@
                                                               type="text"
                                                               v-model="wmbus.type"
                                                               readonly
-                                                              :placeholder="getPlaceholder($t('config-gateway-49'))" />
+                                                              :placeholder="$t('config-gateway-49') | fmtPlaceholder" />
                                             </b-form-group>
                                         </b-col>
 
@@ -508,7 +508,7 @@
                                                               type="text"
                                                               v-model="wmbus.id"
                                                               readonly
-                                                              :placeholder="getPlaceholder($t('config-gateway-51'))" />
+                                                              :placeholder="$t('config-gateway-51') |  fmtPlaceholder" />
                                             </b-form-group>
                                         </b-col>
 
@@ -518,7 +518,7 @@
                                                               type="text"
                                                               v-model="wmbus.firmware"
                                                               readonly
-                                                              :placeholder="getPlaceholder($t('config-gateway-53'))" />
+                                                              :placeholder="$t('config-gateway-53') | fmtPlaceholder" />
                                             </b-form-group>
                                         </b-col>
 
@@ -528,7 +528,7 @@
                                                               type="text"
                                                               v-model="wmbus.hardware"
                                                               readonly
-                                                              :placeholder="getPlaceholder($t('config-gateway-55'))" />
+                                                              :placeholder="$t('config-gateway-55') | fmtPlaceholder" />
                                             </b-form-group>
                                         </b-col>
                                     </b-row>
@@ -1910,10 +1910,6 @@ export default Vue.extend({
             // console.log("btnEditStatus " , mc);
             if (typeof mc == 'undefined') return true;
             return (mc.length > 2) && mc.startsWith("MC");
-        },
-        getPlaceholder(str: string) {
-            //console.log(str);
-            return "<" + str + ">";
         },
         onProxyCacheReset() {
             this.spinner.reset = true;
