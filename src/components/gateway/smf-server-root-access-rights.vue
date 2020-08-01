@@ -20,16 +20,16 @@
     </div>
 </template>
 <script lang="ts">
-    import Vue from 'vue';
-    import {RootAccessRights} from '@/backend-api/root-access-rights';
-    import {
-        UIRootAccessMeter,
-        UIRootAccessRights,
-        UIRootAccessRightsRole,
-        UIRootAccessUser
-    } from '@/ui-api/root-access-rights';
+import Vue from 'vue';
+import {
+  RootAccessRights,
+  UIRootAccessMeter,
+  UIRootAccessRights,
+  UIRootAccessRightsRole,
+  UIRootAccessUser
+} from '@/api/root-access-rights';
 
-    const roleNames = (accessRights: RootAccessRights): string[] => Object.keys(accessRights.values);
+const roleNames = (accessRights: RootAccessRights): string[] => Object.keys(accessRights.values);
 
     export default Vue.extend({
         name: 'smfServerRootAccessRights',

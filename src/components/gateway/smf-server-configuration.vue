@@ -12,7 +12,7 @@
                                           v-model="form.serverId"
                                           :state="serverIdValidation"
                                           required
-                                          :placeholder="getPlaceholder($t('config-gateway-05'))"
+                                          :placeholder="$t('config-gateway-05') |  fmtPlaceholder"
                                           maxlength="14"/>
                             <b-form-invalid-feedback :state="serverIdValidation">
                                 A server ID must be a 14 characters long hexadecimal string
@@ -28,7 +28,7 @@
                                           type="text"
                                           v-model="form.manufacturer"
                                           required
-                                          :placeholder="getPlaceholder($t('config-gateway-06'))"/>
+                                          :placeholder="$t('config-gateway-06') | fmtPlaceholder"/>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -40,7 +40,7 @@
                                           type="text"
                                           v-model="form.userName"
                                           required
-                                          :placeholder="getPlaceholder($t('config-gateway-07'))"
+                                          :placeholder="$t('config-gateway-07') | fmtPlaceholder"
                                           maxlength="14"/>
                         </b-form-group>
                     </b-col>
@@ -51,7 +51,7 @@
                                               type="text"
                                               v-model="form.userPwd"
                                               required
-                                              :placeholder="getPlaceholder($t('config-gateway-08'))"/>
+                                              :placeholder="$t('config-gateway-08') | fmtPlaceholder"/>
                                 <b-input-group-append>
                                     <b-button variant="info" v-on:click.stop="generatePassword">&#x21ba;</b-button>
                                 </b-input-group-append>
@@ -141,9 +141,6 @@
             }
         },
         methods: {
-            getPlaceholder(str: string): string {
-                return "<" + str + ">";
-            },
             onGatewayUpdate(event: Event) {
                 event.preventDefault();
                 this.wsDelegate.ws_submit_record("modify", "config.gateway", {

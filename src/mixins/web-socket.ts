@@ -13,9 +13,14 @@ interface WebSocketData {
     state: string | TranslateResult
 }
 
+export const enum Channel {
+    ConfigUser='config.user',
+    CongifHardware='config.hardware',
+}
+
 export interface WSResponse {
     cmd: 'update' | 'insert' | 'modify' | 'clear' | 'delete' | 'load';
-    channel: string;
+    channel: string | Channel;
 }
 
 export interface WSInsertResponse<T> extends WSResponse {
@@ -153,7 +158,8 @@ export const webSocket = Vue.extend({
             this.ws_emit_event_state(this.state);
         },
 
-        ws_subscribe(channel: string) {
+        // FIXME channel string should be removed - all channels should be part of the enum
+        ws_subscribe(channel: string | Channel) {
             if (!this.ws_is_open() || !this.ws) return;
             const msg = JSON.stringify({
                 cmd: "subscribe",
@@ -304,6 +310,7 @@ export const webSocket = Vue.extend({
             }
             this.ws_emit_event_state("online");
             //  restart timer
+            // @ts-ignore
             this.timer = setTimeout(this.onTimer, 5000);
         },
         ws_is_open() {

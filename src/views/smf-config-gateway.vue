@@ -133,7 +133,7 @@
                                                               v-model="ipt.param[0].host"
                                                               required
                                                               v-b-popover.hover="'Specify a known hostname or an IPv4/IPv6 address'" title="Primary IP-T Master"
-                                                              :placeholder="getPlaceholder($t('config-gateway-11'))" />
+                                                              :placeholder="$t('config-gateway-11')  | fmtPlaceholder" />
 
                                                 <b-form-input id="smf-gw-ipt-port-0"
                                                               type="number"
@@ -141,7 +141,7 @@
                                                               required
                                                               min="1024"
                                                               max="‭65535‬"
-                                                              :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                              :placeholder="$t('config-gateway-14') | fmtPlaceholder" />
                                                 <b-input-group-append>
                                                     <b-button variant="info" v-on:click.stop="ipt.param[0].port = 26862; ipt.param[0].host='localhost'">{{ $t('com-default') }}</b-button>
                                                 </b-input-group-append>
@@ -156,7 +156,7 @@
                                                           type="text"
                                                           v-model="ipt.param[0].user"
                                                           required
-                                                          :placeholder="getPlaceholder($t('config-gateway-12'))" />
+                                                          :placeholder="$t('config-gateway-12') | fmtPlaceholder" />
                                         </b-form-group>
                                         <b-form-group :label="$t('config-gateway-16')"
                                                       label-for="smf-gw-ipt-pwd-0"
@@ -168,7 +168,7 @@
                                                               type="text"
                                                               v-model="ipt.param[0].pwd"
                                                               required
-                                                              :placeholder="getPlaceholder($t('config-gateway-16'))" />
+                                                              :placeholder="$t('config-gateway-16') | fmtPlaceholder" />
                                                 <b-input-group-append>
                                                     <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 0)">&#x21ba;</b-button>
                                                 </b-input-group-append>
@@ -198,7 +198,7 @@
                                                               required
                                                               min="1024"
                                                               max="‭65535‬"
-                                                              :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                              :placeholder="$t('config-gateway-14') | fmtPlaceholder" />
                                                 <b-input-group-append>
                                                     <b-button variant="info" v-on:click.stop="ipt.param[1].port = 26863; ipt.param[1].host='localhost'">{{ $t('com-default') }}</b-button>
                                                 </b-input-group-append>
@@ -214,7 +214,7 @@
                                                           type="text"
                                                           v-model="ipt.param[1].user"
                                                           required
-                                                          :placeholder="getPlaceholder($t('config-gateway-12'))" />
+                                                          :placeholder="$t('config-gateway-12') | fmtPlaceholder" />
                                         </b-form-group>
                                         <b-form-group :label="$t('config-gateway-16')"
                                                       label-for="smf-gw-ipt-pwd-1"
@@ -226,7 +226,7 @@
                                                               type="text"
                                                               v-model="ipt.param[1].pwd"
                                                               required
-                                                              :placeholder="getPlaceholder($t('config-gateway-16'))" />
+                                                              :placeholder="$t('config-gateway-16') | fmtPlaceholder" />
                                                 <b-input-group-append>
                                                     <b-button variant="info" v-on:click.stop="generatePasswordIPT($event, 1)">&#x21ba;</b-button>
                                                 </b-input-group-append>
@@ -260,7 +260,7 @@
                                                                   v-model="ipt.status.host"
                                                                   v-b-popover.hover="'Current IP address'" title="Hostname" placement="top"
                                                                   readonly
-                                                                  :placeholder="getPlaceholder($t('config-gateway-11'))" />
+                                                                  :placeholder="$t('config-gateway-11') | fmtPlaceholder" />
                                                 </b-form-group>
                                                 <b-form-group :label="$t('config-gateway-18')"
                                                               label-for="smf-gw-ipt-port-local"
@@ -272,7 +272,7 @@
                                                                   readonly
                                                                   min="1024"
                                                                   max="‭65535‬"
-                                                                  :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                                  :placeholder="$t('config-gateway-14') | fmtPlaceholder" />
                                                 </b-form-group>
                                                 <b-form-group :label="$t('config-gateway-19')"
                                                               label-for="smf-gw-ipt-port-remote"
@@ -284,7 +284,7 @@
                                                                   readonly
                                                                   min="1024"
                                                                   max="‭65535‬"
-                                                                  :placeholder="getPlaceholder($t('config-gateway-14'))" />
+                                                                  :placeholder="$t('config-gateway-14') | fmtPlaceholder" />
                                                 </b-form-group>
                                             </div>
                                         </b-sidebar>
@@ -295,86 +295,18 @@
                         </b-tab>
 
                         <!-- Broker -->
-                        <b-tab :disabled="selected[0].online === 0" no-body :smf-context="smfContext.broker">
+                        <b-tab :disabled="selected[0].online === 0 || !selected[0].model.startsWith('SMF-GW:')"
+                                no-body
+                                :smf-context="smfContext.broker">
+
                             <template slot="title">
-                                {{ $t('config-gateway-74') }}
-                                <b-spinner v-if="spinner.broker" type="grow" small />
+                                {{ $t('config-gateway-74') }} <b-spinner v-if="spinner.broker" type="grow" small />
                             </template>
-                            <b-form @submit.prevent="">
 
-                                <b-card-group deck class="pt-4">
-                                    <b-card header="wireless LMN" title="Transparent mode ttyAPP0" sub-title="Reconfiguration requires a restart">
-
-                                        <b-form-group label="TCP/IP Address"
-                                                      label-for="smf-broker.ttyAPP0.host"
-                                                      description="Dotted decimal notation or hostname"
-                                                      label-cols-sm="4"
-                                                      label-cols-lg="3">
-                                            <b-input-group name="smf-broker.ttyAPP0.host" class="mt-2">
-                                                <b-input-group-prepend is-text>
-                                                    <b-form-checkbox v-model="broker.ttyAPP0.transparent" class="mr-n2" switch>
-                                                        <span class="sr-only">Switch for following text input</span>
-                                                    </b-form-checkbox>
-                                                </b-input-group-prepend>
-                                                <b-form-input id="smf-broker.ttyAPP0.host"
-                                                              type="text"
-                                                              :disabled="!broker.ttyAPP0.transparent"
-                                                              v-model="broker.ttyAPP0.host"
-                                                              placeholder="Hostname" />
-
-                                                <b-form-input id="smf-broker.ttyAPP0.host"
-                                                              type="number"
-                                                              :disabled="!broker.ttyAPP0.transparent"
-                                                              v-model="broker.ttyAPP0.service"
-                                                              placeholder="IP port" />
-                                            </b-input-group>
-                                        </b-form-group>
-                                        <b-form-group label-cols-sm="4"
-                                                      label-cols-lg="3">
-                                            <b-button
-                                                      type="submit"
-                                                      variant="primary"
-                                                      v-on:click.stop="onBrokerUpdate($event, 'ttyAPP0')">{{btnUpdateTitle}}</b-button>
-                                        </b-form-group>
-
-                                    </b-card>
-
-                                    <b-card header="wired LMN" title="Transparent mode ttyAPP1" sub-title="Reconfiguration requires a restart">
-
-                                        <b-form-group label="TCP/IP Address"
-                                                      label-for="smf-broker.ttyAPP1.host"
-                                                      description="Dotted decimal notation or hostname"
-                                                      label-cols-sm="4"
-                                                      label-cols-lg="3">
-                                            <b-input-group name="smf-broker.ttyAPP1.host" class="mt-2">
-                                                <b-input-group-prepend is-text>
-                                                    <b-form-checkbox v-model="broker.ttyAPP1.transparent" class="mr-n2" switch>
-                                                        <span class="sr-only">Switch for following text input</span>
-                                                    </b-form-checkbox>
-                                                </b-input-group-prepend>
-
-                                                <b-form-input id="smf-broker.ttyAPP1.host"
-                                                              type="text"
-                                                              :disabled="!broker.ttyAPP1.transparent"
-                                                              v-model="broker.ttyAPP1.host"
-                                                              placeholder="Hostname" />
-                                                <b-form-input id="smf-broker.ttyAPP1.host"
-                                                              type="number"
-                                                              :disabled="!broker.ttyAPP1.transparent"
-                                                              v-model="broker.ttyAPP1.service"
-                                                              placeholder="IP port" />
-                                            </b-input-group>
-                                        </b-form-group>
-                                        <b-form-group label-cols-sm="4"
-                                                      label-cols-lg="3">
-                                            <b-button
-                                                      type="submit"
-                                                      variant="primary"
-                                                      v-on:click.stop="onBrokerUpdate($event, 'ttyAPP1')">{{btnUpdateTitle}}</b-button>
-                                        </b-form-group>
-                                    </b-card>
-                                </b-card-group>
-                            </b-form>
+                            <smfBrokerConfiguration
+                                    :gateway="selected[0]"
+                                    :brokers="brokers"
+                                    @brokerUpdate="onBrokerUpdate"></smfBrokerConfiguration>
                         </b-tab>
 
                         <!-- Firmware -->
@@ -523,7 +455,7 @@
                                                                   min="0"
                                                                   max="6000"
                                                                   step="10"
-                                                                  :placeholder="getPlaceholder($t('config-gateway-44'))" />
+                                                                  :placeholder="$t('config-gateway-44') | fmtPlaceholder" />
                                                     <b-input-group-append>
                                                         <b-button variant="info" v-on:click.stop="wmbus.sMode = 30">{{$t('config-gateway-48')}}</b-button>
                                                     </b-input-group-append>
@@ -566,7 +498,7 @@
                                                               type="text"
                                                               v-model="wmbus.type"
                                                               readonly
-                                                              :placeholder="getPlaceholder($t('config-gateway-49'))" />
+                                                              :placeholder="$t('config-gateway-49') | fmtPlaceholder" />
                                             </b-form-group>
                                         </b-col>
 
@@ -576,7 +508,7 @@
                                                               type="text"
                                                               v-model="wmbus.id"
                                                               readonly
-                                                              :placeholder="getPlaceholder($t('config-gateway-51'))" />
+                                                              :placeholder="$t('config-gateway-51') |  fmtPlaceholder" />
                                             </b-form-group>
                                         </b-col>
 
@@ -586,7 +518,7 @@
                                                               type="text"
                                                               v-model="wmbus.firmware"
                                                               readonly
-                                                              :placeholder="getPlaceholder($t('config-gateway-53'))" />
+                                                              :placeholder="$t('config-gateway-53') | fmtPlaceholder" />
                                             </b-form-group>
                                         </b-col>
 
@@ -596,7 +528,7 @@
                                                               type="text"
                                                               v-model="wmbus.hardware"
                                                               readonly
-                                                              :placeholder="getPlaceholder($t('config-gateway-55'))" />
+                                                              :placeholder="$t('config-gateway-55') | fmtPlaceholder" />
                                             </b-form-group>
                                         </b-col>
                                     </b-row>
@@ -883,22 +815,24 @@
 <script lang="ts">
 
     import {webSocket} from '@/mixins/web-socket'
-    import opLog from '@/components/smf-table-op-log.vue'
-    import snapshots from '@/components/smf-table-snapshots.vue'
-    import firmware from '@/components/smf-table-firmware.vue'
+    import opLog from '@/components/gateway/smf-table-op-log.vue'
+    import snapshots from '@/components/gateway/smf-table-snapshots.vue'
+    import firmware from '@/components/gateway/smf-table-firmware.vue'
     import { MESSAGE_REQUEST, MESSAGE_RESPONSE } from '@/constants/msgTypes'
     import { SML_CODES } from '@/constants/rootCodes'
     import {hasPrivilegesWaitForUser} from "@/mixins/privileges";
     import store from "../store";
     import {MODULES, NO_ACCESS_ROUTE, PRIVILEGES} from "@/store/modules/user";
     import {generatePassword} from "@/shared/generate-password";
-    import smfServerConfiguration from '@/components/smf-server-configuration.vue';
-    import smfServerRootAccessRights from '@/components/smf-server-root-access-rights.vue';
-    import smfMeterAccessRights from '@/components/smf-meter-access-rights.vue';
+    import smfServerConfiguration from '@/components/gateway/smf-server-configuration.vue';
+    import smfServerRootAccessRights from '@/components/gateway/smf-server-root-access-rights.vue';
+    import smfMeterAccessRights from '@/components/gateway/smf-meter-access-rights.vue';
+    import smfBrokerConfiguration from '@/components/gateway/smf-broker-configuration.vue';
     import mixins from 'vue-typed-mixins';
-    import Vue from 'vue';
-    import {UIRootAccessMeter, UIRootAccessRightsRole, UIRootAccessUser} from '@/ui-api/root-access-rights';
+    import {UIRootAccessMeter, UIRootAccessRightsRole, UIRootAccessUser} from '@/api/root-access-rights';
     import {BTabs} from 'bootstrap-vue';
+    import {Gateway} from '@/api/gateway';
+    import {BBroker} from '@/api/broker';
 
     const gatewayTableFields = [
         {
@@ -961,7 +895,10 @@
 
     let tmpGateways: any[] = [];
 
-export default  mixins(webSocket, Vue).extend({
+    // workaround: https://youtrack.jetbrains.com/issue/WEB-43243
+    const Vue = mixins(webSocket)
+
+export default Vue.extend({
     name: 'smfConfigGateway',
     props: [],
     mixins: [webSocket],
@@ -969,6 +906,7 @@ export default  mixins(webSocket, Vue).extend({
         smfServerConfiguration,
         smfServerRootAccessRights,
         smfMeterAccessRights,
+        smfBrokerConfiguration,
         opLog,
         snapshots,
         firmware
@@ -986,8 +924,8 @@ export default  mixins(webSocket, Vue).extend({
             perPage: 10,
             mode: process.env.NODE_ENV,
             fields: gatewayTableFields,
-            gateways:[] as any,
-            selected: [] as any,
+            gateways:[] as Gateway[],
+            selected: [] as Gateway[],
             sortBy: 'name',
             sortDesc: false,
             sortDirection: 'desc',
@@ -1018,7 +956,7 @@ export default  mixins(webSocket, Vue).extend({
                 userPwd: '',
                 online: 0,
                 name: ''
-            },
+            } as Gateway,
             //  gw options
             smfContext: {
                 configuration: 'configuration',
@@ -1083,20 +1021,7 @@ export default  mixins(webSocket, Vue).extend({
                     remote: 0
                 }
             },
-
-            broker: {
-                ttyAPP0: {
-                    transparent: false,
-                    host: "segw.ch",
-                    service: 12000
-                },
-                ttyAPP1: {
-                    transparent: false,
-                    host: "segw.ch",
-                    service: 12001
-                }
-            },
-
+            brokers: [] as  BBroker[],
             meters: {
                 values: [] as any,
                 selected: [],
@@ -1553,12 +1478,34 @@ export default  mixins(webSocket, Vue).extend({
                             else if (obj.section[0] === SML_CODES.CODE_ROOT_BROKER) {
                                 console.log(obj);
                                 this.spinner.broker = false;
-                                this.broker.ttyAPP0.transparent = obj.rec.values['9000000001FF']['900000000101'];
-                                this.broker.ttyAPP1.transparent = obj.rec.values['9000000001FF']['900000000102'];
-                                this.broker.ttyAPP0.host = obj.rec.values['9000000002FF']['900000000201'];
-                                this.broker.ttyAPP1.host = obj.rec.values['9000000002FF']['900000000202'];
-                                this.broker.ttyAPP0.service = obj.rec.values['9000000003FF']['900000000301'];
-                                this.broker.ttyAPP1.service = obj.rec.values['9000000003FF']['900000000302'];
+                                // this.broker.ttyAPP0.transparent = obj.rec.values['9000000001FF']['900000000101'];
+                                // this.broker.ttyAPP1.transparent = obj.rec.values['9000000001FF']['900000000102'];
+                                // this.broker.ttyAPP0.host = obj.rec.values['9000000002FF']['900000000201'];
+                                // this.broker.ttyAPP1.host = obj.rec.values['9000000002FF']['900000000202'];
+                                // this.broker.ttyAPP0.service = obj.rec.values['9000000003FF']['900000000301'];
+                                // this.broker.ttyAPP1.service = obj.rec.values['9000000003FF']['900000000302'];
+                                //FIXME @Sylko: this should be the result. is this possible?
+                                // even better. inlcude the name of the port and also send broker without addreesses.
+                                // in this way we do not need a special hardware configuration that needs to be queried
+                                // first.
+                                this.brokers = [
+                                  {
+                                    hardwarePort: 'ttyAPP0',
+                                    transparent: false,
+                                    addresses: [{
+                                      host: 'segw.ch',
+                                      service: 12000
+                                    }]
+                                  },
+                                  {
+                                    hardwarePort: 'ttyAPP1',
+                                    transparent: false,
+                                    addresses: [{
+                                      host: 'segw.ch',
+                                      service: 12001
+                                    }]
+                                  }
+                                ];
                             }
                             else if (obj.section[0] === SML_CODES.CODE_IF_1107) {
                                 //  hide loading spinner
@@ -1702,6 +1649,8 @@ export default  mixins(webSocket, Vue).extend({
                     }
                 }
                 else if (obj.cmd === 'insert') {
+                    // FIXME @Slyko instead of checking the name of ther server we should have
+                    // a flag hasBroker - this is way more flexible.
                     let rec: any = {
                         pk: obj.rec.key.pk,
                         serverId: obj.rec.data.serverId,
@@ -1857,7 +1806,7 @@ export default  mixins(webSocket, Vue).extend({
             // get the context of the selected tab
             this.updateSmfContext();
         },
-        rowSelected(items: any) {
+        rowSelected(items: Gateway[]) {
             this.selected = items;
             this.form.serverId = "";
             this.form.name = '';
@@ -1900,14 +1849,16 @@ export default  mixins(webSocket, Vue).extend({
                 [this.form.pk!],
                 { index: index, ipt: this.ipt.param[index] });
         },
-        onBrokerUpdate(event: Event, port: 'ttyAPP0' | 'ttyAPP1') {
-            event.preventDefault();
-            console.log(this.broker[port]);
+      onBrokerUpdate(broker: BBroker) {
+            console.log(JSON.stringify(broker));
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_ROOT_BROKER,
                 [this.form.pk!],
-                { port: port, broker: this.broker });
-                //{ port: port, broker: this.broker[port] });
+                { port: broker.hardwarePort, broker });
+                //{ port: port, broker: broker[port] });
+                // FIXME @Sylko: if one broker is  updated all brokers are resend - this results in a refresh
+                //  of the broker ui and user inputs may be overridden. solution: 1. resend only the changed broker
+                //  2. we save all broker at once - so we also  only need one update button in the broker UI.
         },
         onMeterDelete(item: any) {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
@@ -1959,10 +1910,6 @@ export default  mixins(webSocket, Vue).extend({
             // console.log("btnEditStatus " , mc);
             if (typeof mc == 'undefined') return true;
             return (mc.length > 2) && mc.startsWith("MC");
-        },
-        getPlaceholder(str: string) {
-            //console.log(str);
-            return "<" + str + ">";
         },
         onProxyCacheReset() {
             this.spinner.reset = true;

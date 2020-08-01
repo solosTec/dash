@@ -75,7 +75,7 @@
     import Vue from 'vue';
     import smfDataTable from '@/components/smf-data-table.vue';
     import smfCrudForm from '@/components/smf-crud-form.vue';
-    import {ROLES, User, UserRole} from '@/backend-api/user';
+    import {ROLES, User, UserRole} from '@/api/user';
     import {BModal} from 'bootstrap-vue';
 
     const MOCK_USERS: User[] = [
