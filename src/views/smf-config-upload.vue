@@ -83,7 +83,7 @@
                     <b-form @submit="onSubmitLoRa" @reset="onResetLoRa">
                         <b-form-file v-model="LoRa.file"
                                      :state="Boolean(LoRa.file)"
-                                     accept="application/xml, application/json"
+                                     accept="application/xml,application/json"
                                      :placeholder="lora_text"
                                      drop-placeholder="Drop file here...">
                         </b-form-file>
@@ -99,10 +99,10 @@
 
                 <b-card title="Upload ONEE Configuration" class="shadow">
                     <div slot="footer"><small class="text-muted">{{meterCount}} meter(s) configured</small></div>
-                    <b-form @submit="onSubmitLoRa" @reset="onResetLoRa">
+                    <b-form @submit="onSubmitOnee" @reset="onResetOnee">
                         <b-form-file v-model="onee.file"
                                      :state="Boolean(onee.file)"
-                                     accept="text/csv"
+                                     accept="text/comma-separated-values,application/vnd.ms-excel"
                                      :placeholder="onee_text"
                                      drop-placeholder="Drop file here...">
                         </b-form-file>
@@ -317,7 +317,37 @@
                 evt.preventDefault()
                 this.LoRa.file = null;
                 this.LoRa.policy = 'append';
+            },
+
+            onSubmitOnee(evt: Event) {
+                evt.preventDefault();
+                console.log(this.onee);
+                let formData = new FormData();
+                formData.append('file', this.onee.file!);
+                formData.append('policy', this.onee.policy);
+
+                this.$http.post("/upload/config/onee/", formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    progress(e) {
+                        if (e.lengthComputable) {
+                            console.log(e.loaded / e.total * 100);
+                        }
+                    }
+                })
+                    .then(res => {
+                        console.log(res)
+                    }, (err: any) => {
+                        console.log(err)
+                    })
+            },
+            onResetOnee(evt: Event) {
+                evt.preventDefault()
+                this.onee.file = null;
+                this.onee.policy = 'subst';
             }
+
         },
 
         computed: {
