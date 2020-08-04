@@ -13,13 +13,13 @@
     "pre-push": "npm run lint && npm run test:unit && npm run build"
   },
   "dependencies": {
-    "bootstrap-vue": "^2.15.0",
+    "bootstrap-vue": "^2.16.0",
     "core-js": "^2.6.11",
     "i18n": "^0.8.6",
     "vue": "^2.6.11",
     "vue-analytics": "^5.22.1",
     "vue-headful": "^2.1.0",
-    "vue-i18n": "^8.18.2",
+    "vue-i18n": "^8.20.0",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.3.4",
     "vue-toasted": "^1.1.28",
