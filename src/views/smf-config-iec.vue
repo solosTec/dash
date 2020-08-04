@@ -171,19 +171,19 @@
                     this.items.forEach((rec: UiMeter) => {
                         console.log(rec.pk, pk);
                         if (rec.pk === pk) {
-                            if (value.port !== null) {
+                            if (value.port != null) {
                                 rec.port = value.port;
                             }
-                            else if (value.meter !== null) {
+                            else if (value.meter != null) {
                                 rec.meter = value.meter;
                             }
-                            else if (value.address !== null) {
+                            else if (value.address != null) {
                                 rec.address = value.address;
                             }
-                            else if (value.interval !== null) {
+                            else if (value.interval != null) {
                                 rec.interval = value.interval;
                             }
-                            else if (value.direction !== null) {
+                            else if (value.direction != null) {
                                 rec.direction = value.direction;
                             }
                         }
