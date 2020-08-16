@@ -874,24 +874,29 @@
                             this.spinner.mirror = false;
                         }
                         else if (obj.channel === MESSAGE_RESPONSE.getList) {
-                            //console.log(obj.rec.values);
+                            //console.log(obj);
                             //  hide spinner
                             this.spinner.readout = false;
                             // clear table
                             this.readout.values = [];
-                            this.$toasted.global.sml_attention_ok(obj.rec.srv + " sent " + Object.keys(obj.rec.values).length + " values", "info");
-                            Object.keys(obj.rec.values.values).forEach((key) => {
-                                //console.log(key);
-                                //console.log(obj.rec.values.values[key]);
-                                const rec = {
-                                    obis: key,
-                                    value: obj.rec.values.values[key].value,
-                                    unit: obj.rec.values.values[key].unit,
-                                    time: obj.rec.values.values[key].valTime,
-                                    server: obj.rec.srv
-                                };
-                                this.readout.values.push(rec);
-                            });
+                            if (obj.rec.values.values != null) {
+                                this.$toasted.global.sml_attention_ok(obj.rec.srv + " sent " + Object.keys(obj.rec.values.values).length + " values", "info");
+                                Object.keys(obj.rec.values.values).forEach((key) => {
+                                    //console.log(key);
+                                    //console.log(obj.rec.values.values[key]);
+                                    const rec = {
+                                        obis: key,
+                                        value: obj.rec.values.values[key].value,
+                                        unit: obj.rec.values.values[key].unit,
+                                        time: obj.rec.values.values[key].valTime,
+                                        server: obj.rec.srv
+                                    };
+                                    this.readout.values.push(rec);
+                                });
+                            }
+                            else {
+                                this.$toasted.global.sml_attention_ok(obj.rec.srv + " has no values", "info");
+                            }
                         }
                         else if (obj.channel === MESSAGE_RESPONSE.getProcParameter) {
                             console.log(MESSAGE_RESPONSE.getProcParameter + ': ' + obj.section);

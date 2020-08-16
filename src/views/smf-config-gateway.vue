@@ -1297,8 +1297,8 @@ export default Vue.extend({
                                     this.gw.status.push({ value: 'no extension interface', variant: null });
                                 }
 
-                                if (obj.rec.values.word.MBUS_IF_AVAILABLE) {
-                                    this.gw.status.push({ value: 'wireless M-Bus interface available', variant: null });
+                                if (obj.rec.values.word.WIRELESS_BUS_IF_AVAILABLE) {
+                                    this.gw.status.push({ value: 'wireless M-Bus interface available', variant: 'success' });
                                 }
                                 else {
                                     this.gw.status.push({ value: 'no wireless M-Bus interface', variant: null });
@@ -1310,6 +1310,14 @@ export default Vue.extend({
                                 else {
                                     this.gw.status.push({ value: 'no PLC interface', variant: null });
                                 }
+
+                                if (obj.rec.values.word.WIRED_MBUS_IF_AVAILABLE) {
+                                    this.gw.status.push({ value: 'wired M-Bus interface available', variant: 'success' });
+                                }
+                                else {
+                                    this.gw.status.push({ value: 'no wired M-Bus interface', variant: null });
+                                }
+
 
                                 if (obj.rec.values.word.NO_TIMEBASE) {
                                     this.gw.status.push({ value: 'uncertain timebase', variant: "dark" });
