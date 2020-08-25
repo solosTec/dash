@@ -9,7 +9,7 @@ COPY ./ .
 RUN echo $NPM_BUILD_COMMAND
 RUN npm run $NPM_BUILD_COMMAND
 RUN npm run build-no-auth
-RUN npm run npm run build
+RUN npm run build
 
 FROM nginx as production-stage
 RUN mkdir /app
