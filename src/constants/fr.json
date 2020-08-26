@@ -68,6 +68,7 @@
     "lead-task-tsdb": "%{count} bases de données de séries chronologiques en ligne",
     "header-task-plausibility": "Plausibilité du test",
     "header-collector-mbus-radio": "Collecteur de données sans fil mBus",
+    "lead-collector-mbus-radio": "%{count} liaisons montantes stockées",
 
     "com-default": "par défaut",
 
@@ -115,6 +116,8 @@
     "config-sys-17": "Insertion automatique d'appareils LoRa inconnus",
     "config-sys-18": "Configuration de la passerelle de mise en cache",
     "config-sys-19": "Créer et maintenir un cache pour les données de configuration de la passerelle.",
+    "config-sys-20": "Enregistrements de liaison montante LoRa",
+    "config-sys-21": "Enregistrements de la liaison montante M-Bus sans fil",
     "config-device-01": "Nom de l'appareil",
     "config-device-01-01": "<Nom de l'appareil>",
     "config-device-02": "Mot de passe",

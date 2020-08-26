@@ -278,7 +278,7 @@
                     }
                     else if (obj.cmd == 'delete') {
                         console.log('lookup message ' + obj.key);
-                        var idx = this.messages.findIndex(rec => rec.id == obj.id);
+                        var idx = this.messages.findIndex(rec => rec.id == obj.key);
                         console.log('delete index ' + idx);
                         this.messages.splice(idx, 1);
                     }

@@ -141,8 +141,13 @@
                         sortable: true
                     },
                     {
-                        key: 'protocol',
-                        label: 'Protocol',
+                        key: 'pLayer',
+                        label: 'Transport',
+                        sortable: true
+                    },
+                    {
+                        key: 'dLayer',
+                        label: 'Data',
                         sortable: true
                     },
                     {
@@ -235,7 +240,8 @@
                             pk: obj.rec.key.tag,
                             name: obj.rec.data.name,
                             source: obj.rec.data.source,
-                            protocol: obj.rec.data.layer,
+                            pLayer: obj.rec.data.pLayer,
+                            dLayer: obj.rec.data.dLayer,
                             rx: obj.rec.data.rx,
                             sx: obj.rec.data.sx,
                             px: obj.rec.data.px,

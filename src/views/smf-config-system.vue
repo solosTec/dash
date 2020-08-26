@@ -127,6 +127,33 @@
                     <!-- Maximum number of events to be displayed. -->
                     <div slot="footer"><small class="text-muted">{{ $t('com-default') }} = <b>{{cfg.def.maxEvents}}</b></small></div>
                 </b-card>
+
+                <b-card :title="$t('config-sys-20')" class="shadow">
+                    <b-input-group prepend="max." class="mt-3">
+                        <b-form-input v-model.number="cfg.maxLoRaRecords" type="number" min="10" max="10000" step="10" placeholder="<max. Events>" />
+                        <b-input-group-append>
+                            <b-button variant="secondary" @click="cfg.maxLoRaRecords = cfg.def.maxLoRaRecords">{{ $t('com-default') }}</b-button>
+                            <b-button variant="success" @click="changeMaxLoRaRecords(cfg.maxLoRaRecords)">{{ $t('action-apply') }}</b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+
+                    <!-- Maximum number of events to be displayed. -->
+                    <div slot="footer"><small class="text-muted">{{ $t('com-default') }} = <b>{{cfg.def.maxLoRaRecords}}</b></small></div>
+                </b-card>
+
+                <b-card :title="$t('config-sys-21')" class="shadow">
+                    <b-input-group prepend="max." class="mt-3">
+                        <b-form-input v-model.number="cfg.maxwMBusRecords" type="number" min="10" max="10000" step="10" placeholder="<max. Events>" />
+                        <b-input-group-append>
+                            <b-button variant="secondary" @click="cfg.maxwMBusRecords = cfg.def.maxwMBusRecords">{{ $t('com-default') }}</b-button>
+                            <b-button variant="success" @click="changeMaxwMBusRecords(cfg.maxwMBusRecords)">{{ $t('action-apply') }}</b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+
+                    <!-- Maximum number of events to be displayed. -->
+                    <div slot="footer"><small class="text-muted">{{ $t('com-default') }} = <b>{{cfg.def.maxwMBusRecords}}</b></small></div>
+                </b-card>
+
             </b-card-group>
 
             <br />
@@ -196,6 +223,8 @@
                     tsdb_dir: '/',
                     maxMessages: 1000,
                     maxEvents: 2000,
+                    maxLoRaRecords: 500,
+                    maxwMBusRecords: 500,
                     catch_meters: false,
                     catch_lora: false,
                     hostname: location.hostname,
@@ -210,6 +239,8 @@
                         tsdb: false,
                         maxMessages: 1000,
                         maxEvents: 2000,
+                        maxLoRaRecords: 500,
+                        maxwMBusRecords: 500,
                         catch_meters: false,
                         catch_lora: false,
                         countryCode: 'AU',
@@ -297,6 +328,12 @@
                         else if (obj.rec.key.name == "max-events") {
                             this.cfg.maxEvents = obj.rec.data.value;
                         }
+                        else if (obj.rec.key.name == "max-LoRa-records") {
+                            this.cfg.maxLoRaRecords = obj.rec.data.value;
+                        }
+                        else if (obj.rec.key.name == "max-wMBus-records") {
+                            this.cfg.maxwMBusRecords = obj.rec.data.value;
+                        }
                         else if (obj.rec.key.name == "catch-meters") {
                             this.cfg.catch_meters = obj.rec.data.value;
                         }
@@ -358,6 +395,12 @@
                         else if (obj.key[0] == 'max-events') {
                             this.cfg.maxEvents = obj.value;
                         }
+                        else if (obj.key[0]== "max-LoRa-records") {
+                            this.cfg.maxLoRaRecords = obj.value;
+                        }
+                        else if (obj.key[0] == "max-wMBus-records") {
+                            this.cfg.maxwMBusRecords = obj.value;
+                        }
                         else if (obj.key[0] == 'catch-meters') {
                             this.cfg.catch_meters = obj.value;
                         }
@@ -385,6 +428,18 @@
             changeMaxEvents(newValue: any) {
                 this.ws_submit_record("modify", "config.system", {
                     key: { name: "max-events" },
+                    data: { value: newValue }
+                });
+            },
+            changeMaxLoRaRecords(newValue: any) {
+                this.ws_submit_record("modify", "config.system", {
+                    key: { name: "max-LoRa-records" },
+                    data: { value: newValue }
+                });
+            },
+            changeMaxwMBusRecords(newValue: any) {
+                this.ws_submit_record("modify", "config.system", {
+                    key: { name: "max-wMBus-records" },
                     data: { value: newValue }
                 });
             },
