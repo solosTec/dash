@@ -13,6 +13,7 @@ do not ask for a config.user - use admin instead
 VUE_APP_SMF_NO_AUTH=true
 ```
 
+This configuration can be stored in a file named .env.development.local
 
 # pre steps
 
