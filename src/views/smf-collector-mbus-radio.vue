@@ -128,22 +128,84 @@
                         sortable: true
                     },
                     {
+                        key: 'serverId',
+                        label: 'Server ID',
+                        sortable: true
+                    },
+                    {
+                        key: 'manufacturer',
+                        label: 'Manufacturer',
+                        sortable: true
+                    },
+                    {
+                        key: 'medium',
+                        label: 'Device',
+                        formatter: (value: Number) => {
+                            switch (value) {
+                                case 0x01: return "Oil";
+                                case 0x02: return "Electricity";
+                                case 0x03: return "Gas";
+                                case 0x04: return "Heat";
+                                case 0x05: return "Steam";
+                                case 0x06: return "Warm Water (30C...90C)";
+                                case 0x07: return "Water";
+                                case 0x08: return "Heat Cost Allocator";
+                                case 0x09: return "Compressed Air";
+                                //DEV_TYPE_CLM_OUTLET = 0x0A, //!< Cooling load meter (Volume measured at return temperature: outlet)
+                                //DEV_TYPE_CLM_INLET = 0x0B, //!< Cooling load meter (Volume measured at flow temperature: inlet)
+                                //DEV_TYPE_HEAT_INLET = 0x0C, //!< Heat (Volume measured at flow temperature: inlet)
+                                //DEV_TYPE_HEAT_COOLING_LOAD_METER = 0x0D, //!< Heat / Cooling load meter
+                                case 0x0E: return "Bus"; // / System component
+                                //DEV_TYPE_UNKNOWN_MEDIUM = 0x0F, //!< Unknwon medium
+
+                                //// 0x10 to 0x13 reserved
+                                //DEV_TYPE_CALORIFIC_VALUE = 0x14,	//! Calorific value
+                                case 0x15: return "Hot water (>=90C)";
+                                case 0x16: return "Cold water";
+                                case 0x17: return "Dual register"; // (hot/cold) Water Meter
+                                case 0x18: return "Pressure meter";
+                                //DEV_TYPE_AD_CONVERTER = 0x19, //!<	A/D Converter
+                                //DEV_TYPE_SMOKE_DETECTOR = 0x1A,	//!<	Room sensor  (e.g. temperature or humidity)
+                                //DEV_TYPE_ROOM_SENSOR = 0x1B,	//!<	Room sensor  (e.g. temperature or humidity)
+                                //DEV_TYPE_GAS_DETECTOR = 0x1C,	//!<	Gas detector
+                                default:
+                                    break;
+                            }
+                            return value.toString()
+                        },
+                       sortable: true
+                    },
+                    {
+                        key: 'frameType',
+                        label: 'Type',
+                        formatter: (value: Number) => {
+                            switch (value) {
+                                case 0x70: return "app error";
+                                case 0x72: return "header long";
+                                case 0x78: return "no header";
+                                case 0x7A: return "header short";
+                                case 0x7C: return "DLMS long";
+                                case 0x7D: return "DLMS short";
+                                case 0x7E: return "SML long";
+                                case 0x7F: return "SML short";
+                                default:
+                                    break;
+                            }
+                            return value.toString()
+                        },
+                        sortable: true
+                    },
+                    {
                         key: 'payload',
                         label: 'Payload',
                         formatter: (value: String) => {
-                            return (value.length > 64)
-                                ? value.substring(0, 64) + "..."
+                            return (value.length > 32)
+                                ? value.substring(0, 32) + "..."
                                 : value
                                 ;
                         },
                         sortable: false
-                    },
-                    {
-                        key: 'tag',
-                        label: 'Tag',
-                        sortable: true,
-                        class: 'text-right',
-                    },
+                    }
                 ],
                 records: [] as any[],
                 selected: [] as any[],
@@ -176,7 +238,15 @@
                     }
                     else if (obj.cmd == 'insert') {
                         console.log('message ' + obj.rec.key.id);
-                        let rec = { id: obj.rec.key.id, ts: obj.rec.data.ts, payload: obj.rec.data.Payload, tag: obj.rec.data.tag } as any;
+                        let rec = {
+                            id: obj.rec.key.id,
+                            ts: obj.rec.data.ts,
+                            serverId: obj.rec.data.serverId,
+                            manufacturer: obj.rec.data.manufacturer,
+                            medium: obj.rec.data.medium,
+                            frameType: obj.rec.data.frameType,
+                            payload: obj.rec.data.Payload
+                        } as any;
                         tmpRecords.push(rec);
                    }
                     else if (obj.cmd == 'clear') {
