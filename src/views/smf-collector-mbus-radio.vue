@@ -166,8 +166,9 @@
                                 case 0x18: return "Pressure meter";
                                 //DEV_TYPE_AD_CONVERTER = 0x19, //!<	A/D Converter
                                 //DEV_TYPE_SMOKE_DETECTOR = 0x1A,	//!<	Room sensor  (e.g. temperature or humidity)
-                                //DEV_TYPE_ROOM_SENSOR = 0x1B,	//!<	Room sensor  (e.g. temperature or humidity)
+                                case 0x1B: return "Room sensor";	//!<	Room sensor  (e.g. temperature or humidity)
                                 //DEV_TYPE_GAS_DETECTOR = 0x1C,	//!<	Gas detector
+                                case 0x37: return "RF meter";
                                 default:
                                     break;
                             }
@@ -188,6 +189,8 @@
                                 case 0x7D: return "DLMS short";
                                 case 0x7E: return "SML long";
                                 case 0x7F: return "SML short";
+                                case 0x8C: return "Link layer";
+                                case 0xA0: return "private";
                                 default:
                                     break;
                             }
