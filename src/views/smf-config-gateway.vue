@@ -1493,27 +1493,33 @@ export default Vue.extend({
                                 // this.broker.ttyAPP0.service = obj.rec.values['9000000003FF']['900000000301'];
                                 // this.broker.ttyAPP1.service = obj.rec.values['9000000003FF']['900000000302'];
                                 //FIXME @Sylko: this should be the result. is this possible?
-                                // even better. inlcude the name of the port and also send broker without addreesses.
+                                // even better. include the name of the port and also send broker without addresses.
                                 // in this way we do not need a special hardware configuration that needs to be queried
                                 // first.
-                                this.brokers = [
-                                  {
-                                    hardwarePort: 'ttyAPP0',
-                                    transparent: false,
-                                    addresses: [{
-                                      host: 'segw.ch',
-                                      service: 12000
-                                    }]
-                                  },
-                                  {
-                                    hardwarePort: 'ttyAPP1',
-                                    transparent: false,
-                                    addresses: [{
-                                      host: 'segw.ch',
-                                      service: 12001
-                                    }]
-                                  }
-                                ];
+                                if (obj.rec.values.brokers != null) {
+                                    console.log(obj.rec.values.brokers);
+                                    this.brokers = obj.rec.values.brokers;
+                                }
+                                else {
+                                    this.brokers = [
+                                        {
+                                            hardwarePort: 'ttyAPP0',
+                                            transparent: false,
+                                            addresses: [{
+                                                host: 'segw.ch',
+                                                service: 12000
+                                            }]
+                                        },
+                                        {
+                                            hardwarePort: 'ttyAPP1',
+                                            transparent: false,
+                                            addresses: [{
+                                                host: 'segw.ch',
+                                                service: 12001
+                                            }]
+                                        }
+                                    ];
+                                }
                             }
                             else if (obj.section[0] === SML_CODES.CODE_IF_1107) {
                                 //  hide loading spinner
