@@ -1486,8 +1486,8 @@ export default Vue.extend({
                             else if (obj.section[0] === SML_CODES.CODE_ROOT_BROKER) {
                                 console.log(obj);
                                 this.spinner.broker = false;
-                                // this.broker.ttyAPP0.transparent = obj.rec.values['9000000001FF']['900000000101'];
-                                // this.broker.ttyAPP1.transparent = obj.rec.values['9000000001FF']['900000000102'];
+                                // this.broker.ttyAPP0.login = obj.rec.values['9000000001FF']['900000000101'];
+                                // this.broker.ttyAPP1.login = obj.rec.values['9000000001FF']['900000000102'];
                                 // this.broker.ttyAPP0.host = obj.rec.values['9000000002FF']['900000000201'];
                                 // this.broker.ttyAPP1.host = obj.rec.values['9000000002FF']['900000000202'];
                                 // this.broker.ttyAPP0.service = obj.rec.values['9000000003FF']['900000000301'];
@@ -1504,7 +1504,7 @@ export default Vue.extend({
                                     this.brokers = [
                                         {
                                             hardwarePort: 'ttyAPP0',
-                                            transparent: false,
+                                            login: false,
                                             addresses: [{
                                                 host: 'segw.ch',
                                                 service: 12000
@@ -1512,7 +1512,7 @@ export default Vue.extend({
                                         },
                                         {
                                             hardwarePort: 'ttyAPP1',
-                                            transparent: false,
+                                            login: false,
                                             addresses: [{
                                                 host: 'segw.ch',
                                                 service: 12001

@@ -6,10 +6,10 @@
                     class="broker-card"
                     :header="' Hardware Port ' + uiBroker.hardwarePort.$model + '  ('+uiBroker.name.$model+')'">
 
-                <b-form-group label="Transparent mode" label-cols-sm="4" label-cols-lg="3">
+                <b-form-group label="Send Login" label-cols-sm="4" label-cols-lg="3">
                     <b-input-group-prepend is-text>
-                        <b-form-checkbox v-model="uiBroker.transparent.$model" class="mr-n2" switch>
-                            <span class="sr-only">Enable trasnparent mode</span>
+                        <b-form-checkbox v-model="uiBroker.login.$model" class="mr-n2" switch>
+                            <span class="sr-only">Send login data</span>
                         </b-form-checkbox>
                     </b-input-group-prepend>
                 </b-form-group>
@@ -107,7 +107,7 @@ const hostName = helpers.regex(
 interface UIBroker {
     hardwarePort: string;
     name: string;
-    transparent: boolean;
+    login: boolean;
     addresses: BBrokerAddress[];
 }
 
@@ -141,7 +141,7 @@ export default Vue.extend({
             $each: {
                 hardwarePort: {},
                 name: {},
-                transparent: {},
+                login: {},
                 addresses: {
                     required,
                     $each: {
@@ -182,7 +182,7 @@ export default Vue.extend({
         onBrokerUpdate(uiBroker: UIBroker) {
             const bBroker: BBroker = {
                 hardwarePort: uiBroker.hardwarePort,
-                transparent: uiBroker.transparent,
+                login: uiBroker.login,
                 addresses: uiBroker.addresses
             }
             this.$emit('brokerUpdate', bBroker);
@@ -199,14 +199,14 @@ export default Vue.extend({
                         return {
                             hardwarePort: hardwareBroker.port,
                             name: hardwareBroker.name,
-                            transparent: bBroker.transparent,
+                            login: bBroker.login,
                             addresses: bBroker.addresses
                         } as UIBroker;
                     }
                     return {
                         hardwarePort: hardwareBroker.port,
                         name: hardwareBroker.name,
-                        transparent: false,
+                        login: false,
                         addresses: [],
                     } as UIBroker
                 });
