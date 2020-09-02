@@ -5,6 +5,6 @@ export interface BBrokerAddress {
 
 export interface BBroker {
     hardwarePort: string;
-    transparent: boolean;
     addresses: BBrokerAddress[];
+    login: boolean;
 }
