@@ -19,7 +19,6 @@ import mixins from 'vue-typed-mixins';
 import Vue from 'vue';
 import {AppState} from '@/store';
 import {BUser} from '@/api/user';
-import {BHardware} from '@/api/hardware';
 
 export default mixins(webSocket, Vue).extend({
     name: 'app',
@@ -35,16 +34,6 @@ export default mixins(webSocket, Vue).extend({
         return;
       }
 
-      // FIXME remove MOCK-CALL; @sylko: Hardware Channel must be implemented
-      const hardware: BHardware = {
-        brokers: [
-          {port: 'ttyAPP0', name: 'wireless LMN'},
-          {port: 'ttyAPP1', name: 'wires LMN'},
-          {port: 'com01', name: '...'}
-        ]
-      };
-      this.$store.commit('hardware/loaded', hardware);
-
       this.ws_open("/smf/api/device/v0.8");
     },
     beforeDestroy() {
@@ -53,16 +42,11 @@ export default mixins(webSocket, Vue).extend({
     methods: {
       ws_on_open() {
         this.ws_subscribe(Channel.ConfigUser);
-        this.ws_subscribe(Channel.CongifHardware);
       },
-      ws_on_data(obj: WSInsertResponse<BUser|BHardware>) {
+      ws_on_data(obj: WSInsertResponse<BUser>) {
 
         if (obj.cmd === 'insert' && obj.channel === Channel.ConfigUser) {
-          this.$store.commit('user/loaded', obj.rec.data as BUser);
-        }
-
-        if (obj.cmd === 'insert' && obj.channel === Channel.CongifHardware) {
-          this.$store.commit('hardware/loaded', obj.rec.data as BHardware);
+            this.$store.commit('user/loaded', obj.rec.data as BUser);
         }
 
       }

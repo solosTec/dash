@@ -15,7 +15,6 @@ interface WebSocketData {
 
 export const enum Channel {
     ConfigUser='config.user',
-    CongifHardware='config.hardware',
 }
 
 export interface WSResponse {

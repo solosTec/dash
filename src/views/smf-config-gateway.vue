@@ -306,7 +306,7 @@
                             <smfBrokerConfiguration
                                     :gateway="selected[0]"
                                     :brokers="brokers"
-                                    @brokerUpdate="onBrokerUpdate"></smfBrokerConfiguration>
+                                    @brokersUpdate="onBrokersUpdate"></smfBrokerConfiguration>
                         </b-tab>
 
                         <!-- Firmware -->
@@ -1486,40 +1486,7 @@ export default Vue.extend({
                             else if (obj.section[0] === SML_CODES.CODE_ROOT_BROKER) {
                                 console.log(obj);
                                 this.spinner.broker = false;
-                                // this.broker.ttyAPP0.login = obj.rec.values['9000000001FF']['900000000101'];
-                                // this.broker.ttyAPP1.login = obj.rec.values['9000000001FF']['900000000102'];
-                                // this.broker.ttyAPP0.host = obj.rec.values['9000000002FF']['900000000201'];
-                                // this.broker.ttyAPP1.host = obj.rec.values['9000000002FF']['900000000202'];
-                                // this.broker.ttyAPP0.service = obj.rec.values['9000000003FF']['900000000301'];
-                                // this.broker.ttyAPP1.service = obj.rec.values['9000000003FF']['900000000302'];
-                                //FIXME @Sylko: this should be the result. is this possible?
-                                // even better. include the name of the port and also send broker without addresses.
-                                // in this way we do not need a special hardware configuration that needs to be queried
-                                // first.
-                                if (obj.rec.values.brokers != null) {
-                                    console.log(obj.rec.values.brokers);
-                                    this.brokers = obj.rec.values.brokers;
-                                }
-                                else {
-                                    this.brokers = [
-                                        {
-                                            hardwarePort: 'ttyAPP0',
-                                            login: false,
-                                            addresses: [{
-                                                host: 'segw.ch',
-                                                service: 12000
-                                            }]
-                                        },
-                                        {
-                                            hardwarePort: 'ttyAPP1',
-                                            login: false,
-                                            addresses: [{
-                                                host: 'segw.ch',
-                                                service: 12001
-                                            }]
-                                        }
-                                    ];
-                                }
+                                this.brokers = obj.rec.values.brokers;
                             }
                             else if (obj.section[0] === SML_CODES.CODE_IF_1107) {
                                 //  hide loading spinner
@@ -1863,16 +1830,12 @@ export default Vue.extend({
                 [this.form.pk!],
                 { index: index, ipt: this.ipt.param[index] });
         },
-      onBrokerUpdate(broker: BBroker) {
-            console.log(JSON.stringify(broker));
+      onBrokersUpdate(brokers: BBroker[]) {
+            console.log(JSON.stringify(brokers));
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_ROOT_BROKER,
                 [this.form.pk!],
-                { port: broker.hardwarePort, broker });
-                //{ port: port, broker: broker[port] });
-                // FIXME @Sylko: if one broker is  updated all brokers are resend - this results in a refresh
-                //  of the broker ui and user inputs may be overridden. solution: 1. resend only the changed broker
-                //  2. we save all broker at once - so we also  only need one update button in the broker UI.
+                { brokers });
         },
         onMeterDelete(item: any) {
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
