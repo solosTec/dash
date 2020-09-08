@@ -77,6 +77,8 @@
                             else if (value == 34603017) return 'customer/service interface not connected';
                             else if (value == 1232076810) return 'IP-T access is done';
                             else if (value == 1248854026) return 'NTP access is done';
+                            else if (value == 1248854031) return 'NTP-time change > 60 sec';
+                            else if (value == 1232076813) return 'IPT-access rejected';
                             else if (value == 8388617) return 'push not successful';
                             else if (value == 8388616) return 'push successful';
                             else if (value == 1232076814) return 'IP-T access lost';
