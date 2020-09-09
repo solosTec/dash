@@ -176,7 +176,7 @@
                                         </b-form-group>
                                         <b-form-group label-cols-sm="4"
                                                       label-cols-lg="3">
-                                            <b-button type="submit" variant="primary" v-on:click.stop="onIPTUpdate($event, 1)">{{btnUpdateTitle}}</b-button>
+                                            <b-button type="submit" variant="primary" v-on:click.stop="onIPTUpdate($event, 0)">{{btnUpdateTitle}}</b-button>
                                         </b-form-group>
                                     </b-card>
 
@@ -234,7 +234,7 @@
                                         </b-form-group>
                                         <b-form-group label-cols-sm="4"
                                                       label-cols-lg="3">
-                                            <b-button type="submit" variant="primary" v-on:click.stop="onIPTUpdate($event, 2)">{{btnUpdateTitle}}</b-button>
+                                            <b-button type="submit" variant="primary" v-on:click.stop="onIPTUpdate($event, 1)">{{btnUpdateTitle}}</b-button>
                                         </b-form-group>
                                     </b-card>
 
@@ -1828,7 +1828,7 @@ export default Vue.extend({
             this.ws_submit_request(MESSAGE_REQUEST.setProcParameter,
                 SML_CODES.CODE_ROOT_IPT_PARAM,
                 [this.form.pk!],
-                { index: index, ipt: this.ipt.param[index] });
+                { index: index + 1, ipt: this.ipt.param[index] });
         },
       onBrokersUpdate(brokers: BBroker[]) {
             console.log(JSON.stringify(brokers));
