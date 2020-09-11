@@ -115,7 +115,7 @@
                                 <b-row class="pt-4">
                                     <b-col md="12">
                                         <b-alert variant="warning" show dismissible>
-                                            <span style="font-weight: bold">Note:</span> Changing the IP-T configuration can lead to connection breakdown.
+                                            <span style="font-weight: bold">Note:</span> {{ $t('config-gateway-02') }}
                                         </b-alert>
                                     </b-col>
                                 </b-row>
@@ -174,6 +174,19 @@
                                                 </b-input-group-append>
                                             </b-input-group>
                                         </b-form-group>
+
+                                        <b-form-group :label="$t('config-gateway-15')"
+                                            label-for="smf-gw-ipt-scrambled-0"
+                                            label-cols-sm="4"
+                                            label-cols-lg="3"
+                                            description="Scramble Mode is recommended">
+                                            <b-input-group>
+                                                <b-form-checkbox switch v-model="ipt.param[0].scrambled">
+                                                    {{ wmbus.active ? $t('config-gateway-40') : $t('config-gateway-41') }}
+                                                </b-form-checkbox>
+                                            </b-input-group>
+                                        </b-form-group>
+
                                         <b-form-group label-cols-sm="4"
                                                       label-cols-lg="3">
                                             <b-button type="submit" variant="primary" v-on:click.stop="onIPTUpdate($event, 0)">{{btnUpdateTitle}}</b-button>
@@ -232,6 +245,19 @@
                                                 </b-input-group-append>
                                             </b-input-group>
                                         </b-form-group>
+
+                                        <b-form-group :label="$t('config-gateway-15')"
+                                                      label-for="smf-gw-ipt-scrambled-1"
+                                                      label-cols-sm="4"
+                                                      label-cols-lg="3"
+                                                      description="Scramble Mode is recommended">
+                                            <b-input-group>
+                                                <b-form-checkbox switch v-model="ipt.param[1].scrambled">
+                                                    {{ wmbus.active ? $t('config-gateway-40') : $t('config-gateway-41') }}
+                                                </b-form-checkbox>
+                                            </b-input-group>
+                                        </b-form-group>
+
                                         <b-form-group label-cols-sm="4"
                                                       label-cols-lg="3">
                                             <b-button type="submit" variant="primary" v-on:click.stop="onIPTUpdate($event, 1)">{{btnUpdateTitle}}</b-button>
@@ -242,7 +268,7 @@
 
                                 <b-row class="pt-2">
                                     <b-col md="12">
-                                        <b-button v-b-toggle.sidebar-footer>Show Connection State</b-button>
+                                        <b-button v-b-toggle.sidebar-footer>{{ $t('config-gateway-01') }}</b-button>
                                         <b-sidebar id="sidebar-footer" aria-label="Sidebar with custom footer" no-header shadow>
                                             <template v-slot:footer="{ hide }">
                                                 <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
@@ -390,36 +416,22 @@
                                 <b-spinner v-if="spinner.wmbus" type="grow" small />
                             </template>
                             <div v-if="!spinner.wmbus">
-                                <b-form @submit.prevent="" class="p-3 shadow">
+                                <b-form @submit.prevent="">
 
-                                    <b-row>
-
-                                        <b-col md="3" class="d-flex justify-content-center">
-                                            <b-form-group :label="$t('config-gateway-34')">
-                                                <b-form-radio-group id="smf-gw-wmbus-protocol"
-                                                                    buttons
-                                                                    button-variant="outline-primary"
-                                                                    stacked
-                                                                    v-model="wmbus.protocol"
-                                                                    name="smf-gw-wmbus-protocol">
-                                                    <b-form-radio value="T">{{$t('config-gateway-35')}}</b-form-radio>
-                                                    <b-form-radio value="S">{{$t('config-gateway-36')}}</b-form-radio>
-                                                    <b-form-radio value="A" v-b-popover.hover="$t('config-gateway-37')" title="T2/S2 Automatic">T2/S2 Automatic</b-form-radio>
-                                                    <b-form-radio value="P">{{$t('config-gateway-38')}}</b-form-radio>
-                                                </b-form-radio-group>
-                                            </b-form-group>
+                                    <b-row class="pt-4">
+                                        <b-col>
+                                            <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onWMbusUpdate">Submit</b-button>
                                         </b-col>
+                                    </b-row>
 
-                                        <b-col md="3">
-                                            <b-form-group :label="$t('config-gateway-39')" label-for="smf-gw-wmbus-active">
-                                                <b-form-checkbox switch v-model="wmbus.active" name="smf-gw-wmbus-active">
-                                                    {{ wmbus.active ? $t('config-gateway-40') : $t('config-gateway-41') }}
-                                                </b-form-checkbox>
-                                            </b-form-group>
-                                        </b-col>
+                                    <b-card-group deck class="pt-4">
+                                        <b-card header="Timer">
 
-                                        <b-col md="3">
-                                            <b-form-group :label="$t('config-gateway-42')" label-for="smf-gw-wmbus-reboot">
+                                            <b-form-group :label="$t('config-gateway-42')"
+                                                          label-for="smf-gw-wmbus-reboot"
+                                                          label-cols-sm="4"
+                                                          label-cols-lg="3"
+                                                          :description="$t('config-gateway-42-01')">
                                                 <b-input-group :prepend="wmbusRebootPrep">
                                                     <b-form-input id="smf-gw-wmbus-reboot"
                                                                   type="number"
@@ -434,19 +446,11 @@
                                                 </b-input-group>
                                             </b-form-group>
 
-                                            <b-form-group :label="$t('config-gateway-43')" label-for="smf-gw-wmbus-power">
-                                                <b-form-select v-model="wmbus.power" class="mb-3" disabled>
-                                                    <option value="low">{{$t('config-gateway-43-01')}}</option>
-                                                    <option value="basic">{{$t('config-gateway-43-02')}}</option>
-                                                    <option value="avg">{{$t('config-gateway-43-03')}}</option>
-                                                    <option value="strong">{{$t('config-gateway-43-04')}}</option>
-                                                </b-form-select>
-                                            </b-form-group>
-
-                                        </b-col>
-
-                                        <b-col md="3">
-                                            <b-form-group :label="$t('config-gateway-44')" label-for="smf-gw-wmbus-smode">
+                                            <b-form-group :label="$t('config-gateway-44')"
+                                                          label-for="smf-gw-wmbus-smode"
+                                                          label-cols-sm="4"
+                                                          label-cols-lg="3"
+                                                          :description="$t('config-gateway-44-01')">
                                                 <b-input-group>
                                                     <b-form-input :disabled="wmbus.protocol !== 'A'"
                                                                   id="smf-gw-wmbus-smode"
@@ -462,7 +466,11 @@
                                                 </b-input-group>
                                             </b-form-group>
 
-                                            <b-form-group :label="$t('config-gateway-46')" label-for="smf-gw-wmbus-tmode">
+                                            <b-form-group :label="$t('config-gateway-46')"
+                                                          label-for="smf-gw-wmbus-tmode"
+                                                          label-cols-sm="4"
+                                                          label-cols-lg="3"
+                                                          :description="$t('config-gateway-46-01')">
                                                 <b-input-group>
                                                     <b-form-input :disabled="wmbus.protocol !== 'A'"
                                                                   id="smf-gw-wmbus-tmode"
@@ -478,58 +486,98 @@
                                                 </b-input-group>
                                             </b-form-group>
 
-                                        </b-col>
+                                        </b-card>
 
-                                    </b-row>
+                                        <b-card header="Protocol">
+                                            <b-form-group :label="$t('config-gateway-34')"
+                                                          label-cols-sm="4"
+                                                          label-cols-lg="3"
+                                                          description="Select a radio protocol">
+                                                <b-form-radio-group id="smf-gw-wmbus-protocol"
+                                                                    buttons
+                                                                    button-variant="outline-primary"
+                                                                    stacked
+                                                                    v-model="wmbus.protocol"
+                                                                    name="smf-gw-wmbus-protocol">
+                                                    <b-form-radio value="T">{{$t('config-gateway-35')}}</b-form-radio>
+                                                    <b-form-radio value="S">{{$t('config-gateway-36')}}</b-form-radio>
+                                                    <b-form-radio value="A" v-b-popover.hover="$t('config-gateway-37')" title="T2/S2 Automatic">T2/S2 Automatic</b-form-radio>
+                                                    <b-form-radio value="P">{{$t('config-gateway-38')}}</b-form-radio>
+                                                </b-form-radio-group>
+                                            </b-form-group>
+                                        </b-card>
 
-                                    <b-row class="p-3">
-                                        <b-col md="12">
-                                            <b-button type="submit" variant="primary" size="lg" v-on:click.stop="onWMbusUpdate">Submit</b-button>
-                                        </b-col>
-                                    </b-row>
+                                        <b-card header="Behaviour">
+                                            <b-form-group :label="$t('config-gateway-39')"
+                                                          label-for="smf-gw-wmbus-active"
+                                                          label-cols-sm="4"
+                                                          label-cols-lg="3"
+                                                          description="Description">
+                                                <b-form-checkbox switch v-model="wmbus.active" name="smf-gw-wmbus-active">
+                                                    {{ wmbus.active ? $t('config-gateway-40') : $t('config-gateway-41') }}
+                                                </b-form-checkbox>
+                                            </b-form-group>
+
+                                            <b-form-group :label="$t('config-gateway-43')"
+                                                          label-for="smf-gw-wmbus-power"
+                                                          label-cols-sm="4"
+                                                          label-cols-lg="3"
+                                                          description="Description">
+                                                <b-form-select v-model="wmbus.power" class="mb-3" disabled>
+                                                    <option value="low">{{$t('config-gateway-43-01')}}</option>
+                                                    <option value="basic">{{$t('config-gateway-43-02')}}</option>
+                                                    <option value="avg">{{$t('config-gateway-43-03')}}</option>
+                                                    <option value="strong">{{$t('config-gateway-43-04')}}</option>
+                                                </b-form-select>
+                                            </b-form-group>
+
+                                        </b-card>
+                                    </b-card-group>
 
                                 </b-form>
 
-                                <b-form class="p-3">
-                                    <b-row>
-                                        <b-col md="3">
-                                            <b-form-group :label="$t('config-gateway-49')" label-for="smf-gw-wmbus-type">
-                                                <b-form-input id="smf-gw-wmbus-type"
-                                                              type="text"
-                                                              v-model="wmbus.type"
-                                                              readonly
-                                                              :placeholder="$t('config-gateway-49') | fmtPlaceholder" />
-                                            </b-form-group>
-                                        </b-col>
-
-                                        <b-col md="3">
-                                            <b-form-group :label="$t('config-gateway-51')" label-for="smf-gw-wmbus-id">
-                                                <b-form-input id="smf-gw-wmbus-id"
-                                                              type="text"
-                                                              v-model="wmbus.id"
-                                                              readonly
-                                                              :placeholder="$t('config-gateway-51') |  fmtPlaceholder" />
-                                            </b-form-group>
-                                        </b-col>
-
-                                        <b-col md="3">
-                                            <b-form-group :label="$t('config-gateway-53')" label-for="smf-gw-wmbus-host">
-                                                <b-form-input id="smf-gw-wmbus-host"
-                                                              type="text"
-                                                              v-model="wmbus.firmware"
-                                                              readonly
-                                                              :placeholder="$t('config-gateway-53') | fmtPlaceholder" />
-                                            </b-form-group>
-                                        </b-col>
-
-                                        <b-col md="3">
-                                            <b-form-group :label="$t('config-gateway-55')" label-for="smf-gw-wmbus-hardware">
-                                                <b-form-input id="smf-gw-wmbus-hardware"
-                                                              type="text"
-                                                              v-model="wmbus.hardware"
-                                                              readonly
-                                                              :placeholder="$t('config-gateway-55') | fmtPlaceholder" />
-                                            </b-form-group>
+                                <b-form>
+                                    <b-row class="pt-4">
+                                        <b-col md="12">
+                                            <b-button v-b-toggle.sidebar-footer>{{ $t('config-gateway-03') }}</b-button>
+                                            <b-sidebar id="sidebar-footer" aria-label="Sidebar with custom footer" no-header shadow>
+                                                <template v-slot:footer="{ hide }">
+                                                    <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
+                                                        <strong class="mr-auto">M-Bus Hardware</strong>
+                                                        <b-button size="sm" @click="hide">Close</b-button>
+                                                    </div>
+                                                </template>
+                                                <div class="px-3 py-2">
+                                                    <b-form-group :label="$t('config-gateway-49')" label-for="smf-gw-wmbus-type">
+                                                        <b-form-input id="smf-gw-wmbus-type"
+                                                                      type="text"
+                                                                      v-model="wmbus.type"
+                                                                      readonly
+                                                                      :placeholder="$t('config-gateway-49') | fmtPlaceholder" />
+                                                    </b-form-group>
+                                                    <b-form-group :label="$t('config-gateway-51')" label-for="smf-gw-wmbus-id">
+                                                        <b-form-input id="smf-gw-wmbus-id"
+                                                                      type="text"
+                                                                      v-model="wmbus.id"
+                                                                      readonly
+                                                                      :placeholder="$t('config-gateway-51') |  fmtPlaceholder" />
+                                                    </b-form-group>
+                                                    <b-form-group :label="$t('config-gateway-53')" label-for="smf-gw-wmbus-host">
+                                                        <b-form-input id="smf-gw-wmbus-host"
+                                                                      type="text"
+                                                                      v-model="wmbus.firmware"
+                                                                      readonly
+                                                                      :placeholder="$t('config-gateway-53') | fmtPlaceholder" />
+                                                    </b-form-group>
+                                                    <b-form-group :label="$t('config-gateway-55')" label-for="smf-gw-wmbus-hardware">
+                                                        <b-form-input id="smf-gw-wmbus-hardware"
+                                                                      type="text"
+                                                                      v-model="wmbus.hardware"
+                                                                      readonly
+                                                                      :placeholder="$t('config-gateway-55') | fmtPlaceholder" />
+                                                    </b-form-group>
+                                                </div>
+                                            </b-sidebar>
                                         </b-col>
                                     </b-row>
                                 </b-form>
@@ -1003,16 +1051,18 @@ export default Vue.extend({
             ipt : {
                 param: [
                     {
-                            host: '',
-                            port: 26862,
-                            user: '',
-                            pwd: ''
+                        host: '',
+                        port: 26862,
+                        user: '',
+                        pwd: '',
+                        scrambled: true
                     },
                     {
-                            host: '',
-                            port: 26862,
-                            user: '',
-                            pwd: ''
+                        host: '',
+                        port: 26862,
+                        user: '',
+                        pwd: '',
+                        scrambled: true
                     }
                 ],
                 status: {
@@ -1477,11 +1527,13 @@ export default Vue.extend({
                                 this.ipt.param[0].port = obj.rec.values['81490D070001']['81491A070001'];
                                 this.ipt.param[0].user = obj.rec.values['81490D070001']['8149633C0101'];
                                 this.ipt.param[0].pwd = obj.rec.values['81490D070001']['8149633C0201'];
+                                this.ipt.param[0].scrambled = obj.rec.values['81490D070001']['8149633C0301'];
 
                                 this.ipt.param[1].host = obj.rec.values['81490D070002']['814917070002'];
                                 this.ipt.param[1].port = obj.rec.values['81490D070002']['81491A070002'];
                                 this.ipt.param[1].user = obj.rec.values['81490D070002']['8149633C0102'];
                                 this.ipt.param[1].pwd = obj.rec.values['81490D070002']['8149633C0202'];
+                                this.ipt.param[1].scrambled = obj.rec.values['81490D070002']['8149633C0302'];
                             }
                             else if (obj.section[0] === SML_CODES.CODE_ROOT_BROKER) {
                                 console.log(obj);
