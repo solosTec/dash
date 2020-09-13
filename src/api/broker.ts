@@ -10,3 +10,7 @@ export interface BBroker {
     addresses: BBrokerAddress[];
     login: boolean;
 }
+
+export interface BBrokerPortHardwareConfig {
+    baudRate: number;
+}
