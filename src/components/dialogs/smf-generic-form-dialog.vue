@@ -15,7 +15,7 @@ import {DialogFormState, VueComponentInstance} from '@/shared/smf-dialog.service
 import {BModal} from 'bootstrap-vue';
 
 export default Vue.extend({
-    name: 'smfDialog',
+    name: 'smfGenericFormDialog',
     props: {
         parent: {
             type: Object as PropType<VueComponentInstance>,
@@ -56,10 +56,10 @@ export default Vue.extend({
         // show the modal dialog immediately.
         (this.$refs.dialog as BModal).show();
 
-        const originalFormodel = JSON.stringify(this.dialogContentComponent.formModel);
+        const originalFormModel = JSON.stringify(this.dialogContentComponent.formModel);
 
         this.dialogContentComponent.$on('formState', ({invalid, formModel}: DialogFormState<any>) => {
-            const changed = originalFormodel !== JSON.stringify(formModel)
+            const changed = originalFormModel !== JSON.stringify(formModel)
             this.okDisabled = !changed || invalid;
             this.formModel = formModel;
         });

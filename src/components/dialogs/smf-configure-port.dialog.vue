@@ -17,37 +17,17 @@
     </b-form>
 </template>
 <script lang="ts">
-import Vue, {PropType} from 'vue';
+import Vue from 'vue';
 import {required} from 'vuelidate/lib/validators';
-import {BBrokerPortHardwareConfig} from '@/api/broker';
-import {SmfDialogService} from '@/shared/smf-dialog.service';
+import {SmfDialogContentMixin} from '@/shared/smf-dialog.service';
 
 export default Vue.extend({
-    name: 'smfConfigurePortDialog',
-    props: {
-        formModel: {
-            type: Object as PropType<BBrokerPortHardwareConfig>,
-            required: true
-        }
-    },
+    mixins: [SmfDialogContentMixin],
     validations: {
         formModel: {
             baudRate: {
                 required
             }
-        }
-    },
-    mounted() {
-        // emit the initial state - because we mount the component after creation
-        SmfDialogService.emitFormState.call(this);
-    },
-    watch: {
-        '$v': {
-            immediate: true,
-            handler() {
-                SmfDialogService.emitFormState.call(this);
-            },
-            deep: true
         }
     }
 });

@@ -1,7 +1,6 @@
 import {CombinedVueInstance, VueConstructor} from 'vue/types/vue';
-import SmfDialog from '@/components/dialogs/smf-dialog.vue';
-import {BBrokerPortHardwareConfig} from '@/api/broker';
-
+import SmfGenericFormDialog from '@/components/dialogs/smf-generic-form-dialog.vue';
+import {PropType} from 'vue';
 
 export interface DialogFormState<T> {
     invalid: boolean;
@@ -30,29 +29,43 @@ export class SmfDialogService {
         formModel: T): Promise<T | null> {
 
         const dialogContentComponent = new dialogComponentType({
-            propsData: {formModel: formModel}
+            propsData: {formModel}
         });
 
         return new Promise<any>((resolve) => {
-            const dialog = new SmfDialog({
-                propsData: {
-                    parent,
-                    dialogContentComponent,
-                    title
-                },
-            })
-            dialog.$on('close', (e: T | null) => {
-                resolve(e)
-            })
+            new SmfGenericFormDialog({propsData: {parent, dialogContentComponent, title},})
+                .$on('close', (e: T | null) => {
+                    resolve(e)
+                })
         });
-
-
     }
+}
 
-    public static emitFormState(this: any) {
-        this.$emit('formState', {
-            invalid: this.$v.$invalid,
-            formModel: this.$v.formModel.$model
-        } as DialogFormState<BBrokerPortHardwareConfig>)
+function emitFormState(this: any) {
+    this.$emit('formState', {
+        invalid: this.$v.$invalid,
+        formModel: this.$v.formModel.$model
+    } as DialogFormState<any>)
+}
+
+export const SmfDialogContentMixin = {
+    props: {
+        formModel: {
+            type: Object as PropType<any>,
+            required: true
+        }
+    },
+    mounted() {
+        // emit the initial state - because we mount the component after creation
+        emitFormState.call(this);
+    },
+    watch: {
+        '$v': {
+            immediate: true,
+            handler() {
+                emitFormState.call(this);
+            },
+            deep: true
+        }
     }
 }
