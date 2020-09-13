@@ -235,7 +235,11 @@ export default Vue.extend({
             // FIXME @Sylko: how to get the current configuration?
             console.log('configure port for broker', JSON.stringify(broker));
             const hardwareConfig: BBrokerPortHardwareConfig = {
-                baudRate: 1
+                bitsPerSecond: 9600,
+                dataBits: 8,
+                flowControl: 'None',
+                parity: 'None',
+                stopBits: 1
             }
 
             const result = await SmfDialogService.openFormDialog(

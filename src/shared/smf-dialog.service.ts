@@ -17,10 +17,11 @@ export class SmfDialogService {
      * @param parent the parent component taht opens the dialog. usually "this"
      * @param title teh title for the dialog
      * @param dialogComponentType the dialog content. must have a prop formModel and
-     *          should emit DialogFormState on mount and changes to to $v.
+     *          should emit DialogFormState on mount and changes to to $v. or just use
+     *          the mixin: SmfDialogContentMixin
      * @param formModel the Model that will be passed to the form.
      *
-     * @returns a Promise the value is the changed formModel or null.
+     * @returns a Promise. the value is the changed(!) formModel or null in case of cancel or close.
      */
     public static openFormDialog<T>(
         parent: VueComponentInstance,
@@ -56,7 +57,7 @@ export const SmfDialogContentMixin = {
         }
     },
     mounted() {
-        // emit the initial state - because we mount the component after creation
+        // emit the initial state - because the component is mounted after creation
         emitFormState.call(this);
     },
     watch: {
