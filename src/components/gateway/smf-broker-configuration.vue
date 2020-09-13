@@ -134,7 +134,7 @@ import Vue, {PropType} from 'vue';
 import {Gateway} from '@/api/gateway';
 
 import {BBroker, BBrokerAddress, BBrokerPortHardwareConfig} from '@/api/broker';
-import {helpers, integer, ipAddress, or, required, requiredIf} from 'vuelidate/lib/validators'
+import {helpers, integer, ipAddress, or, required} from 'vuelidate/lib/validators'
 import {SmfDialogService} from '@/shared/smf-dialog.service';
 import SmfConfigurePortDialog from '@/components/dialogs/smf-configure-port.dialog.vue';
 
@@ -199,10 +199,10 @@ export default Vue.extend({
                             integer
                         },
                         user: {
-                            required: requiredIf(isLoginActive)
+                            // required: requiredIf(isLoginActive),
                         },
                         pwd: {
-                            required: requiredIf(isLoginActive)
+                            // required: requiredIf(isLoginActive)
                         }
                     }
                 }
