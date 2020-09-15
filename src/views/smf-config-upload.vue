@@ -97,21 +97,21 @@
                     </b-form>
                 </b-card>
 
-                <b-card title="Upload ONEE Configuration" class="shadow">
-                    <div slot="footer"><small class="text-muted">{{meterCount}} meter(s) configured</small></div>
-                    <b-form @submit="onSubmitOnee" @reset="onResetOnee">
-                        <b-form-file v-model="onee.file"
-                                     :state="Boolean(onee.file)"
-                                     accept="text/comma-separated-values,application/vnd.ms-excel"
-                                     :placeholder="onee_text"
+                <b-card title="Upload IEC Configuration" class="shadow">
+                    <div slot="footer"><small class="text-muted">{{IECCount}} IEC devices(s) configured</small></div>
+                    <b-form @submit="onSubmitIEC" @reset="onResetIEC">
+                        <b-form-file v-model="iec.file"
+                                     :state="Boolean(iec.file)"
+                                     accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                                     :placeholder="iec_text"
                                      drop-placeholder="Drop file here...">
                         </b-form-file>
-                        <b-form-radio-group id="onee-upload-policy" v-model="onee.policy" name="onee-upload-policy" class="mt-3">
+                        <b-form-radio-group id="iec-upload-policy" v-model="iec.policy" name="iec-upload-policy" class="mt-3">
                             <b-form-radio value="append">Append</b-form-radio>
                             <b-form-radio value="merge">Merge</b-form-radio>
                             <b-form-radio value="subst">Overwrite</b-form-radio>
                         </b-form-radio-group>
-                        <b-button :disabled="!Boolean(onee.file)" type="submit" variant="primary" class="mt-3 mr-3">Start Upload &#8682;</b-button>
+                        <b-button :disabled="!Boolean(iec.file)" type="submit" variant="primary" class="mt-3 mr-3">Start Upload &#8682;</b-button>
                         <b-button type="reset" variant="danger" class="mt-3">Reset</b-button>
                     </b-form>
                 </b-card>
@@ -148,6 +148,7 @@
                 gatewayCount: 0,
                 meterCount: 0,
                 LoRaCount: 0,
+                IECCount: 0,
                 dev: {
                     file: null as any,
                     policy: 'append',
@@ -165,7 +166,7 @@
                     file: null as any,
                     policy: 'append'
                 },
-                onee: {
+                iec: {
                     file: null as any,
                     policy: 'subst'
                 }
@@ -183,6 +184,7 @@
                 this.ws_subscribe("table.meter.count");
                 this.ws_subscribe("table.msg.count");
                 this.ws_subscribe("table.LoRa.count");
+                this.ws_subscribe("table.iec.count");   // TIECBridge
             },
             ws_on_data(obj: any) {
                 if (obj.cmd != null) {
@@ -200,6 +202,9 @@
                             }
                             else if (obj.channel == 'table.LoRa.count') {
                                 this.LoRaCount = obj.value;
+                            }
+                            else if (obj.channel == 'table.iec.count') {
+                                this.IECCount = obj.value;
                             }
                         }
                     }
@@ -319,14 +324,14 @@
                 this.LoRa.policy = 'append';
             },
 
-            onSubmitOnee(evt: Event) {
+            onSubmitIEC(evt: Event) {
                 evt.preventDefault();
-                console.log(this.onee);
+                console.log(this.iec);
                 let formData = new FormData();
-                formData.append('file', this.onee.file!);
-                formData.append('policy', this.onee.policy);
+                formData.append('file', this.iec.file!);
+                formData.append('policy', this.iec.policy);
 
-                this.$http.post("/upload/config/onee/", formData, {
+                this.$http.post("/upload/config/iec/", formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     },
@@ -342,10 +347,10 @@
                         console.log(err)
                     })
             },
-            onResetOnee(evt: Event) {
+            onResetIEC(evt: Event) {
                 evt.preventDefault()
-                this.onee.file = null;
-                this.onee.policy = 'subst';
+                this.iec.file = null;
+                this.iec.policy = 'subst';
             }
 
         },
@@ -375,11 +380,11 @@
                 }
                 return this.LoRa.file.name + " with " + this.LoRa.file.size + " bytes selected.";
             },
-            onee_text(): string {
+            iec_text(): string {
                 if (!this.LoRa.file) {
-                    return "Select an ONEE configuration file...";
+                    return "Select an IEC configuration file...";
                 }
-                return this.onee.file.name + " with " + this.onee.file.size + " bytes selected.";
+                return this.iec.file.name + " with " + this.iec.file.size + " bytes selected.";
             }
         },
         beforeRouteEnter(to: any, from: any, next: any) {
