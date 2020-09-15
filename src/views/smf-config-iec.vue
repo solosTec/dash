@@ -84,23 +84,21 @@
 
 <script lang="ts">
 
-    import {
-        webSocket
-    } from '@/mixins/web-socket';
-    import tblIEC from '@/components/smf-table-iec.vue'
-    import mixins from 'vue-typed-mixins';
-    import Vue from 'vue';
+import {webSocket} from '@/mixins/web-socket';
+import tblIEC from '@/components/smf-table-iec.vue'
+import mixins from 'vue-typed-mixins';
+import Vue from 'vue';
 
-    import { TranslateResult } from 'vue-i18n';
+import {TranslateResult} from 'vue-i18n';
 
-    interface UiMeter  {
-        pk: string;
-        meter: string;
-        address: string;
-        port: number;
-        direction: string;
-        interval: string;
-    }
+interface UiMeter {
+    pk: string;
+    meter: string;
+    address: string;
+    port: number;
+    direction: string;
+    interval: string;
+}
 
     export default mixins(webSocket, Vue).extend( {
         name: 'smfConfigGateway',
@@ -295,9 +293,12 @@
         },
 
         watch: {
-            //selected: function (items) {
-            //    console.log('selected ', items);
-            //}
+            items: {
+                immediate: true,
+                handler(newItems) {
+                    this.nav.visibleRows = (newItems || []).length;
+                }
+            }
         }
     })
 </script>
