@@ -61,13 +61,16 @@
                             <b-form-input id="smf-form-iec-interval"
                                           type="text"
                                           v-model="form.interval"
+                                          v-mask="'##:##:##'"
                                           required
                                           placeholder="<readout interval>"
                                           maxlength="64" />
                         </b-form-group>
 
                         <b-input-group class="pt-1">
-                            <b-button type="submit" variant="primary" :disabled="!isRecordSelected" v-on:click.stop="onMeterUpdate">{{btnUpdateTitle}}</b-button>
+                            <b-button type="submit" variant="primary" :disabled="updateDisabled"
+                                      v-on:click.stop="onMeterUpdate">{{ btnUpdateTitle }}
+                            </b-button>
                         </b-input-group>
 
                         <b-input-group class="pt-3">
@@ -130,7 +133,7 @@ interface UiMeter {
                     address: '0.0.0.0',
                     port: 7009,
                     direction: 'in',
-                    interval: '00:01:0.0'
+                    interval: '00:01:00'
                 }
             }
         },
@@ -269,6 +272,10 @@ interface UiMeter {
         },
 
         computed: {
+            updateDisabled(): boolean {
+                const regexTime = /\d{2}:\d{2}:\d{2}/
+                return !this.isRecordSelected || !regexTime.test(this.form.interval);
+            },
             isRecordSelected(): boolean {
                 return this.selected.length != 0;
             },

@@ -20,6 +20,7 @@
     "vue-analytics": "^5.22.1",
     "vue-headful": "^2.1.0",
     "vue-i18n": "^8.20.0",
+    "v-mask": "^2.2.3",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.3.4",
     "vue-toasted": "^1.1.28",

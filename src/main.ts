@@ -13,33 +13,35 @@ import smfRowCountSelector from "@/components/smf-row-count-selector.vue";
 import './shared/formatter/registerNames';
 import Vuelidate from 'vuelidate'
 import {fmtPlaceholder} from '@/filter/fmtPlaceholder';
+import VueMask from 'v-mask';
 
 Vue.config.productionTip = false;
 Vue.component("vue-headful", vueHeadful);
 Vue.component('smf-row-count-selector', smfRowCountSelector);
 Vue.use(Toasted);
 Vue.use(VueResource);
-Vue.use(Vuelidate)
+Vue.use(Vuelidate);
+Vue.use(VueMask);
 
 Vue.filter('fmtPlaceholder', fmtPlaceholder);
 
 // Let's Register a Global Error Notification Toast.
 Vue.toasted.register(
-  "sml_attention_error",
-  msg => msg,
-  {
-      type: "error",
-      duration: 4000, //  milliseconds
-      action: {
-          text: "Cancel",
-          onClick: (e, toastObject) => {
-              toastObject.goAway(0);
-          }
-      },
-      theme: "bubble",
-      closeOnSwipe: true,
-      position: 'bottom-center'
-  }
+    "sml_attention_error",
+    msg => msg,
+    {
+        type: "error",
+        duration: 4000, //  milliseconds
+        action: {
+            text: "Cancel",
+            onClick: (e, toastObject) => {
+                toastObject.goAway(0);
+            }
+        },
+        theme: "bubble",
+        closeOnSwipe: true,
+        position: 'bottom-center'
+    }
 );
 Vue.toasted.register(
   "sml_attention_ok",

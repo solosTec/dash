@@ -4,3 +4,4 @@ declare module '*.vue' {
 }
 
 declare module 'vue-headful';
+declare module 'v-mask';
