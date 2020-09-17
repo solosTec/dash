@@ -219,7 +219,8 @@
                 formData.append('policy', this.dev.policy);
                 formData.append('version', this.dev.version);
 
-                this.$http.post("/upload/config/device/", formData, {
+                const extraBackendPath = process.env.VUE_APP_SMF_DOCKER === 'true' ? '/backend' : '';
+                this.$http.post(`${extraBackendPath}/upload/config/device/`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     },
