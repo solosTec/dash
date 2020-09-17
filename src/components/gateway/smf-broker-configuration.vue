@@ -233,6 +233,7 @@ export default Vue.extend({
         async configurePort(broker: UIBroker) {
 
             // FIXME @Sylko: how to get the current configuration?
+            // Comes with section "9100000000FF" == CODE_ROOT_HARDWARE_PORT
             console.log('configure port for broker', JSON.stringify(broker));
             const hardwareConfig: BBrokerPortHardwareConfig = {
                 bitsPerSecond: 9600,

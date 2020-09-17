@@ -1540,6 +1540,11 @@ export default Vue.extend({
                                 this.spinner.broker = false;
                                 this.brokers = obj.rec.values.brokers;
                             }
+                            else if (obj.section[0] === SML_CODES.CODE_ROOT_HARDWARE_PORT) {
+                                console.log(obj);
+                                //FIXME @Michael: how to insert the new values?
+                                //this.??? = obj.rec.values['910000000201'];
+                            }
                             else if (obj.section[0] === SML_CODES.CODE_IF_1107) {
                                 //  hide loading spinner
                                 this.spinner.iec = false;
@@ -1682,8 +1687,9 @@ export default Vue.extend({
                     }
                 }
                 else if (obj.cmd === 'insert') {
-                    // FIXME @Slyko instead of checking the name of ther server we should have
+                    // FIXME @Sylko instead of checking the name of ther server we should have
                     // a flag hasBroker - this is way more flexible.
+                    // This is difficult since I cannot change the behavior of the legacy devices
                     let rec: any = {
                         pk: obj.rec.key.pk,
                         serverId: obj.rec.data.serverId,
@@ -1799,6 +1805,7 @@ export default Vue.extend({
             } else if (smfContext === this.smfContext.broker) {
                 this.spinner.broker = true;
                 this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_BROKER, [pkGateway]);
+                this.ws_submit_request(MESSAGE_REQUEST.getProcParameter, SML_CODES.CODE_ROOT_HARDWARE_PORT, [pkGateway]);
             } else if (smfContext === this.smfContext.firmware) {
                 this.fw.values = [];
                 this.spinner.firmware = true;
@@ -1985,12 +1992,6 @@ export default Vue.extend({
         },
         isRecordSelected(): boolean {
             return this.selected.length !== 0;
-        },
-        isRecordNew(): boolean { // FIXME is this method unused?
-            if (this.selected.length !== 0) {
-                return this.form.name !== this.selected[0].name;
-            }
-            return this.form.name.length > 0;
         },
         wmbusRebootPrep(): string {
             if (this.wmbus.reboot > 3600) {

@@ -40,6 +40,8 @@
     <Content Include="src\assets\logo.png" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="src\components\dialogs\smf-configure-port.dialog.vue" />
+    <Content Include="src\components\dialogs\smf-generic-form-dialog.vue" />
     <Content Include="src\components\gateway\smf-broker-configuration.vue" />
     <Content Include="src\components\gateway\smf-meter-access-rights.vue" />
     <Content Include="src\components\gateway\smf-server-configuration.vue" />
@@ -94,6 +96,7 @@
     <Folder Include="src\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\components\" />
+    <Folder Include="src\components\dialogs\" />
     <Folder Include="src\components\gateway\" />
     <Folder Include="src\constants\" />
     <Folder Include="src\filter\" />
