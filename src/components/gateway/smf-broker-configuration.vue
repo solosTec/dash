@@ -142,12 +142,12 @@ const hostName = helpers.regex(
     'alpha',
     /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/);
 
-const isLoginActive = function (this: any, address: BBrokerAddress) {
-    const broker: UIBroker = this.$v.uiBrokers.$model.find((brokerModel: any) => {
-        return brokerModel.addresses.includes(address)
-    })
-    return (broker && broker.login) || false;
-}
+// const isLoginActive = function (this: any, address: BBrokerAddress) {
+//     const broker: UIBroker = this.$v.uiBrokers.$model.find((brokerModel: any) => {
+//         return brokerModel.addresses.includes(address)
+//     })
+//     return (broker && broker.login) || false;
+// }
 
 interface UIBroker {
     hardwarePort: string;

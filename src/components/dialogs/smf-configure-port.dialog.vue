@@ -1,56 +1,56 @@
 <template lang="html">
-    <b-form @submit.prevent="" class="port-config-dialog">
+    <b-form class="port-config-dialog" @submit.prevent="">
         <b-form-group>
-            <b-input-group prepend="Bits per Second" class="mt-2">
+            <b-input-group class="mt-2" prepend="Bits per Second">
                 <b-form-select
                     v-model="$v.formModel.$model.bitsPerSecond"
+                    v-b-popover.hover="'Bits per Second'"
                     :options="bitsPerSecondOptions"
                     :placeholder="'Bits per Second' | fmtPlaceholder"
-                    v-b-popover.hover="'Bits per Second'"
                     :state="$v.formModel.bitsPerSecond.$invalid ? false: null"></b-form-select>
                 <b-form-invalid-feedback v-if="!$v.formModel.bitsPerSecond.required">
                     Bits per Second is required.
                 </b-form-invalid-feedback>
             </b-input-group>
-            <b-input-group prepend="Data bits" class="mt-2">
+            <b-input-group class="mt-2" prepend="Data bits">
                 <b-form-select
                     v-model="$v.formModel.$model.dataBits"
+                    v-b-popover.hover="'Data bits'"
                     :options="dataBitsOptions"
                     :placeholder="'Data bits' | fmtPlaceholder"
-                    v-b-popover.hover="'Data bits'"
                     :state="$v.formModel.dataBits.$invalid ? false: null"></b-form-select>
                 <b-form-invalid-feedback v-if="!$v.formModel.dataBits.required">
                     Data bits is required.
                 </b-form-invalid-feedback>
             </b-input-group>
-            <b-input-group prepend="Parity" class="mt-2">
+            <b-input-group class="mt-2" prepend="Parity">
                 <b-form-select
                     v-model="$v.formModel.$model.parity"
+                    v-b-popover.hover="'Parity'"
                     :options="parityOptions"
                     :placeholder="'Parity' | fmtPlaceholder"
-                    v-b-popover.hover="'Parity'"
                     :state="$v.formModel.parity.$invalid ? false: null"></b-form-select>
                 <b-form-invalid-feedback v-if="!$v.formModel.parity.required">
                     Parity is required.
                 </b-form-invalid-feedback>
             </b-input-group>
-            <b-input-group prepend="Stop bits" class="mt-2">
+            <b-input-group class="mt-2" prepend="Stop bits">
                 <b-form-select
                     v-model="$v.formModel.$model.stopBits"
+                    v-b-popover.hover="'Stop bits'"
                     :options="stopBitsOptions"
                     :placeholder="'Stop bits' | fmtPlaceholder"
-                    v-b-popover.hover="'Stop bits'"
                     :state="$v.formModel.stopBits.$invalid ? false: null"></b-form-select>
                 <b-form-invalid-feedback v-if="!$v.formModel.stopBits.required">
                     Stop bits is required.
                 </b-form-invalid-feedback>
             </b-input-group>
-            <b-input-group prepend="Flow control" class="mt-2">
+            <b-input-group class="mt-2" prepend="Flow control">
                 <b-form-select
                     v-model="$v.formModel.$model.flowControl"
+                    v-b-popover.hover="'Flow control'"
                     :options="flowControlOptions"
                     :placeholder="'Flow control' | fmtPlaceholder"
-                    v-b-popover.hover="'Flow control'"
                     :state="$v.formModel.flowControl.$invalid ? false: null"></b-form-select>
                 <b-form-invalid-feedback v-if="!$v.formModel.flowControl.required">
                     Flow control is required.
@@ -97,9 +97,4 @@ export default Vue.extend({
 });
 </script>
 <style scoped>
-
-.input-group-text {
-    min-width: 150px;
-}
-
 </style>
