@@ -10,7 +10,7 @@
     "build-docker": "vue-cli-service build --mode docker --dest dist-docker",
     "build-docker-dev": "vue-cli-service build --mode docker-dev --dest dist-docker",
     "build-no-auth": "vue-cli-service build --mode no-auth --dest dist-no-auth",
-    "update-browserlist": "browserslist@latest --update-db",
+    "update-browserlist": "npx browserslist@latest --update-db",
     "pre-push": "npm run lint -- --fix && npm run test:unit && npm run build"
   },
   "dependencies": {
