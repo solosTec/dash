@@ -16,7 +16,7 @@
       :lead="$t('lead-gateway', { count: this.gateways.length })"
     />
 
-    <b-container fluid>
+    <b-container fluid="true">
       <b-row>
         <b-col md="6">
           <b-form-group
@@ -154,7 +154,7 @@
               <b-form @submit.prevent="">
                 <b-row class="pt-4">
                   <b-col md="12">
-                    <b-alert variant="warning" show dismissible>
+                    <b-alert variant="warning" show="true" dismissible>
                       <span style="font-weight: bold">Note:</span>
                       {{ $t("config-gateway-02") }}
                     </b-alert>
@@ -413,7 +413,7 @@
                       id="sidebar-footer"
                       aria-label="Sidebar with custom footer"
                       no-header
-                      shadow
+                      shadow="true"
                     >
                       <template v-slot:footer="{ hide }">
                         <div
@@ -503,7 +503,9 @@
               <smfBrokerConfiguration
                 :gateway="selected[0]"
                 :brokers="brokers"
+                :brokerPorts="brokerPorts"
                 @brokersUpdate="onBrokersUpdate"
+                @brokerHardwarePortUpdate="onBrokerHardwarePortUpdate"
               ></smfBrokerConfiguration>
             </b-tab>
 
@@ -820,7 +822,7 @@
                         id="sidebar-footer"
                         aria-label="Sidebar with custom footer"
                         no-header
-                        shadow
+                        shadow="true"
                       >
                         <template v-slot:footer="{ hide }">
                           <div
@@ -1337,7 +1339,7 @@ import {
 } from "@/api/root-access-rights";
 import { BTabs } from "bootstrap-vue";
 import { Gateway } from "@/api/gateway";
-import { BBroker } from "@/api/broker";
+import { BBroker, BHardwarePorts } from "@/api/broker";
 
 const gatewayTableFields = [
   {
@@ -1529,6 +1531,7 @@ export default Vue.extend({
         }
       },
       brokers: [] as BBroker[],
+      brokerPorts: null as null | BHardwarePorts,
       meters: {
         values: [] as any,
         selected: [],
@@ -2080,8 +2083,7 @@ export default Vue.extend({
                 this.brokers = obj.rec.values.brokers;
               } else if (obj.section[0] === SML_CODES.CODE_ROOT_HARDWARE_PORT) {
                 console.log(obj);
-                //FIXME @Michael: how to insert the new values?
-                //this.??? = obj.rec.values['910000000201'];
+                this.brokerPorts = obj.rec.values;
               } else if (obj.section[0] === SML_CODES.CODE_IF_1107) {
                 //  hide loading spinner
                 this.spinner.iec = false;
@@ -2244,9 +2246,6 @@ export default Vue.extend({
             }
           }
         } else if (obj.cmd === "insert") {
-          // FIXME @Sylko instead of checking the name of ther server we should have
-          // a flag hasBroker - this is way more flexible.
-          // This is difficult since I cannot change the behavior of the legacy devices
           let rec: any = {
             pk: obj.rec.key.pk,
             serverId: obj.rec.data.serverId,
@@ -2494,6 +2493,15 @@ export default Vue.extend({
         { brokers }
       );
     },
+    onBrokerHardwarePortUpdate(hardwarePort: BHardwarePorts) {
+      console.log(JSON.stringify(hardwarePort));
+      this.ws_submit_request(
+        MESSAGE_REQUEST.setProcParameter,
+        SML_CODES.CODE_ROOT_HARDWARE_PORT,
+        [this.form.pk!],
+        hardwarePort
+      );
+    },
     onMeterDelete(item: any) {
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
@@ -2707,9 +2715,6 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="css">
-/* div.tab-content {
-        min-height: 320rem;
-    } */
 .smfServerRootAccessRights {
   margin: 1em 0;
 }

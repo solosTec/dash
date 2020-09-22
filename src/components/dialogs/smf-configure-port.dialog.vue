@@ -1,27 +1,15 @@
 <template lang="html">
   <b-form class="port-config-dialog" @submit.prevent="">
     <b-form-group>
-      <b-input-group class="mt-2" prepend="Bits per Second">
-        <b-form-select
-          v-model="$v.formModel.$model.bitsPerSecond"
-          v-b-popover.hover="'Bits per Second'"
-          :options="bitsPerSecondOptions"
-          :placeholder="'Bits per Second' | fmtPlaceholder"
-          :state="$v.formModel.bitsPerSecond.$invalid ? false : null"
-        ></b-form-select>
-        <b-form-invalid-feedback v-if="!$v.formModel.bitsPerSecond.required">
-          Bits per Second is required.
-        </b-form-invalid-feedback>
-      </b-input-group>
       <b-input-group class="mt-2" prepend="Data bits">
         <b-form-select
-          v-model="$v.formModel.$model.dataBits"
+          v-model="$v.formModel.$model.databits"
           v-b-popover.hover="'Data bits'"
           :options="dataBitsOptions"
           :placeholder="'Data bits' | fmtPlaceholder"
-          :state="$v.formModel.dataBits.$invalid ? false : null"
+          :state="$v.formModel.databits.$invalid ? false : null"
         ></b-form-select>
-        <b-form-invalid-feedback v-if="!$v.formModel.dataBits.required">
+        <b-form-invalid-feedback v-if="!$v.formModel.databits.required">
           Data bits is required.
         </b-form-invalid-feedback>
       </b-input-group>
@@ -39,25 +27,25 @@
       </b-input-group>
       <b-input-group class="mt-2" prepend="Stop bits">
         <b-form-select
-          v-model="$v.formModel.$model.stopBits"
+          v-model="$v.formModel.$model.stopbits"
           v-b-popover.hover="'Stop bits'"
           :options="stopBitsOptions"
           :placeholder="'Stop bits' | fmtPlaceholder"
-          :state="$v.formModel.stopBits.$invalid ? false : null"
+          :state="$v.formModel.stopbits.$invalid ? false : null"
         ></b-form-select>
-        <b-form-invalid-feedback v-if="!$v.formModel.stopBits.required">
+        <b-form-invalid-feedback v-if="!$v.formModel.stopbits.required">
           Stop bits is required.
         </b-form-invalid-feedback>
       </b-input-group>
       <b-input-group class="mt-2" prepend="Flow control">
         <b-form-select
-          v-model="$v.formModel.$model.flowControl"
+          v-model="$v.formModel.$model.flowcontrol"
           v-b-popover.hover="'Flow control'"
           :options="flowControlOptions"
           :placeholder="'Flow control' | fmtPlaceholder"
-          :state="$v.formModel.flowControl.$invalid ? false : null"
+          :state="$v.formModel.flowcontrol.$invalid ? false : null"
         ></b-form-select>
-        <b-form-invalid-feedback v-if="!$v.formModel.flowControl.required">
+        <b-form-invalid-feedback v-if="!$v.formModel.flowcontrol.required">
           Flow control is required.
         </b-form-invalid-feedback>
       </b-input-group>
@@ -73,44 +61,37 @@ export default Vue.extend({
   mixins: [SmfDialogContentMixin],
   data() {
     return {
-      bitsPerSecondOptions: [
-        75,
-        110,
-        300,
-        1200,
-        2400,
-        4800,
-        9600,
-        19200,
-        38400,
-        57600,
-        115200
-      ],
       dataBitsOptions: [5, 6, 7, 8, 9],
-      parityOptions: ["None", "Odd", "Even", "Mark", "Space"],
-      stopBitsOptions: [1, 1.5, 2],
-      flowControlOptions: ["None"]
+      parityOptions: [
+        { value: "odd", text: "Odd" },
+        { value: "even", text: "Even" },
+        { value: "none", text: "None" }
+      ],
+      stopBitsOptions: [
+        { value: "one", text: "1" },
+        { value: "onepointfive", text: "1.5" },
+        { value: "two", text: "2" }
+      ],
+      flowControlOptions: [
+        { value: "software", text: "Software" },
+        { value: "hardware", text: "Hardware" }
+      ]
     };
   },
   validations: {
     formModel: {
-      bitsPerSecond: {
-        required
-      },
-      dataBits: {
-        required
-      },
-      parity: {
-        required
-      },
-      stopBits: {
-        required
-      },
-      flowControl: {
-        required
-      }
+      databits: { required },
+      parity: { required },
+      stopbits: { required },
+      flowcontrol: { required }
     }
   }
 });
 </script>
-<style scoped></style>
+<style scoped>
+/* make the fromGroup labels with equal width*/
+/*noinspection ALL*/
+.input-group-text {
+  min-width: 150px;
+}
+</style>

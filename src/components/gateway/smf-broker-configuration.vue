@@ -32,6 +32,7 @@
             <b-button
               size="sm"
               variant="primary"
+              :disabled="noBrokerPortsAvailable(uiBroker.$model)"
               @click="configurePort(uiBroker.$model)"
             >
               Configure
@@ -167,11 +168,7 @@
 import Vue, { PropType } from "vue";
 import { Gateway } from "@/api/gateway";
 
-import {
-  BBroker,
-  BBrokerAddress,
-  BBrokerPortHardwareConfig
-} from "@/api/broker";
+import { BBroker, BBrokerAddress, BHardwarePorts } from "@/api/broker";
 import {
   helpers,
   integer,
@@ -212,6 +209,9 @@ export default Vue.extend({
     brokers: {
       type: Array as PropType<BBroker[]>,
       required: true
+    },
+    brokerPorts: {
+      type: Object as PropType<null | BHardwarePorts>
     }
   },
   data() {
@@ -255,6 +255,12 @@ export default Vue.extend({
   },
   computed: {},
   methods: {
+    noBrokerPortsAvailable(uiBroker: UIBroker): boolean {
+      if (!this.brokerPorts) {
+        return true;
+      }
+      return !this.brokerPorts[uiBroker.hardwarePort];
+    },
     uiBrokerHasChanged(uiBrokers: UIBroker[]): boolean {
       return (
         JSON.stringify(this.originalUiBrokers) !== JSON.stringify(uiBrokers)
@@ -277,27 +283,21 @@ export default Vue.extend({
       this.$emit("brokersUpdate", bBrokers);
     },
     async configurePort(broker: UIBroker) {
-      // FIXME @Sylko: how to get the current configuration?
-      // Comes with section "9100000000FF" == CODE_ROOT_HARDWARE_PORT
-      console.log("configure port for broker", JSON.stringify(broker));
-      const hardwareConfig: BBrokerPortHardwareConfig = {
-        bitsPerSecond: 9600,
-        dataBits: 8,
-        flowControl: "None",
-        parity: "None",
-        stopBits: 1
-      };
-
+      if (!this.brokerPorts) {
+        return;
+      }
+      const brokerHardware = this.brokerPorts[broker.hardwarePort];
+      console.log(brokerHardware);
       const result = await SmfDialogService.openFormDialog(
         this,
         "Configure Hardware Port: " + broker.name,
         SmfConfigurePortDialog,
-        hardwareConfig
+        brokerHardware
       );
-
       if (result) {
-        console.log(result);
-        // FIXME @Sylko: how and where to store the modified configuration?
+        this.$emit("brokerHardwarePortUpdate", {
+          [broker.hardwarePort]: result
+        });
       }
     }
   },
