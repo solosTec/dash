@@ -74,7 +74,8 @@ export default Vue.extend({
       ],
       flowControlOptions: [
         { value: "software", text: "Software" },
-        { value: "hardware", text: "Hardware" }
+        { value: "hardware", text: "Hardware" },
+        { value: "none", text: "None" }
       ]
     };
   },

@@ -276,15 +276,18 @@
 
             <b-tab no-body>
               <template slot="title">
-                Meter
+                Access
                 <b-spinner v-if="spinner.meter" type="grow" small />
               </template>
 
-              <b-form @:submit.prevent="" class="p-3 shadow">
+              <b-form @:submit.prevent="" class="p-3">
                 <b-row>
                   <b-col md="9">
                     <b-form-group
                       label="Public Key"
+                      label-cols-sm="4"
+                      label-cols-lg="3"
+                      description="cryptographic public key"
                       label-for="smf-form-meter-pubkey"
                     >
                       <b-form-input
@@ -296,6 +299,8 @@
                     </b-form-group>
                     <b-form-group
                       label="AES Key"
+                      label-cols-sm="4"
+                      label-cols-lg="3"
                       label-for="smf-form-meter-aeskey"
                     >
                       <b-form-input
@@ -317,7 +322,10 @@
                     </b-form-group>
                     <b-form-group
                       label="User Name"
+                      label-cols-sm="4"
+                      label-cols-lg="3"
                       label-for="smf-form-meter-user"
+                      description="meter login name"
                     >
                       <b-form-input
                         id="smf-form-meter-user"
@@ -329,6 +337,9 @@
                     <b-form-group
                       label="Password"
                       label-for="smf-form-meter-last-pwd"
+                      label-cols-sm="4"
+                      label-cols-lg="3"
+                      description="meter login password"
                     >
                       <b-input-group>
                         <b-form-input
@@ -370,98 +381,102 @@
                     </b-form-group>
                   </b-col>
                 </b-row>
-              </b-form>
 
-              <b-form @:submit.prevent="" class="p-3">
-                <b-row>
-                  <b-col md="3">
-                    <b-form-group
-                      label="Device Class"
-                      label-for="smf-form-device-class"
+                <b-row class="pt-2">
+                  <b-col md="12">
+                    <b-button v-b-toggle.sidebar-footer
+                      >Show Meter Status</b-button
                     >
-                      <b-form-input
-                        id="smf-form-device-class"
-                        type="text"
-                        v-model="tabMeter.data.devClass"
-                        readonly
-                        placeholder="<Device Class>"
-                      />
-                    </b-form-group>
-                  </b-col>
-                  <b-col md="3">
-                    <b-form-group
-                      label="Manufacturer"
-                      label-for="smf-form-meter-maker-2"
+                    <b-sidebar
+                      id="sidebar-footer"
+                      aria-label="Sidebar with custom footer"
+                      no-header
+                      shadow="true"
                     >
-                      <b-form-input
-                        id="smf-form-meter-maker-2"
-                        type="text"
-                        v-model="tabMeter.data.maker"
-                        readonly
-                        placeholder="<Manufacturer>"
-                      />
-                    </b-form-group>
+                      <template v-slot:footer="{ hide }">
+                        <div
+                          class="d-flex bg-dark text-light align-items-center px-3 py-2"
+                        >
+                          <strong class="mr-auto">Meter Status</strong>
+                          <b-button size="sm" @click="hide">Close</b-button>
+                        </div>
+                      </template>
+                      <div class="px-3 py-2">
+                        <b-form-group
+                          label="Device Class"
+                          label-for="smf-form-device-class"
+                        >
+                          <b-form-input
+                            id="smf-form-device-class"
+                            type="text"
+                            v-model="tabMeter.data.devClass"
+                            readonly
+                            placeholder="<Device Class>"
+                          />
+                        </b-form-group>
+                        <b-form-group
+                          label="Manufacturer"
+                          label-for="smf-form-meter-maker-2"
+                        >
+                          <b-form-input
+                            id="smf-form-meter-maker-2"
+                            type="text"
+                            v-model="tabMeter.data.maker"
+                            readonly
+                            placeholder="<Manufacturer>"
+                          />
+                        </b-form-group>
+                        <b-form-group
+                          label="Status"
+                          label-for="smf-form-meter-status"
+                        >
+                          <b-form-input
+                            id="smf-form-meter-status"
+                            type="number"
+                            v-model="tabMeter.data.status"
+                            readonly
+                            placeholder="<Status Information>"
+                          />
+                        </b-form-group>
+                        <b-form-group
+                          label="Bitmask"
+                          label-for="smf-form-meter-bitmask"
+                        >
+                          <b-form-input
+                            id="smf-form-meter-bitmask"
+                            type="text"
+                            v-model="tabMeter.data.bitmask"
+                            readonly
+                            placeholder="<Bitmask>"
+                          />
+                        </b-form-group>
+                        <b-form-group
+                          label="Interval (millisec.)"
+                          label-for="smf-form-meter-interval"
+                        >
+                          <b-form-input
+                            id="smf-form-meter-interval"
+                            type="number"
+                            v-model="tabMeter.data.interval"
+                            readonly
+                            placeholder="<Time between two data sets>"
+                          />
+                        </b-form-group>
+                        <b-form-group
+                          label="Last Record"
+                          label-for="smf-form-meter-last-record"
+                        >
+                          <b-form-input
+                            id="smf-form-meter-last-record"
+                            type="datetime"
+                            v-model="tabMeter.data.lastRecord"
+                            readonly
+                            placeholder="<Last Record>"
+                          />
+                        </b-form-group>
+                      </div>
+                    </b-sidebar>
                   </b-col>
-                  <b-col md="3">
-                    <b-form-group
-                      label="Status"
-                      label-for="smf-form-meter-status"
-                    >
-                      <b-form-input
-                        id="smf-form-meter-status"
-                        type="number"
-                        v-model="tabMeter.data.status"
-                        readonly
-                        placeholder="<Status Information>"
-                      />
-                    </b-form-group>
-                  </b-col>
-                  <b-col md="3">
-                    <b-form-group
-                      label="Bitmask"
-                      label-for="smf-form-meter-bitmask"
-                    >
-                      <b-form-input
-                        id="smf-form-meter-bitmask"
-                        type="text"
-                        v-model="tabMeter.data.bitmask"
-                        readonly
-                        placeholder="<Bitmask>"
-                      />
-                    </b-form-group>
-                  </b-col>
-                </b-row>
-
-                <b-row>
-                  <b-col md="3">
-                    <b-form-group
-                      label="Interval (millisec.)"
-                      label-for="smf-form-meter-interval"
-                    >
-                      <b-form-input
-                        id="smf-form-meter-interval"
-                        type="number"
-                        v-model="tabMeter.data.interval"
-                        readonly
-                        placeholder="<Time between two data sets>"
-                      />
-                    </b-form-group>
-                  </b-col>
-                  <b-col md="3">
-                    <b-form-group
-                      label="Last Record"
-                      label-for="smf-form-meter-last-record"
-                    >
-                      <b-form-input
-                        id="smf-form-meter-last-record"
-                        type="datetime"
-                        v-model="tabMeter.data.lastRecord"
-                        readonly
-                        placeholder="<Last Record>"
-                      />
-                    </b-form-group>
-                  </b-col>
-                  <b-col md="6"> </b-col>
                 </b-row>
               </b-form>
             </b-tab>
@@ -1108,7 +1123,7 @@ export default mixins(webSocket, Vue).extend({
             console.log(MESSAGE_RESPONSE.getProcParameter + ": " + obj.section);
             //console.log(obj.rec.values);
             console.log(obj);
-            if (obj.section === SML_CODES.CODE_ROOT_SENSOR_PARAMS) {
+            if (obj.section[0] === SML_CODES.CODE_ROOT_SENSOR_PARAMS) {
               this.spinner.meter = false;
               // aesKey: null
               // bitMask: "3030"
@@ -1138,7 +1153,7 @@ export default mixins(webSocket, Vue).extend({
               this.tabMeter.data.aesKey = obj.rec.values["8181C78603FF"];
               this.tabMeter.data.user = obj.rec.values["8181613C01FF"];
               this.tabMeter.data.pwd = obj.rec.values["8181613C02FF"];
-            } else if (obj.section === SML_CODES.CODE_ROOT_DATA_COLLECTOR) {
+            } else if (obj.section[0] === SML_CODES.CODE_ROOT_DATA_COLLECTOR) {
               this.spinner.mirror = false;
               Object.values(obj.rec.values).forEach((e: any, idx: number) => {
                 //console.log(e);
@@ -1156,7 +1171,7 @@ export default mixins(webSocket, Vue).extend({
                 //  insert into table
                 this.tabDataMirror.data.items.push(rec);
               });
-            } else if (obj.section === SML_CODES.PUSH_OPERATIONS) {
+            } else if (obj.section[0] === SML_CODES.PUSH_OPERATIONS) {
               this.spinner.push = false;
               Object.values(obj.rec.values).forEach((e: any, idx: number) => {
                 console.log(e);
@@ -1237,6 +1252,7 @@ export default mixins(webSocket, Vue).extend({
     onParameterRefresh(event: Event) {
       event.preventDefault();
       this.spinner.meter = true;
+      //  FIXME: use a different message channel if server ID is NULL
       this.ws_submit_request(
         MESSAGE_REQUEST.getProcParameter,
         SML_CODES.CODE_ROOT_SENSOR_PARAMS,
