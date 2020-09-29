@@ -49,6 +49,18 @@
           Flow control is required.
         </b-form-invalid-feedback>
       </b-input-group>
+      <b-input-group class="mt-2" prepend="Baudrate">
+        <b-form-select
+          v-model="$v.formModel.$model.baudrate"
+          v-b-popover.hover="'Baudrate in bit/sec'"
+          :options="baudrateOptions"
+          :placeholder="'Baudrate' | fmtPlaceholder"
+          :state="$v.formModel.baudrate.$invalid ? false : null"
+        ></b-form-select>
+        <b-form-invalid-feedback v-if="!$v.formModel.baudrate.required">
+          Baudrate is required.
+        </b-form-invalid-feedback>
+      </b-input-group>
     </b-form-group>
   </b-form>
 </template>
@@ -76,6 +88,18 @@ export default Vue.extend({
         { value: "software", text: "Software" },
         { value: "hardware", text: "Hardware" },
         { value: "none", text: "None" }
+      ],
+      baudrateOptions: [
+        600,
+        1200,
+        2400,
+        4800,
+        9600,
+        14400,
+        19200,
+        38400,
+        57600,
+        115200
       ]
     };
   },
@@ -84,7 +108,8 @@ export default Vue.extend({
       databits: { required },
       parity: { required },
       stopbits: { required },
-      flowcontrol: { required }
+      flowcontrol: { required },
+      baudrate: { required }
     }
   }
 });

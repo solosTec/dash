@@ -102,6 +102,8 @@
     <Folder Include="src\filter\" />
     <Folder Include="src\mixins\" />
     <Folder Include="src\plugins\" />
+    <Folder Include="src\shared\" />
+    <Folder Include="src\shared\formatter\" />
     <Folder Include="src\store\" />
     <Folder Include="src\store\modules\" />
     <Folder Include="src\views\" />
@@ -118,6 +120,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\filter\fmtPlaceholder.ts" />
     <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\shared\formatter\registerNames.ts" />
+    <TypeScriptCompile Include="src\shared\generate-password.ts" />
+    <TypeScriptCompile Include="src\shared\smf-dialog.service.ts" />
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>
