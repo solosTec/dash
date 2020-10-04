@@ -332,11 +332,11 @@ export default mixins(webSocket, Vue).extend({
         } else if (obj.cmd === "modify") {
           const modResponse = obj as WSModifyResponse<Device>;
           // eslint-disable-next-line
-                    //console.log('modify device ' + modResponse.key);
+          //console.log('modify device ' + modResponse.key);
           this.devices.forEach((rec: UiDevice) => {
             if (rec.pk === modResponse.key[0]) {
               // eslint-disable-next-line
-                            //console.log('modify record ' + rec.name);
+              //console.log('modify record ' + rec.name);
               if (modResponse.value.name != null) {
                 rec.name = modResponse.value.name;
                 if (this.form.pk === rec.pk) {
@@ -374,7 +374,7 @@ export default mixins(webSocket, Vue).extend({
             rec => rec.pk === (obj as WSDeleteResponse).key
           );
           // eslint-disable-next-line
-                    console.log('delete index ' + idx);
+          console.log("delete index " + idx);
           this.devices.splice(idx, 1);
         } else if (obj.cmd === "load") {
           const loadResponse = obj as WSLoadResponse;
@@ -387,6 +387,7 @@ export default mixins(webSocket, Vue).extend({
             } else {
               // set the tmpDevices if the initial uploads is done
               this.devices = tmpDevices;
+              this.busyLevel = 100;
             }
           }
           if (loadResponse.hasOwnProperty("level")) {
@@ -402,7 +403,7 @@ export default mixins(webSocket, Vue).extend({
       this.selected = items;
       if (items.length > 0) {
         // eslint-disable-next-line
-                console.log(items.length + ' rows selected ');
+        console.log(items.length + " rows selected ");
         //   console.log('selected ' + items[0].name);
         this.form.name = items[0].name;
         this.form.msisdn = items[0].msisdn;
@@ -439,7 +440,7 @@ export default mixins(webSocket, Vue).extend({
     onDeviceDelete(event: Event) {
       event.preventDefault();
       // eslint-disable-next-line
-            //console.log('onDeviceDelete: ' + this.selected.length + ' devices');
+      //console.log('onDeviceDelete: ' + this.selected.length + ' devices');
       (this.$refs.dlgDeleteDevice as BModal).show();
     },
     handleDeleteDeviceOk(event: Event) {
@@ -455,7 +456,7 @@ export default mixins(webSocket, Vue).extend({
     onDeviceInsert(event: Event) {
       event.preventDefault();
       // eslint-disable-next-line
-            //console.log('onDeviceInsert: ' + event);
+      //console.log('onDeviceInsert: ' + event);
       this.ws_submit_record("insert", "config.device", {
         key: [this.form.pk],
         data: {
