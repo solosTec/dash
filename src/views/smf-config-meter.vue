@@ -3,26 +3,26 @@
     <template>
       <div>
         <vue-headful
-          title="smf :: config meters"
           description="SMF dashboard"
           keywords="SMF, solosTec"
+          title="smf :: config meters"
         />
       </div>
     </template>
 
     <b-jumbotron
-      fluid
       :header="$t('header-meter')"
       :lead="$t('lead-meter', { count: this.meters.length })"
+      fluid
     />
 
-    <b-container fluid>
+    <b-container fluid="true">
       <b-row>
         <b-col md="6">
           <b-form-group
-            label-cols-sm="3"
             :label="$t('tbl-filter')"
             class="mb-0"
+            label-cols-sm="3"
           >
             <b-input-group>
               <b-form-input v-model="filter" :placeholder="$t('tbl-search')" />
@@ -39,13 +39,13 @@
           <b-form-row>
             <smf-row-count-selector
               v-model="perPage"
-              store-key="meter"
               class="col"
+              store-key="meter"
             />
             <b-pagination
               v-model="currentPage"
-              :total-rows="visibleRows"
               :per-page="perPage"
+              :total-rows="visibleRows"
               class="justify-content-end"
             />
           </b-form-row>
@@ -56,28 +56,28 @@
           <!-- table -->
           <b-table
             ref="meterTable"
-            bordered
-            striped
-            small
-            hover
-            show-empty
-            stacked="md"
-            selectable
-            select-mode="range"
-            selectedVariant="info"
-            @row-selected="rowSelected"
-            :fields="fields"
-            :items="meters"
             :busy="isBusy"
             :current-page="currentPage"
-            :per-page="perPage"
+            :fields="fields"
             :filter="filter"
-            @filtered="onFiltered"
-            primary-key="pk"
+            :items="meters"
+            :per-page="perPage"
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"
+            bordered
             class="shadow"
+            hover
+            primary-key="pk"
+            select-mode="range"
+            selectable
+            selectedVariant="info"
+            show-empty
+            small
+            stacked="md"
+            striped
+            @filtered="onFiltered"
+            @row-selected="rowSelected"
           >
             <!-- caption slot -->
             <template slot="table-caption">
@@ -99,217 +99,229 @@
 
       <!-- details -->
       <b-row>
-        <b-col md="12" class="p-3 shadow">
-          <b-tabs pills card v-model="tabIndex">
-            <b-tab title="Configuration" active>
+        <b-col class="p-3 shadow" md="12">
+          <div v-if="selected.length === 0">Please select a meter.</div>
+          <b-tabs
+            v-if="selected.length > 0"
+            ref="tabs"
+            v-model="tabIndex"
+            card
+            pills
+            @input="tabSelected"
+          >
+            <b-tab
+              :smf-context="smfContext.configuration"
+              active
+              title="Configuration"
+            >
               <b-form @:submit.prevent="">
                 <b-row>
                   <b-col md="6">
                     <b-form-group
-                      label="Ident"
                       description="Meter identifier in full length"
-                      label-cols-sm="4"
+                      label="Ident"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-ident"
-                        type="text"
                         v-model="form.ident"
-                        required
-                        placeholder="<Ident>"
                         maxlength="22"
+                        placeholder="<Ident>"
+                        required
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
-                      label="Meter"
                       description="Short Identifier"
-                      label-cols-sm="4"
+                      label="Meter"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-meter"
-                        type="text"
                         v-model="form.meter"
-                        readonly
                         placeholder="<Meter>"
+                        readonly
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
-                      label="Metering Code"
                       description="Unique metering code"
-                      label-cols-sm="4"
+                      label="Metering Code"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-code"
-                        type="text"
                         v-model="form.code"
-                        placeholder="<Metering Code>"
-                        pattern="[A-Z]{2}[a-zA-Z0-9]{17,46}"
-                        required
                         maxlength="48"
+                        pattern="[A-Z]{2}[a-zA-Z0-9]{17,46}"
+                        placeholder="<Metering Code>"
+                        required
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
-                      label="Manufacturer"
                       description="3 character code"
-                      label-cols-sm="4"
+                      label="Manufacturer"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-maker"
-                        type="text"
                         v-model="form.maker"
                         placeholder="<Manufacturer>"
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
-                      label="Item"
                       description="Articel description"
-                      label-cols-sm="4"
+                      label="Item"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-item"
-                        type="text"
                         v-model="form.item"
                         placeholder="<Item>"
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
                       description="Update meter configuration"
-                      label-cols-sm="4"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-button
-                        type="submit"
                         id="smf-form-meter-update"
+                        type="submit"
                         variant="info"
                         v-on:click.stop="onMeterUpdate"
-                        >{{ btnUpdateTitle }}</b-button
-                      >
+                        >{{ btnUpdateTitle }}
+                      </b-button>
                     </b-form-group>
                   </b-col>
                   <b-col md="6">
                     <b-form-group
-                      label="Firmware"
                       description="Current bootstream software/version"
-                      label-cols-sm="4"
+                      label="Firmware"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-fw"
-                        type="text"
                         v-model="form.fw"
                         placeholder="<Firmware>"
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
-                      label="Parameterization"
                       description="Active parameterization file"
-                      label-cols-sm="4"
+                      label="Parameterization"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-param"
-                        type="text"
                         v-model="form.vParam"
                         placeholder="<Parameterization>"
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
-                      label="Factory Number"
                       description="Production number from manufacturer"
-                      label-cols-sm="4"
+                      label="Factory Number"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-factory-nr"
-                        type="text"
                         v-model="form.factoryNr"
                         placeholder="<Factory Number>"
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
-                      label="Metrological Class"
                       description="Q3/Q1 ratio"
-                      label-cols-sm="4"
+                      label="Metrological Class"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-class"
-                        type="text"
                         v-model="form.mClass"
                         placeholder="<Metrological Class>"
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
-                      label="TOM"
                       description="Time of Manufactoring"
-                      label-cols-sm="4"
+                      label="TOM"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-tom"
-                        type="date"
                         v-model="form.tom"
                         placeholder="<Time of Manufactoring>"
+                        type="date"
                       />
                     </b-form-group>
                     <b-form-group
                       description="Delete meter configuration"
-                      label-cols-sm="4"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-button
-                        type="submit"
                         id="smf-form-meter-delete"
+                        type="submit"
                         variant="danger"
                         v-on:click.stop="onMeterDelete"
-                        >{{ btnDeleteTitle }}</b-button
-                      >
+                        >{{ btnDeleteTitle }}
+                      </b-button>
                     </b-form-group>
                   </b-col>
                 </b-row>
               </b-form>
             </b-tab>
 
-            <b-tab no-body>
+            <b-tab :smf-context="smfContext.access" no-body>
               <template slot="title">
                 Access
-                <b-spinner v-if="spinner.meter" type="grow" small />
+                <b-spinner v-if="spinner.meter" small type="grow" />
               </template>
 
-              <b-form @:submit.prevent="" class="p-3">
+              <b-form class="p-3" @:submit.prevent="">
                 <b-row>
                   <b-col md="9">
                     <b-form-group
-                      label="Public Key"
-                      label-cols-sm="4"
-                      label-cols-lg="3"
                       description="cryptographic public key"
+                      label="Public Key"
+                      label-cols-lg="3"
+                      label-cols-sm="4"
                       label-for="smf-form-meter-pubkey"
                     >
                       <b-form-input
                         id="smf-form-meter-pubkey"
-                        type="text"
                         v-model="tabMeter.data.pubKey"
                         placeholder="<Public Key>"
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
                       label="AES Key"
-                      label-cols-sm="4"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                       label-for="smf-form-meter-aeskey"
                     >
                       <b-form-input
                         id="smf-form-meter-aeskey"
-                        type="text"
                         v-model="tabMeter.data.aesKey"
                         :state="aesKeyValidation"
-                        placeholder="<AES Key (128 Bit)>"
                         maxlength="32"
+                        placeholder="<AES Key (128 Bit)>"
+                        type="text"
                       />
 
                       <b-form-invalid-feedback :state="aesKeyValidation">
@@ -321,41 +333,41 @@
                       </b-form-valid-feedback>
                     </b-form-group>
                     <b-form-group
-                      label="User Name"
-                      label-cols-sm="4"
-                      label-cols-lg="3"
-                      label-for="smf-form-meter-user"
                       description="meter login name"
+                      label="User Name"
+                      label-cols-lg="3"
+                      label-cols-sm="4"
+                      label-for="smf-form-meter-user"
                     >
                       <b-form-input
                         id="smf-form-meter-user"
-                        type="text"
                         v-model="tabMeter.data.user"
                         placeholder="<User Name>"
+                        type="text"
                       />
                     </b-form-group>
                     <b-form-group
-                      label="Password"
-                      label-for="smf-form-meter-last-pwd"
-                      label-cols-sm="4"
-                      label-cols-lg="3"
                       description="meter login password"
+                      label="Password"
+                      label-cols-lg="3"
+                      label-cols-sm="4"
+                      label-for="smf-form-meter-last-pwd"
                     >
                       <b-input-group>
                         <b-form-input
                           id="smf-form-meter-last-pwd"
-                          type="text"
                           v-model="tabMeter.data.pwd"
                           placeholder="<Password>"
+                          type="text"
                         />
                         <b-input-group-append>
                           <b-button
-                            variant="info"
-                            v-on:click.stop="generatePassword"
                             v-b-tooltip.hover
                             title="Generate password"
-                            >&#x21ba;</b-button
-                          >
+                            variant="info"
+                            v-on:click.stop="generatePassword"
+                            >&#x21ba;
+                          </b-button>
                         </b-input-group-append>
                       </b-input-group>
                     </b-form-group>
@@ -363,21 +375,21 @@
                   <b-col md="3">
                     <b-form-group>
                       <b-button
+                        :disabled="!isOnline"
                         type="submit"
                         variant="success"
-                        :disabled="!isOnline"
                         v-on:click.stop="onParameterRefresh"
-                        >{{ btnRefreshTitle }}</b-button
-                      >
+                        >{{ btnRefreshTitle }}
+                      </b-button>
                     </b-form-group>
                     <b-form-group>
                       <b-button
+                        :disabled="!isOnline"
                         type="submit"
                         variant="info"
-                        :disabled="!isOnline"
                         v-on:click.stop="onParameterUpdate"
-                        >{{ btnUpdateTitle }}</b-button
-                      >
+                        >{{ btnUpdateTitle }}
+                      </b-button>
                     </b-form-group>
                   </b-col>
                 </b-row>
@@ -385,8 +397,8 @@
                 <b-row class="pt-2">
                   <b-col md="12">
                     <b-button v-b-toggle.sidebar-footer
-                      >Show Meter Status</b-button
-                    >
+                      >Show Meter Status
+                    </b-button>
                     <b-sidebar
                       id="sidebar-footer"
                       aria-label="Sidebar with custom footer"
@@ -408,10 +420,10 @@
                         >
                           <b-form-input
                             id="smf-form-device-class"
-                            type="text"
                             v-model="tabMeter.data.devClass"
-                            readonly
                             placeholder="<Device Class>"
+                            readonly
+                            type="text"
                           />
                         </b-form-group>
                         <b-form-group
@@ -420,10 +432,10 @@
                         >
                           <b-form-input
                             id="smf-form-meter-maker-2"
-                            type="text"
                             v-model="tabMeter.data.maker"
-                            readonly
                             placeholder="<Manufacturer>"
+                            readonly
+                            type="text"
                           />
                         </b-form-group>
                         <b-form-group
@@ -432,10 +444,10 @@
                         >
                           <b-form-input
                             id="smf-form-meter-status"
-                            type="number"
                             v-model="tabMeter.data.status"
-                            readonly
                             placeholder="<Status Information>"
+                            readonly
+                            type="number"
                           />
                         </b-form-group>
                         <b-form-group
@@ -444,10 +456,10 @@
                         >
                           <b-form-input
                             id="smf-form-meter-bitmask"
-                            type="text"
                             v-model="tabMeter.data.bitmask"
-                            readonly
                             placeholder="<Bitmask>"
+                            readonly
+                            type="text"
                           />
                         </b-form-group>
                         <b-form-group
@@ -456,10 +468,10 @@
                         >
                           <b-form-input
                             id="smf-form-meter-interval"
-                            type="number"
                             v-model="tabMeter.data.interval"
-                            readonly
                             placeholder="<Time between two data sets>"
+                            readonly
+                            type="number"
                           />
                         </b-form-group>
                         <b-form-group
@@ -468,10 +480,10 @@
                         >
                           <b-form-input
                             id="smf-form-meter-last-record"
-                            type="datetime"
                             v-model="tabMeter.data.lastRecord"
-                            readonly
                             placeholder="<Last Record>"
+                            readonly
+                            type="datetime"
                           />
                         </b-form-group>
                       </div>
@@ -481,10 +493,13 @@
               </b-form>
             </b-tab>
 
-            <b-tab>
+            <b-tab
+              :disabled="selected[0].online === 0"
+              :smf-context="smfContext.gateway"
+            >
               <template slot="title">
                 Gateway
-                <b-spinner v-if="spinner.readout" type="grow" small />
+                <b-spinner v-if="spinner.readout" small type="grow" />
               </template>
 
               <b-form @:submit.prevent="">
@@ -496,11 +511,11 @@
                     >
                       <b-form-input
                         id="smf-form-meter-ident-a"
-                        type="text"
                         v-model="form.ident"
-                        readonly
-                        placeholder="<Ident>"
                         maxlength="22"
+                        placeholder="<Ident>"
+                        readonly
+                        type="text"
                       />
                     </b-form-group>
                   </b-col>
@@ -508,10 +523,10 @@
                     <b-form-group label="Gateway" label-for="smf-form-meter-gw">
                       <b-form-input
                         id="smf-form-meter-gw"
-                        type="text"
                         v-model="form.serverId"
-                        readonly
                         placeholder="<Ident>"
+                        readonly
+                        type="text"
                       />
                     </b-form-group>
                   </b-col>
@@ -522,26 +537,26 @@
                     <!-- table -->
                     <b-table
                       ref="readoutTable"
-                      bordered
-                      striped
-                      small
-                      hover
-                      show-empty
-                      stacked="md"
-                      selectable
-                      select-mode="single"
-                      selectedVariant="info"
-                      @row-selected="rowSelected"
-                      :fields="readout.fields"
-                      :items="readout.values"
                       :busy="isBusy"
                       :current-page="readout.currentPage"
+                      :fields="readout.fields"
+                      :items="readout.values"
                       :per-page="readout.perPage"
-                      primary-key="obis"
                       :sort-by.sync="readout.sortBy"
                       :sort-desc.sync="readout.sortDesc"
                       :sort-direction="readout.sortDirection"
+                      bordered
                       class="shadow"
+                      hover
+                      primary-key="obis"
+                      select-mode="single"
+                      selectable
+                      selectedVariant="info"
+                      show-empty
+                      small
+                      stacked="md"
+                      striped
+                      @row-selected="rowSelected"
                     >
                       <!-- A custom formatted column descr -->
                       <template v-slot:cell(obis)="data">
@@ -555,129 +570,105 @@
                       </template>
                     </b-table>
                   </b-col>
-                  <b-col md="6">
-                    <b-form-group label="Query last record">
-                      <b-button
-                        type="submit"
-                        variant="success"
-                        v-on:click.stop="onMeterQuery"
-                        >{{ btnQueryTitle }}</b-button
-                      >
-                    </b-form-group>
-                  </b-col>
                 </b-row>
               </b-form>
             </b-tab>
 
-            <b-tab no-body>
+            <b-tab
+              :disabled="selected[0].online === 0"
+              :smf-context="smfContext.pushOperation"
+              no-body
+            >
               <template slot="title">
                 Push Operations
-                <b-spinner v-if="spinner.push" type="grow" small />
+                <b-spinner v-if="spinner.push" small type="grow" />
               </template>
-              <b-form @:submit.prevent="" class="p-3">
+              <b-form class="p-3" @:submit.prevent="">
                 <b-row>
-                  <b-col md="6">
+                  <b-col md="12">
                     <pushTargets
                       ref="pushTargets"
                       :items="tabPush.data.items"
                     />
                   </b-col>
-                  <b-col md="6">
-                    <b-form-group label="Refresh data">
-                      <b-button
-                        type="submit"
-                        variant="success"
-                        :disabled="!isOnline"
-                        v-on:click.stop="onPushTargetQuery"
-                        >Query</b-button
-                      >
-                    </b-form-group>
-                  </b-col>
                 </b-row>
               </b-form>
             </b-tab>
 
-            <b-tab no-body>
+            <b-tab
+              :disabled="selected[0].online === 0"
+              :smf-context="smfContext.dataMirror"
+              no-body
+            >
               <template slot="title">
                 Data Mirror
-                <b-spinner v-if="spinner.mirror" type="grow" small />
+                <b-spinner v-if="spinner.mirror" small type="grow" />
               </template>
-              <b-form @:submit.prevent="" class="p-3">
+              <b-form class="p-3" @:submit.prevent="">
                 <b-row>
-                  <b-col md="6">
+                  <b-col md="12">
                     <dataMirror
                       ref="dataMirror"
                       :items="tabDataMirror.data.items"
                     />
                   </b-col>
-                  <b-col md="6">
-                    <b-form-group label="Refresh data">
-                      <b-button
-                        type="submit"
-                        variant="success"
-                        :disabled="!isOnline"
-                        v-on:click.stop="onDataMirrorQuery"
-                        >Query</b-button
-                      >
-                    </b-form-group>
-                  </b-col>
                 </b-row>
               </b-form>
             </b-tab>
 
-            <b-tab no-body>
+            <b-tab :smf-context="smfContext.brokerMode" no-body>
               <template slot="title">
                 Broker Mode
-                <b-spinner v-if="spinner.broker" type="grow" small />
+                <b-spinner v-if="spinner.broker" small type="grow" />
               </template>
-              <b-form @:submit.prevent="" class="p-3">
+              <b-form class="p-3" @:submit.prevent="">
                 <b-row>
                   <b-col md="6">
                     <b-form-group
                       description="IEC broker state"
-                      label-cols-sm="4"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
-                      <b-form-checkbox switch size="lg"
-                        >IEC Broker</b-form-checkbox
-                      >
+                      <b-form-checkbox size="lg" switch
+                        >IEC Broker
+                      </b-form-checkbox>
                     </b-form-group>
                     <b-form-group
                       description="M-Bus broker state"
-                      label-cols-sm="4"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
-                      <b-form-checkbox switch size="lg"
-                        >M-Bus Broker</b-form-checkbox
-                      >
+                      <b-form-checkbox size="lg" switch
+                        >M-Bus Broker
+                      </b-form-checkbox>
                     </b-form-group>
                   </b-col>
                   <b-col md="6">
                     <b-form-group
                       description="Add to or remove from IEC broker"
-                      label-cols-sm="4"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-button
-                        type="submit"
                         id="smf-form-meter-broker-1"
+                        type="submit"
                         variant="secondary"
                         v-on:click.stop="onBrokerUpdate('iec')"
-                        >Apply</b-button
-                      >
+                        >Apply
+                      </b-button>
                     </b-form-group>
                     <b-form-group
                       description="Add to or remove from M-Bus broker"
-                      label-cols-sm="4"
                       label-cols-lg="3"
+                      label-cols-sm="4"
                     >
                       <b-button
-                        type="submit"
                         id="smf-form-meter-broker-2"
+                        type="submit"
                         variant="secondary"
                         v-on:click.stop="onBrokerUpdate('mbus')"
-                        >Apply</b-button
-                      >
+                        >Apply
+                      </b-button>
                     </b-form-group>
                   </b-col>
                 </b-row>
@@ -691,9 +682,9 @@
       <b-modal
         ref="dlgDeleteMeter"
         :title="btnDeleteTitle"
-        @ok="handleDeleteMeterOk"
-        header-bg-variant="danger"
         centered
+        header-bg-variant="danger"
+        @ok="handleDeleteMeterOk"
       >
         <p>Proceed?</p>
       </b-modal>
@@ -713,6 +704,7 @@ import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import { generatePassword } from "@/shared/generate-password";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
+import { BTabs } from "bootstrap-vue";
 
 let tmpMeters: any[] = [];
 
@@ -761,7 +753,6 @@ export default mixins(webSocket, Vue).extend({
           key: "index",
           class: "text-right small text-muted"
         },
-        //    pk (uuid)
         {
           key: "ident",
           label: "Ident",
@@ -790,31 +781,11 @@ export default mixins(webSocket, Vue).extend({
             return value.toUTCString();
           }
         },
-        //   {
-        //     key: 'fw',
-        //     label: 'Firmware',
-        //     sortable: true
-        //   },
-        //   {
-        //     key: 'item',
-        //     label: 'Item',
-        //     sortable: true
-        //   },
-        //   {
-        //     key: 'mClass',
-        //     label: 'Class',
-        //     sortable: true
-        //   },
         {
           key: "serverId",
           label: "Server ID",
           sortable: true
         },
-        //   {
-        //     key: 'gwKey',
-        //     label: 'GW',
-        //     sortable: true
-        //   },
         {
           key: "online",
           label: "Online",
@@ -850,6 +821,14 @@ export default mixins(webSocket, Vue).extend({
         mClass: "---",
         serverId: "",
         gwKey: ""
+      },
+      smfContext: {
+        configuration: "configuration",
+        access: "access",
+        gateway: "gateway",
+        pushOperation: "pushOperations",
+        dataMirror: "dataMirror",
+        brokerMode: "brokerMode"
       },
       readout: {
         values: [] as any[],
@@ -1195,7 +1174,46 @@ export default mixins(webSocket, Vue).extend({
         this.visibleRows = this.meters.length;
       }
     },
+    updateSmfContext() {
+      const bTabs = this.$refs.tabs as BTabs;
+      const smfContext = bTabs.tabs[this.tabIndex].$attrs["smf-context"];
+      console.log(`${smfContext} selected for`, this.selected[0]);
 
+      if (smfContext === this.smfContext.gateway) {
+        this.spinner.readout = true;
+        this.ws_submit_request(
+          MESSAGE_REQUEST.getList,
+          SML_CODES.LIST_CURRENT_DATA_RECORD,
+          [this.form.gwKey],
+          { meter: this.form.ident }
+        );
+      } else if (smfContext === this.smfContext.pushOperation) {
+        this.spinner.push = true;
+        this.tabPush.data.items = [];
+        //  81 81 C7 8A 01 FF
+        this.ws_submit_request(
+          MESSAGE_REQUEST.getProcParameter,
+          SML_CODES.PUSH_OPERATIONS,
+          [this.form.gwKey],
+          { meter: this.form.ident }
+        );
+      } else if (smfContext === this.smfContext.dataMirror) {
+        this.spinner.mirror = true;
+        this.tabDataMirror.data.items = [];
+        //  81 81 C7 86 20 FF
+        this.ws_submit_request(
+          MESSAGE_REQUEST.getProcParameter,
+          SML_CODES.CODE_ROOT_DATA_COLLECTOR,
+          [this.form.gwKey],
+          { meter: this.form.ident }
+        );
+      }
+    },
+    tabSelected() {
+      // at elast one item (e.g. meter) is always selected
+      // get the context of the selected tab
+      this.updateSmfContext();
+    },
     rowSelected(items: any[]) {
       this.selected = items;
       if (items.length > 0) {
@@ -1214,6 +1232,10 @@ export default mixins(webSocket, Vue).extend({
         this.form.mClass = items[0].mClass;
         this.form.serverId = items[0].serverId;
         this.form.gwKey = items[0].gwKey;
+        if (items.length === 1) {
+          // the tabs are rendered only if an item is selected - so wait a tick until the tabs-element is there
+          setTimeout(() => this.updateSmfContext());
+        }
       }
     },
     onMeterUpdate(event: Event) {
@@ -1238,17 +1260,6 @@ export default mixins(webSocket, Vue).extend({
       console.log("onMeterDelete: " + this.selected.length + " meters");
       (this.$refs.dlgDeleteMeter as any).show();
     },
-    onMeterQuery(event: Event) {
-      event.preventDefault();
-      // console.log('onMeterQuery: ' + this.form.ident);
-      this.spinner.readout = true;
-      this.ws_submit_request(
-        MESSAGE_REQUEST.getList,
-        SML_CODES.LIST_CURRENT_DATA_RECORD,
-        [this.form.gwKey],
-        { meter: this.form.ident }
-      );
-    },
     onParameterRefresh(event: Event) {
       event.preventDefault();
       this.spinner.meter = true;
@@ -1268,32 +1279,6 @@ export default mixins(webSocket, Vue).extend({
         SML_CODES.CODE_ROOT_SENSOR_PARAMS,
         [this.form.gwKey],
         { meter: this.form.ident, data: this.tabMeter.data }
-      );
-    },
-    onDataMirrorQuery(event: Event) {
-      event.preventDefault();
-      //console.log('onDataMirrorQuery: ' + this.form.ident);
-      this.spinner.mirror = true;
-      this.tabDataMirror.data.items = [];
-      //  81 81 C7 86 20 FF
-      this.ws_submit_request(
-        MESSAGE_REQUEST.getProcParameter,
-        SML_CODES.CODE_ROOT_DATA_COLLECTOR,
-        [this.form.gwKey],
-        { meter: this.form.ident }
-      );
-    },
-    onPushTargetQuery(event: Event) {
-      event.preventDefault();
-      //console.log('onDataMirrorQuery: ' + this.form.ident);
-      this.spinner.push = true;
-      this.tabPush.data.items = [];
-      //  81 81 C7 8A 01 FF
-      this.ws_submit_request(
-        MESSAGE_REQUEST.getProcParameter,
-        SML_CODES.PUSH_OPERATIONS,
-        [this.form.gwKey],
-        { meter: this.form.ident }
       );
     },
     handleDeleteMeterOk(event: Event) {
@@ -1317,7 +1302,6 @@ export default mixins(webSocket, Vue).extend({
     },
     onBrokerUpdate(type: "iec" | "mbus") {}
   },
-
   computed: {
     tableCaption(): string {
       return (
@@ -1344,23 +1328,17 @@ export default mixins(webSocket, Vue).extend({
       }
       return "Delete " + this.selected.length + " record(s)";
     },
-    btnQueryTitle(): string {
-      if (this.selected.length > 0) {
-        return "Query " + this.selected[0].ident;
-      }
-      return "Query";
-    },
     aesKeyValidation(): boolean {
       if (this.tabMeter.data.aesKey == null) return true;
       if (this.tabMeter.data.aesKey.length === 0) return true;
-      var rex = /[0-9A-Fa-f]{32}/g; //  test for hexadecimal string
+      const rex = /[0-9A-Fa-f]{32}/g; //  test for hexadecimal string
       return rex.test(this.tabMeter.data.aesKey);
     },
     isOnline(): boolean {
       if (this.selected.length === 0) return false;
 
-      var self = this;
-      var rec = this.meters.find(function(rec) {
+      let self = this;
+      const rec = this.meters.find(function(rec) {
         //console.log(rec.pk + ' ? ' + self.form.pk);
         if (rec.pk === self.form.pk) return true;
       });
@@ -1381,4 +1359,4 @@ export default mixins(webSocket, Vue).extend({
 });
 </script>
 
-<style scoped lang="css"></style>
+<style lang="css" scoped></style>
