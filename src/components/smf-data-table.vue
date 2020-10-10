@@ -30,7 +30,7 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col md="12">
+      <b-col>
         <b-table
           ref="table"
           bordered
@@ -54,7 +54,7 @@
           :per-page="perPage"
           :filter="filter"
           @filtered="onFiltered"
-          class="shadow"
+          class="shadow data-table"
         >
           <!-- A virtual column -->
           <template v-slot:cell(index)="data">
@@ -149,3 +149,18 @@ export default Vue.extend({
   }
 });
 </script>
+<style lang="scss" scoped>
+.data-table {
+  table-layout: fixed;
+  ::v-deep tbody,
+  ::v-deep thead {
+    td,
+    th {
+      div {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+  }
+}
+</style>
