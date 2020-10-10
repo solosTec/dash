@@ -78,7 +78,7 @@
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"
-            class="shadow"
+            class="shadow data-table"
           >
             <!-- caption slot -->
             <template slot="table-caption">
@@ -2714,8 +2714,21 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped lang="css">
+<style lang="scss" scoped>
 .smfServerRootAccessRights {
   margin: 1em 0;
+}
+.data-table {
+  table-layout: fixed;
+  ::v-deep tbody,
+  ::v-deep thead {
+    td,
+    th {
+      div {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+  }
 }
 </style>
