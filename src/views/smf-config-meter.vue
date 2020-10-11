@@ -16,7 +16,7 @@
       fluid
     />
 
-    <b-container fluid="true">
+    <b-container fluid>
       <b-row>
         <b-col md="6">
           <b-form-group

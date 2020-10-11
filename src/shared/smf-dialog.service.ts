@@ -1,6 +1,8 @@
 import { CombinedVueInstance, VueConstructor } from "vue/types/vue";
 import SmfGenericFormDialog from "@/components/dialogs/smf-generic-form-dialog.vue";
+import SmfDeleteConfirmDialog from "@/components/dialogs/smf-delete-confirm-dialog.vue";
 import { PropType } from "vue";
+import { TranslateResult } from "vue-i18n";
 
 export interface DialogFormState<T> {
   invalid: boolean;
@@ -29,15 +31,30 @@ export class SmfDialogService {
     formModel: T
   ): Promise<T | null> {
     const dialogContentComponent = new dialogComponentType({
-      propsData: { formModel }
+      // pass a copy to avoid changing the input data in the view - even if they are not saved
+      propsData: { formModel: Object.assign({}, formModel) }
     });
 
-    return new Promise<any>(resolve => {
+    return new Promise<T | null>(resolve => {
       new SmfGenericFormDialog({
         propsData: { parent, dialogContentComponent, title }
       }).$on("close", (e: T | null) => {
         resolve(e);
       });
+    });
+  }
+
+  public static confirmDelete(
+    parent: VueComponentInstance,
+    title: string | TranslateResult
+  ): Promise<boolean> {
+    return new Promise<boolean>(resolve => {
+      new SmfDeleteConfirmDialog({ propsData: { parent, title } }).$on(
+        "close",
+        (e: boolean) => {
+          resolve(e);
+        }
+      );
     });
   }
 }

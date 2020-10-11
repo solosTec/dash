@@ -18,146 +18,50 @@
 
     <b-container fluid>
       <b-row>
-        <b-col md="9">
+        <b-col md="12">
           <smf-data-table
             :busyLevel="busyLevel"
             :fields="fields"
             :items="devices"
             tableName="devices"
-            @itemSelected="rowSelected"
+            @itemSelected="selected = $event"
           >
+            <template v-slot:editButtons>
+              <smf-table-edit-buttons
+                :selectedItems="selected"
+                @onUpdate="onDeviceUpdate"
+                @onExecuteDelete="onExecuteDeviceDelete"
+                @onInsert="onDeviceInsert"
+              ></smf-table-edit-buttons>
+            </template>
+
             <template v-slot:cell(descr)="data">
               <span v-b-popover.hover="data.value" :title="data.item.name">{{
                 formatDescription(data.value)
               }}</span>
             </template>
+
+            <template v-slot:cell(enabled)="data">
+              <b-form-group>
+                <b-form-checkbox
+                  v-model="data.value"
+                  switch
+                  @change="switchEnableState($event, data.item.pk)"
+                >
+                </b-form-checkbox>
+              </b-form-group>
+            </template>
           </smf-data-table>
-        </b-col>
-
-        <b-col md="3">
-          <!-- form -->
-          <b-form class="p-3 shadow" v-on:submit.prevent>
-            <b-form-group
-              :label="$t('config-device-01')"
-              label-for="smf-form-dev-name"
-            >
-              <b-form-input
-                id="smf-form-dev-name"
-                v-model="form.name"
-                :placeholder="$t('config-device-01-01')"
-                required
-                type="text"
-              />
-            </b-form-group>
-
-            <b-form-group label="MSISDN" label-for="smf-form-dev-msisdn">
-              <b-form-input
-                id="smf-form-dev-msisdn"
-                v-model="form.msisdn"
-                placeholder="<MSISDN>"
-                required
-                type="text"
-              />
-            </b-form-group>
-
-            <b-form-group
-              :label="$t('config-device-02')"
-              label-for="smf-form-dev-pwd"
-            >
-              <b-input-group>
-                <b-form-input
-                  id="smf-form-dev-pwd"
-                  v-model="form.pwd"
-                  :placeholder="$t('config-device-02-02')"
-                  required
-                  type="text"
-                />
-                <b-input-group-append>
-                  <b-button
-                    v-b-tooltip.hover
-                    title="Generate password"
-                    variant="info"
-                    v-on:click.stop="generatePassword"
-                    >&#x21ba;
-                  </b-button>
-                </b-input-group-append>
-              </b-input-group>
-            </b-form-group>
-
-            <b-form-group
-              :label="$t('config-device-03')"
-              label-for="smf-form-dev-descr"
-            >
-              <b-form-input
-                id="smf-form-dev-descr"
-                v-model="form.descr"
-                :placeholder="$t('config-device-03-03')"
-                type="text"
-              />
-            </b-form-group>
-
-            <b-form-group label="" label-for="smf-form-dev-enabled">
-              <b-form-checkbox
-                v-model="form.enabled"
-                :disabled="!isRecordSelected"
-                name="smf-form-dev-enabled"
-                switch
-              >
-                {{
-                  form.enabled ? $t("config-device-04") : $t("config-device-05")
-                }}
-              </b-form-checkbox>
-            </b-form-group>
-
-            <b-input-group class="pt-1">
-              <b-button
-                :disabled="!isRecordSelected"
-                type="submit"
-                variant="primary"
-                v-on:click.stop="onDeviceUpdate"
-                >{{ btnUpdateTitle }} </b-button
-              >&nbsp;
-            </b-input-group>
-
-            <b-input-group class="pt-3">
-              <b-button
-                :disabled="!isRecordSelected"
-                type="submit"
-                variant="danger"
-                v-on:click.stop="onDeviceDelete"
-                >{{ btnDeleteTitle }}
-              </b-button>
-            </b-input-group>
-
-            <hr />
-
-            <b-button
-              :disabled="!isRecordNew"
-              type="submit"
-              variant="success"
-              v-on:click.stop="onDeviceInsert"
-              >{{ btnInsertTitle }}
-            </b-button>
-          </b-form>
         </b-col>
       </b-row>
     </b-container>
-
-    <!-- Modal Component -->
-    <b-modal
-      ref="dlgDeleteDevice"
-      :title="btnDeleteTitle"
-      centered
-      header-bg-variant="danger"
-      @ok="handleDeleteDeviceOk"
-    >
-      <p>Proceed?</p>
-    </b-modal>
   </section>
 </template>
 
 <script lang="ts">
 import {
+  Channel,
+  Cmd,
   webSocket,
   WSDeleteResponse,
   WSInsertResponse,
@@ -168,14 +72,14 @@ import {
 import store from "./../store/index";
 import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
-import { generatePassword } from "@/shared/generate-password";
 import smfDataTable from "@/components/smf-data-table.vue";
+import smfTableEditButtons from "@/components/smf-table-edit-buttons.vue";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
-import { BModal } from "bootstrap-vue";
-import { TranslateResult } from "vue-i18n";
 import { Device } from "@/api/device";
 import { Route } from "vue-router";
+import { SmfDialogService } from "@/shared/smf-dialog.service";
+import SmfNewOrEditDeviceDialog from "@/components/dialogs/smf-new-or-edit-device.dialog.vue";
 
 interface BTableItem {
   _rowVariant?: "warning" | null;
@@ -191,15 +95,6 @@ interface UiDevice extends BTableItem {
   name: string;
   pwd: string;
   vFirmware: string;
-}
-
-interface FormDevice {
-  name: string;
-  msisdn: string | null;
-  pwd: string | null;
-  descr: string | null;
-  enabled: boolean | null;
-  pk: string | null;
 }
 
 const fields = [
@@ -236,7 +131,6 @@ const fields = [
     key: "enabled",
     label: "Enabled",
     sortable: true,
-    formatter: (value: string) => (value ? "✔" : "✖"),
     class: "text-center"
   },
   {
@@ -253,7 +147,8 @@ export default mixins(webSocket, Vue).extend({
   name: "smfConfigDevice",
   props: [],
   components: {
-    smfDataTable
+    smfDataTable,
+    smfTableEditButtons
   },
   mixins: [webSocket],
   mounted() {
@@ -265,47 +160,23 @@ export default mixins(webSocket, Vue).extend({
       busyLevel: 0,
       fields,
       devices: [] as UiDevice[],
-      selected: [] as UiDevice[],
-      form: {
-        name: "",
-        msisdn: "",
-        pwd: "",
-        descr: "",
-        enabled: true,
-        pk: ""
-      } as FormDevice
+      selected: [] as UiDevice[]
     };
   },
-
   beforeDestroy() {
     this.ws_close();
   },
-
   methods: {
     ws_on_open() {
-      //  clear table
       this.devices = [];
-      this.ws_subscribe("config.device");
+      this.ws_subscribe(Channel.ConfigDevices);
     },
-
     ws_on_data(obj: WSResponse) {
       if (obj.cmd) {
         console.log(
-          this.$options.name +
-            " websocket received " +
-            obj.cmd +
-            " / " +
-            obj.channel
+          `${this.$options.name} websocket received ${obj.cmd} / ${obj.channel}`
         );
-
-        if (obj.cmd === "update") {
-          // if (obj.channel != null) {
-          //     console.log('update channel ' + obj.channel);
-          //     if (obj.channel == 'table.session.count') {
-          //         this.sessionCount = obj.value;
-          //     }
-          // }
-        } else if (obj.cmd === "insert") {
+        if (obj.cmd === Cmd.insert) {
           const insertResponse = obj as WSInsertResponse<Device>;
           const bDevice = insertResponse.rec.data;
           const created = new Date(bDevice.creationTime.substring(0, 19));
@@ -329,54 +200,23 @@ export default mixins(webSocket, Vue).extend({
             //  operational insert
             this.devices.push(rec);
           }
-        } else if (obj.cmd === "modify") {
+        } else if (obj.cmd === Cmd.modify) {
           const modResponse = obj as WSModifyResponse<Device>;
-          // eslint-disable-next-line
-          //console.log('modify device ' + modResponse.key);
           this.devices.forEach((rec: UiDevice) => {
             if (rec.pk === modResponse.key[0]) {
-              // eslint-disable-next-line
-              //console.log('modify record ' + rec.name);
-              if (modResponse.value.name != null) {
-                rec.name = modResponse.value.name;
-                if (this.form.pk === rec.pk) {
-                  this.form.name = rec.name;
-                }
-              } else if (modResponse.value.msisdn != null) {
-                rec.msisdn = modResponse.value.msisdn;
-                if (this.form.pk === rec.pk) {
-                  this.form.msisdn = rec.msisdn;
-                }
-              } else if (modResponse.value.pwd != null) {
-                rec.pwd = modResponse.value.pwd;
-                if (this.form.pk === rec.pk) {
-                  this.form.pwd = rec.pwd;
-                }
-              } else if (modResponse.value.descr != null) {
-                rec.descr = modResponse.value.descr;
-                if (this.form.pk === rec.pk) {
-                  this.form.descr = rec.descr;
-                }
-              } else if (modResponse.value.enabled != null) {
-                rec.enabled = modResponse.value.enabled;
-                rec._rowVariant = modResponse.value.enabled ? null : "warning";
-                if (this.form.pk === rec.pk) {
-                  this.form.enabled = rec.enabled;
-                }
-              }
+              rec = Object.assign(rec, modResponse.value);
+              rec._rowVariant = rec.enabled ? null : "warning";
             }
           });
-        } else if (obj.cmd === "clear") {
-          //  clear table
+        } else if (obj.cmd === Cmd.clear) {
           this.devices = [];
-        } else if (obj.cmd === "delete") {
-          var idx = this.devices.findIndex(
-            rec => rec.pk === (obj as WSDeleteResponse).key
-          );
-          // eslint-disable-next-line
-          console.log("delete index " + idx);
-          this.devices.splice(idx, 1);
-        } else if (obj.cmd === "load") {
+        } else if (obj.cmd === Cmd.delete) {
+          // FIXME @Sylko: warum kommt hier ein array? und ist das immer ein array?
+          const key = Array.isArray((obj as WSDeleteResponse).key)
+            ? (obj as WSDeleteResponse).key[0]
+            : (obj as WSDeleteResponse).key;
+          this.devices = this.devices.filter(d => d.pk !== key);
+        } else if (obj.cmd === Cmd.load) {
           const loadResponse = obj as WSLoadResponse;
           if (loadResponse.hasOwnProperty("show")) {
             this.isBusy = loadResponse.show;
@@ -396,115 +236,55 @@ export default mixins(webSocket, Vue).extend({
         }
       }
     },
-
-    ws_on_closed() {},
-
-    rowSelected(items: UiDevice[]) {
-      this.selected = items;
-      if (items.length > 0) {
-        // eslint-disable-next-line
-        console.log(items.length + " rows selected ");
-        //   console.log('selected ' + items[0].name);
-        this.form.name = items[0].name;
-        this.form.msisdn = items[0].msisdn;
-        this.form.pwd = items[0].pwd;
-        this.form.descr = items[0].descr;
-        this.form.enabled = items[0].enabled;
-        this.form.pk = items[0].pk;
-        // this.$.properties.properties.name = items[0].name;
-      } else {
-        // console.log('nothing selected');
-        this.form.name = "";
-        this.form.msisdn = null;
-        this.form.pwd = null;
-        this.form.descr = null;
-        this.form.enabled = true;
-        this.form.pk = null;
+    async onDeviceUpdate() {
+      const data = await SmfDialogService.openFormDialog(
+        this,
+        "Add new device",
+        SmfNewOrEditDeviceDialog,
+        this.selected[0]
+      );
+      if (data) {
+        this.ws_submit_record(Cmd.modify, Channel.ConfigDevices, {
+          key: [data.pk],
+          data
+        });
       }
     },
-
-    onDeviceUpdate(event: Event) {
-      event.preventDefault();
-      // console.log('onDeviceUpdate: ' + this.form.name);
-      this.ws_submit_record("modify", "config.device", {
-        key: [this.form.pk],
-        data: {
-          name: this.form.name,
-          msisdn: this.form.msisdn,
-          descr: this.form.descr,
-          pwd: this.form.pwd,
-          enabled: this.form.enabled
-        }
-      });
-    },
-    onDeviceDelete(event: Event) {
-      event.preventDefault();
-      // eslint-disable-next-line
-      //console.log('onDeviceDelete: ' + this.selected.length + ' devices');
-      (this.$refs.dlgDeleteDevice as BModal).show();
-    },
-    handleDeleteDeviceOk(event: Event) {
-      event.preventDefault();
+    async onExecuteDeviceDelete() {
       this.selected.forEach(element => {
-        this.ws_submit_key("delete", "config.device", { tag: [element.pk] });
-      });
-      this.$nextTick(() => {
-        // Wrapped in $nextTick to ensure DOM is rendered before closing
-        (this.$refs.dlgDeleteDevice as BModal).hide();
+        this.ws_submit_key(Cmd.delete, Channel.ConfigDevices, {
+          tag: [element.pk]
+        });
       });
     },
-    onDeviceInsert(event: Event) {
-      event.preventDefault();
-      // eslint-disable-next-line
-      //console.log('onDeviceInsert: ' + event);
-      this.ws_submit_record("insert", "config.device", {
-        key: [this.form.pk],
+    async onDeviceInsert() {
+      const newDevice = await SmfDialogService.openFormDialog(
+        this,
+        "Add new device",
+        SmfNewOrEditDeviceDialog,
+        { name: "", msisdn: "", pwd: "", descr: "", enabled: true }
+      );
+      if (newDevice) {
+        this.ws_submit_record(Cmd.insert, Channel.ConfigDevices, {
+          key: [null],
+          data: {
+            ...newDevice,
+            age: new Date()
+          }
+        });
+      }
+    },
+    switchEnableState(enabled: boolean, pk: string) {
+      this.ws_submit_record(Cmd.modify, Channel.ConfigDevices, {
+        key: [pk],
         data: {
-          name: this.form.name,
-          msisdn: this.form.msisdn,
-          descr: this.form.descr,
-          pwd: this.form.pwd,
-          enabled: this.form.enabled,
-          age: new Date()
+          enabled
         }
       });
-    },
-    generatePassword(event: Event) {
-      event.preventDefault();
-      this.form.pwd = generatePassword();
     },
     formatDescription(str: string) {
-      if (str.length > 24) return str.substring(0, 24) + "...";
+      if (str.length > 24) return `${str.substring(0, 24)}...`;
       return str;
-    }
-  },
-
-  computed: {
-    btnUpdateTitle(): string | TranslateResult {
-      if (this.selected.length > 0) {
-        return this.$t("action-update") + " " + this.selected[0].name;
-      }
-      return this.$t("action-update");
-    },
-    btnDeleteTitle(): string | TranslateResult {
-      if (this.selected.length === 0) {
-        return this.$t("action-del");
-      } else if (this.selected.length === 1) {
-        return this.$t("action-del") + " " + this.selected[0].name;
-      }
-      return this.$t("action-del") + " " + this.selected.length + " record(s)";
-    },
-    btnInsertTitle(): string | TranslateResult {
-      return this.$t("action-insert") + " " + this.form.name;
-    },
-    isRecordSelected(): boolean {
-      return this.selected.length !== 0;
-    },
-    isRecordNew(): boolean {
-      if (this.selected.length !== 0) {
-        return this.form.name !== this.selected[0].name;
-      }
-      return this.form.name.length > 0;
     }
   },
   beforeRouteEnter(to: Route, from: Route, next: any) {
@@ -518,3 +298,4 @@ export default mixins(webSocket, Vue).extend({
   }
 });
 </script>
+<style lang="scss" scoped></style>

@@ -16,7 +16,7 @@
       :lead="$t('lead-gateway', { count: this.gateways.length })"
     />
 
-    <b-container fluid="true">
+    <b-container fluid>
       <b-row>
         <b-col md="6">
           <b-form-group

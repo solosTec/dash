@@ -29,6 +29,7 @@
         </b-form-row>
       </b-col>
     </b-row>
+    <slot name="editButtons"></slot>
     <b-row>
       <b-col>
         <b-table
@@ -63,7 +64,10 @@
 
           <!-- caption slot -->
           <template slot="table-caption">
-            {{ tableCaption }}
+            <div>{{ tableCaption }}</div>
+            <div class="d-none d-md-block d-lg-block d-xl-block">
+              <slot name="editButtons"></slot>
+            </div>
           </template>
 
           <!-- import templates from the parent - makes it possible to customize

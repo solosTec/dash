@@ -13,12 +13,22 @@ interface WebSocketData {
   state: string | TranslateResult;
 }
 
+export const enum Cmd {
+  update = "update",
+  insert = "insert",
+  modify = "modify",
+  clear = "clear",
+  delete = "delete",
+  load = "load"
+}
+
 export const enum Channel {
-  ConfigUser = "config.user"
+  ConfigUser = "config.user",
+  ConfigDevices = "config.device"
 }
 
 export interface WSResponse {
-  cmd: "update" | "insert" | "modify" | "clear" | "delete" | "load";
+  cmd: "update" | "insert" | "modify" | "clear" | "delete" | "load" | Cmd;
   channel: string | Channel;
 }
 
@@ -187,7 +197,7 @@ export const webSocket = Vue.extend({
       this.sx += msg.length;
       this.ws_emit_event_sx();
     },
-    ws_submit_record(cmd: string, channel: string, rec: any) {
+    ws_submit_record(cmd: string, channel: string | Channel, rec: any) {
       if (!this.ws_is_open() || !this.ws) return;
       const msg = JSON.stringify({
         cmd: cmd,
@@ -198,7 +208,7 @@ export const webSocket = Vue.extend({
       this.sx += msg.length;
       this.ws_emit_event_sx();
     },
-    ws_submit_key(cmd: string, channel: string, key: any) {
+    ws_submit_key(cmd: string, channel: string | Channel, key: any) {
       if (!this.ws_is_open() || !this.ws) return;
       const msg = JSON.stringify({
         cmd: cmd,
