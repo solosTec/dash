@@ -3,6 +3,7 @@ import Vue from "vue";
 const TECK2NAME_MAP: Map<string, string> = new Map([
   ["8181C78203FF", "Hersteller-Identifikation"],
   ["8181C78205FF", "öffentlicher Schlüssel"],
+  ["0000600101FF", "Kundennummer"],
   ["810000090B00", "Sekundenindex"], //  second index from meter
   ["0100000009FF", "Geräteeinzelidentifikation"],
   ["0100000000FF", "Identifikationsnummer 1.0 ServerId -> Seriennummer"],

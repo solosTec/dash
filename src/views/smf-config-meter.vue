@@ -1160,7 +1160,7 @@ export default mixins(webSocket, Vue).extend({
                   delay: e["8181C78A03FF"],
                   name: e["8147170700FF"],
                   OBIS: e["8149000010FF"], // profile
-                  source: e["8181C78A04FF"] // push quelle
+                  source: e["8181C78A04FF"]["8181C78A04FF"] // push quelle
                 };
 
                 //  insert into table
