@@ -155,7 +155,7 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 .data-table {
-  table-layout: fixed;
+  //table-layout: fixed;
   ::v-deep tbody,
   ::v-deep thead {
     td,
