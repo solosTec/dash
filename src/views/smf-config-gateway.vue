@@ -2719,7 +2719,7 @@ export default Vue.extend({
   margin: 1em 0;
 }
 .data-table {
-  table-layout: fixed;
+  //table-layout: fixed;
   ::v-deep tbody,
   ::v-deep thead {
     td,
