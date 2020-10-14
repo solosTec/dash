@@ -2495,11 +2495,12 @@ export default Vue.extend({
     },
     onBrokerHardwarePortUpdate(hardwarePort: BHardwarePorts) {
       console.log(JSON.stringify(hardwarePort));
+      //{ "COM3": { "databits": 8, "parity": "none", "flowcontrol": "none", "stopbits": "two", "baudrate": 57600 } }
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_ROOT_HARDWARE_PORT,
         [this.form.pk!],
-        hardwarePort
+        { params: hardwarePort }
       );
     },
     onMeterDelete(item: any) {
