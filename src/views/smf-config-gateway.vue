@@ -2500,7 +2500,7 @@ export default Vue.extend({
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_ROOT_HARDWARE_PORT,
         [this.form.pk!],
-        { params: hardwarePort }
+        hardwarePort
       );
     },
     onMeterDelete(item: any) {
