@@ -20,22 +20,13 @@
       :sort-direction="sortDirection"
       class="shadow"
     >
-      <!--:current-page="currentPage"
-    @row-selected="rowSelected"
-    :per-page="perPage"
-    :filter="filter"
-    @filtered="onFiltered"-->
-
       <template v-slot:cell(details)="row">
-        <!--<b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
-            Info modal
-        </b-button>-->
         <b-button size="sm" @click="row.toggleDetails">
           {{ row.detailsShowing ? "Hide" : "Show" }} Register
         </b-button>
       </template>
 
-      <template v-slot:cell(row-details)="row">
+      <template v-slot:row-details="row">
         <b-card>
           <ul>
             <li v-for="(register, key) in row.item.registers" :key="key">
