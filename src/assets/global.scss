@@ -1,0 +1,14 @@
+
+.data-table {
+  word-break: break-word;
+  ::v-deep tbody,
+  ::v-deep thead {
+    td,
+    th {
+      div {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+  }
+}

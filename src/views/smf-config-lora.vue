@@ -41,7 +41,7 @@
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"
-            class="shadow"
+            class="shadow data-table"
           >
             <!-- caption slot -->
             <!-- <template slot="table-caption">{{ tableCaption }}</template> -->
@@ -425,4 +425,4 @@ export default mixins(webSocket, Vue).extend({
 });
 </script>
 
-<style scoped lang="css"></style>
+<style lang="scss" scoped></style>

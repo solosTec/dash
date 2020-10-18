@@ -2719,17 +2719,4 @@ export default Vue.extend({
 .smfServerRootAccessRights {
   margin: 1em 0;
 }
-.data-table {
-  //table-layout: fixed;
-  ::v-deep tbody,
-  ::v-deep thead {
-    td,
-    th {
-      div {
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-    }
-  }
-}
 </style>
