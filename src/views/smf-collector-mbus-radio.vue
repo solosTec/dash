@@ -159,7 +159,7 @@ export default mixins(webSocket, Vue).extend({
         {
           key: "medium",
           label: "Device",
-          formatter: (value: Number) => {
+          formatter: (value: Number | undefined) => {
             switch (value) {
               case 0x01:
                 return "Oil";
@@ -207,14 +207,14 @@ export default mixins(webSocket, Vue).extend({
               default:
                 break;
             }
-            return value.toString();
+            return String(value);
           },
           sortable: true
         },
         {
           key: "frameType",
           label: "Type",
-          formatter: (value: Number) => {
+          formatter: (value: Number | undefined) => {
             switch (value) {
               case 0x70:
                 return "app error";
@@ -239,15 +239,17 @@ export default mixins(webSocket, Vue).extend({
               default:
                 break;
             }
-            return value.toString();
+            return String(value);
           },
           sortable: true
         },
         {
           key: "payload",
           label: "Payload",
-          formatter: (value: String) => {
-            return value.length > 32 ? value.substring(0, 32) + "..." : value;
+          formatter: (value: String | undefined) => {
+            return value && value.length > 32
+              ? value.substring(0, 32) + "..."
+              : value;
           },
           sortable: false
         }
