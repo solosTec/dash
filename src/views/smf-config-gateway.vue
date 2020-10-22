@@ -2495,6 +2495,7 @@ export default Vue.extend({
     },
     onBrokerHardwarePortUpdate(hardwarePort: BHardwarePorts) {
       console.log(JSON.stringify(hardwarePort));
+      //{ "COM3": { "databits": 8, "parity": "none", "flowcontrol": "none", "stopbits": "two", "baudrate": 57600 } }
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_ROOT_HARDWARE_PORT,
@@ -2717,18 +2718,5 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .smfServerRootAccessRights {
   margin: 1em 0;
-}
-.data-table {
-  table-layout: fixed;
-  ::v-deep tbody,
-  ::v-deep thead {
-    td,
-    th {
-      div {
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-    }
-  }
 }
 </style>

@@ -15,10 +15,10 @@ export class SmfDialogService {
   /**
    * Opens a standard form dialog. the form button is active if the form is valid and
    * there are no changes to the data.
-   * @param parent the parent component taht opens the dialog. usually "this"
-   * @param title teh title for the dialog
+   * @param parent the parent component that opens the dialog. usually "this"
+   * @param title the title for the dialog
    * @param dialogComponentType the dialog content. must have a prop formModel and
-   *          should emit DialogFormState on mount and changes to to $v. or just use
+   *          should emit DialogFormState on mount and changes to the $v. or just use
    *          the mixin: SmfDialogContentMixin
    * @param formModel the Model that will be passed to the form.
    *

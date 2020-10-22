@@ -153,18 +153,4 @@ export default Vue.extend({
   }
 });
 </script>
-<style lang="scss" scoped>
-.data-table {
-  table-layout: fixed;
-  ::v-deep tbody,
-  ::v-deep thead {
-    td,
-    th {
-      div {
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>

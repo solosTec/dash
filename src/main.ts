@@ -14,6 +14,7 @@ import "./shared/formatter/registerNames";
 import Vuelidate from "vuelidate";
 import { fmtPlaceholder } from "@/filter/fmtPlaceholder";
 import VueMask from "v-mask";
+import "@/assets/global.scss";
 
 Vue.config.productionTip = false;
 Vue.component("vue-headful", vueHeadful);
