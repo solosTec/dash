@@ -1,4 +1,4 @@
-{
+﻿{
     "welcome": "Welcome (english)",
     "language": "Language",
     "nav-home": "Home",
@@ -78,6 +78,7 @@
     "action-update": "Update",
     "action-insert": "Insert",
     "action-add": "Add",
+    "action-close": "Close",
 
     "tbl-filter": "Filter",
     "tbl-search": "Type to search",
@@ -204,5 +205,32 @@
     "config-gateway-71": "Max. Timeout (msec)",
     "config-gateway-72": "<Data Readout Period>",
     "config-gateway-73": "Submit",
-    "config-gateway-74": "Broker"
+    "config-gateway-74": "Broker",
+    "config-gateway-75": "Custom Interface",
+    "config-gateway-76": "Address",
+    "config-gateway-77": "Mask",
+    "config-gateway-78": "DHCP",
+    "config-gateway-79": "Dotted decimal notation or hostname",
+    "config-gateway-80": "Dotted decimal notation",
+    "config-gateway-81": "Make sure that you know the assigned address",
+    "config-gateway-82": "Allow configuration via the network management system.",
+    "config-gateway-83": "NMS Configuration",
+    "config-gateway-84": "1. IP Address",
+    "config-gateway-85": "2. IP Address",
+    "config-gateway-86": "1. Subnet-Maske",
+    "config-gateway-87": "2. Subnet-Maske",
+    "config-gateway-88": "Listener address and port",
+    "config-gateway-89": "User name",
+    "config-gateway-90": "Choose a safe password",
+    "config-gateway-91": "primary IP-T server",
+    "config-gateway-92": "secondary IP-T server",
+    "config-gateway-93": "Access parameters",
+    "config-gateway-94": "① Redundancy",
+    "config-gateway-95": "② Redundancy",
+    "config-gateway-96": "Scramble Mode is recommended",
+    "config-gateway-97": "Status of service interface",
+    "config-gateway-98": "Customer interface",
+    "config-gateway-99": "Configuration interface (JSON/NMS)",
+    "config-gateway-100": "TCP/IP settings"
+
 }

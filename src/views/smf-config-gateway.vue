@@ -163,15 +163,15 @@
 
                 <b-card-group deck v-if="!spinner.ipt">
                   <b-card
-                    header="① Redundancy"
-                    title="Primary Host"
+                    :header="$t('config-gateway-94')"
+                    :title="$t('config-gateway-91')"
                     sub-title="Access Parameters"
                   >
                     <b-form-group
                       label="TCP/IP Address"
                       label-cols-sm="4"
                       label-cols-lg="3"
-                      description="Dotted decimal notation or hostname"
+                      :description="$t('config-gateway-79')"
                     >
                       <b-input-group prepend="Host" class="mt-2">
                         <b-form-input
@@ -182,7 +182,7 @@
                           v-b-popover.hover="
                             'Specify a known hostname or an IPv4/IPv6 address'
                           "
-                          title="Primary IP-T Master"
+                          :title="$t('config-gateway-91')"
                           :placeholder="
                             $t('config-gateway-11') | fmtPlaceholder
                           "
@@ -231,7 +231,7 @@
                       label-for="smf-gw-ipt-pwd-0"
                       label-cols-sm="4"
                       label-cols-lg="3"
-                      description="Choose a safe password"
+                      :description="$t('config-gateway-90')"
                     >
                       <b-input-group>
                         <b-form-input
@@ -258,7 +258,7 @@
                       label-for="smf-gw-ipt-scrambled-0"
                       label-cols-sm="4"
                       label-cols-lg="3"
-                      description="Scramble Mode is recommended"
+                      :description="$t('config-gateway-96')"
                     >
                       <b-input-group>
                         <b-form-checkbox
@@ -285,15 +285,15 @@
                   </b-card>
 
                   <b-card
-                    header="② Redundancy"
-                    title="Secondary Host"
+                    :header="$t('config-gateway-95')"
+                    :title="$t('config-gateway-92')"
                     sub-title="Access Parameters"
                   >
                     <b-form-group
                       label="TCP/IP Address"
                       label-cols-sm="4"
                       label-cols-lg="3"
-                      description="Dotted decimal notation or hostname"
+                      :description="$t('config-gateway-79')"
                     >
                       <b-input-group prepend="Host" class="mt-2">
                         <b-form-input
@@ -304,7 +304,7 @@
                           v-b-popover.hover="
                             'Specify a known hostname or an IPv4/IPv6 address'
                           "
-                          title="Secondary IP-T Master"
+                          :title="$t('config-gateway-92')"
                           :placeholder="$t('config-gateway-11')"
                         />
                         <b-form-input
@@ -350,7 +350,7 @@
                       label-for="smf-gw-ipt-pwd-1"
                       label-cols-sm="4"
                       label-cols-lg="3"
-                      description="Choose a safe password"
+                      :description="$t('config-gateway-90')"
                     >
                       <b-input-group>
                         <b-form-input
@@ -377,7 +377,7 @@
                       label-for="smf-gw-ipt-scrambled-1"
                       label-cols-sm="4"
                       label-cols-lg="3"
-                      description="Scramble Mode is recommended"
+                      :description="$t('config-gateway-96')"
                     >
                       <b-input-group>
                         <b-form-checkbox
@@ -420,7 +420,9 @@
                           class="d-flex bg-dark text-light align-items-center px-3 py-2"
                         >
                           <strong class="mr-auto">IP-T Connection State</strong>
-                          <b-button size="sm" @click="hide">Close</b-button>
+                          <b-button size="sm" @click="hide">{{
+                            $t("action-close")
+                          }}</b-button>
                         </div>
                       </template>
                       <div class="px-3 py-2">
@@ -829,7 +831,9 @@
                             class="d-flex bg-dark text-light align-items-center px-3 py-2"
                           >
                             <strong class="mr-auto">M-Bus Hardware</strong>
-                            <b-button size="sm" @click="hide">Close</b-button>
+                            <b-button size="sm" @click="hide">{{
+                              $t("action-close")
+                            }}</b-button>
                           </div>
                         </template>
                         <div class="px-3 py-2">
@@ -896,7 +900,6 @@
                 </b-form>
               </div>
             </b-tab>
-
             <!-- IEC -->
             <b-tab
               :disabled="selected[0].online === 0"
@@ -1309,6 +1312,355 @@
                 </b-row>
               </b-form>
             </b-tab>
+
+            <!-- Custom Interface / NMS -->
+            <b-tab no-body title="Custom IF" :smf-context="smfContext.custom">
+              <template slot="title">
+                {{ $t("config-gateway-75") }}
+                <b-spinner v-if="spinner.custom" type="grow" small />
+              </template>
+              <b-card-group deck class="pt-4" v-if="!spinner.custom">
+                <b-card
+                  header="IP-T"
+                  :title="$t('config-gateway-98')"
+                  :sub-title="$t('config-gateway-100')"
+                >
+                  <b-form-group
+                    :label="$t('config-gateway-84')"
+                    label-cols-sm="4"
+                    label-cols-lg="3"
+                    :description="$t('config-gateway-79')"
+                  >
+                    <b-input-group
+                      :prepend="$t('config-gateway-76')"
+                      class="mt-2"
+                    >
+                      <b-form-input
+                        id="smf-gw-custom-first-address"
+                        type="text"
+                        v-model="tabCustom.data.ipt.firstAddress"
+                        required
+                        v-b-popover.hover="'Specify bind address'"
+                        :title="$t('config-gateway-84')"
+                        :placeholder="$t('config-gateway-76') | fmtPlaceholder"
+                      />
+                      <b-form-input
+                        id="smf-gw-custom-ipt-port"
+                        type="number"
+                        v-model.number="tabCustom.data.ipt.port"
+                        min="1024"
+                        max="‭65535‬"
+                        disabled
+                      />
+
+                      <b-input-group-append>
+                        <b-button
+                          variant="info"
+                          v-on:click.stop="
+                            tabCustom.data.ipt.firstAddress = '192.168.1.229'
+                          "
+                          >{{ $t("com-default") }}</b-button
+                        >
+                      </b-input-group-append>
+                    </b-input-group>
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('config-gateway-86')"
+                    label-cols-sm="4"
+                    label-cols-lg="3"
+                    :description="$t('config-gateway-80')"
+                  >
+                    <b-input-group
+                      :prepend="$t('config-gateway-77')"
+                      class="mt-2"
+                    >
+                      <b-form-input
+                        id="smf-gw-custom-first-mask"
+                        type="text"
+                        v-model="tabCustom.data.ipt.firstMask"
+                        required
+                        v-b-popover.hover="
+                          'Specify a known hostname or an IPv4/IPv6 address'
+                        "
+                        :title="$t('config-gateway-86')"
+                        :placeholder="$t('config-gateway-11') | fmtPlaceholder"
+                      />
+                      <b-input-group-append>
+                        <b-button
+                          variant="info"
+                          v-on:click.stop="
+                            tabCustom.data.ipt.firstMask = '225.225.255.0'
+                          "
+                          >{{ $t("com-default") }}</b-button
+                        >
+                      </b-input-group-append>
+                    </b-input-group>
+                  </b-form-group>
+
+                  <b-form-group
+                    :label="$t('config-gateway-78')"
+                    label-for="smf-gw-ipt-scrambled-0"
+                    label-cols-sm="4"
+                    label-cols-lg="3"
+                    :description="$t('config-gateway-81')"
+                  >
+                    <b-input-group>
+                      <b-form-checkbox switch v-model="tabCustom.data.ipt.dhcp">
+                        {{
+                          tabCustom.data.ipt.dhcp
+                            ? $t("config-gateway-40")
+                            : $t("config-gateway-41")
+                        }}
+                      </b-form-checkbox>
+                    </b-input-group>
+                  </b-form-group>
+
+                  <b-form-group
+                    :label="$t('config-gateway-85')"
+                    label-cols-sm="4"
+                    label-cols-lg="3"
+                    :description="$t('config-gateway-79')"
+                  >
+                    <b-input-group
+                      :prepend="$t('config-gateway-76')"
+                      class="mt-2"
+                    >
+                      <b-form-input
+                        id="smf-gw-custom-second-address"
+                        type="text"
+                        v-model="tabCustom.data.ipt.secondAddress"
+                        required
+                        v-b-popover.hover="'Specify bind address'"
+                        :title="$t('config-gateway-85')"
+                        :placeholder="$t('config-gateway-11') | fmtPlaceholder"
+                      />
+                      <b-form-input
+                        id="smf-gw-custom-ipt-port-2"
+                        type="number"
+                        v-model.number="tabCustom.data.ipt.port"
+                        min="1024"
+                        max="‭65535‬"
+                        disabled
+                      />
+
+                      <b-input-group-append>
+                        <b-button
+                          variant="info"
+                          v-on:click.stop="
+                            tabCustom.data.ipt.secondAddress = '192.168.1.229'
+                          "
+                          >{{ $t("com-default") }}</b-button
+                        >
+                      </b-input-group-append>
+                    </b-input-group>
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('config-gateway-87')"
+                    label-cols-sm="4"
+                    label-cols-lg="3"
+                    :description="$t('config-gateway-80')"
+                  >
+                    <b-input-group
+                      :prepend="$t('config-gateway-77')"
+                      class="mt-2"
+                    >
+                      <b-form-input
+                        id="smf-gw-custom-ipt-mask-2"
+                        type="text"
+                        v-model="tabCustom.data.ipt.secondMask"
+                        required
+                        v-b-popover.hover="'Specify a subnet mask'"
+                        :title="$t('config-gateway-87')"
+                        :placeholder="$t('config-gateway-11') | fmtPlaceholder"
+                      />
+                      <b-input-group-append>
+                        <b-button
+                          variant="info"
+                          v-on:click.stop="
+                            tabCustom.data.ipt.secondMask = '225.225.255.0'
+                          "
+                          >{{ $t("com-default") }}</b-button
+                        >
+                      </b-input-group-append>
+                    </b-input-group>
+                  </b-form-group>
+                  <b-form-group label-cols-sm="4" label-cols-lg="3">
+                    <b-button
+                      type="submit"
+                      variant="primary"
+                      v-on:click.stop="onCustomIPTUpdate($event)"
+                      >{{ btnUpdateTitle }}</b-button
+                    >
+                  </b-form-group>
+                </b-card>
+                <b-card
+                  header="NMS"
+                  :title="$t('config-gateway-99')"
+                  :sub-title="$t('config-gateway-100')"
+                >
+                  <b-form-group
+                    :label="$t('config-gateway-88')"
+                    label-cols-sm="4"
+                    label-cols-lg="3"
+                    :description="$t('config-gateway-79')"
+                  >
+                    <b-input-group prepend="Host" class="mt-2">
+                      <b-form-input
+                        id="smf-gw-custom-nms-address"
+                        type="text"
+                        v-model="tabCustom.data.nms.address"
+                        required
+                        v-b-popover.hover="'Specify bind address'"
+                        :title="$t('config-gateway-88')"
+                        :placeholder="$t('config-gateway-11') | fmtPlaceholder"
+                      />
+                      <b-form-input
+                        id="smf-gw-custom-nms-port"
+                        type="number"
+                        v-model.number="tabCustom.data.nms.port"
+                        min="1024"
+                        max="‭65535‬"
+                        required
+                      />
+
+                      <b-input-group-append>
+                        <b-button
+                          variant="info"
+                          v-on:click.stop="
+                            tabCustom.data.nms.address = '0.0.0.0'
+                          "
+                          >{{ $t("com-default") }}</b-button
+                        >
+                      </b-input-group-append>
+                    </b-input-group>
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('config-gateway-12')"
+                    label-for="smf-custom-nms-user"
+                    label-cols-sm="4"
+                    label-cols-lg="3"
+                    :description="$t('config-gateway-89')"
+                  >
+                    <b-form-input
+                      id="smf-custom-nms-user"
+                      type="text"
+                      v-model="tabCustom.data.nms.user"
+                      required
+                      :placeholder="$t('config-gateway-12') | fmtPlaceholder"
+                    />
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('config-gateway-16')"
+                    label-for="smf-custom-nms-pwd"
+                    label-cols-sm="4"
+                    label-cols-lg="3"
+                    :description="$t('config-gateway-90')"
+                  >
+                    <b-input-group>
+                      <b-form-input
+                        id="smf-custom-nms-pwd"
+                        type="text"
+                        v-model="tabCustom.data.nms.pwd"
+                        required
+                        :placeholder="$t('config-gateway-16') | fmtPlaceholder"
+                      />
+                      <b-input-group-append>
+                        <b-button
+                          variant="info"
+                          v-on:click.stop="generatePasswordNMS($event)"
+                          >&#x21ba;</b-button
+                        >
+                      </b-input-group-append>
+                    </b-input-group>
+                  </b-form-group>
+
+                  <b-form-group
+                    :label="$t('config-gateway-83')"
+                    label-for="smf-custom-nms-enabled"
+                    label-cols-sm="4"
+                    label-cols-lg="3"
+                    :description="$t('config-gateway-82')"
+                  >
+                    <b-input-group>
+                      <b-form-checkbox
+                        switch
+                        v-model="tabCustom.data.nms.enabled"
+                      >
+                        {{
+                          tabCustom.data.nms.enabled
+                            ? $t("config-gateway-40")
+                            : $t("config-gateway-41")
+                        }}
+                      </b-form-checkbox>
+                    </b-input-group>
+                  </b-form-group>
+                  <b-form-group label-cols-sm="4" label-cols-lg="3">
+                    <b-button
+                      type="submit"
+                      variant="primary"
+                      v-on:click.stop="onCustomNMSUpdate($event)"
+                      >{{ btnUpdateTitle }}</b-button
+                    >
+                  </b-form-group>
+                </b-card>
+              </b-card-group>
+              <b-row class="pt-2">
+                <b-col md="12">
+                  <b-button v-b-toggle.sidebar-footer>
+                    {{ $t("config-gateway-01") }}
+                  </b-button>
+                  <b-sidebar
+                    id="sidebar-footer"
+                    aria-label="Sidebar with custom footer"
+                    no-header
+                    shadow="true"
+                  >
+                    <template v-slot:footer="{ hide }">
+                      <div
+                        class="d-flex bg-dark text-light align-items-center px-3 py-2"
+                      >
+                        <strong class="mr-auto">{{
+                          $t("config-gateway-97")
+                        }}</strong>
+                        <b-button size="sm" @click="hide">{{
+                          $t("action-close")
+                        }}</b-button>
+                      </div>
+                    </template>
+                    <div class="px-3 py-2">
+                      <b-form-group
+                        :label="$t('config-gateway-84')"
+                        label-for="smf-gw-custom-ep-1"
+                      >
+                        <b-form-input
+                          id="smf-gw-custom-ep-1"
+                          type="text"
+                          v-model="tabCustom.data.ipt.ep1"
+                          readonly
+                          :placeholder="
+                            $t('config-gateway-84') | fmtPlaceholder
+                          "
+                        />
+                      </b-form-group>
+                      <b-form-group
+                        :label="$t('config-gateway-85')"
+                        label-for="smf-gw-custom-ep-2"
+                      >
+                        <b-form-input
+                          id="smf-gw-custom-ep-2"
+                          type="text"
+                          v-model="tabCustom.data.ipt.ep2"
+                          readonly
+                          :placeholder="
+                            $t('config-gateway-85') | fmtPlaceholder
+                          "
+                        />
+                      </b-form-group>
+                    </div>
+                  </b-sidebar>
+                </b-col>
+              </b-row>
+            </b-tab>
           </b-tabs>
         </b-col>
       </b-row>
@@ -1450,6 +1802,7 @@ export default Vue.extend({
         iec: false,
         auth: false,
         log: false,
+        custom: false,
         reset: false
       },
       form: {
@@ -1477,7 +1830,8 @@ export default Vue.extend({
         iec: "iec",
         auth: "auth",
         log: "log",
-        snapshots: "snapshots"
+        snapshots: "snapshots",
+        custom: "custom interface"
       },
       options: {
         channels: [
@@ -1761,6 +2115,27 @@ export default Vue.extend({
           currentPage: 1,
           visibleRows: 0,
           perPage: 5
+        }
+      },
+      tabCustom: {
+        data: {
+          ipt: {
+            firstAddress: "129.168.1.229",
+            firstMask: "255.255.255.0",
+            port: "7259",
+            dhcp: false,
+            secondAddress: "129.168.1.229",
+            secondMask: "255.255.255.0",
+            ep1: "0.0.0.0",
+            ep2: "0.0.0.0"
+          },
+          nms: {
+            address: "0.0.0.0",
+            port: "7261",
+            user: "operator",
+            pwd: "operator",
+            enabled: true
+          }
         }
       }
     };
@@ -2227,6 +2602,7 @@ export default Vue.extend({
               this.spinner.meters = false;
               this.spinner.wmbus = false;
               this.spinner.iec = false;
+              this.spinner.custom = false;
               this.meterAccessRights = null;
             } else if (obj.channel === "table.gateway.count") {
               //  unused
@@ -2433,6 +2809,13 @@ export default Vue.extend({
           [pkGateway],
           { range: Number(this.tabOpLog.form.selected) * 24 }
         ); //  hours
+      } else if (smfContext === this.smfContext.custom) {
+        //this.spinner.custom = true;
+        this.ws_submit_request(
+          MESSAGE_REQUEST.getProfileList,
+          SML_CODES.CODE_ROOT_CUSTOM_INTERFACE,
+          [pkGateway]
+        );
       }
     },
     tabSelected() {
@@ -2467,6 +2850,11 @@ export default Vue.extend({
       event.preventDefault();
       this.ipt.param[element].pwd = generatePassword();
     },
+    generatePasswordNMS(event: Event) {
+      event.preventDefault();
+      //    ToDo: throws exception "property 'pwd' is undefined" - why?
+      this.tabCustom.data.nms.pwd = generatePassword();
+    },
 
     onFiltered(filteredItems: any[]) {
       // Trigger pagination to update the number of buttons/pages due to filtering
@@ -2482,6 +2870,26 @@ export default Vue.extend({
         SML_CODES.CODE_ROOT_IPT_PARAM,
         [this.form.pk!],
         { index: index + 1, ipt: this.ipt.param[index] }
+      );
+    },
+    onCustomIPTUpdate(event: Event) {
+      event.preventDefault();
+      console.log(this.tabCustom.data.ipt);
+      this.ws_submit_request(
+        MESSAGE_REQUEST.setProcParameter,
+        SML_CODES.CODE_ROOT_CUSTOM_INTERFACE,
+        [this.form.pk!],
+        this.tabCustom.data.ipt
+      );
+    },
+    onCustomNMSUpdate(event: Event) {
+      event.preventDefault();
+      console.log(this.tabCustom.data.nms);
+      this.ws_submit_request(
+        MESSAGE_REQUEST.setProcParameter,
+        SML_CODES.CODE_ROOT_BROKER,
+        [this.form.pk!],
+        this.tabCustom.data.nms
       );
     },
     onBrokersUpdate(brokers: BBroker[]) {
