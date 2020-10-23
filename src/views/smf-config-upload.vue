@@ -232,6 +232,9 @@ import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
 
+const extraBackendPath =
+  process.env.VUE_APP_SMF_DOCKER === "true" ? "/backend" : "";
+
 export default mixins(webSocket, Vue).extend({
   name: "smfConfigUpload",
   props: [],
@@ -315,8 +318,6 @@ export default mixins(webSocket, Vue).extend({
       formData.append("policy", this.dev.policy);
       formData.append("version", this.dev.version);
 
-      const extraBackendPath =
-        process.env.VUE_APP_SMF_DOCKER === "true" ? "/backend" : "";
       this.$http
         .post(`${extraBackendPath}/upload/config/device/`, formData, {
           headers: {
@@ -351,7 +352,7 @@ export default mixins(webSocket, Vue).extend({
       formData.append("file", this.gw.file!);
       formData.append("policy", this.gw.policy);
       this.$http
-        .post("/upload/config/gw/", formData, {
+        .post(`${extraBackendPath}/upload/config/gw/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           },
@@ -382,7 +383,7 @@ export default mixins(webSocket, Vue).extend({
       formData.append("file", this.meter.file!);
       formData.append("policy", this.meter.policy);
       this.$http
-        .post("/upload/config/meter/", formData, {
+        .post(`${extraBackendPath}/upload/config/meter/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           },
@@ -413,7 +414,7 @@ export default mixins(webSocket, Vue).extend({
       formData.append("file", this.LoRa.file!);
       formData.append("policy", this.LoRa.policy);
       this.$http
-        .post("/upload/config/LoRa/", formData, {
+        .post(`${extraBackendPath}/upload/config/LoRa/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           },
@@ -446,7 +447,7 @@ export default mixins(webSocket, Vue).extend({
       formData.append("policy", this.iec.policy);
 
       this.$http
-        .post("/upload/config/iec/", formData, {
+        .post(`${extraBackendPath}/upload/config/iec/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           },

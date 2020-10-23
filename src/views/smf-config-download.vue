@@ -237,6 +237,9 @@ import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import Vue from "vue";
 import mixins from "vue-typed-mixins";
 
+const extraBackendPath =
+  process.env.VUE_APP_SMF_DOCKER === "true" ? "/backend" : "";
+
 export default mixins(webSocket, Vue).extend({
   name: "smfConfigDownload",
   props: [],
@@ -326,7 +329,7 @@ export default mixins(webSocket, Vue).extend({
       //formData.append("smf-download-config-device-version", "v0.5");
       //formData.append("smf-procedure", "cfg.download.devices");
       this.$http
-        .post("download.devices", this.dev, {
+        .post(`${extraBackendPath}/download.devices`, this.dev, {
           headers: {
             Accept: "application/xml,application/json,application/csv,*/*"
           },
@@ -362,10 +365,10 @@ export default mixins(webSocket, Vue).extend({
       //formData.append("smf-download-gw-format", "XML");
       //formData.append("smf-procedure", "cfg.download.gateways");
 
-      //this.$http.post("config.download.html", formData, {
+      //this.$http.post("${extraBackendPath}/config.download.html", formData, {
       //const self = this;
       this.$http
-        .post("download.gateways", this.gw, {
+        .post(`${extraBackendPath}/download.gateways`, this.gw, {
           headers: {
             Accept: "application/xml, application/json, application/csv, */*"
             //'Access-Control-Request-Headers': 'x-requested-with'
@@ -399,7 +402,7 @@ export default mixins(webSocket, Vue).extend({
     onSubmitMeters(evt: Event) {
       evt.preventDefault();
       this.$http
-        .post("download.meters", this.meter, {
+        .post(`${extraBackendPath}/download.meters`, this.meter, {
           headers: {
             Accept: "application/xml, application/json, application/csv, */*"
           },
@@ -433,7 +436,7 @@ export default mixins(webSocket, Vue).extend({
       evt.preventDefault();
       //alert(JSON.stringify(this.LoRa))
       this.$http
-        .post("download.LoRa", this.LoRa, {
+        .post(`${extraBackendPath}/download.LoRa`, this.LoRa, {
           headers: {
             Accept: "application/xml, application/json, application/csv, */*"
           },
@@ -466,7 +469,7 @@ export default mixins(webSocket, Vue).extend({
       evt.preventDefault();
       //alert(JSON.stringify(this.uplink))
       this.$http
-        .post("download.uplink", this.uplink, {
+        .post(`${extraBackendPath}/download.uplink`, this.uplink, {
           headers: {
             Accept: "application/xml, application/json, application/csv, */*"
           },
@@ -498,7 +501,7 @@ export default mixins(webSocket, Vue).extend({
       evt.preventDefault();
       //alert(JSON.stringify(this.msg))
       this.$http
-        .post("download.messages", this.msg, {
+        .post(`${extraBackendPath}/download.messages`, this.msg, {
           headers: {
             Accept: "application/xml, application/json, application/csv, */*"
           },
