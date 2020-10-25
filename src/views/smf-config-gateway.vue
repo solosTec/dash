@@ -1743,9 +1743,19 @@ const gatewayTableFields = [
     key: "online",
     label: "Online",
     formatter: (value: number) => {
-      if (value === 0) return "║";
-      else if (value === 1) return "⊶";
-      return "⇆";
+      switch (value) {
+        case 0:
+          return "║";
+        case 1:
+          return "⊶";
+        case 2:
+          return "⇆";
+        case 3:
+          return "🔄";
+        default:
+          break;
+      }
+      return "⛔";
     },
     class: "text-center",
     sortable: true
@@ -2639,6 +2649,8 @@ export default Vue.extend({
             rec["_rowVariant"] = "success";
           } else if (obj.rec.data.online === 2) {
             rec["_rowVariant"] = "warning";
+          } else if (obj.rec.data.online === 3) {
+            rec["_rowVariant"] = "danger";
           }
 
           if (this.isBusy) {
@@ -2671,6 +2683,8 @@ export default Vue.extend({
                   rec["_rowVariant"] = "success";
                 } else if (obj.value.online === 2) {
                   rec["_rowVariant"] = "warning";
+                } else if (obj.value.online === 3) {
+                  rec["_rowVariant"] = "danger";
                 } else {
                   rec["_rowVariant"] = null;
                 }
