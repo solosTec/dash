@@ -19,21 +19,21 @@
 
     <b-card-group deck>
       <b-card
-        v-for="uiBroker in $v.uiBrokers.$each.$iter"
+        v-for="(uiBroker, index) in $v.uiBrokers.$each.$iter"
         :key="uiBroker.hardwarePort.$model"
         class="broker-card"
       >
         <template v-slot:header>
           <div style="display: flex; justify-content: space-between">
-            <span
-              >Hardware Port {{ uiBroker.hardwarePort.$model }} (
-              {{ uiBroker.name.$model }})</span
-            >
+            <span>
+              Hardware Port #{{ getIndex(index) }}
+              {{ uiBroker.hardwarePort.$model }} ({{ uiBroker.name.$model }})
+            </span>
             <b-button
               size="sm"
               variant="primary"
               :disabled="noBrokerPortsAvailable(uiBroker.$model)"
-              @click="configurePort(uiBroker.$model)"
+              @click="configurePort(uiBroker.$model, getIndex(index))"
             >
               Configure
             </b-button>
@@ -282,7 +282,10 @@ export default Vue.extend({
       });
       this.$emit("brokersUpdate", bBrokers);
     },
-    async configurePort(broker: UIBroker) {
+    getIndex(index: number) {
+      return +index + 1;
+    },
+    async configurePort(broker: UIBroker, index: number) {
       if (!this.brokerPorts) {
         return;
       }
@@ -290,7 +293,7 @@ export default Vue.extend({
       console.log(brokerHardware);
       const result = await SmfDialogService.openFormDialog(
         this,
-        "Configure Hardware Port: " + broker.name,
+        "Configure Hardware Port #" + index + ": " + broker.name,
         SmfConfigurePortDialog,
         brokerHardware
       );

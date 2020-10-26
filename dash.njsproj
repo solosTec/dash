@@ -41,7 +41,9 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="src\components\dialogs\smf-configure-port.dialog.vue" />
+    <Content Include="src\components\dialogs\smf-delete-confirm-dialog.vue" />
     <Content Include="src\components\dialogs\smf-generic-form-dialog.vue" />
+    <Content Include="src\components\dialogs\smf-new-or-edit-device.dialog.vue" />
     <Content Include="src\components\gateway\smf-broker-configuration.vue" />
     <Content Include="src\components\gateway\smf-meter-access-rights.vue" />
     <Content Include="src\components\gateway\smf-server-configuration.vue" />
@@ -94,6 +96,7 @@
     <Folder Include="dist\" />
     <Folder Include="public\" />
     <Folder Include="src\" />
+    <Folder Include="src\api\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\components\" />
     <Folder Include="src\components\dialogs\" />
@@ -118,6 +121,12 @@
     <Content Include="src\constants\ru.json" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\api\broker.ts" />
+    <TypeScriptCompile Include="src\api\device.ts" />
+    <TypeScriptCompile Include="src\api\gateway.ts" />
+    <TypeScriptCompile Include="src\api\meter-access-rights.ts" />
+    <TypeScriptCompile Include="src\api\root-access-rights.ts" />
+    <TypeScriptCompile Include="src\api\user.ts" />
     <TypeScriptCompile Include="src\filter\fmtPlaceholder.ts" />
     <TypeScriptCompile Include="src\main.ts" />
     <TypeScriptCompile Include="src\shared\formatter\registerNames.ts" />
