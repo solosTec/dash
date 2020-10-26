@@ -791,9 +791,19 @@ export default mixins(webSocket, Vue).extend({
           label: "Online",
           sortable: true,
           formatter: (value: number) => {
-            if (value === 0) return "║";
-            else if (value === 1) return "⊶";
-            return "⇆";
+            switch (value) {
+              case 0:
+                return "║";
+              case 1:
+                return "⊶";
+              case 2:
+                return "↔";
+              case 3:
+                return "🔄";
+              default:
+                break;
+            }
+            return "⛔";
           },
           class: "text-center"
         }
@@ -944,6 +954,8 @@ export default mixins(webSocket, Vue).extend({
             rec["_rowVariant"] = "success";
           } else if (obj.rec.data.online === 2) {
             rec["_rowVariant"] = "warning";
+          } else if (obj.rec.data.online === 3) {
+            rec["_rowVariant"] = "secondary ";
           }
 
           if (this.isBusy) {

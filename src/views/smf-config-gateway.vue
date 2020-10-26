@@ -1749,7 +1749,7 @@ const gatewayTableFields = [
         case 1:
           return "⊶";
         case 2:
-          return "⇆";
+          return "↔";
         case 3:
           return "🔄";
         default:
@@ -2650,7 +2650,7 @@ export default Vue.extend({
           } else if (obj.rec.data.online === 2) {
             rec["_rowVariant"] = "warning";
           } else if (obj.rec.data.online === 3) {
-            rec["_rowVariant"] = "danger";
+            rec["_rowVariant"] = "secondary ";
           }
 
           if (this.isBusy) {
@@ -2684,7 +2684,7 @@ export default Vue.extend({
                 } else if (obj.value.online === 2) {
                   rec["_rowVariant"] = "warning";
                 } else if (obj.value.online === 3) {
-                  rec["_rowVariant"] = "danger";
+                  rec["_rowVariant"] = "secondary";
                 } else {
                   rec["_rowVariant"] = null;
                 }
