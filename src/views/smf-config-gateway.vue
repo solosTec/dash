@@ -2549,6 +2549,35 @@ export default Vue.extend({
                 console.log(
                   "update channel " + obj.channel + " ToDo: " + obj.section[0]
                 );
+              } else if (
+                obj.section[0] === SML_CODES.CODE_ROOT_CUSTOM_INTERFACE
+              ) {
+                this.spinner.custom = false;
+                //console.log(obj.rec.values);
+                this.tabCustom.data.ipt.firstAddress =
+                  obj.rec.values[SML_CODES.CUSTOM_IF_IP_ADDRESS_1];
+                this.tabCustom.data.ipt.firstMask =
+                  obj.rec.values[SML_CODES.CUSTOM_IF_IP_MASK_1];
+                //this.tabCustom.data.ipt.port = const
+                this.tabCustom.data.ipt.dhcp =
+                  obj.rec.values[SML_CODES.CUSTOM_IF_DHCP];
+                this.tabCustom.data.ipt.secondAddress =
+                  obj.rec.values[SML_CODES.CUSTOM_IF_IP_ADDRESS_2];
+                this.tabCustom.data.ipt.secondMask =
+                  obj.rec.values[SML_CODES.CUSTOM_IF_IP_MASK_2];
+              } else if (obj.section[0] === SML_CODES.CODE_ROOT_CUSTOM_PARAM) {
+                console.log(obj.rec.values);
+                this.tabCustom.data.ipt.ep1 = obj.rec.values["810217070000"];
+                this.tabCustom.data.ipt.ep1 = obj.rec.values["810217070002"];
+              } else if (obj.section[0] === SML_CODES.CODE_ROOT_NMS) {
+                console.log(obj.rec.values);
+                this.tabCustom.data.nms.address =
+                  obj.rec.values["9200000001FF"];
+                this.tabCustom.data.nms.port = obj.rec.values["9200000002FF"];
+                this.tabCustom.data.nms.user = obj.rec.values["9200000003FF"];
+                this.tabCustom.data.nms.pwd = obj.rec.values["9200000004FF"];
+                this.tabCustom.data.nms.enabled =
+                  obj.rec.values["9200000005FF"];
               } else {
                 console.error(
                   "update channel " +
@@ -2824,10 +2853,20 @@ export default Vue.extend({
           { range: Number(this.tabOpLog.form.selected) * 24 }
         ); //  hours
       } else if (smfContext === this.smfContext.custom) {
-        //this.spinner.custom = true;
+        this.spinner.custom = true;
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_ROOT_CUSTOM_INTERFACE,
+          [pkGateway]
+        );
+        this.ws_submit_request(
+          MESSAGE_REQUEST.getProcParameter,
+          SML_CODES.CODE_ROOT_CUSTOM_PARAM,
+          [pkGateway]
+        );
+        this.ws_submit_request(
+          MESSAGE_REQUEST.getProcParameter,
+          SML_CODES.CODE_ROOT_NMS,
           [pkGateway]
         );
       }
