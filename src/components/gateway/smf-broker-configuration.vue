@@ -19,21 +19,21 @@
 
     <b-card-group deck>
       <b-card
-        v-for="(uiBroker, index) in $v.uiBrokers.$each.$iter"
+        v-for="uiBroker in $v.uiBrokers.$each.$iter"
         :key="uiBroker.hardwarePort.$model"
         class="broker-card"
       >
         <template v-slot:header>
           <div style="display: flex; justify-content: space-between">
             <span>
-              Hardware Port #{{ getIndex(index) }}
+              Hardware Port #{{ uiBroker.index.$model }}
               {{ uiBroker.hardwarePort.$model }} ({{ uiBroker.name.$model }})
             </span>
             <b-button
               size="sm"
               variant="primary"
               :disabled="noBrokerPortsAvailable(uiBroker.$model)"
-              @click="configurePort(uiBroker.$model, getIndex(index))"
+              @click="configurePort(uiBroker.$model)"
             >
               Configure
             </b-button>
@@ -196,6 +196,7 @@ interface UIBroker {
   name: string;
   login: boolean;
   addresses: BBrokerAddress[];
+  index: number;
 }
 
 export default Vue.extend({
@@ -249,7 +250,8 @@ export default Vue.extend({
               // required: requiredIf(isLoginActive)
             }
           }
-        }
+        },
+        index: {}
       }
     }
   },
@@ -282,24 +284,22 @@ export default Vue.extend({
       });
       this.$emit("brokersUpdate", bBrokers);
     },
-    getIndex(index: number) {
-      return +index + 1;
-    },
-    async configurePort(broker: UIBroker, index: number) {
+    async configurePort(broker: UIBroker) {
       if (!this.brokerPorts) {
         return;
       }
       const brokerHardware = this.brokerPorts[broker.hardwarePort];
-      console.log(brokerHardware);
-      const result = await SmfDialogService.openFormDialog(
+      const changedBrokerHardware = await SmfDialogService.openFormDialog(
         this,
-        "Configure Hardware Port #" + index + ": " + broker.name,
+        `Configure Hardware Port #${broker.index}:  ${broker.name}`,
         SmfConfigurePortDialog,
         brokerHardware
       );
-      if (result) {
+      if (changedBrokerHardware) {
+        // TODO @Sylko: here is the corresponding index of the broker and the changed hardware config
+        console.log(changedBrokerHardware, broker.index);
         this.$emit("brokerHardwarePortUpdate", {
-          [broker.hardwarePort]: result
+          [broker.hardwarePort]: changedBrokerHardware
         });
       }
     }
@@ -308,12 +308,13 @@ export default Vue.extend({
     brokers: {
       immediate: true,
       handler(brokers: BBroker[]) {
-        this.uiBrokers = brokers.map(bBroker => {
+        this.uiBrokers = brokers.map((bBroker, index) => {
           return {
             hardwarePort: bBroker.hardwarePort,
             name: bBroker.hardwarePort,
             login: bBroker.login,
-            addresses: bBroker.addresses
+            addresses: bBroker.addresses,
+            index: index + 1
           } as UIBroker;
         });
         this.originalUiBrokers = JSON.parse(JSON.stringify(this.uiBrokers));
