@@ -2826,7 +2826,7 @@ export default Vue.extend({
       } else if (smfContext === this.smfContext.custom) {
         //this.spinner.custom = true;
         this.ws_submit_request(
-          MESSAGE_REQUEST.getProfileList,
+          MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_ROOT_CUSTOM_INTERFACE,
           [pkGateway]
         );
