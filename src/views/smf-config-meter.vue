@@ -1219,6 +1219,8 @@ export default mixins(webSocket, Vue).extend({
           [this.form.gwKey],
           { meter: this.form.ident }
         );
+      } else if (smfContext === this.smfContext.access) {
+        this.accessRefresh();
       }
     },
     tabSelected() {
@@ -1274,14 +1276,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onParameterRefresh(event: Event) {
       event.preventDefault();
-      this.spinner.meter = true;
-      //  FIXME: use a different message channel if server ID is NULL
-      this.ws_submit_request(
-        MESSAGE_REQUEST.getProcParameter,
-        SML_CODES.CODE_ROOT_SENSOR_PARAMS,
-        [this.form.gwKey],
-        { meter: this.form.ident }
-      );
+      this.accessRefresh();
     },
     onParameterUpdate(event: Event) {
       event.preventDefault();
@@ -1291,6 +1286,16 @@ export default mixins(webSocket, Vue).extend({
         SML_CODES.CODE_ROOT_SENSOR_PARAMS,
         [this.form.gwKey],
         { meter: this.form.ident, data: this.tabMeter.data }
+      );
+    },
+    accessRefresh() {
+      this.spinner.meter = true;
+      //  FIXME: use a different message channel if server ID is NULL
+      this.ws_submit_request(
+        MESSAGE_REQUEST.getProcParameter,
+        SML_CODES.CODE_ROOT_SENSOR_PARAMS,
+        [this.form.gwKey],
+        { meter: this.form.ident }
       );
     },
     handleDeleteMeterOk(event: Event) {

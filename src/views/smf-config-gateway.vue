@@ -1314,7 +1314,12 @@
             </b-tab>
 
             <!-- Custom Interface / NMS -->
-            <b-tab no-body title="Custom IF" :smf-context="smfContext.custom">
+            <b-tab
+              no-body
+              title="Custom IF"
+              :disabled="selected[0].online === 0"
+              :smf-context="smfContext.custom"
+            >
               <template slot="title">
                 {{ $t("config-gateway-75") }}
                 <b-spinner v-if="spinner.custom" type="grow" small />
@@ -1488,6 +1493,7 @@
                     <b-button
                       type="submit"
                       variant="primary"
+                      :disabled="!customIPTHasChanged()"
                       v-on:click.stop="onCustomIPTUpdate($event)"
                       >{{ btnUpdateTitle }}</b-button
                     >
@@ -1598,6 +1604,7 @@
                     <b-button
                       type="submit"
                       variant="primary"
+                      :disabled="!customNMSHasChanged()"
                       v-on:click.stop="onCustomNMSUpdate($event)"
                       >{{ btnUpdateTitle }}</b-button
                     >
@@ -2128,6 +2135,8 @@ export default Vue.extend({
         }
       },
       tabCustom: {
+        dataItpUnchangedString: "",
+        dataNmsUnchangedString: "",
         data: {
           ipt: {
             firstAddress: "129.168.1.229",
@@ -2586,6 +2595,12 @@ export default Vue.extend({
                     obj.section
                 );
               }
+              this.tabCustom.dataItpUnchangedString = JSON.stringify(
+                this.tabCustom.data.ipt
+              );
+              this.tabCustom.dataNmsUnchangedString = JSON.stringify(
+                this.tabCustom.data.nms
+              );
             } else if (obj.channel === MESSAGE_RESPONSE.getProfileList) {
               //console.log(obj.rec.values['8181C789E2FF'] + ", size: "+ this.tabOpLog.data.items.length);
               if (obj.section[0] === SML_CODES.CLASS_OP_LOG) {
@@ -2925,6 +2940,12 @@ export default Vue.extend({
         { index: index + 1, ipt: this.ipt.param[index] }
       );
     },
+    customIPTHasChanged() {
+      return (
+        this.tabCustom.dataItpUnchangedString !==
+        JSON.stringify(this.tabCustom.data.ipt)
+      );
+    },
     onCustomIPTUpdate(event: Event) {
       event.preventDefault();
       console.log(this.tabCustom.data.ipt);
@@ -2933,6 +2954,12 @@ export default Vue.extend({
         SML_CODES.CODE_ROOT_CUSTOM_INTERFACE,
         [this.form.pk!],
         this.tabCustom.data.ipt
+      );
+    },
+    customNMSHasChanged() {
+      return (
+        this.tabCustom.dataNmsUnchangedString !==
+        JSON.stringify(this.tabCustom.data.nms)
       );
     },
     onCustomNMSUpdate(event: Event) {
