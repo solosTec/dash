@@ -1142,6 +1142,9 @@ export default mixins(webSocket, Vue).extend({
               }
               this.tabMeter.data.pubKey = obj.rec.values["8181C78205FF"];
               this.tabMeter.data.aesKey = obj.rec.values["8181C78603FF"];
+              if (this.tabMeter.data.aesKey != null) {
+                this.tabMeter.data.aesKey = this.tabMeter.data.aesKey.toUpperCase();
+              }
               this.tabMeter.data.user = obj.rec.values["8181613C01FF"];
               this.tabMeter.data.pwd = obj.rec.values["8181613C02FF"];
             } else if (obj.section[0] === SML_CODES.CODE_ROOT_DATA_COLLECTOR) {
@@ -1265,7 +1268,8 @@ export default mixins(webSocket, Vue).extend({
           vParam: this.form.vParam,
           factoryNr: this.form.factoryNr,
           item: this.form.item,
-          mClass: this.form.mClass
+          mClass: this.form.mClass,
+          tom: this.form.tom
         }
       });
     },
