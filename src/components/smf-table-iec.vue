@@ -119,7 +119,7 @@ export default Vue.extend({
           label: "Direction",
           class: "text-center",
           formatter: (value: boolean) => {
-            return value ? "↤ incoming" : "outgoing ↦";
+            return value ? "outgoing ↦" : "↤ incoming";
           }
         },
         {

@@ -175,7 +175,7 @@ export default mixins(webSocket, Vue).extend({
         meter: "",
         address: "0.0.0.0",
         port: 7009,
-        direction: "in",
+        direction: "out",
         interval: "00:01:00"
       }
     };
@@ -202,7 +202,7 @@ export default mixins(webSocket, Vue).extend({
           address: data.address !== null ? data.address : "0.0.0.0",
           port: data.port !== null ? data.port : 7009,
           interval: data.interval,
-          direction: data.direction ? "in" : "out"
+          direction: data.direction ? "out" : "in"
         };
         this.items.push(rec);
       }
@@ -212,9 +212,10 @@ export default mixins(webSocket, Vue).extend({
     },
     cmd_modify(channel: string, pk: any, value: any) {
       if (channel == "config.iec") {
-        this.items.forEach((rec: UiMeter) => {
-          console.log(rec.pk, pk);
+        this.items.some((rec: UiMeter) => {
+          //console.log(rec.pk, pk);
           if (rec.pk === pk) {
+            console.log("value: ", value);
             if (value.port != null) {
               rec.port = value.port;
             } else if (value.meter != null) {
@@ -226,6 +227,7 @@ export default mixins(webSocket, Vue).extend({
             } else if (value.direction != null) {
               rec.direction = value.direction;
             }
+            return true; //  break
           }
         });
       }
@@ -260,7 +262,7 @@ export default mixins(webSocket, Vue).extend({
           pk: this.form.pk,
           address: this.form.address,
           port: this.form.port,
-          direction: Boolean(this.form.direction == "in"),
+          direction: Boolean(this.form.direction == "out"),
           interval: this.form.interval
         }
       });
@@ -283,7 +285,7 @@ export default mixins(webSocket, Vue).extend({
         data: {
           address: this.form.address,
           port: this.form.port,
-          direction: Boolean(this.form.direction == "in"),
+          direction: Boolean(this.form.direction == "out"),
           interval: this.form.interval
         }
       });
@@ -295,7 +297,7 @@ export default mixins(webSocket, Vue).extend({
         this.form.meter = items[0].meter;
         this.form.address = items[0].address;
         this.form.port = items[0].port;
-        this.form.direction = items[0].direction ? "in" : "out";
+        this.form.direction = items[0].direction ? "out" : "in";
         this.form.interval = items[0].interval;
       } else {
         // console.log('nothing selected');
