@@ -1022,7 +1022,7 @@ export default mixins(webSocket, Vue).extend({
           //  clear table
           this.meters = [];
         } else if (obj.cmd === "delete") {
-          const idx = this.meters.findIndex(rec => rec.pk === obj.key);
+          const idx = this.meters.findIndex(rec => rec.pk === obj.key[0]);
           this.meters.splice(idx, 1);
         } else if (obj.cmd === "load") {
           //  load status
