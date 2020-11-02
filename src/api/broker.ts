@@ -16,6 +16,7 @@ export interface BHardwarePort {
   parity: "odd" | "even" | "none";
   stopbits: "one" | "onepointfive" | "two";
   flowcontrol: "software" | "hardware";
+  index: number;
 }
 
 export interface BHardwarePorts {

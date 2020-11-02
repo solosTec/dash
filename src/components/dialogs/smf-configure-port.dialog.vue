@@ -109,7 +109,8 @@ export default Vue.extend({
       parity: { required },
       stopbits: { required },
       flowcontrol: { required },
-      baudrate: { required }
+      baudrate: { required },
+      index: {}
     }
   }
 });
