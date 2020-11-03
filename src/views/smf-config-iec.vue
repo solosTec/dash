@@ -31,12 +31,12 @@
         <b-col md="3">
           <b-form v-on:submit.prevent class="p-3 shadow">
             <b-form-group
-              label="TCP/IP Address"
-              description="Dotted decimal notation or hostname"
+              :label="$t('config-iec-02')"
+              :description="$t('config-iec-01')"
               label-cols-sm="4"
               label-cols-lg="3"
             >
-              <b-input-group label="IP address">
+              <b-input-group>
                 <b-form-input
                   id="smf-form-iec-address"
                   type="text"
@@ -57,8 +57,8 @@
             </b-form-group>
 
             <b-form-group
-              label="Direction"
-              description="Working as server or client"
+              :label="$t('config-iec-03')"
+              :description="$t('config-iec-06')"
               label-cols-sm="4"
               label-cols-lg="3"
             >
@@ -73,7 +73,7 @@
                     'The TCP/IP connection will be established by the meter device.'
                   "
                   title="Incoming connection"
-                  >↤ Incoming</b-form-radio
+                  >{{ $t("config-iec-05") }}</b-form-radio
                 >
                 <b-form-radio
                   value="out"
@@ -81,14 +81,14 @@
                     'The TCP/IP connection will be established by the IEC node.'
                   "
                   title="Outgoing connection"
-                  >Outgoing ↦</b-form-radio
+                  >{{ $t("config-iec-04") }}</b-form-radio
                 >
               </b-form-radio-group>
             </b-form-group>
 
             <b-form-group
-              label="Readout Interval"
-              description="Format is hh:mm::ss"
+              :label="$t('config-iec-07')"
+              :description="$t('config-iec-08')"
               label-cols-sm="4"
               label-cols-lg="3"
             >

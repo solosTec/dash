@@ -100,7 +100,7 @@
       <!-- details -->
       <b-row>
         <b-col class="p-3 shadow" md="12">
-          <div v-if="selected.length === 0">Please select a meter.</div>
+          <div v-if="selected.length === 0">{{ $t("config-meter-26") }}</div>
           <b-tabs
             v-if="selected.length > 0"
             ref="tabs"
@@ -112,14 +112,14 @@
             <b-tab
               :smf-context="smfContext.configuration"
               active
-              title="Configuration"
+              :title="$t('config-meter-01')"
             >
               <b-form @:submit.prevent="">
                 <b-row>
                   <b-col md="6">
                     <b-form-group
-                      description="Meter identifier in full length"
-                      label="Ident"
+                      :description="$t('config-meter-08')"
+                      :label="$t('config-meter-07')"
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
@@ -133,8 +133,8 @@
                       />
                     </b-form-group>
                     <b-form-group
-                      description="Short Identifier"
-                      label="Meter"
+                      :description="$t('config-meter-10')"
+                      :label="$t('config-meter-09')"
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
@@ -147,8 +147,8 @@
                       />
                     </b-form-group>
                     <b-form-group
-                      description="Unique metering code"
-                      label="Metering Code"
+                      :description="$t('config-meter-12')"
+                      :label="$t('config-meter-11')"
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
@@ -163,8 +163,8 @@
                       />
                     </b-form-group>
                     <b-form-group
-                      description="3 character code"
-                      label="Manufacturer"
+                      :description="$t('config-meter-14')"
+                      :label="$t('config-meter-13')"
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
@@ -176,8 +176,8 @@
                       />
                     </b-form-group>
                     <b-form-group
-                      description="Articel description"
-                      label="Item"
+                      :description="$t('config-meter-27')"
+                      :label="$t('config-meter-15')"
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
@@ -204,8 +204,8 @@
                   </b-col>
                   <b-col md="6">
                     <b-form-group
-                      description="Current bootstream software/version"
-                      label="Firmware"
+                      :description="$t('config-meter-17')"
+                      :label="$t('config-meter-16')"
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
@@ -217,21 +217,21 @@
                       />
                     </b-form-group>
                     <b-form-group
-                      description="Active parameterization file"
-                      label="Parameterization"
+                      :description="$t('config-meter-29')"
+                      :label="$t('config-meter-28')"
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
                       <b-form-input
                         id="smf-form-meter-param"
-                        v-model="form.vParam"
-                        placeholder="<Parameterization>"
+                        v-model="form.protocol"
+                        placeholder="<Protocol>"
                         type="text"
                       />
                     </b-form-group>
                     <b-form-group
-                      description="Production number from manufacturer"
-                      label="Factory Number"
+                      :description="$t('config-meter-21')"
+                      :label="$t('config-meter-20')"
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
@@ -243,8 +243,8 @@
                       />
                     </b-form-group>
                     <b-form-group
-                      description="Q3/Q1 ratio"
-                      label="Metrological Class"
+                      :description="$t('config-meter-23')"
+                      :label="$t('config-meter-22')"
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
@@ -256,8 +256,8 @@
                       />
                     </b-form-group>
                     <b-form-group
-                      description="Time of Manufactoring"
-                      label="TOM"
+                      :description="$t('config-meter-25')"
+                      :label="$t('config-meter-24')"
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
@@ -288,7 +288,7 @@
 
             <b-tab :smf-context="smfContext.access" no-body>
               <template slot="title">
-                Access
+                {{ $t("config-meter-02") }}
                 <b-spinner v-if="spinner.meter" small type="grow" />
               </template>
 
@@ -580,7 +580,7 @@
               no-body
             >
               <template slot="title">
-                Push Operations
+                {{ $t("config-meter-04") }}
                 <b-spinner v-if="spinner.push" small type="grow" />
               </template>
               <b-form class="p-3" @:submit.prevent="">
@@ -601,7 +601,7 @@
               no-body
             >
               <template slot="title">
-                Data Mirror
+                {{ $t("config-meter-05") }}
                 <b-spinner v-if="spinner.mirror" small type="grow" />
               </template>
               <b-form class="p-3" @:submit.prevent="">
@@ -764,8 +764,8 @@ export default mixins(webSocket, Vue).extend({
           sortable: true
         },
         {
-          key: "code",
-          label: "Code",
+          key: "protocol",
+          label: "Protocol",
           sortable: true
         },
         {
@@ -778,7 +778,7 @@ export default mixins(webSocket, Vue).extend({
           label: "TOM",
           sortable: true,
           formatter: (value: any) => {
-            return value.toUTCString();
+            return value.toLocaleDateString();
           }
         },
         {
@@ -800,6 +800,8 @@ export default mixins(webSocket, Vue).extend({
                 return "↔";
               case 3:
                 return "🔄";
+              case -1:
+                return "∅";
               default:
                 break;
             }
@@ -829,6 +831,7 @@ export default mixins(webSocket, Vue).extend({
         factoryNr: "0000",
         item: "",
         mClass: "---",
+        protocol: "∇",
         serverId: "",
         gwKey: ""
       },
@@ -945,6 +948,7 @@ export default mixins(webSocket, Vue).extend({
             factoryNr: obj.rec.data.factoryNr,
             item: obj.rec.data.item,
             mClass: obj.rec.data.mClass,
+            protocol: obj.rec.data.protocol,
             serverId: obj.rec.data.serverId,
             gwKey: obj.rec.data.gw,
             online: obj.rec.data.online
@@ -1009,12 +1013,18 @@ export default mixins(webSocket, Vue).extend({
                 rec.mClass = obj.value.mClass;
                 if (self.form.pk === obj.key[0])
                   self.form.mClass = obj.value.mClass;
+              } else if (obj.value.protocol != null) {
+                rec.protocol = obj.value.protocol;
+                if (self.form.pk === obj.key[0])
+                  self.form.protocol = obj.value.protocol;
               } else if (obj.value.serverId != null) {
                 rec.serverId = obj.value.serverId;
               } else if (obj.value.gw != null) {
                 rec.gwKey = obj.value.gw;
               } else if (obj.value.online != null) {
                 rec.online = obj.value.online;
+              } else if (obj.value.protocol != null) {
+                rec.protocol = obj.value.protocol;
               }
             }
           });
@@ -1247,6 +1257,7 @@ export default mixins(webSocket, Vue).extend({
         this.form.factoryNr = items[0].factoryNr;
         this.form.item = items[0].item;
         this.form.mClass = items[0].mClass;
+        this.form.protocol = items[0].protocol;
         this.form.serverId = items[0].serverId;
         this.form.gwKey = items[0].gwKey;
         if (items.length === 1) {
@@ -1269,6 +1280,7 @@ export default mixins(webSocket, Vue).extend({
           factoryNr: this.form.factoryNr,
           item: this.form.item,
           mClass: this.form.mClass,
+          protocol: this.form.protocol,
           tom: this.form.tom
         }
       });
