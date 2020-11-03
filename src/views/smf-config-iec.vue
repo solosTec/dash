@@ -103,25 +103,54 @@
               />
             </b-form-group>
 
-            <b-input-group class="pt-1">
-              <b-button
-                type="submit"
-                variant="primary"
-                :disabled="updateDisabled"
-                v-on:click.stop="onMeterUpdate"
-                >{{ btnUpdateTitle }}
-              </b-button>
-            </b-input-group>
+            <b-form-group
+              :description="btnUpdateTitle"
+              label-cols-sm="4"
+              label-cols-lg="3"
+            >
+              <b-input-group class="pt-1">
+                <b-button
+                  type="submit"
+                  variant="primary"
+                  :disabled="updateDisabled"
+                  v-on:click.stop="onMeterUpdate"
+                >
+                  {{ $t("action-update") }}
+                </b-button>
+              </b-input-group>
+            </b-form-group>
 
-            <b-input-group class="pt-3">
-              <b-button
-                type="submit"
-                variant="danger"
-                :disabled="!isRecordSelected"
-                v-on:click.stop="onMeterDelete"
-                >{{ btnDeleteTitle }}</b-button
-              >
-            </b-input-group>
+            <b-form-group
+              :description="btnDeleteTitle"
+              label-cols-sm="4"
+              label-cols-lg="3"
+            >
+              <b-input-group class="pt-3">
+                <b-button
+                  type="submit"
+                  variant="danger"
+                  :disabled="!isRecordSelected"
+                  v-on:click.stop="onMeterDelete"
+                  >{{ $t("action-remove") }}</b-button
+                >
+              </b-input-group>
+            </b-form-group>
+          </b-form>
+          <b-form v-on:submit.prevent class="p-3 shadow">
+            <b-form-group
+              description="Remove orphaned entries"
+              label-cols-sm="4"
+              label-cols-lg="3"
+            >
+              <b-input-group class="pt-3">
+                <b-button
+                  type="submit"
+                  variant="warning"
+                  v-on:click.stop="onIECCleanup"
+                  >Cleanup
+                </b-button>
+              </b-input-group>
+            </b-form-group>
           </b-form>
         </b-col>
       </b-row>
@@ -130,7 +159,7 @@
 </template>
 
 <script lang="ts">
-import { webSocket } from "@/mixins/web-socket";
+import { webSocket, Channel, Cmd } from "@/mixins/web-socket";
 import tblIEC from "@/components/smf-table-iec.vue";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
@@ -232,6 +261,12 @@ export default mixins(webSocket, Vue).extend({
         });
       }
     },
+    cmd_delete(channel: string, pk: any) {
+      if (channel == "config.iec") {
+        const idx = this.items.findIndex(rec => rec.pk === pk);
+        this.items.splice(idx, 1);
+      }
+    },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
         console.log("websocket received ", obj);
@@ -247,6 +282,9 @@ export default mixins(webSocket, Vue).extend({
             break;
           case "modify":
             this.cmd_modify(obj.channel, obj.key[0], obj.value);
+            break;
+          case "delete":
+            this.cmd_delete(obj.channel, obj.key[0]);
             break;
           default:
             console.warn("undefined cmd ", obj);
@@ -288,6 +326,12 @@ export default mixins(webSocket, Vue).extend({
           direction: Boolean(this.form.direction == "out"),
           interval: this.form.interval
         }
+      });
+    },
+    onIECCleanup(event: Event) {
+      event.preventDefault();
+      this.ws_submit_record(Cmd.cleanup, Channel.ConfigIEC, {
+        type: "orphaned"
       });
     },
     rowSelected(items: UiMeter[]): void {

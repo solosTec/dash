@@ -19,12 +19,19 @@ export const enum Cmd {
   modify = "modify",
   clear = "clear",
   delete = "delete",
-  load = "load"
+  load = "load",
+  cleanup = "cleanup"
 }
 
 export const enum Channel {
   ConfigUser = "config.user",
-  ConfigDevices = "config.device"
+  ConfigDevices = "config.device",
+  ConfigGateway = "config.gateway",
+  ConfigMeter = "config.meter",
+  ConfigMeterwMBus = "config.meterwMBus",
+  ConfigIEC = "config.iec",
+  ConfigLoRa = "config.lora",
+  ConfigSnapshot = "config.snapshot"
 }
 
 export interface WSResponse {
