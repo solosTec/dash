@@ -12,6 +12,7 @@
     "nav-iec": "IEC",
     "nav-mbus": "M-Bus (Draht)",
     "nav-wmbus": "M-Bus (Funk)",
+    "nav-iec-rs485": "IEC (seriell)",
     "nav-LoRa": "LoRa",
     "nav-upload": "Upload",
     "nav-download": "Download",
@@ -72,6 +73,8 @@
     "header-task-plausibility": "Test Plausibilität",
     "header-collector-mbus-radio": "Wireless M-Bus Daten",
     "lead-collector-mbus-radio": "%{count} Uplinks gespeichert",
+    "header-collector-iec": "IEC Daten",
+    "lead-collector-iec": "%{count} Ereignisse gespeichert",
 
     "com-default": "Voreinstellung",
 

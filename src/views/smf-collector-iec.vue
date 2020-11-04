@@ -1,9 +1,9 @@
 <template lang="html">
-  <section class="smf-collector-mbus-radio">
+  <section class="smf-collector-iec">
     <template>
       <div>
         <vue-headful
-          title="smf :: mBus collector (radio)"
+          title="smf :: IEC collector (RS485)"
           description="SMF dashboard"
           keywords="SMF, solosTec"
         />
@@ -12,8 +12,8 @@
 
     <b-jumbotron
       fluid
-      :header="$t('header-collector-mbus-radio')"
-      :lead="$t('lead-collector-mbus-radio', { count: this.records.length })"
+      :header="$t('header-collector-iec')"
+      :lead="$t('lead-collector-iec', { count: this.records.length })"
     />
 
     <b-container fluid>
@@ -55,7 +55,7 @@
         <b-col md="12">
           <!-- table -->
           <b-table
-            ref="wMBusTable"
+            ref="IECTable"
             bordered
             striped
             small
@@ -105,7 +105,7 @@ import Vue from "vue";
 let tmpRecords = [] as any[];
 
 export default mixins(webSocket, Vue).extend({
-  name: "smfCollectormBusRadio",
+  name: "smfCollectorIEC",
   props: [],
   mixins: [webSocket],
   components: {},
@@ -114,12 +114,13 @@ export default mixins(webSocket, Vue).extend({
     let rec = {
       id: 0,
       ts: new Date(),
-      data: "DATA",
+      event: "EVENT",
+      ep: "address:port",
       tag: "918273981273"
     } as any;
     //rec["_rowVariant"] = 'success';
     this.records.push(rec);
-    this.ws_open("/smf/api/wmbus/v0.8");
+    this.ws_open("/smf/api/iec/v0.8");
     this.isBusy = false;
   },
   data() {
@@ -147,116 +148,24 @@ export default mixins(webSocket, Vue).extend({
           sortable: true
         },
         {
-          key: "serverId",
-          label: "Server ID",
-          sortable: true
-        },
-        {
-          key: "manufacturer",
-          label: "Manufacturer",
-          sortable: true
-        },
-        {
-          key: "medium",
-          label: "Device",
-          formatter: (value: Number | undefined) => {
-            switch (value) {
-              case 0x01:
-                return "Oil";
-              case 0x02:
-                return "Electricity";
-              case 0x03:
-                return "Gas";
-              case 0x04:
-                return "Heat";
-              case 0x05:
-                return "Steam";
-              case 0x06:
-                return "Warm Water (30C...90C)";
-              case 0x07:
-                return "Water";
-              case 0x08:
-                return "Heat Cost Allocator";
-              case 0x09:
-                return "Compressed Air";
-              //DEV_TYPE_CLM_OUTLET = 0x0A, //!< Cooling load meter (Volume measured at return temperature: outlet)
-              //DEV_TYPE_CLM_INLET = 0x0B, //!< Cooling load meter (Volume measured at flow temperature: inlet)
-              //DEV_TYPE_HEAT_INLET = 0x0C, //!< Heat (Volume measured at flow temperature: inlet)
-              //DEV_TYPE_HEAT_COOLING_LOAD_METER = 0x0D, //!< Heat / Cooling load meter
-              case 0x0e:
-                return "Bus"; // / System component
-              //DEV_TYPE_UNKNOWN_MEDIUM = 0x0F, //!< Unknwon medium
-
-              //// 0x10 to 0x13 reserved
-              //DEV_TYPE_CALORIFIC_VALUE = 0x14,	//! Calorific value
-              case 0x15:
-                return "Hot water (>=90C)";
-              case 0x16:
-                return "Cold water";
-              case 0x17:
-                return "Dual register"; // (hot/cold) Water Meter
-              case 0x18:
-                return "Pressure meter";
-              //DEV_TYPE_AD_CONVERTER = 0x19, //!<	A/D Converter
-              //DEV_TYPE_SMOKE_DETECTOR = 0x1A,	//!<	Room sensor  (e.g. temperature or humidity)
-              case 0x1b:
-                return "Room sensor"; //!<	Room sensor  (e.g. temperature or humidity)
-              //DEV_TYPE_GAS_DETECTOR = 0x1C,	//!<	Gas detector
-              case 0x37:
-                return "RF meter";
-              default:
-                break;
-            }
-            return String(value);
-          },
-          sortable: true
-        },
-        {
-          key: "frameType",
-          label: "Type",
-          formatter: (value: Number | undefined) => {
-            switch (value) {
-              case 0x70:
-                return "app error";
-              case 0x72:
-                return "header long";
-              case 0x78:
-                return "no header";
-              case 0x7a:
-                return "header short";
-              case 0x7c:
-                return "DLMS long";
-              case 0x7d:
-                return "DLMS short";
-              case 0x7e:
-                return "SML long";
-              case 0x7f:
-                return "SML short";
-              case 0x8c:
-                return "Link layer";
-              case 0xa0:
-                return "private";
-              default:
-                break;
-            }
-            return String(value);
-          },
-          sortable: true
-        },
-        {
-          key: "payload",
-          label: "Payload",
+          key: "event",
+          label: "Event",
           formatter: (value: String | undefined) => {
             return value && value.length > 32
               ? value.substring(0, 32) + "..."
               : value;
           },
           sortable: false
+        },
+        {
+          key: "ep",
+          label: "Endpoint",
+          sortable: true
         }
       ],
       records: [] as any[],
       selected: [] as any[],
-      sortBy: "ts",
+      sortBy: "id",
       sortDesc: false,
       sortDirection: "desc",
       filter: null as null | string,
@@ -269,8 +178,8 @@ export default mixins(webSocket, Vue).extend({
   methods: {
     ws_on_open() {
       this.records = [];
-      this.ws_subscribe("monitor.wMBus");
-      this.ws_subscribe("table.wMBus.count");
+      this.ws_subscribe("monitor.IEC");
+      this.ws_subscribe("table.IEC.count");
     },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
@@ -284,7 +193,7 @@ export default mixins(webSocket, Vue).extend({
 
         if (obj.cmd == "update") {
           if (obj.channel != null) {
-            if (obj.channel == "table.wMBus.count") {
+            if (obj.channel == "table.IEC.count") {
               //this.recordCount = obj.value;
             }
           }
@@ -293,11 +202,8 @@ export default mixins(webSocket, Vue).extend({
           let rec = {
             id: obj.rec.key.id,
             ts: obj.rec.data.ts,
-            serverId: obj.rec.data.serverId,
-            manufacturer: obj.rec.data.manufacturer,
-            medium: obj.rec.data.medium,
-            frameType: obj.rec.data.frameType,
-            payload: obj.rec.data.Payload
+            event: obj.rec.data.event,
+            ep: obj.rec.data.ep
           } as any;
           tmpRecords.push(rec);
         } else if (obj.cmd == "clear") {

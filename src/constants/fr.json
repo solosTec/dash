@@ -12,6 +12,7 @@
     "nav-iec": "IEC",
     "nav-mbus": "M-Bus (câblé)",
     "nav-wmbus": "M-Bus (radio)",
+    "nav-iec-rs485": "IEC (RS 485)",
     "nav-LoRa": "LoRa",
     "nav-upload": "Chargement",
     "nav-download": "Télécharger",
@@ -69,6 +70,8 @@
     "header-task-plausibility": "Plausibilité du test",
     "header-collector-mbus-radio": "Collecteur de données sans fil mBus",
     "lead-collector-mbus-radio": "%{count} liaisons montantes stockées",
+    "header-collector-iec": "IEC Daten",
+    "lead-collector-iec": "%{count} events stored",
 
     "com-default": "par défaut",
 

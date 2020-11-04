@@ -12,6 +12,7 @@
     "nav-iec": "IEC",
     "nav-mbus": "M-Bus (проводной)",
     "nav-wmbus": "M-Bus (радио)",
+    "nav-iec-rs485": "IEC (RS 485)",
     "nav-LoRa": "ЛоРа",
     "nav-upload": "Загрузить",
     "nav-download": "Скачать",
@@ -69,6 +70,8 @@
     "header-task-plausibility": "Правдоподобность теста",
     "header-collector-mbus-radio": "Сборщик данных беспроводная шина mBus",
     "lead-collector-mbus-radio": "Сохранение %{count} восходящих линий связи",
+    "header-collector-iec": "IEC Daten",
+    "lead-collector-iec": "%{count} events stored",
 
     "com-default": "Стандарт",
 

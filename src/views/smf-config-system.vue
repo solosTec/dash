@@ -315,6 +315,39 @@
       <br />
 
       <b-card-group deck>
+        <b-card :title="$t('config-sys-22')" class="shadow">
+          <b-input-group prepend="max." class="mt-3">
+            <b-form-input
+              v-model.number="cfg.maxIECRecords"
+              type="number"
+              min="10"
+              max="10000"
+              step="10"
+              placeholder="<max. Events>"
+            />
+            <b-input-group-append>
+              <b-button
+                variant="secondary"
+                @click="cfg.maxIECRecords = cfg.def.maxIECRecords"
+                >{{ $t("com-default") }}</b-button
+              >
+              <b-button
+                variant="success"
+                @click="changeMaxIECRecords(cfg.maxIECRecords)"
+                >{{ $t("action-apply") }}</b-button
+              >
+            </b-input-group-append>
+          </b-input-group>
+
+          <!-- Maximum number of events to be displayed. -->
+          <div slot="footer">
+            <small class="text-muted">
+              {{ $t("com-default") }} =
+              <b>{{ cfg.def.maxIECRecords }}</b>
+            </small>
+          </div>
+        </b-card>
+
         <b-card :title="$t('config-sys-11')" class="shadow">
           <b-form-checkbox
             switch
@@ -394,6 +427,7 @@ export default mixins(webSocket, Vue).extend({
         maxEvents: 2000,
         maxLoRaRecords: 500,
         maxwMBusRecords: 500,
+        maxIECRecords: 600,
         catch_meters: false,
         catch_lora: false,
         hostname: location.hostname,
@@ -410,6 +444,7 @@ export default mixins(webSocket, Vue).extend({
           maxEvents: 2000,
           maxLoRaRecords: 500,
           maxwMBusRecords: 500,
+          maxIECRecords: 600,
           catch_meters: false,
           catch_lora: false,
           countryCode: "AU",
@@ -487,6 +522,8 @@ export default mixins(webSocket, Vue).extend({
             this.cfg.maxLoRaRecords = obj.rec.data.value;
           } else if (obj.rec.key.name == "max-wMBus-records") {
             this.cfg.maxwMBusRecords = obj.rec.data.value;
+          } else if (obj.rec.key.name == "max-IEC-records") {
+            this.cfg.maxIECRecords = obj.rec.data.value;
           } else if (obj.rec.key.name == "catch-meters") {
             this.cfg.catch_meters = obj.rec.data.value;
           } else if (obj.rec.key.name == "catch-lora") {
@@ -541,6 +578,8 @@ export default mixins(webSocket, Vue).extend({
             this.cfg.maxLoRaRecords = obj.value;
           } else if (obj.key[0] == "max-wMBus-records") {
             this.cfg.maxwMBusRecords = obj.value;
+          } else if (obj.key[0] == "max-IEC-records") {
+            this.cfg.maxIECRecords = obj.value;
           } else if (obj.key[0] == "catch-meters") {
             this.cfg.catch_meters = obj.value;
           } else if (obj.key[0] == "catch-lora") {
@@ -577,6 +616,12 @@ export default mixins(webSocket, Vue).extend({
     changeMaxwMBusRecords(newValue: any) {
       this.ws_submit_record("modify", "config.system", {
         key: { name: "max-wMBus-records" },
+        data: { value: newValue }
+      });
+    },
+    changeMaxIECRecords(newValue: any) {
+      this.ws_submit_record("modify", "config.system", {
+        key: { name: "max-IEC-records" },
         data: { value: newValue }
       });
     },

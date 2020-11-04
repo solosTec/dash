@@ -87,6 +87,11 @@
               to="/collector/mbusRadio"
               >{{ $t("nav-wmbus") }}</b-dropdown-item
             >
+            <b-dropdown-item
+              :disabled="!hasPrivs(MODULES.CONFIG_IEC, PRIVILEGES.VIEW)"
+              to="/collector/iec"
+              >{{ $t("nav-iec-rs485") }}</b-dropdown-item
+            >
           </b-nav-item-dropdown>
 
           <b-nav-item-dropdown :text="$t('nav-status')">

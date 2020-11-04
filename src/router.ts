@@ -17,6 +17,7 @@ import smfMonitorMessages from "./views/smf-monitor-messages.vue";
 import smfMonitorTSDB from "./views/smf-monitor-tsdb.vue";
 import smfMonitorLora from "./views/smf-monitor-lora.vue";
 import smfCollectorMBusRadio from "./views/smf-collector-mbus-radio.vue";
+import smfCollectorIEC from "./views/smf-collector-iec.vue";
 import smfTaskCSV from "./views/smf-task-csv.vue";
 import smfTaskTSDB from "./views/smf-task-tsdb.vue";
 import smfNoAccess from "./views/smf-no-access.vue";
@@ -101,6 +102,11 @@ export default new Router({
       path: "/collector/mbusRadio",
       name: "smfCollectorMBusRadio",
       component: smfCollectorMBusRadio
+    },
+    {
+      path: "/collector/iec",
+      name: "smfCollectorIEC",
+      component: smfCollectorIEC
     },
 
     //
