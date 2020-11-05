@@ -377,15 +377,6 @@
                       <b-button
                         :disabled="!isOnline"
                         type="submit"
-                        variant="success"
-                        v-on:click.stop="onParameterRefresh"
-                        >{{ btnRefreshTitle }}
-                      </b-button>
-                    </b-form-group>
-                    <b-form-group>
-                      <b-button
-                        :disabled="!isOnline"
-                        type="submit"
                         variant="info"
                         v-on:click.stop="onParameterUpdate"
                         >{{ btnUpdateTitle }}
@@ -1289,10 +1280,6 @@ export default mixins(webSocket, Vue).extend({
       event.preventDefault();
       console.log("onMeterDelete: " + this.selected.length + " meters");
       (this.$refs.dlgDeleteMeter as any).show();
-    },
-    onParameterRefresh(event: Event) {
-      event.preventDefault();
-      this.accessRefresh();
     },
     onParameterUpdate(event: Event) {
       event.preventDefault();
