@@ -179,7 +179,7 @@ export default mixins(webSocket, Vue).extend({
     ws_on_open() {
       this.records = [];
       this.ws_subscribe("monitor.IEC");
-      this.ws_subscribe("table.IEC.count");
+      this.ws_subscribe("table.bridge.count");
     },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
@@ -193,7 +193,7 @@ export default mixins(webSocket, Vue).extend({
 
         if (obj.cmd == "update") {
           if (obj.channel != null) {
-            if (obj.channel == "table.IEC.count") {
+            if (obj.channel == "table.bridge.count") {
               //this.recordCount = obj.value;
             }
           }

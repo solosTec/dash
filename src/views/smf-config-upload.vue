@@ -182,25 +182,25 @@
           </b-form>
         </b-card>
 
-        <b-card title="Upload IEC Configuration" class="shadow">
+        <b-card title="Upload Bridge Configuration" class="shadow">
           <div slot="footer">
             <small class="text-muted"
-              >{{ IECCount }} IEC devices(s) configured</small
+              >{{ BridgeCount }} meters(s) configured</small
             >
           </div>
           <b-form @submit="onSubmitIEC" @reset="onResetIEC">
             <b-form-file
-              v-model="iec.file"
-              :state="Boolean(iec.file)"
+              v-model="bridge.file"
+              :state="Boolean(bridge.file)"
               accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
               :placeholder="iec_text"
               drop-placeholder="Drop file here..."
             >
             </b-form-file>
             <b-form-radio-group
-              id="iec-upload-policy"
-              v-model="iec.policy"
-              name="iec-upload-policy"
+              id="bridge-upload-policy"
+              v-model="bridge.policy"
+              name="bridge-upload-policy"
               class="mt-3"
             >
               <b-form-radio value="append">Append</b-form-radio>
@@ -208,7 +208,7 @@
               <b-form-radio value="subst">Overwrite</b-form-radio>
             </b-form-radio-group>
             <b-button
-              :disabled="!Boolean(iec.file)"
+              :disabled="!Boolean(bridge.file)"
               type="submit"
               variant="primary"
               class="mt-3 mr-3"
@@ -251,7 +251,7 @@ export default mixins(webSocket, Vue).extend({
       gatewayCount: 0,
       meterCount: 0,
       LoRaCount: 0,
-      IECCount: 0,
+      BridgeCount: 0,
       dev: {
         file: null as any,
         policy: "append",
@@ -269,7 +269,7 @@ export default mixins(webSocket, Vue).extend({
         file: null as any,
         policy: "append"
       },
-      iec: {
+      bridge: {
         file: null as any,
         policy: "subst"
       }
@@ -287,7 +287,7 @@ export default mixins(webSocket, Vue).extend({
       this.ws_subscribe("table.meter.count");
       this.ws_subscribe("table.msg.count");
       this.ws_subscribe("table.LoRa.count");
-      this.ws_subscribe("table.iec.count"); // TIECBridge
+      this.ws_subscribe("table.bridge.count"); // TBridge
     },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
@@ -302,8 +302,8 @@ export default mixins(webSocket, Vue).extend({
               this.meterCount = obj.value;
             } else if (obj.channel == "table.LoRa.count") {
               this.LoRaCount = obj.value;
-            } else if (obj.channel == "table.iec.count") {
-              this.IECCount = obj.value;
+            } else if (obj.channel == "table.bridge.count") {
+              this.BridgeCount = obj.value;
             }
           }
         }
@@ -441,13 +441,13 @@ export default mixins(webSocket, Vue).extend({
 
     onSubmitIEC(evt: Event) {
       evt.preventDefault();
-      console.log(this.iec);
+      console.log(this.bridge);
       let formData = new FormData();
-      formData.append("file", this.iec.file!);
-      formData.append("policy", this.iec.policy);
+      formData.append("file", this.bridge.file!);
+      formData.append("policy", this.bridge.policy);
 
       this.$http
-        .post(`${extraBackendPath}/upload/config/iec/`, formData, {
+        .post(`${extraBackendPath}/upload/config/bridge/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           },
@@ -468,8 +468,8 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetIEC(evt: Event) {
       evt.preventDefault();
-      this.iec.file = null;
-      this.iec.policy = "subst";
+      this.bridge.file = null;
+      this.bridge.policy = "subst";
     }
   },
 
@@ -514,10 +514,13 @@ export default mixins(webSocket, Vue).extend({
     },
     iec_text(): string {
       if (!this.LoRa.file) {
-        return "Select an IEC configuration file...";
+        return "Select a Bridge configuration file...";
       }
       return (
-        this.iec.file.name + " with " + this.iec.file.size + " bytes selected."
+        this.bridge.file.name +
+        " with " +
+        this.bridge.file.size +
+        " bytes selected."
       );
     }
   },

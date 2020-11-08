@@ -42,8 +42,8 @@
             >
             <b-dropdown-item
               :disabled="!hasPrivs(MODULES.CONFIG_IEC, PRIVILEGES.VIEW)"
-              to="/config/iec"
-              >{{ $t("nav-iec") }}</b-dropdown-item
+              to="/config/bridge"
+              >{{ $t("nav-bridge") }}</b-dropdown-item
             >
             <b-dropdown-item
               :disabled="!hasPrivs(MODULES.CONFIG_LORA, PRIVILEGES.VIEW)"
@@ -90,7 +90,7 @@
             <b-dropdown-item
               :disabled="!hasPrivs(MODULES.CONFIG_IEC, PRIVILEGES.VIEW)"
               to="/collector/iec"
-              >{{ $t("nav-iec-rs485") }}</b-dropdown-item
+              >{{ $t("nav-bridge-rs485") }}</b-dropdown-item
             >
           </b-nav-item-dropdown>
 

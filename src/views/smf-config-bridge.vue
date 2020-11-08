@@ -1,9 +1,9 @@
 ﻿<template lang="html">
-  <section class="smf-config-iec">
+  <section class="smf-config-bridge">
     <template>
       <div>
         <vue-headful
-          title="smf :: config IEC1107"
+          title="smf :: config Bridges"
           description="SMF dashboard"
           keywords="SMF, solosTec"
         />
@@ -12,8 +12,8 @@
 
     <b-jumbotron
       fluid
-      :header="$t('header-iec')"
-      :lead="$t('lead-iec', { count: this.items.length })"
+      :header="$t('header-bridge')"
+      :lead="$t('lead-bridge', { count: this.items.length })"
     />
 
     <b-container fluid>
@@ -31,8 +31,8 @@
         <b-col md="3">
           <b-form v-on:submit.prevent class="p-3 shadow">
             <b-form-group
-              :label="$t('config-iec-02')"
-              :description="$t('config-iec-01')"
+              :label="$t('config-bridge-02')"
+              :description="$t('config-bridge-01')"
               label-cols-sm="4"
               label-cols-lg="3"
             >
@@ -57,8 +57,8 @@
             </b-form-group>
 
             <b-form-group
-              :label="$t('config-iec-03')"
-              :description="$t('config-iec-06')"
+              :label="$t('config-bridge-03')"
+              :description="$t('config-bridge-06')"
               label-cols-sm="4"
               label-cols-lg="3"
             >
@@ -73,7 +73,7 @@
                     'The TCP/IP connection will be established by the meter device.'
                   "
                   title="Incoming connection"
-                  >{{ $t("config-iec-05") }}</b-form-radio
+                  >{{ $t("config-bridge-05") }}</b-form-radio
                 >
                 <b-form-radio
                   value="out"
@@ -81,14 +81,14 @@
                     'The TCP/IP connection will be established by the IEC node.'
                   "
                   title="Outgoing connection"
-                  >{{ $t("config-iec-04") }}</b-form-radio
+                  >{{ $t("config-bridge-04") }}</b-form-radio
                 >
               </b-form-radio-group>
             </b-form-group>
 
             <b-form-group
-              :label="$t('config-iec-07')"
-              :description="$t('config-iec-08')"
+              :label="$t('config-bridge-07')"
+              :description="$t('config-bridge-08')"
               label-cols-sm="4"
               label-cols-lg="3"
             >
@@ -216,8 +216,8 @@ export default mixins(webSocket, Vue).extend({
   methods: {
     ws_on_open() {
       this.items = [];
-      this.ws_subscribe("config.iec");
-      this.ws_subscribe("table.iec.count");
+      this.ws_subscribe("config.bridge");
+      this.ws_subscribe("table.bidge.count");
     },
     cmd_load(channel: string, show: boolean, level: number) {
       this.nav.busyLevel = level;

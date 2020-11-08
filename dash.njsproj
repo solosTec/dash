@@ -70,10 +70,10 @@
     <Content Include="src\store\modules\websocket.ts" />
     <Content Include="src\views\smf-collector-iec.vue" />
     <Content Include="src\views\smf-collector-mbus-radio.vue" />
+    <Content Include="src\views\smf-config-bridge.vue" />
     <Content Include="src\views\smf-config-device.vue" />
     <Content Include="src\views\smf-config-download.vue" />
     <Content Include="src\views\smf-config-gateway.vue" />
-    <Content Include="src\views\smf-config-iec.vue" />
     <Content Include="src\views\smf-config-lora.vue" />
     <Content Include="src\views\smf-config-meter.vue" />
     <Content Include="src\views\smf-config-system.vue" />
