@@ -1347,6 +1347,13 @@ export default mixins(webSocket, Vue).extend({
       } else if (smfContext === this.smfContext.access) {
         this.accessRefresh();
       } else if (smfContext === this.smfContext.location) {
+        this.location.country = "";
+        this.location.region = "";
+        this.location.address = "";
+        this.location.descr = "";
+        this.location.lat = 49.500499;
+        this.location.long = 8.500619;
+
         this.locationRefresh();
       }
     },
