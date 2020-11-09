@@ -54,8 +54,8 @@
     <Content Include="src\components\smf-crud-form.vue" />
     <Content Include="src\components\smf-data-table.vue" />
     <Content Include="src\components\smf-row-count-selector.vue" />
+    <Content Include="src\components\smf-table-bridge.vue" />
     <Content Include="src\components\smf-table-data-mirror.vue" />
-    <Content Include="src\components\smf-table-iec.vue" />
     <Content Include="src\components\smf-table-push-targets.vue" />
     <Content Include="src\components\smf-table-valid.vue" />
     <Content Include="src\constants\msgTypes.ts" />

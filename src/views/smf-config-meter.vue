@@ -286,6 +286,115 @@
               </b-form>
             </b-tab>
 
+            <b-tab
+              :smf-context="smfContext.location"
+              active
+              :title="$t('config-meter-30')"
+            >
+              <b-form @:submit.prevent="">
+                <b-row>
+                  <b-col md="6">
+                    <b-form-group
+                      description="..."
+                      label="Country"
+                      label-cols-lg="3"
+                      label-cols-sm="4"
+                    >
+                      <b-form-input
+                        id="smf-form-location-country"
+                        v-model="location.country"
+                        maxlength="32"
+                        placeholder="<Country>"
+                        required
+                        type="text"
+                      />
+                    </b-form-group>
+
+                    <b-form-group
+                      description="street, city"
+                      label="Address"
+                      label-cols-lg="3"
+                      label-cols-sm="4"
+                    >
+                      <b-form-input
+                        id="smf-form-location-address"
+                        v-model="location.address"
+                        maxlength="64"
+                        placeholder="<Address>"
+                        required
+                        type="text"
+                      />
+                    </b-form-group>
+
+                    <b-form-group
+                      :description="location.lat + '°'"
+                      label="Latitude"
+                      label-cols-lg="3"
+                      label-cols-sm="4"
+                    >
+                      <b-form-input
+                        id="smf-form-location-lat"
+                        v-model="location.lat"
+                        type="range"
+                        min="-90"
+                        max="90"
+                        step="0.001"
+                      />
+                    </b-form-group>
+                  </b-col>
+                  <b-col md="6">
+                    <b-form-group
+                      description="..."
+                      label="Region"
+                      label-cols-lg="3"
+                      label-cols-sm="4"
+                    >
+                      <b-form-input
+                        id="smf-form-location-region"
+                        v-model="location.region"
+                        maxlength="32"
+                        placeholder="<Region>"
+                        required
+                        type="text"
+                      />
+                    </b-form-group>
+
+                    <b-form-group
+                      description="..."
+                      label="Description"
+                      label-cols-lg="3"
+                      label-cols-sm="4"
+                    >
+                      <b-form-input
+                        id="smf-form-location-descr"
+                        v-model="location.descr"
+                        maxlength="128"
+                        placeholder="<Description>"
+                        required
+                        type="text"
+                      />
+                    </b-form-group>
+
+                    <b-form-group
+                      :description="location.long + '°'"
+                      label="Longitude"
+                      label-cols-lg="3"
+                      label-cols-sm="4"
+                    >
+                      <b-form-input
+                        id="smf-form-location-long"
+                        v-model="location.long"
+                        type="range"
+                        min="-180"
+                        max="180"
+                        step="0.001"
+                      />
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+              </b-form>
+            </b-tab>
+
             <b-tab :smf-context="smfContext.access" no-body>
               <template slot="title">
                 {{ $t("config-meter-02") }}
@@ -826,8 +935,18 @@ export default mixins(webSocket, Vue).extend({
         serverId: "",
         gwKey: ""
       },
+      location: {
+        country: "",
+        region: "",
+        address: "",
+        descr: "",
+        lat: 49.500499,
+        long: 8.500619,
+        proj: "GPS"
+      },
       smfContext: {
         configuration: "configuration",
+        location: "location",
         access: "access",
         gateway: "gateway",
         pushOperation: "pushOperations",
@@ -1079,6 +1198,8 @@ export default mixins(webSocket, Vue).extend({
             this.spinner.meter = false;
             this.spinner.push = false;
             this.spinner.mirror = false;
+          } else if (obj.channel === "config.location") {
+            this.location = obj.rec.data;
           } else if (obj.channel === MESSAGE_RESPONSE.getList) {
             //console.log(obj);
             //  hide spinner
@@ -1225,6 +1346,8 @@ export default mixins(webSocket, Vue).extend({
         );
       } else if (smfContext === this.smfContext.access) {
         this.accessRefresh();
+      } else if (smfContext === this.smfContext.location) {
+        this.locationRefresh();
       }
     },
     tabSelected() {
@@ -1300,6 +1423,12 @@ export default mixins(webSocket, Vue).extend({
         [this.form.gwKey],
         { meter: this.form.ident }
       );
+    },
+    locationRefresh() {
+      this.ws_submit_record("query", "config.location", {
+        key: [this.form.pk],
+        data: {}
+      });
     },
     handleDeleteMeterOk(event: Event) {
       event.preventDefault();

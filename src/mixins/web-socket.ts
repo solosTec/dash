@@ -29,7 +29,8 @@ export const enum Channel {
   ConfigGateway = "config.gateway",
   ConfigMeter = "config.meter",
   ConfigMeterwMBus = "config.meterwMBus",
-  ConfigIEC = "config.iec",
+  ConfigBridge = "config.bridge",
+  ConfigLocation = "config.location",
   ConfigLoRa = "config.lora",
   ConfigSnapshot = "config.snapshot"
 }

@@ -273,5 +273,6 @@
     "config-meter-26": "Please select a meter.",
     "config-meter-27": "Description",
     "config-meter-28": "Protocol",
-    "config-meter-29": "Data protocol layer"
+    "config-meter-29": "Data protocol layer",
+    "config-meter-30": "Location"
 }

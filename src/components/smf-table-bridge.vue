@@ -1,5 +1,5 @@
 ﻿<template lang="html">
-  <b-container class="smf-table-iec" fluid>
+  <b-container class="smf-table-bridge" fluid>
     <!--navigation-->
     <b-row>
       <b-col md="6">
@@ -33,11 +33,11 @@
         </b-form-row>
       </b-col>
     </b-row>
-    <!--table with IEC devices-->
+    <!--table with meter -->
     <b-row>
       <b-col md="12">
         <b-table
-          ref="tableIEC"
+          ref="tableBridge"
           bordered
           striped
           small
@@ -79,7 +79,7 @@
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "smf-table-iec",
+  name: "smf-table-bridge",
   props: {
     items: Array,
     nav: Object,
@@ -120,18 +120,21 @@ export default Vue.extend({
           class: "text-center",
           formatter: (value: boolean) => {
             return value ? "outgoing ↦" : "↤ incoming";
-          }
+          },
+          sortable: true
+        },
+        {
+          key: "protocol",
+          label: "Protocol",
+          sortable: true
         },
         {
           key: "interval",
           label: "Interval",
-          sortable: true
-          //formatter: (value, key, item) => {
-          //    if (value > 100) {
-          //        return Math.floor(value / 60) + " min " + (value % 60) + " sec";
-          //    }
-          //    return value + " sec";
-          //}
+          sortable: true,
+          formatter: (value: string) => {
+            return value.length > 9 ? value.substring(0, 9) : value;
+          }
         }
       ],
       sortBy: "ep",

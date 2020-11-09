@@ -19,7 +19,7 @@
     <b-container fluid>
       <b-row>
         <b-col md="9">
-          <tblIEC
+          <tblBridge
             ref="IEC"
             :items="items"
             :nav="nav"
@@ -99,7 +99,7 @@
                 v-mask="'##:##:##'"
                 required
                 placeholder="<readout interval>"
-                maxlength="64"
+                maxlength="16"
               />
             </b-form-group>
 
@@ -160,7 +160,7 @@
 
 <script lang="ts">
 import { webSocket, Channel, Cmd } from "@/mixins/web-socket";
-import tblIEC from "@/components/smf-table-iec.vue";
+import tblBridge from "@/components/smf-table-bridge.vue";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
 
@@ -172,6 +172,7 @@ interface UiMeter {
   address: string;
   port: number;
   direction: string;
+  protocol: string;
   interval: string;
 }
 
@@ -180,7 +181,7 @@ export default mixins(webSocket, Vue).extend({
   props: [],
   mixins: [webSocket],
   components: {
-    tblIEC
+    tblBridge
   },
 
   mounted() {
@@ -204,8 +205,9 @@ export default mixins(webSocket, Vue).extend({
         meter: "",
         address: "0.0.0.0",
         port: 7009,
+        protocol: "any",
         direction: "out",
-        interval: "00:01:00"
+        interval: "00:15:00"
       }
     };
   },
@@ -224,14 +226,15 @@ export default mixins(webSocket, Vue).extend({
       if (show != null) this.nav.isBusy = show;
     },
     cmd_insert(channel: string, key: any, data: any) {
-      if (channel == "config.iec") {
+      if (channel == "config.bridge") {
         let rec: UiMeter = {
           pk: key.pk,
           meter: data.meter,
           address: data.address !== null ? data.address : "0.0.0.0",
           port: data.port !== null ? data.port : 7009,
+          protocol: data.protocol,
           interval: data.interval,
-          direction: data.direction ? "out" : "in"
+          direction: data.direction
         };
         this.items.push(rec);
       }
@@ -240,13 +243,15 @@ export default mixins(webSocket, Vue).extend({
       console.log("update", channel, cmd, value);
     },
     cmd_modify(channel: string, pk: any, value: any) {
-      if (channel == "config.iec") {
+      if (channel == "config.bridge") {
         this.items.some((rec: UiMeter) => {
           //console.log(rec.pk, pk);
           if (rec.pk === pk) {
             console.log("value: ", value);
             if (value.port != null) {
               rec.port = value.port;
+            } else if (value.protocol != null) {
+              rec.meter = value.protocol;
             } else if (value.meter != null) {
               rec.meter = value.meter;
             } else if (value.address != null) {
@@ -262,7 +267,7 @@ export default mixins(webSocket, Vue).extend({
       }
     },
     cmd_delete(channel: string, pk: any) {
-      if (channel == "config.iec") {
+      if (channel == "config.bridge") {
         const idx = this.items.findIndex(rec => rec.pk === pk);
         this.items.splice(idx, 1);
       }
@@ -294,7 +299,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onMeterUpdate(event: Event) {
       event.preventDefault();
-      this.ws_submit_record("modify", "config.iec", {
+      this.ws_submit_record("modify", "config.bridge", {
         key: [this.form.pk],
         data: {
           pk: this.form.pk,
@@ -307,18 +312,15 @@ export default mixins(webSocket, Vue).extend({
     },
     onMeterDelete(event: Event) {
       event.preventDefault();
-      console.log("insert");
-      this.ws_submit_record("remove", "config.iec", {
-        key: [this.form.pk],
-        data: {
-          pk: this.form.pk,
-          address: this.form.address
-        }
+      console.log("delete ", this.form.meter);
+      //
+      this.ws_submit_key(Cmd.delete, Channel.ConfigBridge, {
+        tag: [this.form.pk]
       });
     },
     onMeterInsert(event: Event) {
       event.preventDefault();
-      this.ws_submit_record("insert", "config.iec", {
+      this.ws_submit_record("insert", "config.bridge", {
         key: [this.form.pk],
         data: {
           address: this.form.address,
@@ -330,7 +332,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onIECCleanup(event: Event) {
       event.preventDefault();
-      this.ws_submit_record(Cmd.cleanup, Channel.ConfigIEC, {
+      this.ws_submit_record(Cmd.cleanup, Channel.ConfigBridge, {
         type: "orphaned"
       });
     },
@@ -341,6 +343,7 @@ export default mixins(webSocket, Vue).extend({
         this.form.meter = items[0].meter;
         this.form.address = items[0].address;
         this.form.port = items[0].port;
+        this.form.protocol = items[0].protocol;
         this.form.direction = items[0].direction ? "out" : "in";
         this.form.interval = items[0].interval;
       } else {
@@ -349,6 +352,7 @@ export default mixins(webSocket, Vue).extend({
         this.form.meter = "";
         this.form.address = "0.0.0.0";
         this.form.port = 7009;
+        this.form.protocol = "";
         this.form.direction = "out";
         this.form.interval = "00:01:0.0";
       }
