@@ -288,7 +288,6 @@
 
             <b-tab
               :smf-context="smfContext.location"
-              active
               :title="$t('config-meter-30')"
             >
               <b-form @:submit.prevent="">
