@@ -222,11 +222,9 @@
                       label-cols-lg="3"
                       label-cols-sm="4"
                     >
-                      <b-form-input
-                        id="smf-form-meter-param"
+                      <b-form-select
                         v-model="form.protocol"
-                        placeholder="<Protocol>"
-                        type="text"
+                        :options="protocolOptions"
                       />
                     </b-form-group>
                     <b-form-group
@@ -1025,7 +1023,20 @@ export default mixins(webSocket, Vue).extend({
         push: false,
         mirror: false,
         broker: false
-      }
+      },
+      protocolOptions: [
+        { value: "", text: "<Protocol>" },
+        { value: "any", text: "any" },
+        { value: "raw", text: "raw" },
+        { value: "tcp", text: "tcp" },
+        { value: "IP-T:DIN-E43863-4", text: "IP-T:DIN-E43863-4" },
+        { value: "IEC:62056", text: "IEC:62056" },
+        { value: "M-Bus", text: "M-Bus" },
+        { value: "wM-Bus:EN13757-4", text: "wM-Bus:EN13757-4" },
+        { value: "HDLC", text: "HDLC" },
+        { value: "SML", text: "SML" },
+        { value: "COSEM", text: "COSEM" }
+      ]
     };
   },
 
