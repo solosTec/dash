@@ -930,7 +930,9 @@ export default mixins(webSocket, Vue).extend({
         mClass: "---",
         protocol: "∇",
         serverId: "",
-        gwKey: ""
+        gwKey: "",
+        region: "",
+        address: ""
       },
       location: {
         country: "",
@@ -1071,7 +1073,9 @@ export default mixins(webSocket, Vue).extend({
             protocol: obj.rec.data.protocol,
             serverId: obj.rec.data.serverId,
             gwKey: obj.rec.data.gw,
-            online: obj.rec.data.online
+            online: obj.rec.data.online,
+            region: obj.rec.data.region,
+            address: obj.rec.data.address
           };
 
           if (obj.rec.data.online === 1) {
@@ -1145,6 +1149,10 @@ export default mixins(webSocket, Vue).extend({
                 rec.online = obj.value.online;
               } else if (obj.value.protocol != null) {
                 rec.protocol = obj.value.protocol;
+              } else if (obj.value.region != null) {
+                rec.region = obj.value.region;
+              } else if (obj.value.address != null) {
+                rec.address = obj.value.address;
               }
             }
           });
@@ -1391,6 +1399,8 @@ export default mixins(webSocket, Vue).extend({
         this.form.protocol = items[0].protocol;
         this.form.serverId = items[0].serverId;
         this.form.gwKey = items[0].gwKey;
+        this.form.region = items[0].region;
+        this.form.address = items[0].address;
         if (items.length === 1) {
           // the tabs are rendered only if an item is selected - so wait a tick until the tabs-element is there
           setTimeout(() => this.updateSmfContext());
