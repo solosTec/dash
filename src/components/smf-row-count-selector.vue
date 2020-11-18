@@ -1,10 +1,15 @@
 <template>
   <b-form-group
     label-cols-sm="5"
+    label-cols-md="4"
+    label-cols-lg="3"
+    label-align-sm="right"
+    label-size="sm"
     class="mb-0"
     :label="$t('tbl-lines-per-page')"
   >
     <b-form-select
+      size="sm"
       :value="rowCount"
       :options="options"
       @change="onRowSelectionChanged"

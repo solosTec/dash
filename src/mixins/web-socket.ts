@@ -36,7 +36,15 @@ export const enum Channel {
 }
 
 export interface WSResponse {
-  cmd: "update" | "insert" | "modify" | "clear" | "delete" | "load" | Cmd;
+  cmd:
+    | "update"
+    | "insert"
+    | "modify"
+    | "clear"
+    | "delete"
+    | "load"
+    | "cleanup"
+    | Cmd;
   channel: string | Channel;
 }
 

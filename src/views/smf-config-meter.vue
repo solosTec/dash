@@ -18,37 +18,43 @@
 
     <b-container fluid>
       <b-row>
-        <b-col md="6">
+        <b-col md="4">
           <b-form-group
             :label="$t('tbl-filter')"
             class="mb-0"
             label-cols-sm="3"
+            label-align-sm="right"
+            label-size="sm"
           >
-            <b-input-group>
+            <b-input-group size="sm">
               <b-form-input v-model="filter" :placeholder="$t('tbl-search')" />
               <b-input-group-append>
                 <b-button :disabled="!filter" @click="filter = ''">
-                  {{ $t("action-del") }}
+                  {{ $t("action-clear") }}
                 </b-button>
               </b-input-group-append>
             </b-input-group>
           </b-form-group>
         </b-col>
 
-        <b-col md="6">
+        <b-col md="4">
           <b-form-row>
             <smf-row-count-selector
               v-model="perPage"
               class="col"
               store-key="meter"
             />
-            <b-pagination
-              v-model="currentPage"
-              :per-page="perPage"
-              :total-rows="visibleRows"
-              class="justify-content-end"
-            />
           </b-form-row>
+        </b-col>
+        <b-col md="4">
+          <b-pagination
+            v-model="currentPage"
+            :per-page="perPage"
+            :total-rows="visibleRows"
+            class="justify-content-end"
+            align="fill"
+            size="sm"
+          />
         </b-col>
       </b-row>
       <b-row>

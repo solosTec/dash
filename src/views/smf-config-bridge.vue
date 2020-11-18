@@ -25,6 +25,7 @@
             :nav="nav"
             v-model="selected"
             @rowSelected="rowSelected"
+            @doMeterReadout="doMeterReadout"
             class="p-3 shadow"
           />
         </b-col>
@@ -356,6 +357,10 @@ export default mixins(webSocket, Vue).extend({
         this.form.direction = "out";
         this.form.interval = "00:01:0.0";
       }
+    },
+    doMeterReadout(pk: String): void {
+      console.log("doMeterReadout:" + pk);
+      this.ws_submit_key("readout", "status.session", [pk]);
     }
   },
 

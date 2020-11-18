@@ -80,6 +80,7 @@
 
     "action-update": "Update",
     "action-del": "Löschen",
+    "action-clear": "Leeren",
     "action-remove": "Entfernen",
     "action-insert": "Einfügen",
     "action-apply": "Übernehmen",
