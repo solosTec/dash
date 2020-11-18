@@ -121,6 +121,7 @@ import store from "../store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
+import { BTable } from "bootstrap-vue";
 
 let tmpRecords = [] as any[];
 
@@ -351,10 +352,10 @@ export default mixins(webSocket, Vue).extend({
       this.selected = items;
     },
     selectAllRows() {
-      //this.$refs.wMBusTable.selectAllRows();
+      (this.$refs.wMBusTable as BTable).selectAllRows();
     },
     clearSelected() {
-      //this.$refs.wMBusTable.clearSelected();
+      (this.$refs.wMBusTable as BTable).clearSelected();
     },
     removeSelected() {
       console.log(this.selected);
