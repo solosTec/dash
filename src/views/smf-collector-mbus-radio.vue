@@ -351,10 +351,10 @@ export default mixins(webSocket, Vue).extend({
       this.selected = items;
     },
     selectAllRows() {
-      this.$refs.wMBusTable.selectAllRows();
+      //this.$refs.wMBusTable.selectAllRows();
     },
     clearSelected() {
-      this.$refs.wMBusTable.clearSelected();
+      //this.$refs.wMBusTable.clearSelected();
     },
     removeSelected() {
       console.log(this.selected);

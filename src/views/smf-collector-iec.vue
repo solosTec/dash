@@ -256,10 +256,10 @@ export default mixins(webSocket, Vue).extend({
       this.selected = items;
     },
     selectAllRows() {
-      this.$refs.IECTable.selectAllRows();
+      //this.$refs.IECTable.selectAllRows();
     },
     clearSelected() {
-      this.$refs.IECTable.clearSelected();
+      //this.$refs.IECTable.clearSelected();
     },
     removeSelected() {
       this.selected.forEach(element => {
