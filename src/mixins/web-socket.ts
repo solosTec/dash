@@ -74,6 +74,9 @@ export interface WSLoadResponse extends WSResponse {
   level: number;
 }
 
+const getWsProtocol = (isSecure: boolean) => {
+  return isSecure ? "wss" : "ws";
+};
 export const webSocket = Vue.extend({
   created() {
     console.log(
@@ -104,22 +107,28 @@ export const webSocket = Vue.extend({
 
   methods: {
     ws_open: function(path: string) {
-      const isSecure = window.location.protocol === "https:";
-      const protocol = isSecure ? "wss" : "ws";
+      let isSecure = window.location.protocol === "https:";
       this.path = path;
       const self = this as any; //  save context
       if (process.env.NODE_ENV === "production") {
         const extraBackendPath =
           process.env.VUE_APP_SMF_DOCKER === "true" ? "/backend" : "";
         this.ws = new WebSocket(
-          `${protocol}://` + location.host + extraBackendPath + path,
+          `${getWsProtocol(isSecure)}://` +
+            location.host +
+            extraBackendPath +
+            path,
           ["SMF"]
         );
       } else {
         // VUE_APP_SMF_SERVER can be set in the .env file
         console.log("VUE_APP_SMF_SERVER: " + process.env.VUE_APP_SMF_SERVER);
+        // segw.ch is always secure - there is a redirect to https
+        if (process.env.VUE_APP_SMF_SERVER === "segw.ch") {
+          isSecure = true;
+        }
         this.ws = new WebSocket(
-          `${protocol}://${process.env.VUE_APP_SMF_SERVER ||
+          `${getWsProtocol(isSecure)}://${process.env.VUE_APP_SMF_SERVER ||
             "192.168.1.21:8082"}/${path}`,
           ["SMF"]
         );
