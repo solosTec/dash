@@ -2,6 +2,7 @@
   <div class="edit-buttons">
     <b-button
       :disabled="!isRecordSelected"
+      v-if="hasUpdateListener"
       type="button"
       variant="primary"
       v-on:click.stop="onUpdate"
@@ -9,6 +10,7 @@
     </b-button>
 
     <b-button
+      v-if="hasDeleteListener"
       :disabled="!isRecordSelected"
       type="button"
       variant="danger"
@@ -16,7 +18,11 @@
       >{{ btnDeleteTitle }}
     </b-button>
 
-    <b-button type="submit" variant="success" v-on:click.stop="onInsert"
+    <b-button
+      v-if="hasInsertListener"
+      type="submit"
+      variant="success"
+      v-on:click.stop="onInsert"
       >{{ btnInsertTitle }}
     </b-button>
   </div>
@@ -31,7 +37,8 @@ export default Vue.extend({
   props: {
     selectedItems: {
       type: Array as PropType<{ name: string }[]>,
-      required: true
+      default: () => [],
+      required: false
     }
   },
   methods: {
@@ -52,6 +59,15 @@ export default Vue.extend({
     }
   },
   computed: {
+    hasUpdateListener(): boolean {
+      return !!this.$listeners.onUpdate;
+    },
+    hasDeleteListener(): boolean {
+      return !!this.$listeners.onExecuteDelete;
+    },
+    hasInsertListener(): boolean {
+      return !!this.$listeners.onInsert;
+    },
     btnUpdateTitle(): string | TranslateResult {
       if (this.selectedItems.length > 0) {
         return `${this.$t("action-update")} ${this.selectedItems[0].name}`;
@@ -86,6 +102,7 @@ export default Vue.extend({
   display: flex;
   justify-content: flex-end;
   margin-bottom: 0.75em;
+
   button {
     margin-left: 0.25em;
   }
