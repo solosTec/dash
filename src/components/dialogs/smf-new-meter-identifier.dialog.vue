@@ -1,47 +1,25 @@
 <template lang="html">
   <b-form class="port-config-dialog" @submit.prevent="">
     <!-- connection -->
-    <b-form-group
-      :label="$t('smf-form-meter-connection')"
-      label-for="smf-form-meter-connection"
+    <smf-select
+      lable-key="smf-form-meter-connection"
+      :vuelidate-form-model="$v.formModel"
+      form-property="connection"
+      :options="connectionOptions"
+      :error-messages="{ required: 'smf-form-meter-connection-is-required' }"
     >
-      <b-form-select
-        autofocus
-        @blur.native="$v.formModel.connection.$touch()"
-        id="smf-form-meter-connection"
-        v-model="$v.formModel.$model.connection"
-        v-b-popover.hover="$t('smf-form-meter-connection')"
-        :options="connectionOptions"
-        :state="
-          $v.formModel.connection.$dirty
-            ? !$v.formModel.connection.$invalid
-            : null
-        "
-      ></b-form-select>
-      <b-form-invalid-feedback v-if="!$v.formModel.connection.required">
-        {{ $t("smf-form-meter-connection-is-required") }}
-      </b-form-invalid-feedback>
-    </b-form-group>
+    </smf-select>
 
     <!-- manufacturerCode -->
-    <b-form-group
-      :label="$t('smf-form-meter-manufacturer-code')"
-      label-for="smf-form-meter-manufacturer-code"
+    <smf-input
+      lable-key="smf-form-meter-manufacturer-code"
+      :vuelidate-form-model="$v.formModel"
+      form-property="manufacturerCode"
+      :error-messages="{
+        required: 'smf-form-meter-manufacturer-code-is-required',
+        alpha: 'smf-form-meter-manufacturer-code-only-alpha'
+      }"
     >
-      <b-form-input
-        @blur="$v.formModel.manufacturerCode.$touch()"
-        id="smf-form-meter-manufacturer-code"
-        v-model="$v.formModel.$model.manufacturerCode"
-        :placeholder="$t('smf-form-meter-manufacturer-code') | fmtPlaceholder"
-        :state="
-          $v.formModel.manufacturerCode.$dirty
-            ? !$v.formModel.manufacturerCode.$invalid
-            : null
-        "
-      ></b-form-input>
-      <b-form-invalid-feedback v-if="!$v.formModel.manufacturerCode.required">
-        {{ $t("smf-form-meter-manufacturer-code-is-required") }}
-      </b-form-invalid-feedback>
       <b-form-invalid-feedback
         v-if="
           !$v.formModel.manufacturerCode.minLength ||
@@ -50,79 +28,50 @@
       >
         {{ $t("smf-form-meter-manufacturer-code-three-characters") }}
       </b-form-invalid-feedback>
-      <b-form-invalid-feedback v-if="!$v.formModel.manufacturerCode.alpha">
-        {{ $t("smf-form-meter-manufacturer-code-only-alpha") }}
-      </b-form-invalid-feedback>
-    </b-form-group>
+    </smf-input>
 
     <!-- Meter-Id -->
-    <b-form-group
-      :label="$t('smf-form-meter-meterId')"
-      label-for="smf-form-meter-meterId"
+    <smf-input
+      lable-key="smf-form-meter-meterId"
+      :vuelidate-form-model="$v.formModel"
+      form-property="meterId"
+      :error-messages="{
+        required: 'smf-form-meter-meterId-is-required',
+        meterIdHex: 'smf-form-meter-meterId-must-be-eight-digit-hex'
+      }"
     >
-      <b-form-input
-        id="smf-form-meter-meterId"
-        @blur="$v.formModel.meterId.$touch()"
-        v-model="$v.formModel.$model.meterId"
-        :placeholder="$t('smf-form-meter-meterId') | fmtPlaceholder"
-        :state="
-          $v.formModel.meterId.$dirty ? !$v.formModel.meterId.$invalid : null
-        "
-      ></b-form-input>
-      <b-form-invalid-feedback v-if="!$v.formModel.meterId.required">
-        {{ $t("smf-form-meter-meterId-is-required") }}
-      </b-form-invalid-feedback>
-      <b-form-invalid-feedback v-if="!$v.formModel.meterId.meterIdHex">
-        {{ $t("smf-form-meter-meterId-must-be-eight-digit-hex") }}
-      </b-form-invalid-feedback>
-    </b-form-group>
+    </smf-input>
 
     <!-- Version -->
-    <b-form-group
-      :label="$t('smf-form-meter-version')"
-      label-for="smf-form-meter-version"
+    <smf-input
+      lable-key="smf-form-meter-version"
+      :vuelidate-form-model="$v.formModel"
+      form-property="version"
+      type="number"
+      min="1"
+      max="255"
+      :error-messages="{
+        required: 'smf-form-meter-version-is-required'
+      }"
     >
-      <b-form-input
-        id="smf-form-meter-version"
-        @blur="$v.formModel.version.$touch()"
-        type="number"
-        min="1"
-        max="255"
-        v-model="$v.formModel.$model.version"
-        :placeholder="$t('smf-form-meter-version') | fmtPlaceholder"
-        :state="
-          $v.formModel.version.$dirty ? !$v.formModel.version.$invalid : null
-        "
-      ></b-form-input>
-      <b-form-invalid-feedback v-if="!$v.formModel.version.required">
-        {{ $t("smf-form-meter-version-is-required") }}
-      </b-form-invalid-feedback>
       <b-form-invalid-feedback
         v-if="!$v.formModel.version.minValue || !$v.formModel.version.maxValue"
       >
         {{ $t("smf-form-meter-version-out-of-range") }}
       </b-form-invalid-feedback>
-    </b-form-group>
+    </smf-input>
 
     <!-- medium -->
-    <b-form-group
-      :label="$t('smf-form-meter-medium')"
-      label-for="smf-form-meter-medium"
+    <smf-select
+      lable-key="smf-form-meter-medium"
+      :vuelidate-form-model="$v.formModel"
+      form-property="medium"
+      :options="sortedMediumOptions"
     >
-      <b-form-select
-        @blur.native="$v.formModel.medium.$touch()"
-        id="smf-form-meter-medium"
-        v-model="$v.formModel.$model.medium"
-        v-b-popover.hover="$t('smf-form-meter-medium')"
-        :options="sortedMediumOptions"
-        :state="
-          $v.formModel.medium.$dirty ? !$v.formModel.medium.$invalid : null
-        "
-      ></b-form-select>
       <b-form-invalid-feedback v-if="!$v.formModel.medium.required">
         {{ $t("smf-form-meter-medium-is-required") }}
       </b-form-invalid-feedback>
-    </b-form-group>
+    </smf-select>
   </b-form>
 </template>
 <script lang="ts">
@@ -138,6 +87,8 @@ import {
 } from "vuelidate/lib/validators";
 import { SmfDialogContentMixin } from "@/shared/smf-dialog.service";
 import { i18n } from "@/plugins/i18n";
+import SmfSelect from "@/components/form-inputs/smf-select.vue";
+import SmfInput from "@/components/form-inputs/smf-input.vue";
 
 const meterIdHex = helpers.regex("alpha", /^[a-fA-F0-9]{8}$/);
 
@@ -147,6 +98,7 @@ interface OptionItem {
 }
 export default Vue.extend({
   mixins: [SmfDialogContentMixin],
+  components: { SmfSelect, SmfInput },
   i18n,
   data() {
     return {

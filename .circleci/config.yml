@@ -90,6 +90,7 @@ jobs:
           fingerprints:
             - "52:21:f2:c8:77:89:f2:61:65:0f:5b:5b:08:50:a6:b6"
       - run: ssh -o StrictHostKeyChecking=no -t smf.solostec.net /opt/smf/deploy.sh
+      - run: "curl -u $CIRCLE_CI_2_CIRCLE_CI_TOKEN: -X POST https://circleci.com/api/v2/project/gh/solosTec/segw-build/pipeline --header \"Content-Type: application/json\" -d '{ \"parameters\": { \"start_at\": \"dist\" } }'"
 
 workflows:
   version: 2
