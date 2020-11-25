@@ -219,7 +219,7 @@ export default mixins(webSocket, Vue).extend({
     ws_on_open() {
       this.items = [];
       this.ws_subscribe("config.bridge");
-      this.ws_subscribe("table.bidge.count");
+      this.ws_subscribe("table.bridge.count");
     },
     cmd_load(channel: string, show: boolean, level: number) {
       this.nav.busyLevel = level;
