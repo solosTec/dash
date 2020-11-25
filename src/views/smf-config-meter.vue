@@ -18,39 +18,48 @@
 
     <b-container fluid>
       <b-row>
-        <b-col md="6">
+        <b-col md="4">
           <b-form-group
             :label="$t('tbl-filter')"
             class="mb-0"
+            label-align-sm="right"
             label-cols-sm="3"
+            label-size="sm"
           >
-            <b-input-group>
+            <b-input-group size="sm">
               <b-form-input v-model="filter" :placeholder="$t('tbl-search')" />
               <b-input-group-append>
                 <b-button :disabled="!filter" @click="filter = ''">
-                  {{ $t("action-del") }}
+                  {{ $t("action-clear") }}
                 </b-button>
               </b-input-group-append>
             </b-input-group>
           </b-form-group>
         </b-col>
 
-        <b-col md="6">
+        <b-col md="4">
           <b-form-row>
             <smf-row-count-selector
               v-model="perPage"
               class="col"
               store-key="meter"
             />
-            <b-pagination
-              v-model="currentPage"
-              :per-page="perPage"
-              :total-rows="visibleRows"
-              class="justify-content-end"
-            />
           </b-form-row>
         </b-col>
+        <b-col md="4">
+          <b-pagination
+            v-model="currentPage"
+            :per-page="perPage"
+            :total-rows="visibleRows"
+            align="fill"
+            class="justify-content-end"
+            size="sm"
+          />
+        </b-col>
       </b-row>
+      <smf-table-edit-buttons
+        @onInsert="onMeterInsert"
+      ></smf-table-edit-buttons>
       <b-row>
         <b-col md="12">
           <!-- table -->
@@ -111,8 +120,8 @@
           >
             <b-tab
               :smf-context="smfContext.configuration"
-              active
               :title="$t('config-meter-01')"
+              active
             >
               <b-form @:submit.prevent="">
                 <b-row>
@@ -332,10 +341,10 @@
                       <b-form-input
                         id="smf-form-location-lat"
                         v-model="location.lat"
-                        type="range"
-                        min="-90"
                         max="90"
+                        min="-90"
                         step="0.001"
+                        type="range"
                       />
                     </b-form-group>
                   </b-col>
@@ -381,10 +390,10 @@
                       <b-form-input
                         id="smf-form-location-long"
                         v-model="location.long"
-                        type="range"
-                        min="-180"
                         max="180"
+                        min="-180"
                         step="0.001"
+                        type="range"
                       />
                     </b-form-group>
                   </b-col>
@@ -802,6 +811,9 @@ import { generatePassword } from "@/shared/generate-password";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
 import { BTabs } from "bootstrap-vue";
+import smfTableEditButtons from "../components/smf-table-edit-buttons.vue";
+import { SmfDialogService } from "../shared/smf-dialog.service";
+import SmfNewMeterIdentifierDialog from "../components/dialogs/smf-new-meter-identifier.dialog.vue";
 
 let tmpMeters: any[] = [];
 
@@ -831,7 +843,8 @@ export default mixins(webSocket, Vue).extend({
   mixins: [webSocket],
   components: {
     dataMirror,
-    pushTargets
+    pushTargets,
+    smfTableEditButtons
   },
 
   mounted() {
@@ -930,7 +943,9 @@ export default mixins(webSocket, Vue).extend({
         mClass: "---",
         protocol: "∇",
         serverId: "",
-        gwKey: ""
+        gwKey: "",
+        region: "",
+        address: ""
       },
       location: {
         country: "",
@@ -1071,7 +1086,9 @@ export default mixins(webSocket, Vue).extend({
             protocol: obj.rec.data.protocol,
             serverId: obj.rec.data.serverId,
             gwKey: obj.rec.data.gw,
-            online: obj.rec.data.online
+            online: obj.rec.data.online,
+            region: obj.rec.data.region,
+            address: obj.rec.data.address
           };
 
           if (obj.rec.data.online === 1) {
@@ -1145,6 +1162,10 @@ export default mixins(webSocket, Vue).extend({
                 rec.online = obj.value.online;
               } else if (obj.value.protocol != null) {
                 rec.protocol = obj.value.protocol;
+              } else if (obj.value.region != null) {
+                rec.region = obj.value.region;
+              } else if (obj.value.address != null) {
+                rec.address = obj.value.address;
               }
             }
           });
@@ -1391,10 +1412,31 @@ export default mixins(webSocket, Vue).extend({
         this.form.protocol = items[0].protocol;
         this.form.serverId = items[0].serverId;
         this.form.gwKey = items[0].gwKey;
+        this.form.region = items[0].region;
+        this.form.address = items[0].address;
         if (items.length === 1) {
           // the tabs are rendered only if an item is selected - so wait a tick until the tabs-element is there
           setTimeout(() => this.updateSmfContext());
         }
+      }
+    },
+    async onMeterInsert() {
+      const newMeterIdentifier = await SmfDialogService.openFormDialog(
+        this,
+        this.$t("smf-new-meter-identifier"),
+        SmfNewMeterIdentifierDialog,
+        null
+      );
+      if (newMeterIdentifier) {
+        // TODO @Sylko: here is the new identifier
+        /* example:
+         connection: "01"
+         manufacturerCode: "MAN"
+         medium: "0A"
+         meterId: "ABCDEF78"
+         version: "2"
+         */
+        console.log("newMeterIdentifier", newMeterIdentifier);
       }
     },
     onMeterUpdate(event: Event) {

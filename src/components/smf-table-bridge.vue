@@ -2,35 +2,45 @@
   <b-container class="smf-table-bridge" fluid>
     <!--navigation-->
     <b-row>
-      <b-col md="6">
-        <b-form-group label-cols-sm="3" :label="$t('tbl-filter')" class="mb-0">
-          <b-input-group>
+      <b-col md="4">
+        <b-form-group
+          label-cols-sm="3"
+          label-align-sm="right"
+          label-size="sm"
+          :label="$t('tbl-filter')"
+          class="mb-0"
+        >
+          <b-input-group size="sm">
             <b-form-input
               v-model="nav.filter"
               :placeholder="$t('tbl-search')"
             />
             <b-input-group-append>
               <b-button :disabled="!nav.filter" @click="nav.filter = ''">{{
-                $t("action-del")
+                $t("action-clear")
               }}</b-button>
             </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
-      <b-col md="6">
+      <b-col md="4">
         <b-form-row>
           <smf-row-count-selector
             v-model="nav.perPage"
             store-key="meter"
             class="col"
           />
-          <b-pagination
-            v-model="nav.currentPage"
-            :total-rows="nav.visibleRows"
-            :per-page="nav.perPage"
-            class="justify-content-end"
-          />
         </b-form-row>
+      </b-col>
+      <b-col md="4">
+        <b-pagination
+          v-model="nav.currentPage"
+          :total-rows="nav.visibleRows"
+          :per-page="nav.perPage"
+          class="justify-content-end"
+          align="fill"
+          size="sm"
+        />
       </b-col>
     </b-row>
     <!--table with meter -->
@@ -63,6 +73,16 @@
           <!-- A virtual column -->
           <template v-slot:cell(index)="data">
             {{ data.index + 1 + nav.perPage * (nav.currentPage - 1) }}
+          </template>
+
+          <template v-slot:cell(reading)="row">
+            <b-button
+              size="sm"
+              variant="warning"
+              class="shadow"
+              @click="doMeterReadout(row.item)"
+              >Start</b-button
+            >
           </template>
 
           <!-- loading slot -->
@@ -129,6 +149,11 @@ export default Vue.extend({
           sortable: true
         },
         {
+          key: "reading",
+          label: "Readout",
+          class: "text-center"
+        },
+        {
           key: "interval",
           label: "Interval",
           sortable: true,
@@ -151,6 +176,10 @@ export default Vue.extend({
     rowSelected(items: any) {
       //this.$emit('input', items);
       this.$emit("rowSelected", items);
+    },
+    doMeterReadout(item: any) {
+      // send readout command
+      this.$emit("doMeterReadout", item.pk);
     }
   },
 

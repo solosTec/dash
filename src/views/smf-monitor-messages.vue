@@ -32,13 +32,15 @@
 
     <b-container fluid>
       <b-row>
-        <b-col md="6">
+        <b-col md="4">
           <b-form-group
             label-cols-sm="3"
             :label="$t('tbl-filter')"
+            label-align-sm="right"
+            label-size="sm"
             class="mb-0"
           >
-            <b-input-group>
+            <b-input-group size="sm">
               <b-form-input v-model="filter" :placeholder="$t('tbl-search')" />
               <b-input-group-append>
                 <b-button :disabled="!filter" @click="filter = ''">{{
@@ -49,20 +51,24 @@
           </b-form-group>
         </b-col>
 
-        <b-col md="6">
+        <b-col md="4">
           <b-form-row>
             <smf-row-count-selector
               v-model="perPage"
               store-key="messages"
               class="col"
             />
-            <b-pagination
-              v-model="currentPage"
-              :total-rows="msgCount"
-              :per-page="perPage"
-              class="justify-content-end"
-            />
           </b-form-row>
+        </b-col>
+        <b-col md="4">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="msgCount"
+            :per-page="perPage"
+            class="justify-content-end"
+            align="fill"
+            size="sm"
+          />
         </b-col>
       </b-row>
 

@@ -18,36 +18,41 @@
 
     <b-container fluid>
       <b-row>
-        <b-col md="6">
+        <b-col md="4">
           <b-form-group
             label-cols-sm="3"
+            label-align-sm="right"
+            label-size="sm"
             :label="$t('tbl-filter')"
-            class="mb-0"
           >
-            <b-input-group>
+            <b-input-group size="sm">
               <b-form-input v-model="filter" :placeholder="$t('tbl-search')" />
               <b-input-group-append>
                 <b-button :disabled="!filter" @click="filter = ''">{{
-                  $t("action-del")
+                  $t("action-clear")
                 }}</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-form-group>
         </b-col>
-        <b-col md="6">
+        <b-col md="4">
           <b-form-row>
             <smf-row-count-selector
               v-model="perPage"
               store-key="records"
               class="col"
             />
-            <b-pagination
-              v-model="currentPage"
-              :total-rows="records.length"
-              :per-page="perPage"
-              class="justify-content-end"
-            />
           </b-form-row>
+        </b-col>
+        <b-col md="4">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="records.length"
+            :per-page="perPage"
+            class="justify-content-end"
+            align="fill"
+            size="sm"
+          />
         </b-col>
       </b-row>
 
@@ -90,6 +95,20 @@
           </b-table>
         </b-col>
       </b-row>
+
+      <b-row align-h="end">
+        <b-col md="12">
+          <b-button-group size="sm">
+            <b-button @click="selectAllRows">Select all</b-button>
+            <b-button @click="clearSelected" class="mx-2"
+              >Clear selected</b-button
+            >
+            <b-button @click="removeSelected" variant="warning"
+              >Remove {{ this.selected.length }}</b-button
+            >
+          </b-button-group>
+        </b-col>
+      </b-row>
     </b-container>
   </section>
 </template>
@@ -101,6 +120,7 @@ import store from "../store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
+import { BTable } from "bootstrap-vue";
 
 let tmpRecords = [] as any[];
 
@@ -210,8 +230,8 @@ export default mixins(webSocket, Vue).extend({
           //  clear table
           this.records = [];
         } else if (obj.cmd == "delete") {
-          //console.log('lookup record ' + obj.key);
-          const idx = this.records.findIndex(rec => rec.id == obj.key);
+          console.log("delete record ", obj.key);
+          const idx = this.records.findIndex(rec => rec.id == obj.key[0]);
           console.log("delete index " + idx);
           this.records.splice(idx, 1);
         } else if (obj.cmd == "load") {
@@ -233,7 +253,21 @@ export default mixins(webSocket, Vue).extend({
         }
       }
     },
-    rowSelected() {}
+    rowSelected(items: any[]) {
+      this.selected = items;
+    },
+    selectAllRows() {
+      (this.$refs.IECTable as BTable).selectAllRows();
+    },
+    clearSelected() {
+      (this.$refs.IECTable as BTable).clearSelected();
+    },
+    removeSelected() {
+      this.selected.forEach(element => {
+        console.log("delete:", element.id);
+        this.ws_submit_key("delete", "monitor.IEC", { tag: [element.id] });
+      });
+    }
   },
   computed: {},
   beforeRouteEnter(to: any, from: any, next: any) {

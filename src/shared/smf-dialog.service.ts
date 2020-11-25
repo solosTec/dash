@@ -2,7 +2,7 @@ import { CombinedVueInstance, VueConstructor } from "vue/types/vue";
 import SmfGenericFormDialog from "@/components/dialogs/smf-generic-form-dialog.vue";
 import SmfDeleteConfirmDialog from "@/components/dialogs/smf-delete-confirm-dialog.vue";
 import { PropType } from "vue";
-import { TranslateResult } from "vue-i18n";
+import { LocaleMessages, TranslateResult } from "vue-i18n";
 
 export interface DialogFormState<T> {
   invalid: boolean;
@@ -26,9 +26,9 @@ export class SmfDialogService {
    */
   public static openFormDialog<T>(
     parent: VueComponentInstance,
-    title: string,
+    title: string | LocaleMessages,
     dialogComponentType: VueConstructor,
-    formModel: T
+    formModel: T | null
   ): Promise<T | null> {
     const dialogContentComponent = new dialogComponentType({
       // pass a copy to avoid changing the input data in the view - even if they are not saved

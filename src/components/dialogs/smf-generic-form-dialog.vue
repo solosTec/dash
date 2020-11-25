@@ -73,10 +73,17 @@ export default Vue.extend({
         this.formModel = formModel;
       }
     );
-
     // the dialog must be rendered first before the this.$refs.dialogContent is available
     setTimeout(() => {
       this.dialogContentComponent.$mount(this.$refs.dialogContent);
+      this.$nextTick(() => {
+        const firstInput = Array.from(
+          this.dialogContentComponent.$el.querySelectorAll("select,input")
+        ).shift() as HTMLElement;
+        if (firstInput) {
+          firstInput.focus();
+        }
+      });
     });
   },
   destroyed() {
