@@ -221,7 +221,8 @@ export default mixins(webSocket, Vue).extend({
           class: "text-right",
           formatter: (value: any) => {
             return value.toString().padStart(10, "0");
-          }
+          },
+          tdClass: "smfTTFont"
         },
         {
           key: "stop",
@@ -380,4 +381,9 @@ export default mixins(webSocket, Vue).extend({
 });
 </script>
 
-<style scoped lang="css"></style>
+<style lang="css">
+.smfTTFont {
+  /* serif saves os from a samller font size */
+  font-family: monospace, serif;
+}
+</style>
