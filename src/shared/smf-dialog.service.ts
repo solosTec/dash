@@ -28,17 +28,17 @@ export class SmfDialogService {
     parent: VueComponentInstance,
     title: string | LocaleMessages,
     dialogComponentType: VueConstructor,
-    formModel: T | null
-  ): Promise<T | null> {
+    formModel: T
+  ): Promise<T> {
     const dialogContentComponent = new dialogComponentType({
       // pass a copy to avoid changing the input data in the view - even if they are not saved
       propsData: { formModel: Object.assign({}, formModel) }
     });
 
-    return new Promise<T | null>(resolve => {
+    return new Promise<T>(resolve => {
       new SmfGenericFormDialog({
         propsData: { parent, dialogContentComponent, title }
-      }).$on("close", (e: T | null) => {
+      }).$on("close", (e: T) => {
         resolve(e);
       });
     });

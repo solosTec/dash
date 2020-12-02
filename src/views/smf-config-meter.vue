@@ -814,6 +814,7 @@ import { BTabs } from "bootstrap-vue";
 import smfTableEditButtons from "../components/smf-table-edit-buttons.vue";
 import { SmfDialogService } from "../shared/smf-dialog.service";
 import SmfNewMeterIdentifierDialog from "../components/dialogs/smf-new-meter-identifier.dialog.vue";
+import { MeterIdentifier } from "../api/meter-identifier";
 
 let tmpMeters: any[] = [];
 
@@ -1421,18 +1422,18 @@ export default mixins(webSocket, Vue).extend({
       }
     },
     async onMeterInsert() {
-      const newMeterIdentifier = await SmfDialogService.openFormDialog(
+      const newMeterIdentifier: MeterIdentifier = await SmfDialogService.openFormDialog(
         this,
         this.$t("smf-new-meter-identifier"),
         SmfNewMeterIdentifierDialog,
-        null
+        {} as MeterIdentifier
       );
       if (newMeterIdentifier) {
         // TODO @Sylko: here is the new identifier
         /* example:
-         connection: "01"
+         connection: 1
          manufacturerCode: "MAN"
-         medium: "0A"
+         medium: 4
          meterId: "ABCDEF78"
          version: "2"
          */
@@ -1443,7 +1444,7 @@ export default mixins(webSocket, Vue).extend({
             maker: newMeterIdentifier.manufacturerCode.toUpperCase(),
             connection: newMeterIdentifier.connection,
             medium: newMeterIdentifier.medium,
-            version: parseInt(newMeterIdentifier.version, 10),
+            version: newMeterIdentifier.version,
             meter: newMeterIdentifier.meterId,
             tom: new Date(),
             source: process.env.VUE_APP_SMF_SERVER
