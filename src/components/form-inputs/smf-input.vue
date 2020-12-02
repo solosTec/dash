@@ -6,6 +6,7 @@
       :id="lableKey"
       :min="min ? min : ''"
       :max="max ? max : ''"
+      :number="type === 'number'"
       v-model="vuelidateFormModel.$model[formProperty]"
       :placeholder="$t(lableKey) | fmtPlaceholder"
       :state="

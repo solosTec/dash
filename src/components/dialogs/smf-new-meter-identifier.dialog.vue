@@ -89,12 +89,13 @@ import { SmfDialogContentMixin } from "@/shared/smf-dialog.service";
 import { i18n } from "@/plugins/i18n";
 import SmfSelect from "@/components/form-inputs/smf-select.vue";
 import SmfInput from "@/components/form-inputs/smf-input.vue";
+import { TranslateResult } from "vue-i18n";
 
 const meterIdHex = helpers.regex("alpha", /^[a-fA-F0-9]{8}$/);
 
 interface OptionItem {
-  value: string;
-  text: string;
+  value: string | number;
+  text: string | TranslateResult;
 }
 export default Vue.extend({
   mixins: [SmfDialogContentMixin],
