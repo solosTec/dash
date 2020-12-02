@@ -269,7 +269,8 @@ export default mixins(webSocket, Vue).extend({
           key: [null],
           data: {
             ...newDevice,
-            age: new Date()
+            age: new Date(),
+            source: process.env.VUE_APP_SMF_SERVER
           }
         });
       }

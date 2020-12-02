@@ -103,108 +103,108 @@ export default Vue.extend({
   data() {
     return {
       connectionOptions: [
-        { value: "01", text: "wireless" },
-        { value: "01", text: "wired" }
+        { value: 1, text: "wireless" },
+        { value: 2, text: "wired" }
       ],
       mediumOptions: [
-        { value: "00", text: this.$t("smf-form-meter-medium-other") },
-        { value: "01", text: this.$t("smf-form-meter-medium-oil") },
-        { value: "02", text: this.$t("smf-form-meter-medium-electricity") },
-        { value: "03", text: this.$t("smf-form-meter-medium-gas") },
-        { value: "04", text: this.$t("smf-form-meter-medium-heat") },
-        { value: "05", text: this.$t("smf-form-meter-medium-steam") },
-        { value: "06", text: this.$t("smf-form-meter-medium-hot-water") },
-        { value: "07", text: this.$t("smf-form-meter-medium-water") },
+        { value: 2, text: this.$t("smf-form-meter-medium-electricity") },
+        { value: 3, text: this.$t("smf-form-meter-medium-gas") },
+        { value: 4, text: this.$t("smf-form-meter-medium-heat") },
+        { value: 5, text: this.$t("smf-form-meter-medium-steam") },
+        { value: 6, text: this.$t("smf-form-meter-medium-hot-water") },
+        { value: 7, text: this.$t("smf-form-meter-medium-water") },
+        { value: 1, text: this.$t("smf-form-meter-medium-oil") },
+        { value: 0, text: this.$t("smf-form-meter-medium-other") },
         {
-          value: "08",
+          value: 8,
           text: this.$t("smf-form-meter-medium-heat-cost-allocator")
         },
         {
-          value: "09",
+          value: 9,
           text: this.$t("smf-form-meter-medium-compressed-air")
         },
         {
-          value: "0A",
+          value: 0xa,
           text: this.$t("smf-form-meter-medium-cooling-load-meter-outlet")
         },
         {
-          value: "0B",
+          value: 0xb,
           text: this.$t("smf-form-meter-medium-cooling-load-meter-inlet")
         },
         {
-          value: "0C",
+          value: 0xc,
           text: this.$t("smf-form-meter-medium-heat-inlet")
         },
         {
-          value: "0D",
+          value: 0xd,
           text: this.$t("smf-form-meter-medium-heat-cooling")
         },
         {
-          value: "0E",
+          value: 0xe,
           text: this.$t("smf-form-meter-medium-bus")
         },
         {
-          value: "0F",
+          value: 0xf,
           text: this.$t("smf-form-meter-medium-unknown")
         },
         {
-          value: "14",
+          value: 0x14,
           text: this.$t("smf-form-meter-medium-calorific-value")
         },
         {
-          value: "15",
+          value: 0x15,
           text: this.$t("smf-form-meter-medium-boiling-water")
         },
         {
-          value: "16",
+          value: 0x16,
           text: this.$t("smf-form-meter-medium-cold-water")
         },
         {
-          value: "17",
+          value: 0x17,
           text: this.$t("smf-form-meter-medium-dual-water")
         },
         {
-          value: "18",
+          value: 0x18,
           text: this.$t("smf-form-meter-medium-pressure")
         },
         {
-          value: "19",
+          value: 0x19,
           text: this.$t("smf-form-meter-medium-a-d-converter")
         },
         {
-          value: "1A",
+          value: 0x1a,
           text: this.$t("smf-form-meter-medium-smoke-detector")
         },
         {
-          value: "1B",
+          value: 0x1b,
           text: this.$t("smf-form-meter-medium-room-sensor")
         },
         {
-          value: "1C",
+          value: 0x1c,
           text: this.$t("smf-form-meter-medium-gas-detector")
         },
         {
-          value: "20",
+          value: 0x20,
           text: this.$t("smf-form-meter-medium-circuit-breaker")
         },
         {
-          value: "21",
+          value: 0x21,
           text: this.$t("smf-form-meter-medium-ventil")
         },
         {
-          value: "25",
+          value: 0x25,
           text: this.$t("smf-form-meter-medium-display")
         },
         {
-          value: "28",
+          value: 0x28,
           text: this.$t("smf-form-meter-medium-sewage")
         },
         {
-          value: "29",
+          value: 0x29,
           text: this.$t("smf-form-meter-medium-waste")
         },
         {
-          value: "2A",
+          value: 0x2a,
           text: this.$t("smf-form-meter-medium-carbon-dioxide")
         }
       ] as OptionItem[]
@@ -234,9 +234,8 @@ export default Vue.extend({
   methods: {},
   computed: {
     sortedMediumOptions(): OptionItem[] {
-      return this.mediumOptions
-        .slice()
-        .sort((opt1, opt2) => opt1.text.localeCompare(opt2.text));
+      //    original ordering is perfect
+      return this.mediumOptions;
     }
   }
 });

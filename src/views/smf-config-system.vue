@@ -465,7 +465,10 @@ export default mixins(webSocket, Vue).extend({
           { value: "CH", text: "Switzerland" },
           { value: "DE", text: "Germany" },
           { value: "FR", text: "France" },
-          { value: "GB", text: "United Kingdom" }
+          { value: "GB", text: "United Kingdom" },
+          { value: "MA", text: "Morocco" },
+          { value: "SE", text: "Sweden" },
+          { value: "RU", text: "Russian Federation" }
         ]
       },
       //  ISO 639-1

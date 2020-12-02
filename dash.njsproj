@@ -43,6 +43,7 @@
     <Content Include="src\components\dialogs\smf-configure-port.dialog.vue" />
     <Content Include="src\components\dialogs\smf-delete-confirm-dialog.vue" />
     <Content Include="src\components\dialogs\smf-generic-form-dialog.vue" />
+    <Content Include="src\components\dialogs\smf-new-meter-identifier.dialog.vue" />
     <Content Include="src\components\dialogs\smf-new-or-edit-device.dialog.vue" />
     <Content Include="src\components\gateway\smf-broker-configuration.vue" />
     <Content Include="src\components\gateway\smf-meter-access-rights.vue" />

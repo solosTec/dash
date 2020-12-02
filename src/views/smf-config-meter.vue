@@ -799,7 +799,7 @@
 </template>
 
 <script lang="ts">
-import { webSocket } from "@/mixins/web-socket";
+import { webSocket, Cmd, Channel } from "@/mixins/web-socket";
 import { MESSAGE_REQUEST, MESSAGE_RESPONSE } from "@/constants/msgTypes";
 import { SML_CODES } from "@/constants/rootCodes";
 import dataMirror from "@/components/smf-table-data-mirror.vue";
@@ -1437,6 +1437,18 @@ export default mixins(webSocket, Vue).extend({
          version: "2"
          */
         console.log("newMeterIdentifier", newMeterIdentifier);
+        this.ws_submit_record(Cmd.insert, Channel.ConfigMeter, {
+          key: [null],
+          data: {
+            maker: newMeterIdentifier.manufacturerCode.toUpperCase(),
+            connection: newMeterIdentifier.connection,
+            medium: newMeterIdentifier.medium,
+            version: parseInt(newMeterIdentifier.version, 10),
+            meter: newMeterIdentifier.meterId,
+            tom: new Date(),
+            source: process.env.VUE_APP_SMF_SERVER
+          }
+        });
       }
     },
     onMeterUpdate(event: Event) {
