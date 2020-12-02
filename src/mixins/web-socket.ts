@@ -20,7 +20,8 @@ export const enum Cmd {
   clear = "clear",
   delete = "delete",
   load = "load",
-  cleanup = "cleanup"
+  cleanup = "cleanup",
+  readout = "readout"
 }
 
 export const enum Channel {

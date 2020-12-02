@@ -79,6 +79,7 @@
             <b-button
               size="sm"
               variant="warning"
+              :disabled="!row.item.direction"
               class="shadow"
               @click="doMeterReadout(row.item)"
               >Start</b-button

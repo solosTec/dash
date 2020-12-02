@@ -360,7 +360,7 @@ export default mixins(webSocket, Vue).extend({
     },
     doMeterReadout(pk: String): void {
       console.log("doMeterReadout:" + pk);
-      this.ws_submit_key("readout", "status.session", [pk]);
+      this.ws_submit_key(Cmd.readout, Channel.ConfigBridge, [pk]);
     }
   },
 
