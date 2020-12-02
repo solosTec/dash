@@ -92,6 +92,12 @@
             <div slot="table-busy" class="text-center text-danger">
               <strong>Loading... {{ busyLevel }}%</strong>
             </div>
+
+            <template v-slot:cell(event)="data">
+              <span v-b-popover.hover="data.value" :title="data.item.ep">{{
+                formatDescription(data.value)
+              }}</span>
+            </template>
           </b-table>
         </b-col>
       </b-row>
@@ -170,11 +176,6 @@ export default mixins(webSocket, Vue).extend({
         {
           key: "event",
           label: "Event",
-          formatter: (value: String | undefined) => {
-            return value && value.length > 32
-              ? value.substring(0, 32) + "..."
-              : value;
-          },
           sortable: false
         },
         {
@@ -252,6 +253,10 @@ export default mixins(webSocket, Vue).extend({
           }
         }
       }
+    },
+    formatDescription(str: string) {
+      if (str.length > 64) return `${str.substring(0, 64)}...`;
+      return str;
     },
     rowSelected(items: any[]) {
       this.selected = items;

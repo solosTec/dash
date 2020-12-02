@@ -142,7 +142,8 @@ export default mixins(webSocket, Vue).extend({
           class: "text-right",
           formatter: (value: any) => {
             return value.toString().padStart(10, "0");
-          }
+          },
+          tdClass: "smfTTFont"
         },
         {
           key: "regTime",

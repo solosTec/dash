@@ -30,3 +30,9 @@ dash.njsproj.user
 /UpgradeLog.htm
 /src/shared/formatter/registerNames.js
 /src/shared/formatter/registerNames.js.map
+/debug.log
+/.vs/VSWorkspaceState.json
+/.vs/slnx.sqlite
+/.vs
+/admin.njsproj
+/admin.sln
