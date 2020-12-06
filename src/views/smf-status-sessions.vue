@@ -146,7 +146,7 @@ import store from "../store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
-import { TableChronographRefreshInSeconds } from "../constants/global-confog";
+import { TableChronographRefreshInSeconds } from "../constants/global-config";
 
 let tmpSessions = [] as any[];
 
