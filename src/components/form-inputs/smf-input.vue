@@ -7,6 +7,7 @@
       :min="min ? min : ''"
       :max="max ? max : ''"
       :number="type === 'number'"
+      @input="transformInput"
       v-model="vuelidateFormModel.$model[formProperty]"
       :placeholder="$t(lableKey) | fmtPlaceholder"
       :state="
@@ -27,7 +28,9 @@
   </b-form-group>
 </template>
 <script lang="ts">
-import Vue from "vue";
+import Vue, { PropType } from "vue";
+import { InputTransformer } from "./input-transformer";
+import { VueComponentInstance } from "../../shared/smf-dialog.service";
 
 export default Vue.extend({
   name: "smfSelect",
@@ -61,12 +64,25 @@ export default Vue.extend({
       type: Object,
       required: false,
       default: () => {}
+    },
+    inputTransformer: {
+      type: Object as PropType<InputTransformer>,
+      required: false
     }
   },
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    transformInput(val: string): void {
+      if (!this.inputTransformer) {
+        return;
+      }
+      (this.vuelidateFormModel as any).$model[
+        this.formProperty
+      ] = this.inputTransformer.transform(val);
+    }
+  },
   computed: {},
   watch: {}
 });

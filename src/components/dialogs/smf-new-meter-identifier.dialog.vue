@@ -19,6 +19,7 @@
         required: 'smf-form-meter-manufacturer-code-is-required',
         alpha: 'smf-form-meter-manufacturer-code-only-alpha'
       }"
+      :input-transformer="upperCaseTransformer"
     >
       <b-form-invalid-feedback
         v-if="
@@ -39,6 +40,7 @@
         required: 'smf-form-meter-meterId-is-required',
         meterIdHex: 'smf-form-meter-meterId-must-be-eight-digit-hex'
       }"
+      :input-transformer="upperCaseTransformer"
     >
     </smf-input>
 
@@ -90,6 +92,7 @@ import { i18n } from "@/plugins/i18n";
 import SmfSelect from "@/components/form-inputs/smf-select.vue";
 import SmfInput from "@/components/form-inputs/smf-input.vue";
 import { TranslateResult } from "vue-i18n";
+import { InputTransformer } from "../form-inputs/input-transformer";
 
 const meterIdHex = helpers.regex("alpha", /^[a-fA-F0-9]{8}$/);
 
@@ -208,7 +211,12 @@ export default Vue.extend({
           value: 0x2a,
           text: this.$t("smf-form-meter-medium-carbon-dioxide")
         }
-      ] as OptionItem[]
+      ] as OptionItem[],
+      upperCaseTransformer: {
+        transform(val: string): string {
+          return val.toLocaleUpperCase();
+        }
+      } as InputTransformer
     };
   },
   validations: {
