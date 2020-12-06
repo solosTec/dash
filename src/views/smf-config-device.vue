@@ -239,7 +239,7 @@ export default mixins(webSocket, Vue).extend({
     async onDeviceUpdate() {
       const data = await SmfDialogService.openFormDialog(
         this,
-        "Add new device",
+        "Update device",
         SmfNewOrEditDeviceDialog,
         this.selected[0]
       );
