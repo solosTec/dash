@@ -3,20 +3,20 @@
     <template>
       <div>
         <vue-headful
-          title="smf :: status sessions"
           description="SMF dashboard"
           keywords="SMF, solosTec"
+          title="smf :: status sessions"
         />
       </div>
     </template>
 
     <!-- <b-jumbotron fluid header="All subscribers that are online" :lead="sessions.length + ' sessions so far'"> -->
     <b-jumbotron
-      fluid
       :header="$t('header-status-session')"
       :lead="$t('lead-status-session', { count: this.sessions.length })"
+      fluid
     >
-      <b-progress class="mt-2" height="1.2rem" :max="deviceCount" show-value>
+      <b-progress :max="deviceCount" class="mt-2" height="1.2rem" show-value>
         <b-progress-bar :value="sessions.length" variant="success" />
         <b-progress-bar
           :value="deviceCount - sessions.length"
@@ -29,18 +29,18 @@
       <b-row>
         <b-col md="4">
           <b-form-group
-            label-cols-sm="3"
-            label-align-sm="right"
-            label-size="sm"
             :label="$t('tbl-filter')"
             class="mb-0"
+            label-align-sm="right"
+            label-cols-sm="3"
+            label-size="sm"
           >
             <b-input-group size="sm">
               <b-form-input v-model="filter" :placeholder="$t('tbl-search')" />
               <b-input-group-append>
-                <b-button :disabled="!filter" @click="filter = ''">{{
-                  $t("action-clear")
-                }}</b-button>
+                <b-button :disabled="!filter" @click="filter = ''"
+                  >{{ $t("action-clear") }}
+                </b-button>
               </b-input-group-append>
             </b-input-group>
           </b-form-group>
@@ -48,17 +48,17 @@
         <b-col md="4">
           <smf-row-count-selector
             v-model="perPage"
-            store-key="sessions"
             class="col"
+            store-key="sessions"
           />
         </b-col>
         <b-col md="4">
           <b-pagination
             v-model="currentPage"
-            :total-rows="sessions.length"
             :per-page="perPage"
-            class="justify-content-end"
+            :total-rows="sessions.length"
             align="fill"
+            class="justify-content-end"
             size="sm"
           />
         </b-col>
@@ -69,41 +69,47 @@
           <!-- table -->
           <b-table
             ref="sessionTable"
-            bordered
-            striped
-            small
-            hover
-            show-empty
-            stacked="md"
-            selectable
-            select-mode="range"
-            selectedVariant="info"
-            @row-selected="rowSelected"
-            :fields="fields"
-            :items="sessions"
             :busy="isBusy"
             :current-page="currentPage"
-            :per-page="perPage"
+            :fields="fields"
             :filter="filter"
-            primary-key="pk"
+            :items="sessions"
+            :per-page="perPage"
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"
+            bordered
             class="shadow"
+            hover
+            primary-key="pk"
+            select-mode="range"
+            selectable
+            selectedVariant="info"
+            show-empty
+            small
+            stacked="md"
+            striped
+            @row-selected="rowSelected"
           >
             <!-- A virtual column -->
             <template v-slot:cell(index)="data">
               {{ data.index + 1 + perPage * (currentPage - 1) }}
             </template>
 
+            <template v-slot:cell(login)="row">
+              <div v-b-tooltip.hover :title="row.item.login | fmtChronograph">
+                {{ row.item.login.toUTCString() }}
+              </div>
+            </template>
+
             <template v-slot:cell(stop)="row">
               <b-button
+                class="shadow"
                 size="sm"
                 variant="warning"
-                class="shadow"
                 @click="onSessionAction(row.item)"
-                >Stop</b-button
-              >
+                >Stop
+              </b-button>
             </template>
 
             <!-- loading slot -->
@@ -116,15 +122,15 @@
 
       <b-row>
         <b-col md="12">
-          <b-form v-on:submit.prevent class="p-3 shadow">
+          <b-form class="p-3 shadow" v-on:submit.prevent>
             <b-input-group class="pt-3">
               <b-button
+                :disabled="!isRecordSelected"
                 type="submit"
                 variant="danger"
-                :disabled="!isRecordSelected"
                 v-on:click.stop="onSessionStop"
-                >{{ btnStopTitle }}</b-button
-              >
+                >{{ btnStopTitle }}
+              </b-button>
             </b-input-group>
           </b-form>
         </b-col>
@@ -140,6 +146,7 @@ import store from "../store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
+import { TableChronographRefreshInSeconds } from "../constants/global-confog";
 
 let tmpSessions = [] as any[];
 
@@ -209,10 +216,7 @@ export default mixins(webSocket, Vue).extend({
         {
           key: "login",
           label: "Login",
-          sortable: true,
-          formatter: (value: any) => {
-            return value.toUTCString();
-          }
+          sortable: true
         },
         {
           key: "source",
@@ -252,12 +256,14 @@ export default mixins(webSocket, Vue).extend({
       sortDirection: "desc",
       filter: null as null | string,
       visibleRows: 0,
-      deviceCount: 0
+      deviceCount: 0,
+      tableRefreshInterval: 0 as any
     };
   },
 
   beforeDestroy() {
     this.ws_close();
+    clearInterval(this.tableRefreshInterval);
   },
 
   methods: {
@@ -368,6 +374,13 @@ export default mixins(webSocket, Vue).extend({
       }
       return "Stop " + this.selected.length + " Sessions";
     }
+  },
+  created() {
+    this.tableRefreshInterval = setInterval(() => {
+      // use forceUpdate instead of a refresh - this keeps the
+      // table state (e.g. selected rows)
+      (this.$refs.sessionTable as Vue).$forceUpdate();
+    }, TableChronographRefreshInSeconds * 1000);
   },
   beforeRouteEnter(to: any, from: any, next: any) {
     hasPrivilegesWaitForUser(
