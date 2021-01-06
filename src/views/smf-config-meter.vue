@@ -600,7 +600,7 @@
             </b-tab>
 
             <b-tab
-              :disabled="selected[0].online === 0"
+              :disabled="selected[0].online !== 1"
               :smf-context="smfContext.gateway"
             >
               <template slot="title">
@@ -681,7 +681,7 @@
             </b-tab>
 
             <b-tab
-              :disabled="selected[0].online === 0"
+              :disabled="selected[0].online !== 1"
               :smf-context="smfContext.pushOperation"
               no-body
             >
@@ -702,7 +702,7 @@
             </b-tab>
 
             <b-tab
-              :disabled="selected[0].online === 0"
+              :disabled="selected[0].online !== 1"
               :smf-context="smfContext.dataMirror"
               no-body
             >
