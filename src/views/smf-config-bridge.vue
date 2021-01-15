@@ -184,7 +184,7 @@
                   id="smf-form-max-records"
                   type="number"
                   v-model="policy.count"
-                  state="policy.count < policy.limit"
+                  :state="Boolean(policy.count < policy.limit)"
                   readonly
                   disabled
                   placeholder="<...>"
