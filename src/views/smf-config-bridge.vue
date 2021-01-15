@@ -148,8 +148,48 @@
                   type="submit"
                   variant="warning"
                   v-on:click.stop="onIECCleanup"
-                  >Cleanup
+                >
+                  Cleanup
                 </b-button>
+              </b-input-group>
+            </b-form-group>
+          </b-form>
+          <b-form v-on:submit.prevent class="p-3 shadow">
+            <b-form-group
+              label="max. entries"
+              description="uppper table limit"
+              label-cols-sm="4"
+              label-cols-lg="3"
+            >
+              <b-input-group>
+                <b-form-input
+                  id="smf-form-max-records"
+                  type="number"
+                  v-model="policy.limit"
+                  readonly
+                  disabled
+                  placeholder="<...>"
+                  size="15"
+                />
+              </b-input-group>
+            </b-form-group>
+            <b-form-group
+              label="status"
+              description="current table size"
+              label-cols-sm="4"
+              label-cols-lg="3"
+            >
+              <b-input-group>
+                <b-form-input
+                  id="smf-form-max-records"
+                  type="number"
+                  v-model="policy.count"
+                  state="policy.count < policy.limit"
+                  readonly
+                  disabled
+                  placeholder="<...>"
+                  size="15"
+                />
               </b-input-group>
             </b-form-group>
           </b-form>
@@ -209,6 +249,10 @@ export default mixins(webSocket, Vue).extend({
         protocol: "any",
         direction: "out",
         interval: "00:15:00"
+      },
+      policy: {
+        limit: 300,
+        count: 0
       }
     };
   },
@@ -237,11 +281,21 @@ export default mixins(webSocket, Vue).extend({
           interval: data.interval,
           direction: data.direction
         };
-        this.items.push(rec);
+
+        if (this.items.length < this.policy.limit) {
+          this.items.push(rec);
+          //              this.policy.state = "true";
+        } else {
+          console.warn("limit ", this.policy.limit, " reached");
+          //              this.policy.state = "false";
+        }
       }
     },
     cmd_update(channel: string, cmd: string, value: any) {
-      console.log("update", channel, cmd, value);
+      //        console.log("update", channel, cmd, value);
+      if (channel == "table.bridge.count") {
+        this.policy.count = value;
+      }
     },
     cmd_modify(channel: string, pk: any, value: any) {
       if (channel == "config.bridge") {
