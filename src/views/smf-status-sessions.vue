@@ -97,8 +97,11 @@
             </template>
 
             <template v-slot:cell(login)="row">
-              <div v-b-tooltip.hover :title="row.item.login | fmtChronograph">
-                {{ row.item.login.toUTCString() }}
+              <div
+                v-b-tooltip.hover
+                :title="row.item.login | fmtChronographWithDateTime"
+              >
+                {{ row.item.login | fmtChronographRelative($i18n.locale) }}
               </div>
             </template>
 

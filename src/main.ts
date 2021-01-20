@@ -13,7 +13,11 @@ import smfRowCountSelector from "@/components/smf-row-count-selector.vue";
 import "./shared/formatter/registerNames";
 import Vuelidate from "vuelidate";
 import { fmtPlaceholder } from "@/filter/fmtPlaceholder";
-import { fmtChronograph } from "@/filter/fmtChronograph";
+import {
+  fmtChronograph,
+  fmtChronographRelative,
+  fmtChronographWithDateTime
+} from "@/filter/fmtChronograph";
 import VueMask from "v-mask";
 import "@/assets/global.scss";
 
@@ -27,6 +31,8 @@ Vue.use(VueMask);
 
 Vue.filter("fmtPlaceholder", fmtPlaceholder);
 Vue.filter("fmtChronograph", fmtChronograph);
+Vue.filter("fmtChronographWithDateTime", fmtChronographWithDateTime);
+Vue.filter("fmtChronographRelative", fmtChronographRelative);
 
 // Let's Register a Global Error Notification Toast.
 Vue.toasted.register("sml_attention_error", msg => msg, {
