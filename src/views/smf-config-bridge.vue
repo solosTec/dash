@@ -206,6 +206,7 @@ import mixins from "vue-typed-mixins";
 import Vue from "vue";
 
 import { TranslateResult } from "vue-i18n";
+import { Converter } from "@/shared/converter";
 
 interface UiMeter {
   pk: string;
@@ -278,7 +279,7 @@ export default mixins(webSocket, Vue).extend({
           address: data.address !== null ? data.address : "0.0.0.0",
           port: data.port !== null ? data.port : 7009,
           protocol: data.protocol,
-          interval: data.interval,
+          interval: Converter.mapTimeStampToHHMMSS(data.interval),
           direction: data.direction
         };
 
@@ -312,7 +313,7 @@ export default mixins(webSocket, Vue).extend({
             } else if (value.address != null) {
               rec.address = value.address;
             } else if (value.interval != null) {
-              rec.interval = value.interval;
+              rec.interval = Converter.mapTimeStampToHHMMSS(value.interval);
             } else if (value.direction != null) {
               rec.direction = value.direction;
             }
@@ -409,7 +410,7 @@ export default mixins(webSocket, Vue).extend({
         this.form.port = 7009;
         this.form.protocol = "";
         this.form.direction = "out";
-        this.form.interval = "00:01:0.0";
+        this.form.interval = "00:01:00";
       }
     },
     doMeterReadout(pk: String): void {
