@@ -80,10 +80,7 @@ import { Device } from "@/api/device";
 import { Route } from "vue-router";
 import { SmfDialogService } from "@/shared/smf-dialog.service";
 import SmfNewOrEditDeviceDialog from "@/components/dialogs/smf-new-or-edit-device.dialog.vue";
-
-interface BTableItem {
-  _rowVariant?: "warning" | null;
-}
+import { BTableItem } from "@/shared/b-table-item";
 
 interface UiDevice extends BTableItem {
   pk: string;

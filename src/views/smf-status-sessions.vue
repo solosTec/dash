@@ -143,15 +143,38 @@
 </template>
 
 <script lang="ts">
-import { webSocket } from "@/mixins/web-socket";
+import {
+  Cmd,
+  webSocket,
+  WSDeleteResponse,
+  WSInsertResponse,
+  WSLoadResponse,
+  WSModifyResponse,
+  WSResponse
+} from "@/mixins/web-socket";
 import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
 import store from "../store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
 import { TableChronographRefreshInSeconds } from "../constants/global-config";
+import { Session } from "@/api/session";
+import { BTableItem } from "@/shared/b-table-item";
 
-let tmpSessions = [] as any[];
+interface UiSession extends BTableItem {
+  pk: string;
+  name: string;
+  loginTime?: Date;
+  source: string;
+  pLayer: string;
+  dLayer: string;
+  rx: number;
+  sx: number;
+  px: number;
+  login: Date;
+  lastSeen: Date;
+}
+let tmpSessions = [] as UiSession[];
 
 export default mixins(webSocket, Vue).extend({
   name: "smfStatusSession",
@@ -194,27 +217,21 @@ export default mixins(webSocket, Vue).extend({
           label: "RX",
           sortable: true,
           class: "text-right",
-          formatter: (value: number) => {
-            return this.ws_format_bytes(value);
-          }
+          formatter: (value: number) => this.ws_format_bytes(value)
         },
         {
           key: "sx",
           label: "SX",
           sortable: true,
           class: "text-right",
-          formatter: (value: number) => {
-            return this.ws_format_bytes(value);
-          }
+          formatter: (value: number) => this.ws_format_bytes(value)
         },
         {
           key: "px",
           label: "PX",
           sortable: true,
           class: "text-right",
-          formatter: (value: number) => {
-            return this.ws_format_bytes(value);
-          }
+          formatter: (value: number) => this.ws_format_bytes(value)
         },
         {
           key: "login",
@@ -226,9 +243,7 @@ export default mixins(webSocket, Vue).extend({
           label: "Source",
           sortable: true,
           class: "text-right",
-          formatter: (value: any) => {
-            return value.toString().padStart(10, "0");
-          },
+          formatter: (value: any) => value.toString().padStart(10, "0"),
           tdClass: "smfTTFont"
         },
         {
@@ -252,8 +267,8 @@ export default mixins(webSocket, Vue).extend({
           class: "text-right"
         }
       ],
-      sessions: [] as any[],
-      selected: [] as any[],
+      sessions: [] as UiSession[],
+      selected: [] as UiSession[],
       sortBy: "name",
       sortDesc: false,
       sortDirection: "desc",
@@ -276,8 +291,8 @@ export default mixins(webSocket, Vue).extend({
       this.ws_subscribe("status.session");
       this.ws_subscribe("table.device.count");
     },
-    ws_on_data(obj: any) {
-      if (obj.cmd != null) {
+    ws_on_data(obj: WSResponse) {
+      if (obj.cmd) {
         console.log(
           this.$options.name +
             " websocket received " +
@@ -285,21 +300,22 @@ export default mixins(webSocket, Vue).extend({
             " / " +
             obj.channel
         );
-        if (obj.cmd == "insert") {
-          const loginTime = new Date(obj.rec.data.loginTime.substring(0, 19));
-          const rec = {
-            pk: obj.rec.key.tag,
-            name: obj.rec.data.name,
-            source: obj.rec.data.source,
-            pLayer: obj.rec.data.pLayer,
-            dLayer: obj.rec.data.dLayer,
-            rx: obj.rec.data.rx,
-            sx: obj.rec.data.sx,
-            px: obj.rec.data.px,
+        if (obj.cmd == Cmd.insert) {
+          const insertResponse = obj as WSInsertResponse<Session>;
+          const bSession = insertResponse.rec.data;
+          const loginTime = new Date(bSession.loginTime.substring(0, 19));
+          const rec: UiSession = {
+            pk: bSession.tag,
+            name: bSession.name,
+            source: bSession.source,
+            pLayer: bSession.pLayer,
+            dLayer: bSession.dLayer,
+            rx: bSession.rx,
+            sx: bSession.sx,
+            px: bSession.px,
             login: loginTime,
             lastSeen: loginTime
           };
-
           if (this.isBusy) {
             //  bulk insert
             tmpSessions.push(rec);
@@ -307,30 +323,34 @@ export default mixins(webSocket, Vue).extend({
             //  operational insert
             this.sessions.push(rec);
           }
-        } else if (obj.cmd == "delete") {
-          const idx = this.sessions.findIndex(rec => rec.pk == obj.key);
+        } else if (obj.cmd === Cmd.delete) {
+          const idx = this.sessions.findIndex(
+            rec => rec.pk == (obj as WSDeleteResponse).key
+          );
           console.log("delete index " + idx);
           this.sessions.splice(idx, 1);
-        } else if (obj.cmd == "modify") {
-          this.sessions.find(function(rec) {
-            if (rec.pk == obj.key) {
+        } else if (obj.cmd == Cmd.modify) {
+          const modResponse = obj as WSModifyResponse<Session>;
+          this.sessions.find(rec => {
+            if (rec.pk == modResponse.key) {
               // console.log('modify record ' + rec.name);
-              if (obj.value.rx != null) {
-                rec.rx = obj.value.rx;
-              } else if (obj.value.sx != null) {
-                rec.sx = obj.value.sx;
-              } else if (obj.value.px != null) {
-                rec.px = obj.value.px;
+              if (modResponse.value.rx != null) {
+                rec.rx = modResponse.value.rx;
+              } else if (modResponse.value.sx != null) {
+                rec.sx = modResponse.value.sx;
+              } else if (modResponse.value.px != null) {
+                rec.px = modResponse.value.px;
               }
               //  update activity
               rec.lastSeen = new Date();
             }
           });
-        } else if (obj.cmd == "clear") {
+        } else if (obj.cmd == Cmd.clear) {
           this.sessions = [];
-        } else if (obj.cmd == "load") {
-          if (obj.show != null) {
-            this.isBusy = obj.show;
+        } else if (obj.cmd == Cmd.load) {
+          const loadResponse = obj as WSLoadResponse;
+          if (loadResponse.show != null) {
+            this.isBusy = loadResponse.show;
 
             if (this.isBusy) {
               // reset the tmpSessions array if the initial upload starts
@@ -339,14 +359,15 @@ export default mixins(webSocket, Vue).extend({
               // set the tmpSessions if the initial uploads is done
               this.sessions = tmpSessions;
             }
-          } else if (obj.level != 0) {
-            this.busyLevel = obj.level;
+          } else if (loadResponse.level != 0) {
+            this.busyLevel = loadResponse.level;
           }
-        } else if (obj.cmd == "update") {
+        } else if (obj.cmd === Cmd.update) {
+          // TODO@ms check if WsUpdateResponse matches the response
           if (obj.channel != null) {
             console.log("update channel " + obj.channel);
             if (obj.channel == "table.device.count") {
-              this.deviceCount = obj.value;
+              this.deviceCount = (obj as any).value;
             }
           }
         }
