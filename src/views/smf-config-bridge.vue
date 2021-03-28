@@ -238,10 +238,11 @@ export default mixins(webSocket, Vue).extend({
           interval: Converter.mapTimeStampToHHMMSS(data.interval),
           direction: data.direction
         };
+        this.items.push(rec);
       }
     },
     cmd_update(channel: string, cmd: string, value: any) {
-      //        console.log("update", channel, cmd, value);
+      console.log("update", channel, cmd, value);
     },
     cmd_modify(channel: string, pk: any, value: any) {
       if (channel == "config.bridge") {
