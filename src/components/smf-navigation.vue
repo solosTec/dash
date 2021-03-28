@@ -12,17 +12,13 @@
         {{ brand }}
       </b-navbar-brand>
 
-      <b-navbar-toggle target="nav_collapse" />
+      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
-      <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <router-link to="/"
-              ><a class="nav-link" href="index.html"
-                >{{ $t("nav-home") }} <span class="sr-only">(current)</span></a
-              ></router-link
-            >
-          </li>
+      <b-collapse id="nav_collapse" is-nav>
+        <b-navbar-nav class="mr-auto">
+          <b-nav-item href="/">
+            {{ $t("nav-home") }}
+          </b-nav-item>
 
           <b-nav-item-dropdown :text="$t('nav-config')">
             <b-dropdown-item
@@ -139,7 +135,7 @@
               >{{ $t("nav-plausibility") }}</b-dropdown-item
             >
           </b-nav-item-dropdown>
-        </ul>
+        </b-navbar-nav>
 
         <span class="navbar-text">
           {{ user.username }}
@@ -168,7 +164,7 @@
               :fill="get_color()"
             /></svg
         ></span>
-      </div>
+      </b-collapse>
     </b-navbar>
   </section>
 </template>
