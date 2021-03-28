@@ -154,45 +154,6 @@
               </b-input-group>
             </b-form-group>
           </b-form>
-          <b-form v-on:submit.prevent class="p-3 shadow">
-            <b-form-group
-              label="max. entries"
-              description="uppper table limit"
-              label-cols-sm="4"
-              label-cols-lg="3"
-            >
-              <b-input-group>
-                <b-form-input
-                  id="smf-form-max-records"
-                  type="number"
-                  v-model="policy.limit"
-                  readonly
-                  disabled
-                  placeholder="<...>"
-                  size="15"
-                />
-              </b-input-group>
-            </b-form-group>
-            <b-form-group
-              label="status"
-              description="current table size"
-              label-cols-sm="4"
-              label-cols-lg="3"
-            >
-              <b-input-group>
-                <b-form-input
-                  id="smf-form-max-records"
-                  type="number"
-                  v-model="policy.count"
-                  :state="Boolean(policy.count < policy.limit)"
-                  readonly
-                  disabled
-                  placeholder="<...>"
-                  size="15"
-                />
-              </b-input-group>
-            </b-form-group>
-          </b-form>
         </b-col>
       </b-row>
     </b-container>
@@ -250,10 +211,6 @@ export default mixins(webSocket, Vue).extend({
         protocol: "any",
         direction: "out",
         interval: "00:15:00"
-      },
-      policy: {
-        limit: 300,
-        count: 0
       }
     };
   },
@@ -265,7 +222,6 @@ export default mixins(webSocket, Vue).extend({
     ws_on_open() {
       this.items = [];
       this.ws_subscribe("config.bridge");
-      this.ws_subscribe("table.bridge.count");
     },
     cmd_load(channel: string, show: boolean, level: number) {
       this.nav.busyLevel = level;
@@ -282,21 +238,10 @@ export default mixins(webSocket, Vue).extend({
           interval: Converter.mapTimeStampToHHMMSS(data.interval),
           direction: data.direction
         };
-
-        if (this.items.length < this.policy.limit) {
-          this.items.push(rec);
-          //              this.policy.state = "true";
-        } else {
-          console.warn("limit ", this.policy.limit, " reached");
-          //              this.policy.state = "false";
-        }
       }
     },
     cmd_update(channel: string, cmd: string, value: any) {
       //        console.log("update", channel, cmd, value);
-      if (channel == "table.bridge.count") {
-        this.policy.count = value;
-      }
     },
     cmd_modify(channel: string, pk: any, value: any) {
       if (channel == "config.bridge") {
