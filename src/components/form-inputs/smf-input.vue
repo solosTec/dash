@@ -1,5 +1,9 @@
 <template lang="html">
-  <b-form-group :label="$t(lableKey)" :label-for="lableKey">
+  <b-form-group
+    :label="$t(lableKey)"
+    :label-for="lableKey"
+    :description="descriptionKey ? $t(descriptionKey) : ''"
+  >
     <b-form-input
       :type="type"
       @blur="vuelidateFormModel[formProperty].$touch()"
@@ -7,6 +11,7 @@
       :min="min ? min : ''"
       :max="max ? max : ''"
       :number="type === 'number'"
+      v-mask="mask ? mask : ''"
       @input="transformInput"
       v-model="vuelidateFormModel.$model[formProperty]"
       :placeholder="$t(lableKey) | fmtPlaceholder"
@@ -30,7 +35,6 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import { InputTransformer } from "./input-transformer";
-import { VueComponentInstance } from "../../shared/smf-dialog.service";
 
 export default Vue.extend({
   name: "smfSelect",
@@ -38,6 +42,10 @@ export default Vue.extend({
     lableKey: {
       type: String,
       required: true
+    },
+    descriptionKey: {
+      type: String,
+      required: false
     },
     vuelidateFormModel: {
       type: Object as any,
@@ -58,6 +66,10 @@ export default Vue.extend({
     },
     max: {
       type: [Number, String],
+      required: false
+    },
+    mask: {
+      type: [String],
       required: false
     },
     errorMessages: {

@@ -138,7 +138,12 @@ export const webSocket = Vue.extend({
       this.ws.onopen = function() {
         //  subscribe system status
         console.log("websocket open: " + this.url);
-        self.ws_on_open(this.url);
+        (
+          self.ws_on_open ||
+          (() => {
+            throw Error("Please implement ws_on_open in your class");
+          })()
+        )(this.url);
         self.state = self.$t("state-online");
         self.ws_emit_event_state(self.state);
       };
@@ -146,7 +151,12 @@ export const webSocket = Vue.extend({
         // console.log('websocket received data (' + e.data.length + ')');
         self.rx += e.data.length;
         self.ws_emit_event_rx();
-        self.ws_on_data(JSON.parse(e.data));
+        (
+          self.ws_on_data ||
+          (() => {
+            throw Error("Please implement ws_on_data in your class");
+          })()
+        )(JSON.parse(e.data));
       };
       this.ws.onclose = function(evt) {
         switch (evt.code) {

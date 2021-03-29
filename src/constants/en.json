@@ -331,5 +331,12 @@
 
     "header-iec": "IEC Configuration",
     "lead-iec": "%{count} IEC Configurations",
-    "nav-iec": "IEC"
+    "nav-iec": "IEC",
+    "iec-config-host": "Host",
+    "iec-config-host-is-required": "Host is required",
+    "iec-config-host-description": "Dotted decimal notation (IPv4/IPv6)",
+    "iec-config-port": "Port",
+    "iec-config-port-is-required": "Port is required",
+    "iec-config-interval": "Interval",
+    "iec-config-interval-is-required": "Interval is required"
 }
