@@ -29,11 +29,12 @@ export const enum Channel {
   ConfigDevices = "config.device",
   ConfigGateway = "config.gateway",
   ConfigMeter = "config.meter",
-  ConfigMeterwMBus = "config.meterwMBus",
   ConfigBridge = "config.bridge",
   ConfigLocation = "config.location",
   ConfigLoRa = "config.lora",
-  ConfigSnapshot = "config.snapshot"
+  ConfigSnapshot = "config.snapshot",
+  ConfigWMBus = "config.wmbus",
+  ConfigIec = "config.iec"
 }
 
 export interface WSResponse {

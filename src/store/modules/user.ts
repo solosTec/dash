@@ -21,6 +21,7 @@ export const MODULES = {
   CONFIG_WEB: "configWeb",
   CONFIG_GATEWAY: "configGateway",
   CONFIG_METERS: "configMeter",
+  CONFIG_WMBUS: "configWMBus",
   CONFIG_IEC: "configIEC",
   CONFIG_LORA: "configLora",
   CONFOG_UPLOAD: "configUpload",
@@ -57,6 +58,7 @@ const mutations = {
     state.privileges[MODULES.CONFIG_WEB] = [PRIVILEGES.VIEW];
     state.privileges[MODULES.CONFIG_GATEWAY] = [PRIVILEGES.VIEW];
     state.privileges[MODULES.CONFIG_METERS] = [PRIVILEGES.VIEW];
+    state.privileges[MODULES.CONFIG_WMBUS] = [PRIVILEGES.VIEW];
     state.privileges[MODULES.CONFIG_IEC] = [PRIVILEGES.VIEW];
     state.privileges[MODULES.CONFIG_LORA] = [PRIVILEGES.VIEW];
     state.privileges[MODULES.CONFOG_UPLOAD] = [PRIVILEGES.VIEW];

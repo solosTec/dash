@@ -36,10 +36,20 @@
               to="/config/meter"
               >{{ $t("nav-meter") }}</b-dropdown-item
             >
-            <b-dropdown-item
+            <!--b-dropdown-item
               :disabled="!hasPrivs(MODULES.CONFIG_IEC, PRIVILEGES.VIEW)"
               to="/config/bridge"
               >{{ $t("nav-bridge") }}</b-dropdown-item
+            -->
+            <b-dropdown-item
+              :disabled="!hasPrivs(MODULES.CONFIG_WMBUS, PRIVILEGES.VIEW)"
+              to="/config/wmbus"
+              >{{ $t("nav-config-wmbus") }}</b-dropdown-item
+            >
+            <b-dropdown-item
+              :disabled="!hasPrivs(MODULES.CONFIG_IEC, PRIVILEGES.VIEW)"
+              to="/config/iec"
+              >{{ $t("nav-iec") }}</b-dropdown-item
             >
             <b-dropdown-item
               :disabled="!hasPrivs(MODULES.CONFIG_LORA, PRIVILEGES.VIEW)"

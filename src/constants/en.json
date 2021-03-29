@@ -323,5 +323,13 @@
     "smf-form-meter-medium-display": "Display",
     "smf-form-meter-medium-sewage": "Sewage",
     "smf-form-meter-medium-waste": "Waste",
-    "smf-form-meter-medium-carbon-dioxide":"Carbon dioxide"
+    "smf-form-meter-medium-carbon-dioxide":"Carbon dioxide",
+
+    "header-wmbus": "wM-Bus Configuration",
+    "lead-wmbus": "%{count} wM-Bus Configurations",
+    "nav-config-wmbus": "wM-Bus",
+
+    "header-iec": "IEC Configuration",
+    "lead-iec": "%{count} IEC Configurations",
+    "nav-iec": "IEC"
 }
