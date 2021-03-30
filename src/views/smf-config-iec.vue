@@ -45,8 +45,10 @@ import {
   Channel,
   Cmd,
   webSocket,
+  WSDeleteResponse,
   WSInsertResponse,
   WSLoadResponse,
+  WSModifyResponse,
   WSResponse
 } from "@/mixins/web-socket";
 import smfDataTable from "@/components/smf-data-table.vue";
@@ -62,7 +64,10 @@ import { MeterIEC } from "@/api/meter-iec";
 import { Converter } from "@/shared/converter";
 import { SmfDialogService } from "@/shared/smf-dialog.service";
 import SmfNewOrEditIecDialogDialog from "@/components/dialogs/smf-new-or-edit-iec-config.dialog.vue";
+import SmfNewOrEditDeviceDialog from "src/components/dialogs/smf-new-or-edit-device.dialog.vue";
+import { Device } from "src/api/device";
 interface UiMeterIEC extends BTableItem {
+  name?: string;
   tag: string;
   host: string;
   port: number;
@@ -127,11 +132,12 @@ export default mixins(webSocket, Vue).extend({
         const insertResponse = obj as WSInsertResponse<MeterIEC>;
         const bIec = insertResponse.rec.data;
         const rec: UiMeterIEC = {
-          tag: bIec.tag,
-          host: bIec.host !== null ? bIec.host : "0.0.0.0",
-          port: bIec.port !== null ? bIec.port : 7009,
+          tag: insertResponse.rec.key.tag as string,
+          host: bIec.host != null ? bIec.host : "0.0.0.0",
+          port: bIec.port != null ? bIec.port : 7009,
           interval: Converter.mapTimeStampToHHMMSS(bIec.interval)
         };
+        rec.name = this.deriveName(rec);
 
         if (this.isBusy) {
           tmpConfigs.push(rec);
@@ -139,11 +145,18 @@ export default mixins(webSocket, Vue).extend({
           this.configs.push(rec);
         }
       } else if (obj.cmd === Cmd.modify) {
-        // TODO@mse impl
+        const modResponse = obj as WSModifyResponse<MeterIEC>;
+        this.configs.forEach((rec: UiMeterIEC) => {
+          if (rec.tag === modResponse.key[0]) {
+            rec = Object.assign(rec, modResponse.value);
+            rec.name = this.deriveName(rec);
+          }
+        });
       } else if (obj.cmd === Cmd.clear) {
         this.configs = [];
       } else if (obj.cmd === Cmd.delete) {
-        // TODO@mse impl
+        const key = (obj as WSDeleteResponse).key;
+        this.configs = this.configs.filter(d => d.tag !== key);
       } else if (obj.cmd === Cmd.load) {
         const loadResponse = obj as WSLoadResponse;
         if (loadResponse.hasOwnProperty("show")) {
@@ -161,8 +174,27 @@ export default mixins(webSocket, Vue).extend({
         }
       }
     },
-    async onConfigUpdate() {},
-    async onExecuteConfigDelete() {},
+    async onConfigUpdate() {
+      const data = await SmfDialogService.openFormDialog(
+        this,
+        "Update IEC Config",
+        SmfNewOrEditIecDialogDialog,
+        this.selected[0]
+      );
+      if (data) {
+        this.ws_submit_record(Cmd.modify, Channel.ConfigIec, {
+          key: [data.tag],
+          data
+        });
+      }
+    },
+    async onExecuteConfigDelete() {
+      this.selected.forEach(element => {
+        this.ws_submit_key(Cmd.delete, Channel.ConfigIec, {
+          tag: [element.tag]
+        });
+      });
+    },
     async onConfigInsert() {
       const newConfig = await SmfDialogService.openFormDialog(
         this,
@@ -171,6 +203,17 @@ export default mixins(webSocket, Vue).extend({
         { host: "0.0.0.0", port: 7009, interval: "00:00:00" }
       );
       console.log(newConfig);
+      if (newConfig) {
+        this.ws_submit_record(Cmd.insert, Channel.ConfigIec, {
+          key: [null],
+          data: {
+            ...newConfig
+          }
+        });
+      }
+    },
+    deriveName(rec: MeterIEC) {
+      return `${rec.host}:${rec.port}`;
     }
   },
   beforeRouteEnter(to: Route, from: Route, next: any) {

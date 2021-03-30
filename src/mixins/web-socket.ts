@@ -52,7 +52,10 @@ export interface WSResponse {
 
 export interface WSInsertResponse<T> extends WSResponse {
   rec: {
-    key: any;
+    key: {
+      tag?: string | number;
+      pk?: string | number; // TOFO@mse px should be replaced by tag
+    };
     data: T;
   };
 }

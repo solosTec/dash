@@ -178,7 +178,7 @@ export default mixins(webSocket, Vue).extend({
           const bDevice = insertResponse.rec.data;
           const created = new Date(bDevice.creationTime.substring(0, 19));
           const rec: UiDevice = {
-            pk: insertResponse.rec.key.pk,
+            pk: insertResponse.rec.key.pk as string,
             age: created,
             descr: bDevice.descr,
             enabled: bDevice.enabled,
