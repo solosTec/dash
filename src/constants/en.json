@@ -338,5 +338,14 @@
     "iec-config-port": "Port",
     "iec-config-port-is-required": "Port is required",
     "iec-config-interval": "Interval",
-    "iec-config-interval-is-required": "Interval is required"
+    "iec-config-interval-is-required": "Interval is required",
+
+    "wmbus-config-address": "Address",
+    "wmbus-config-address-description": "Dotted decimal notation (IPv4/IPv6",
+    "wmbus-config-address-is-required": "Address is required",
+    "wmbus-config-port": "Port",
+    "wmbus-config-port-is-required": "Port is required",
+    "wmbus-config-aes": "AES Key",
+    "wmbus-config-aes-is-required": "AES Key is required",
+    "wmbus-config-aes-must-be-hex": "Only hexadecimal characters are allowed"
 }

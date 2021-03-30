@@ -64,8 +64,7 @@ import { MeterIEC } from "@/api/meter-iec";
 import { Converter } from "@/shared/converter";
 import { SmfDialogService } from "@/shared/smf-dialog.service";
 import SmfNewOrEditIecDialogDialog from "@/components/dialogs/smf-new-or-edit-iec-config.dialog.vue";
-import SmfNewOrEditDeviceDialog from "src/components/dialogs/smf-new-or-edit-device.dialog.vue";
-import { Device } from "src/api/device";
+
 interface UiMeterIEC extends BTableItem {
   name?: string;
   tag: string;

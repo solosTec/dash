@@ -16,11 +16,40 @@
       fluid
     />
 
-    <b-container fluid> TODO </b-container>
+    <b-container fluid>
+      <b-row>
+        <b-col md="12">
+          <smf-data-table
+            :busyLevel="busyLevel"
+            :fields="fields"
+            :items="configs"
+            tableName="configs"
+            @itemSelected="selected = $event"
+          >
+            <template v-slot:editButtons>
+              <smf-table-edit-buttons
+                :selectedItems="selected"
+                @onUpdate="onConfigUpdate"
+                @onExecuteDelete="onExecuteConfigDelete"
+                @onInsert="onConfigInsert"
+              ></smf-table-edit-buttons>
+            </template>
+          </smf-data-table>
+        </b-col> </b-row
+    ></b-container>
   </section>
 </template>
 <script lang="ts">
-import { Channel, webSocket, WSResponse } from "@/mixins/web-socket";
+import {
+  Channel,
+  Cmd,
+  webSocket,
+  WSDeleteResponse,
+  WSInsertResponse,
+  WSLoadResponse,
+  WSModifyResponse,
+  WSResponse
+} from "@/mixins/web-socket";
 import smfDataTable from "@/components/smf-data-table.vue";
 import smfTableEditButtons from "@/components/smf-table-edit-buttons.vue";
 import mixins from "vue-typed-mixins";
@@ -29,6 +58,42 @@ import { Route } from "vue-router";
 import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
 import store from "@/store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
+import { BTableItem } from "@/shared/b-table-item";
+import { SmfDialogService } from "@/shared/smf-dialog.service";
+import SmfNewOrEditWmBusDialogDialog from "@/components/dialogs/smf-new-or-edit-wm-bus-config.dialog.vue";
+import { MeterWMBus } from "@/api/meter-wm-bus";
+
+interface UiMeterWMBus extends BTableItem {
+  name?: string;
+  tag: string;
+  address: string;
+  port: number;
+  aes: string;
+}
+
+const fields = [
+  {
+    key: "tag",
+    label: "Tag",
+    sortable: true
+  },
+  {
+    key: "address",
+    label: "Address",
+    sortable: true
+  },
+  {
+    key: "port",
+    label: "Port"
+  },
+  {
+    key: "aes",
+    label: "AES",
+    sortable: true
+  }
+];
+
+let tmpConfigs: UiMeterWMBus[] = [];
 
 export default mixins(webSocket, Vue).extend({
   name: "smfConfigWMBus",
@@ -43,7 +108,11 @@ export default mixins(webSocket, Vue).extend({
   },
   data() {
     return {
-      configs: [] as any[]
+      isBusy: true,
+      busyLevel: 0,
+      fields,
+      configs: [] as UiMeterWMBus[],
+      selected: [] as UiMeterWMBus[]
     };
   },
   beforeDestroy() {
@@ -56,6 +125,92 @@ export default mixins(webSocket, Vue).extend({
     },
     ws_on_data(obj: WSResponse) {
       console.log(obj);
+      if (obj.cmd === Cmd.insert) {
+        const insertResponse = obj as WSInsertResponse<MeterWMBus>;
+        const bWmBus = insertResponse.rec.data;
+        const rec: UiMeterWMBus = {
+          tag: insertResponse.rec.key.tag as string,
+          address: bWmBus.address != null ? bWmBus.address : "0.0.0.0",
+          port: bWmBus.port != null ? bWmBus.port : 7009,
+          aes: bWmBus.aes
+        };
+        rec.name = this.deriveName(rec);
+
+        if (this.isBusy) {
+          tmpConfigs.push(rec);
+        } else {
+          this.configs.push(rec);
+        }
+      } else if (obj.cmd === Cmd.modify) {
+        const modResponse = obj as WSModifyResponse<MeterWMBus>;
+        this.configs.forEach((rec: UiMeterWMBus) => {
+          if (rec.tag === modResponse.key[0]) {
+            rec = Object.assign(rec, modResponse.value);
+            rec.name = this.deriveName(rec);
+          }
+        });
+      } else if (obj.cmd === Cmd.clear) {
+        this.configs = [];
+      } else if (obj.cmd === Cmd.delete) {
+        const key = (obj as WSDeleteResponse).key;
+        this.configs = this.configs.filter(d => d.tag !== key);
+      } else if (obj.cmd === Cmd.load) {
+        const loadResponse = obj as WSLoadResponse;
+        if (loadResponse.hasOwnProperty("show")) {
+          this.isBusy = loadResponse.show;
+
+          if (this.isBusy) {
+            tmpConfigs = [];
+          } else {
+            this.configs = tmpConfigs;
+            this.busyLevel = 100;
+          }
+        }
+        if (loadResponse.hasOwnProperty("level")) {
+          this.busyLevel = loadResponse.level;
+        }
+      }
+    },
+    async onConfigUpdate() {
+      const data = await SmfDialogService.openFormDialog(
+        this,
+        "Update wM-Bus Config",
+        SmfNewOrEditWmBusDialogDialog,
+        this.selected[0]
+      );
+      if (data) {
+        this.ws_submit_record(Cmd.modify, Channel.ConfigWMBus, {
+          key: [data.tag],
+          data
+        });
+      }
+    },
+    async onExecuteConfigDelete() {
+      this.selected.forEach(element => {
+        this.ws_submit_key(Cmd.delete, Channel.ConfigWMBus, {
+          tag: [element.tag]
+        });
+      });
+    },
+    async onConfigInsert() {
+      const newConfig = await SmfDialogService.openFormDialog(
+        this,
+        "Add new wM-Bus config",
+        SmfNewOrEditWmBusDialogDialog,
+        { address: "0.0.0.0", port: 7009 }
+      );
+      console.log(newConfig);
+      if (newConfig) {
+        this.ws_submit_record(Cmd.insert, Channel.ConfigWMBus, {
+          key: [null],
+          data: {
+            ...newConfig
+          }
+        });
+      }
+    },
+    deriveName(rec: UiMeterWMBus) {
+      return `${rec.address}:${rec.port}`;
     }
   },
   beforeRouteEnter(to: Route, from: Route, next: any) {
