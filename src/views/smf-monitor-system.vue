@@ -40,7 +40,7 @@
             </b-card>
 
             <b-card title="Memory" class="shadow">
-              <b-card-text>Virtual Memory Usage</b-card-text>
+              <b-card-text>Memory Usage</b-card-text>
               <b-progress
                 class="mt-2"
                 height="1.2rem"
@@ -51,8 +51,7 @@
               ></b-progress>
               <div slot="footer">
                 <small class="text-muted"
-                  >{{ virtualMemoryTotalFormatted }} virtual memory are
-                  available</small
+                  >{{ virtualMemoryTotalFormatted }} memory are available</small
                 >
               </div>
             </b-card>
