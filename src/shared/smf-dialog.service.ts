@@ -39,6 +39,13 @@ export class SmfDialogService {
       new SmfGenericFormDialog({
         propsData: { parent, dialogContentComponent, title }
       }).$on("close", (e: T) => {
+        // remove all properties from the processed object thatstrat
+        // with _. These props are client only
+        Object.keys(e).forEach(key => {
+          if (key.startsWith("_")) {
+            delete (e as any)[key];
+          }
+        });
         resolve(e);
       });
     });

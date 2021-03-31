@@ -64,7 +64,7 @@ import SmfNewOrEditWmBusDialogDialog from "@/components/dialogs/smf-new-or-edit-
 import { MeterWMBus } from "@/api/meter-wm-bus";
 
 interface UiMeterWMBus extends BTableItem {
-  name?: string;
+  _name?: string;
   tag: string;
   address: string;
   port: number;
@@ -134,7 +134,7 @@ export default mixins(webSocket, Vue).extend({
           port: bWmBus.port != null ? bWmBus.port : 7009,
           aes: bWmBus.aes
         };
-        rec.name = this.deriveName(rec);
+        rec._name = this.deriveName(rec);
 
         if (this.isBusy) {
           tmpConfigs.push(rec);
@@ -146,7 +146,7 @@ export default mixins(webSocket, Vue).extend({
         this.configs.forEach((rec: UiMeterWMBus) => {
           if (rec.tag === modResponse.key[0]) {
             rec = Object.assign(rec, modResponse.value);
-            rec.name = this.deriveName(rec);
+            rec._name = this.deriveName(rec);
           }
         });
       } else if (obj.cmd === Cmd.clear) {

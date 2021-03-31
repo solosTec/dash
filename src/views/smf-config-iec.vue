@@ -66,7 +66,7 @@ import { SmfDialogService } from "@/shared/smf-dialog.service";
 import SmfNewOrEditIecDialogDialog from "@/components/dialogs/smf-new-or-edit-iec-config.dialog.vue";
 
 interface UiMeterIEC extends BTableItem {
-  name?: string;
+  _name?: string;
   tag: string;
   host: string;
   port: number;
@@ -136,7 +136,7 @@ export default mixins(webSocket, Vue).extend({
           port: bIec.port != null ? bIec.port : 7009,
           interval: Converter.mapTimeStampToHHMMSS(bIec.interval)
         };
-        rec.name = this.deriveName(rec);
+        rec._name = this.deriveName(rec);
 
         if (this.isBusy) {
           tmpConfigs.push(rec);
@@ -148,7 +148,7 @@ export default mixins(webSocket, Vue).extend({
         this.configs.forEach((rec: UiMeterIEC) => {
           if (rec.tag === modResponse.key[0]) {
             rec = Object.assign(rec, modResponse.value);
-            rec.name = this.deriveName(rec);
+            rec._name = this.deriveName(rec);
           }
         });
       } else if (obj.cmd === Cmd.clear) {

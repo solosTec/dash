@@ -36,7 +36,8 @@ import { SmfDialogService } from "@/shared/smf-dialog.service";
 export default Vue.extend({
   props: {
     selectedItems: {
-      type: Array as PropType<{ name: string }[]>,
+      // TODO@mse use only _name - this is a ui only property instead of name
+      type: Array as PropType<{ name?: string; _name?: string }[]>,
       default: () => [],
       required: false
     }
@@ -70,7 +71,8 @@ export default Vue.extend({
     },
     btnUpdateTitle(): string | TranslateResult {
       if (this.selectedItems.length > 0) {
-        return `${this.$t("action-update")} ${this.selectedItems[0].name}`;
+        return `${this.$t("action-update")} ${this.selectedItems[0].name ||
+          this.selectedItems[0]._name}`;
       }
       return this.$t("action-update");
     },
@@ -78,7 +80,8 @@ export default Vue.extend({
       if (this.selectedItems.length === 0) {
         return this.$t("action-del");
       } else if (this.selectedItems.length === 1) {
-        return `${this.$t("action-del")} ${this.selectedItems[0].name}`;
+        return `${this.$t("action-del")} ${this.selectedItems[0].name ||
+          this.selectedItems[0]._name}`;
       }
       return `${this.$t("action-del")} ${this.selectedItems.length} record(s)`;
     },
