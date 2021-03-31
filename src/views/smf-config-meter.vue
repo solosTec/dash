@@ -77,7 +77,7 @@
             bordered
             class="shadow"
             hover
-            primary-key="pk"
+            primary-key="tag"
             select-mode="range"
             selectable
             selectedVariant="info"
@@ -931,7 +931,7 @@ export default mixins(webSocket, Vue).extend({
       //  panel
       tabIndex: 1,
       form: {
-        pk: "",
+        tag: "",
         ident: "",
         meter: "",
         code: "",
@@ -1071,9 +1071,9 @@ export default mixins(webSocket, Vue).extend({
         //console.log('websocket received command ' + obj.cmd);
         if (obj.cmd === "insert") {
           const tom = new Date(obj.rec.data.tom.substring(0, 19));
-          //console.log('insert meter ' + obj.rec.key.pk + " - "+ obj.rec.data.ident);
+          //console.log('insert meter ' + obj.rec.key.tag + " - "+ obj.rec.data.ident);
           let rec: any = {
-            pk: obj.rec.key.pk,
+            tag: obj.rec.key.tag,
             ident: obj.rec.data.ident,
             meter: obj.rec.data.meter,
             code: obj.rec.data.code,
@@ -1111,49 +1111,49 @@ export default mixins(webSocket, Vue).extend({
           //console.log('lookup meter ' + obj.key);
           const self = this;
           this.meters.find(function(rec) {
-            if (rec.pk === obj.key[0]) {
+            if (rec.tag === obj.key[0]) {
               //console.log('modify meter ' + rec.ident);
               if (obj.value.ident != null) {
                 rec.ident = obj.value.ident;
-                if (self.form.pk === obj.key[0])
+                if (self.form.tag === obj.key[0])
                   self.form.ident = obj.value.ident;
               } else if (obj.value.meter != null) {
                 rec.meter = obj.value.meter;
-                if (self.form.pk === obj.key[0])
+                if (self.form.tag === obj.key[0])
                   self.form.meter = obj.value.meter;
               } else if (obj.value.code != null) {
                 rec.code = obj.value.code;
-                if (self.form.pk === obj.key[0])
+                if (self.form.tag === obj.key[0])
                   self.form.code = obj.value.code;
               } else if (obj.value.maker != null) {
                 rec.maker = obj.value.maker;
-                if (self.form.pk === obj.key[0])
+                if (self.form.tag === obj.key[0])
                   self.form.maker = obj.value.maker;
               } else if (obj.value.tom != null) {
                 rec.tom = new Date(obj.value.tom.substring(0, 19));
               } else if (obj.value.vFirmware != null) {
                 rec.fw = obj.value.vFirmware;
-                if (self.form.pk === obj.key[0])
+                if (self.form.tag === obj.key[0])
                   self.form.fw = obj.value.vFirmware;
               } else if (obj.value.vParam != null) {
                 rec.vParam = obj.value.vParam;
-                if (self.form.pk === obj.key[0])
+                if (self.form.tag === obj.key[0])
                   self.form.vParam = obj.value.vParam;
               } else if (obj.value.factoryNr != null) {
                 rec.factoryNr = obj.value.factoryNr;
-                if (self.form.pk === obj.key[0])
+                if (self.form.tag === obj.key[0])
                   self.form.factoryNr = obj.value.factoryNr;
               } else if (obj.value.item != null) {
                 rec.item = obj.value.item;
-                if (self.form.pk === obj.key[0])
+                if (self.form.tag === obj.key[0])
                   self.form.item = obj.value.item;
               } else if (obj.value.mClass != null) {
                 rec.mClass = obj.value.mClass;
-                if (self.form.pk === obj.key[0])
+                if (self.form.tag === obj.key[0])
                   self.form.mClass = obj.value.mClass;
               } else if (obj.value.protocol != null) {
                 rec.protocol = obj.value.protocol;
-                if (self.form.pk === obj.key[0])
+                if (self.form.tag === obj.key[0])
                   self.form.protocol = obj.value.protocol;
               } else if (obj.value.serverId != null) {
                 rec.serverId = obj.value.serverId;
@@ -1174,7 +1174,7 @@ export default mixins(webSocket, Vue).extend({
           //  clear table
           this.meters = [];
         } else if (obj.cmd === "delete") {
-          const idx = this.meters.findIndex(rec => rec.pk === obj.key[0]);
+          const idx = this.meters.findIndex(rec => rec.tag === obj.key[0]);
           this.meters.splice(idx, 1);
         } else if (obj.cmd === "load") {
           //  load status
@@ -1196,7 +1196,7 @@ export default mixins(webSocket, Vue).extend({
             // the table is loaded, we can select the meter - if there is one
             const meterPk = this.$route.params.meterPk;
             const meterIsAvailable = this.meters.findIndex(
-              meter => meter.pk === meterPk
+              meter => meter.tag === meterPk
             );
             if (meterIsAvailable !== -1) {
               // filter the table by the primary key - just in case there amount of meters is greate
@@ -1399,7 +1399,7 @@ export default mixins(webSocket, Vue).extend({
       if (items.length > 0) {
         console.log(items.length + " rows selected ");
         //   console.log('selected ' + items[0].ident);
-        this.form.pk = items[0].pk;
+        this.form.tag = items[0].tag;
         this.form.ident = items[0].ident;
         this.form.meter = items[0].meter;
         this.form.code = items[0].code;
@@ -1456,7 +1456,7 @@ export default mixins(webSocket, Vue).extend({
       event.preventDefault();
       console.log("onMeterUpdate: " + this.form.ident);
       this.ws_submit_record("modify", "config.meter", {
-        key: [this.form.pk],
+        key: [this.form.tag],
         data: {
           ident: this.form.ident,
           code: this.form.code,
@@ -1498,14 +1498,14 @@ export default mixins(webSocket, Vue).extend({
     },
     locationRefresh() {
       this.ws_submit_record("query", "config.location", {
-        key: [this.form.pk],
+        key: [this.form.tag],
         data: {}
       });
     },
     handleDeleteMeterOk(event: Event) {
       event.preventDefault();
       this.selected.forEach(element => {
-        this.ws_submit_key("delete", "config.meter", { tag: [element.pk] });
+        this.ws_submit_key("delete", "config.meter", { tag: [element.tag] });
       });
       this.$nextTick(() => {
         // Wrapped in $nextTick to ensure DOM is rendered before closing
@@ -1560,10 +1560,10 @@ export default mixins(webSocket, Vue).extend({
 
       let self = this;
       const rec = this.meters.find(function(rec) {
-        //console.log(rec.pk + ' ? ' + self.form.pk);
-        if (rec.pk === self.form.pk) return true;
+        //console.log(rec.tag + ' ? ' + self.form.tag);
+        if (rec.tag === self.form.tag) return true;
       });
-      //console.log(rec.pk + ' - ' + rec.ident + ' - ' + rec.online);
+      //console.log(rec.tag + ' - ' + rec.ident + ' - ' + rec.online);
       //  online state == 1
       return rec == null ? true : rec.online === 1;
     }
