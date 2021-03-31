@@ -36,11 +36,6 @@
               to="/config/meter"
               >{{ $t("nav-meter") }}</b-dropdown-item
             >
-            <!--b-dropdown-item
-              :disabled="!hasPrivs(MODULES.CONFIG_IEC, PRIVILEGES.VIEW)"
-              to="/config/bridge"
-              >{{ $t("nav-bridge") }}</b-dropdown-item
-            -->
             <b-dropdown-item
               :disabled="!hasPrivs(MODULES.CONFIG_WMBUS, PRIVILEGES.VIEW)"
               to="/config/wmbus"

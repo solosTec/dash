@@ -38,7 +38,7 @@
             :busy="isBusy"
             :current-page="currentPage"
             :per-page="perPage"
-            primary-key="pk"
+            primary-key="tag"
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"

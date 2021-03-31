@@ -5,7 +5,6 @@ import smfConfigWeb from "./views/smf-config-web.vue";
 import smfConfigDevice from "./views/smf-config-device.vue";
 import smfConfigGateway from "./views/smf-config-gateway.vue";
 import smfConfigMeter from "./views/smf-config-meter.vue";
-import smfConfigBridge from "./views/smf-config-bridge.vue";
 import smfConfigIec from "./views/smf-config-iec.vue";
 import smfConfigWMBus from "./views/smf-config-wmbus.vue";
 import smfConfigLora from "./views/smf-config-lora.vue";
@@ -65,11 +64,6 @@ export default new Router({
       path: "/config/meter/:meterPk?",
       name: "smfConfigMeter",
       component: smfConfigMeter
-    },
-    {
-      path: "/config/bridge",
-      name: "smfConfigBridge",
-      component: smfConfigBridge
     },
     {
       path: "/config/iec",
