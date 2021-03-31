@@ -80,7 +80,7 @@
             :per-page="perPage"
             :filter="filter"
             @filtered="onFiltered"
-            primary-key="pk"
+            primary-key="tag"
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"
@@ -1711,7 +1711,6 @@ const gatewayTableFields = [
     key: "index",
     class: "text-right small text-muted"
   },
-  // pk
   {
     key: "serverId",
     label: "Server ID",
@@ -1829,7 +1828,7 @@ export default Vue.extend({
         reset: false
       },
       form: {
-        pk: "" as string | null,
+        tag: "" as string | null,
         serverId: "",
         manufacturer: "solos::Tec",
         descr: "",
@@ -2309,7 +2308,7 @@ export default Vue.extend({
                       : new Date();
 
                   const recVisible = {
-                    pk: e.pk[0],
+                    tag: e.tag[0],
                     nr: e.nr,
                     ident: e[SML_CODES.CODE_SERVER_ID],
                     meter: e.serial,
@@ -2339,7 +2338,7 @@ export default Vue.extend({
                     //console.log('active device: compare ' + meter.ident + ' <> ' + e[SML_CODES.CODE_SERVER_ID]);
                     if (meter.ident === e[SML_CODES.CODE_SERVER_ID]) {
                       meter.active = true;
-                      meter.pk = obj.rec.values.pk;
+                      meter.tag = obj.rec.values.tag;
                       meter.mc = obj.rec.values.mc;
                       return true;
                     }
@@ -2365,7 +2364,7 @@ export default Vue.extend({
                       visible: false,
                       active: true,
                       serverId: obj.rec.srv,
-                      pk: e.pk[0],
+                      tag: e.tag[0],
                       mc: e.mc
                     };
 
@@ -2683,7 +2682,7 @@ export default Vue.extend({
           }
         } else if (obj.cmd === "insert") {
           let rec: any = {
-            pk: obj.rec.key.pk,
+            tag: obj.rec.key.tag,
             serverId: obj.rec.data.serverId,
             manufacturer: obj.rec.data.manufacturer,
             descr: obj.rec.data.descr,
@@ -2713,8 +2712,8 @@ export default Vue.extend({
         } else if (obj.cmd === "modify") {
           //console.log('lookup gateway ' + obj.key[0]);
           this.gateways.find(function(rec: any) {
-            //console.log('compare ' + obj.key[0] + ' <==> ' + rec.pk);
-            if (rec.pk === obj.key[0]) {
+            //console.log('compare ' + obj.key[0] + ' <==> ' + rec.tag);
+            if (rec.tag === obj.key[0]) {
               //console.log('modify record ' + rec.name);
               if (obj.value.serverId != null) {
                 rec.serverId = obj.value.serverId;
@@ -2750,7 +2749,7 @@ export default Vue.extend({
           this.tabOpLog.data.items = [];
         } else if (obj.cmd === "delete") {
           const idx = this.gateways.findIndex(
-            (rec: any) => rec.pk === obj.key[0]
+            (rec: any) => rec.tag === obj.key[0]
           );
           this.gateways.splice(idx, 1);
         } else if (obj.cmd === "load") {
@@ -2777,7 +2776,7 @@ export default Vue.extend({
       const smfContext = bTabs.tabs[this.tabIndex].$attrs["smf-context"];
       console.log(`${smfContext} selected`);
 
-      const pkGateway = this.selected[0].pk as string;
+      const pkGateway = this.selected[0].tag as string;
       if (smfContext === this.smfContext.statusWord) {
         this.spinner.status = true;
         this.ws_submit_request(
@@ -2901,11 +2900,11 @@ export default Vue.extend({
       this.selected = items;
       this.form.serverId = "";
       this.form.name = "";
-      this.form.pk = null;
+      this.form.tag = null;
       if (items.length > 0) {
         this.form.serverId = items[0].serverId;
         this.form.name = items[0].name;
-        this.form.pk = items[0].pk;
+        this.form.tag = items[0].tag;
         if (items.length === 1) {
           // the tabs are rendered only if an item is selected - so wait a tick until the tabs-element is there
           setTimeout(() => this.updateSmfContext());
@@ -2942,7 +2941,7 @@ export default Vue.extend({
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_ROOT_IPT_PARAM,
-        [this.form.pk!],
+        [this.form.tag!],
         { index: index + 1, ipt: this.ipt.param[index] }
       );
     },
@@ -2958,7 +2957,7 @@ export default Vue.extend({
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_ROOT_CUSTOM_INTERFACE,
-        [this.form.pk!],
+        [this.form.tag!],
         this.tabCustom.data.ipt
       );
     },
@@ -2974,7 +2973,7 @@ export default Vue.extend({
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_ROOT_BROKER,
-        [this.form.pk!],
+        [this.form.tag!],
         this.tabCustom.data.nms
       );
     },
@@ -2983,7 +2982,7 @@ export default Vue.extend({
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_ROOT_BROKER,
-        [this.form.pk!],
+        [this.form.tag!],
         { brokers }
       );
     },
@@ -2993,7 +2992,7 @@ export default Vue.extend({
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_ROOT_HARDWARE_PORT,
-        [this.form.pk!],
+        [this.form.tag!],
         hardwarePort
       );
     },
@@ -3001,7 +3000,7 @@ export default Vue.extend({
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_DELETE_DEVICE,
-        [this.form.pk!],
+        [this.form.tag!],
         { nr: item.nr, meter: item.ident }
       );
     },
@@ -3017,7 +3016,7 @@ export default Vue.extend({
         this.ws_submit_request(
           MESSAGE_REQUEST.setProcParameter,
           SML_CODES.CODE_ACTIVATE_DEVICE,
-          [this.form.pk!],
+          [this.form.tag!],
           { nr: item.nr, meter: item.ident }
         );
       }
@@ -3025,14 +3024,14 @@ export default Vue.extend({
     onMeterEdit(item: any) {
       this.$router.push({
         name: "smfConfigMeter",
-        params: { meterPk: item.pk }
+        params: { meterPk: item.tag }
       });
     },
     onWMbusUpdate() {
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_IF_wMBUS,
-        [this.form.pk!],
+        [this.form.tag!],
         { wmbus: this.wmbus }
       );
     },
@@ -3040,7 +3039,7 @@ export default Vue.extend({
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_IF_1107,
-        [this.form.pk!],
+        [this.form.tag!],
         { iec: this.iec.params }
       );
     },
@@ -3071,7 +3070,7 @@ export default Vue.extend({
       this.spinner.reset = true;
       this.ws_proxy(
         "cache.reset",
-        [this.form.pk!],
+        [this.form.tag!],
         [
           SML_CODES.CLASS_OP_LOG_STATUS_WORD,
           SML_CODES.CODE_ROOT_IPT_PARAM,
@@ -3082,12 +3081,12 @@ export default Vue.extend({
       );
     },
     onProxyCacheSections() {
-      this.ws_proxy("cache.sections", [this.form.pk!]);
+      this.ws_proxy("cache.sections", [this.form.tag!]);
     },
     onProxyCacheUpdate() {
       this.ws_proxy(
         "cache.update",
-        [this.form.pk!],
+        [this.form.tag!],
         [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]
       );
     },
@@ -3095,7 +3094,7 @@ export default Vue.extend({
       //  create snapshot of current configuration
       this.ws_proxy(
         "cache.sync",
-        [this.form.pk!],
+        [this.form.tag!],
         [
           SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
           SML_CODES.CODE_ROOT_ACTIVE_DEVICES,
@@ -3106,7 +3105,7 @@ export default Vue.extend({
     onProxyCacheQuery() {
       this.ws_proxy(
         "cache.query",
-        [this.form.pk!],
+        [this.form.tag!],
         [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]
       );
     },
@@ -3127,7 +3126,7 @@ export default Vue.extend({
       this.ws_submit_request(
         MESSAGE_REQUEST.getProcParameter,
         SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
-        [this.form.pk!],
+        [this.form.tag!],
         //  path is [role, user, meterID]
         {
           serverId: this.form.serverId,
