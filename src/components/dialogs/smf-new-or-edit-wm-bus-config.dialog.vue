@@ -30,7 +30,6 @@
         required: 'wmbus-config-aes-is-required',
         aesHex: 'wmbus-config-aes-must-be-hex'
       }"
-      :input-transformer="upperCaseTransformer"
     >
     </smf-input>
   </b-form>
@@ -41,7 +40,6 @@ import { helpers, required } from "vuelidate/lib/validators";
 import { SmfDialogContentMixin } from "@/shared/smf-dialog.service";
 import { i18n } from "@/plugins/i18n";
 import SmfInput from "@/components/form-inputs/smf-input.vue";
-import { InputTransformer } from "@/components/form-inputs/input-transformer";
 
 const aesHex = helpers.regex("alpha", /^[a-fA-F0-9]{1,256}$/);
 export default Vue.extend({
@@ -49,13 +47,7 @@ export default Vue.extend({
   components: { SmfInput },
   i18n,
   data() {
-    return {
-      upperCaseTransformer: {
-        transform(val: string): string {
-          return val.toLocaleUpperCase();
-        }
-      } as InputTransformer
-    };
+    return {};
   },
   validations: {
     formModel: {
