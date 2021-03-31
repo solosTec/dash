@@ -136,7 +136,7 @@ export default mixins(webSocket, Vue).extend({
         },
         {
           //  pk
-          key: "channel",
+          key: "tag",
           label: "Channel",
           sortable: true,
           class: "text-right",
@@ -178,7 +178,7 @@ export default mixins(webSocket, Vue).extend({
         if (obj.cmd == "insert") {
           const regTime = new Date(obj.rec.data.regTime.substring(0, 19));
           const rec = {
-            channel: obj.rec.key.channel,
+            tag: obj.rec.key.tag,
             name: obj.rec.data.name,
             device: obj.rec.data.device,
             account: obj.rec.data.account,
@@ -189,13 +189,13 @@ export default mixins(webSocket, Vue).extend({
           this.targets.push(rec);
         } else if (obj.cmd == "delete") {
           const idx = this.targets.findIndex(
-            rec => obj.key.length == 1 && obj.key[0] == rec.channel
+            rec => obj.key.length == 1 && obj.key[0] == rec.tag
           );
           console.log("delete index " + idx);
           this.targets.splice(idx, 1);
         } else if (obj.cmd == "modify") {
           this.targets.find(function(rec) {
-            if (obj.key.length == 1 && obj.key[0] == rec.channel) {
+            if (obj.key.length == 1 && obj.key[0] == rec.tag) {
               if (obj.value.px != null) {
                 rec.px = obj.value.px;
               } else if (obj.value.counter != null) {
