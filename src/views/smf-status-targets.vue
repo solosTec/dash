@@ -33,7 +33,7 @@
             selectedVariant="info"
             @row-selected="rowSelected"
             :fields="fields"
-            primary_key="channel"
+            primary_key="tag"
             :items="targets"
             :busy="isBusy"
             :current-page="currentPage"
