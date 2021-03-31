@@ -37,7 +37,7 @@
             :busy="isBusy"
             :current-page="currentPage"
             :per-page="perPage"
-            primary-key="pk"
+            primary-key="tag"
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"
@@ -253,7 +253,7 @@ export default mixins(webSocket, Vue).extend({
       sortDesc: false,
       sortDirection: "desc",
       form: {
-        pk: "",
+        tag: "",
         eui: "",
         aes: "",
         driver: "ascii",
@@ -292,9 +292,9 @@ export default mixins(webSocket, Vue).extend({
             obj.channel
         );
         if (obj.cmd == "insert") {
-          var activation = obj.rec.data.activation ? "otaa" : "abp";
+          const activation = obj.rec.data.activation ? "otaa" : "abp";
           this.gateways.push({
-            pk: obj.rec.key.pk,
+            tag: obj.rec.key.tag,
             euid: obj.rec.data.DevEUI,
             aes: obj.rec.data.AESKey,
             driver: obj.rec.data.driver,
@@ -304,40 +304,40 @@ export default mixins(webSocket, Vue).extend({
             gwEUI: obj.rec.data.GatewayEUI
           });
         } else if (obj.cmd == "delete") {
-          console.log("lookup gateway " + obj.pk);
-          var idx = this.gateways.findIndex(rec => rec.pk == obj.pk);
+          console.log("lookup gateway " + obj.tag);
+          var idx = this.gateways.findIndex(rec => rec.tag == obj.tag);
           console.log("delete index " + idx);
           this.gateways.splice(idx, 1);
         } else if (obj.cmd == "modify") {
           console.log("lookup device " + obj.key);
           var self = this;
           this.gateways.find(function(rec) {
-            if (rec.pk == obj.key) {
+            if (rec.tag == obj.key) {
               if (obj.value.DevEUI != null) {
                 rec.euid = obj.value.DevEUI;
-                if (self.form.pk == obj.key) self.form.euid = obj.value.DevEUI;
+                if (self.form.tag == obj.key) self.form.euid = obj.value.DevEUI;
               } else if (obj.value.AESKey != null) {
                 rec.aes = obj.value.AESKey;
-                if (self.form.pk == obj.key) self.form.aes = obj.value.AESKey;
+                if (self.form.tag == obj.key) self.form.aes = obj.value.AESKey;
               } else if (obj.value.driver != null) {
                 rec.driver = obj.value.driver;
-                if (self.form.pk == obj.key)
+                if (self.form.tag == obj.key)
                   self.form.driver = obj.value.driver;
               } else if (obj.value.activation != null) {
                 rec.activation = obj.value.activation ? "otaa" : "abp";
-                if (self.form.pk == obj.key)
+                if (self.form.tag == obj.key)
                   self.form.activation = rec.activation;
               } else if (obj.value.DevAddr != null) {
                 rec.devAddr = obj.value.DevAddr;
-                if (self.form.pk == obj.key)
+                if (self.form.tag == obj.key)
                   self.form.devAddr = obj.value.devAddr;
               } else if (obj.value.AppEUI != null) {
                 rec.appEUI = obj.value.AppEUI;
-                if (self.form.pk == obj.key)
+                if (self.form.tag == obj.key)
                   self.form.appEUI = obj.value.AppEUI;
               } else if (obj.value.GatewayEUI != null) {
                 rec.gwEUI = obj.value.GatewayEUI;
-                if (self.form.pk == obj.key)
+                if (self.form.tag == obj.key)
                   self.form.gwEUI = obj.value.GatewayEUI;
               }
             }
@@ -359,7 +359,7 @@ export default mixins(webSocket, Vue).extend({
     rowSelected(items: any[]) {
       this.selected = items;
       if (items.length > 0) {
-        this.form.pk = items[0].pk;
+        this.form.tag = items[0].tag;
         this.form.eui = items[0].euid;
         this.form.aes = items[0].aes;
         this.form.driver = items[0].driver;
@@ -373,7 +373,7 @@ export default mixins(webSocket, Vue).extend({
       event.preventDefault();
       console.log("onDeviceUpdate: " + this.form.eui);
       this.ws_submit_record("modify", "config.lora", {
-        key: [this.form.pk],
+        key: [this.form.tag],
         data: {
           DevEUI: this.form.name,
           AESKey: this.form.aes,

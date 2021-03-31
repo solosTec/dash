@@ -3009,7 +3009,7 @@ export default Vue.extend({
         this.ws_submit_request(
           MESSAGE_REQUEST.setProcParameter,
           SML_CODES.CODE_DEACTIVATE_DEVICE,
-          [this.form.pk!],
+          [this.form.tag!],
           { nr: item.nr, meter: item.ident }
         );
       } else {
