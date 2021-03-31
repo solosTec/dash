@@ -124,7 +124,6 @@ export default mixins(webSocket, Vue).extend({
       this.ws_subscribe(Channel.ConfigWMBus);
     },
     ws_on_data(obj: WSResponse) {
-      console.log(obj);
       if (obj.cmd === Cmd.insert) {
         const insertResponse = obj as WSInsertResponse<MeterWMBus>;
         const bWmBus = insertResponse.rec.data;

@@ -1,5 +1,5 @@
 export interface Device {
-  pk: string; // "68760527-aba8-4b2e-b6cd-381ec6b360df"
+  tag: string; // "68760527-aba8-4b2e-b6cd-381ec6b360df"
   creationTime: string; // 2020-01-24 08:00:59.00000000
   descr: string; //"00153B02297E"
   enabled: boolean | null;

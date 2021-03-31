@@ -46,7 +46,7 @@
                 <b-form-checkbox
                   v-model="data.value"
                   switch
-                  @change="switchEnableState($event, data.item.pk)"
+                  @change="switchEnableState($event, data.item.tag)"
                 >
                 </b-form-checkbox>
               </b-form-group>
@@ -83,7 +83,7 @@ import SmfNewOrEditDeviceDialog from "@/components/dialogs/smf-new-or-edit-devic
 import { BTableItem } from "@/shared/b-table-item";
 
 interface UiDevice extends BTableItem {
-  pk: string;
+  tag: string;
   age: Date;
   descr: string;
   enabled: boolean | null;
@@ -178,7 +178,7 @@ export default mixins(webSocket, Vue).extend({
           const bDevice = insertResponse.rec.data;
           const created = new Date(bDevice.creationTime.substring(0, 19));
           const rec: UiDevice = {
-            pk: insertResponse.rec.key.pk as string,
+            tag: insertResponse.rec.key.tag as string,
             age: created,
             descr: bDevice.descr,
             enabled: bDevice.enabled,
@@ -200,7 +200,7 @@ export default mixins(webSocket, Vue).extend({
         } else if (obj.cmd === Cmd.modify) {
           const modResponse = obj as WSModifyResponse<Device>;
           this.devices.forEach((rec: UiDevice) => {
-            if (rec.pk === modResponse.key[0]) {
+            if (rec.tag === modResponse.key[0]) {
               rec = Object.assign(rec, modResponse.value);
               rec._rowVariant = rec.enabled ? null : "warning";
             }
@@ -212,7 +212,7 @@ export default mixins(webSocket, Vue).extend({
           const key = Array.isArray((obj as WSDeleteResponse).key)
             ? (obj as WSDeleteResponse).key[0]
             : (obj as WSDeleteResponse).key;
-          this.devices = this.devices.filter(d => d.pk !== key);
+          this.devices = this.devices.filter(d => d.tag !== key);
         } else if (obj.cmd === Cmd.load) {
           const loadResponse = obj as WSLoadResponse;
           if (loadResponse.hasOwnProperty("show")) {
@@ -242,7 +242,7 @@ export default mixins(webSocket, Vue).extend({
       );
       if (data) {
         this.ws_submit_record(Cmd.modify, Channel.ConfigDevices, {
-          key: [data.pk],
+          key: [data.tag],
           data
         });
       }
@@ -250,7 +250,7 @@ export default mixins(webSocket, Vue).extend({
     async onExecuteDeviceDelete() {
       this.selected.forEach(element => {
         this.ws_submit_key(Cmd.delete, Channel.ConfigDevices, {
-          tag: [element.pk]
+          tag: [element.tag]
         });
       });
     },
@@ -272,9 +272,9 @@ export default mixins(webSocket, Vue).extend({
         });
       }
     },
-    switchEnableState(enabled: boolean, pk: string) {
+    switchEnableState(enabled: boolean, tag: string) {
       this.ws_submit_record(Cmd.modify, Channel.ConfigDevices, {
-        key: [pk],
+        key: [tag],
         data: {
           enabled
         }
