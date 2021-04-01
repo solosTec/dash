@@ -401,7 +401,7 @@
               </b-form>
             </b-tab>
 
-            <b-tab :smf-context="smfContext.access" no-body>
+            <!-- b-tab :smf-context="smfContext.access" no-body>
               <template slot="title">
                 {{ $t("config-meter-02") }}
                 <b-spinner v-if="spinner.meter" small type="grow" />
@@ -597,7 +597,7 @@
                   </b-col>
                 </b-row>
               </b-form>
-            </b-tab>
+            </b-tab -->
 
             <b-tab
               :disabled="selected[0].online !== 1"
