@@ -84,7 +84,7 @@ import { BTableItem } from "@/shared/b-table-item";
 
 interface UiDevice extends BTableItem {
   tag: string;
-  age: Date;
+  _age: Date;
   descr: string;
   enabled: boolean | null;
   id: string;
@@ -131,7 +131,7 @@ const fields = [
     class: "text-center"
   },
   {
-    key: "age",
+    key: "_age",
     label: "Created",
     formatter: (value: string) => value.toLocaleString(),
     sortable: true
@@ -179,7 +179,7 @@ export default mixins(webSocket, Vue).extend({
           const created = new Date(bDevice.creationTime.substring(0, 19));
           const rec: UiDevice = {
             tag: insertResponse.rec.key.tag as string,
-            age: created,
+            _age: created,
             descr: bDevice.descr,
             enabled: bDevice.enabled,
             id: bDevice.id,
@@ -266,7 +266,7 @@ export default mixins(webSocket, Vue).extend({
           key: [null],
           data: {
             ...newDevice,
-            age: new Date(),
+            creationTime: new Date(),
             source: process.env.VUE_APP_SMF_SERVER
           }
         });
