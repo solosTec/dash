@@ -4,7 +4,7 @@ export interface Gateway {
   name: string;
   manufacturer: string;
   descr: string;
-  model: string;
+  model?: string;
   vFirmware: string;
   userName: string;
   userPwd: string;
