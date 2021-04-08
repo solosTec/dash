@@ -318,7 +318,7 @@ export default mixins(webSocket, Vue).extend({
             manufacturer: obj.rec.data.manufacturer,
             medium: obj.rec.data.medium,
             frameType: obj.rec.data.frameType,
-            payload: obj.rec.data.Payload
+            payload: obj.rec.data.payload
           } as any;
           tmpRecords.push(rec);
         } else if (obj.cmd == "clear") {
