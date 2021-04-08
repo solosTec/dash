@@ -66,6 +66,7 @@ import { MeterWMBus } from "@/api/meter-wm-bus";
 interface UiMeterWMBus extends BTableItem {
   _name?: string;
   tag: string;
+  meter: string;
   address: string;
   port: number;
   aes: string;
@@ -75,6 +76,11 @@ const fields = [
   {
     key: "tag",
     label: "Tag",
+    sortable: true
+  },
+  {
+    key: "meter",
+    label: "Meter",
     sortable: true
   },
   {
@@ -129,6 +135,7 @@ export default mixins(webSocket, Vue).extend({
         const bWmBus = insertResponse.rec.data;
         const rec: UiMeterWMBus = {
           tag: insertResponse.rec.key.tag as string,
+          meter: bWmBus.meter,
           address: bWmBus.address != null ? bWmBus.address : "0.0.0.0",
           port: bWmBus.port != null ? bWmBus.port : 7009,
           aes: bWmBus.aes

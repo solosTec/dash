@@ -68,6 +68,7 @@ import SmfNewOrEditIecDialogDialog from "@/components/dialogs/smf-new-or-edit-ie
 interface UiMeterIEC extends BTableItem {
   _name?: string;
   tag: string;
+  meter: string;
   host: string;
   port: number;
   interval: string;
@@ -77,6 +78,11 @@ const fields = [
   {
     key: "tag",
     label: "Tag",
+    sortable: true
+  },
+  {
+    key: "meter",
+    label: "Meter",
     sortable: true
   },
   {
@@ -132,6 +138,7 @@ export default mixins(webSocket, Vue).extend({
         const bIec = insertResponse.rec.data;
         const rec: UiMeterIEC = {
           tag: insertResponse.rec.key.tag as string,
+          meter: bIec.meter,
           host: bIec.host != null ? bIec.host : "0.0.0.0",
           port: bIec.port != null ? bIec.port : 7009,
           interval: Converter.mapTimeStampToHHMMSS(bIec.interval)
