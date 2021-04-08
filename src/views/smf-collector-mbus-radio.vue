@@ -169,7 +169,7 @@ export default mixins(webSocket, Vue).extend({
         },
         {
           key: "serverId",
-          label: "Server ID",
+          label: "Meter",
           sortable: true
         },
         {
