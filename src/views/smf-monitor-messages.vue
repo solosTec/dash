@@ -160,14 +160,34 @@
 </template>
 
 <script lang="ts">
-import { webSocket } from "@/mixins/web-socket";
+import {
+  webSocket,
+  WSDeleteResponse,
+  WSInsertResponse
+} from "@/mixins/web-socket";
 import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
 import store from "../store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
+import { Message, MessageSeverity } from "@/api/message";
 
 let tmpMsg = [] as any[];
+
+interface UIMessage {
+  id: string;
+  gen: number;
+  msg: string;
+  severity: MessageSeverity;
+  ts: string; //"2021-04-07T09:47:43+0000";
+}
+
+interface MessageTableField {
+  key: keyof UIMessage & string;
+  label: string;
+  sortable: boolean;
+  formatter: (value: string) => string;
+}
 
 export default mixins(webSocket, Vue).extend({
   name: "smfMonitorMessages",
@@ -209,25 +229,6 @@ export default mixins(webSocket, Vue).extend({
         {
           key: "severity",
           label: "Severity",
-          formatter: (value: number) => {
-            switch (value) {
-              case 1:
-                return "TRACE";
-              case 2:
-                return "DEBUG";
-              case 3:
-                return "INFO ";
-              case 4:
-                return "WARN ";
-              case 5:
-                return "ERROR";
-              case 6:
-                return "FATAL";
-              default:
-                break;
-            }
-            return "ALL";
-          },
           sortable: true
         },
         {
@@ -235,8 +236,8 @@ export default mixins(webSocket, Vue).extend({
           label: "Message",
           sortable: true
         }
-      ],
-      messages: [] as any[],
+      ] as MessageTableField[],
+      messages: [] as UIMessage[],
       sortBy: "id",
       sortDesc: true,
       sortDirection: "desc",
@@ -277,35 +278,37 @@ export default mixins(webSocket, Vue).extend({
             }
           }
         } else if (obj.cmd == "insert") {
+          const insertResponse = obj as WSInsertResponse<Message>;
+          const bMessage = insertResponse.rec.data;
           //  {"rec": {"key": {"id":0}, "data": {"msg":"startup","severity":3,"ts":"2018-03-20 18:05:24.71590930"}}}
-          console.log("message " + obj.rec.key.id);
+          console.log("message " + insertResponse.rec.key.tag);
           // rec._rowVariant = 'warning';
           let rec = {
-            id: obj.rec.key.id,
-            ts: obj.rec.data.ts,
-            severity: obj.rec.data.severity,
-            msg: obj.rec.data.msg
+            id: insertResponse.rec.key.tag,
+            ts: new Date(bMessage.ts.substring(0, 19)),
+            severity: bMessage.severity,
+            msg: bMessage.msg
           } as any;
-          switch (obj.rec.data.severity) {
-            case 1:
+          switch (bMessage.severity) {
+            case "TRACE":
               this.stat.trace++;
               break;
-            case 2:
+            case "DEBUG":
               this.stat.debug++;
               break;
-            case 3:
+            case "INFO":
               this.stat.info++;
               rec["_rowVariant"] = "success";
               break;
-            case 4:
+            case "WARN":
               this.stat.warn++;
               rec["_rowVariant"] = "secondary";
               break;
-            case 5:
+            case "ERROR":
               this.stat.error++;
               rec["_rowVariant"] = "warning";
               break;
-            case 6:
+            case "FATAL":
               this.stat.fatal++;
               rec["_rowVariant"] = "danger";
               break;
@@ -317,7 +320,8 @@ export default mixins(webSocket, Vue).extend({
           //  clear table
           this.messages = [];
         } else if (obj.cmd == "delete") {
-          console.log("lookup message " + obj.key);
+          const deleteResponse = obj as WSDeleteResponse;
+          console.log("lookup message " + deleteResponse.key);
           const idx = this.messages.findIndex(rec => rec.id == obj.key);
           console.log("delete index " + idx);
           this.messages.splice(idx, 1);

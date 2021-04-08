@@ -498,7 +498,7 @@
             <b-tab
               :disabled="
                 selected[0].online === 0 ||
-                  !selected[0].model.startsWith('SMF-GW:')
+                  !(selected[0].model || '').startsWith('SMF-GW:')
               "
               no-body
               :smf-context="smfContext.broker"
@@ -2772,6 +2772,7 @@ export default Vue.extend({
       }
     },
     updateSmfContext() {
+      console.log(this);
       const bTabs = this.$refs.tabs as BTabs;
       const smfContext = bTabs.tabs[this.tabIndex].$attrs["smf-context"];
       console.log(`${smfContext} selected`);
