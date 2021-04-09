@@ -64,6 +64,7 @@ import { MeterIEC } from "@/api/meter-iec";
 import { Converter } from "@/shared/converter";
 import { SmfDialogService } from "@/shared/smf-dialog.service";
 import SmfNewOrEditIecDialogDialog from "@/components/dialogs/smf-new-or-edit-iec-config.dialog.vue";
+import covertTimeStampToDate = Converter.covertTimeStampToDate;
 
 interface UiMeterIEC extends BTableItem {
   _name?: string;
@@ -72,14 +73,10 @@ interface UiMeterIEC extends BTableItem {
   host: string;
   port: number;
   interval: string;
+  lastSeen?: Date;
 }
 
 const fields = [
-  {
-    key: "tag",
-    label: "Tag",
-    sortable: true
-  },
   {
     key: "meter",
     label: "Meter",
@@ -97,6 +94,11 @@ const fields = [
   {
     key: "interval",
     label: "Interval",
+    sortable: true
+  },
+  {
+    key: "lastSeen",
+    label: "Last Seen",
     sortable: true
   }
 ];
@@ -141,7 +143,8 @@ export default mixins(webSocket, Vue).extend({
           meter: bIec.meter,
           host: bIec.host != null ? bIec.host : "0.0.0.0",
           port: bIec.port != null ? bIec.port : 7009,
-          interval: Converter.mapTimeStampToHHMMSS(bIec.interval)
+          interval: Converter.mapTimeStampToHHMMSS(bIec.interval),
+          lastSeen: covertTimeStampToDate(bIec.lastSeen)
         };
         rec._name = this.deriveName(rec);
 
@@ -154,7 +157,15 @@ export default mixins(webSocket, Vue).extend({
         const modResponse = obj as WSModifyResponse<MeterIEC>;
         this.configs.forEach((rec: UiMeterIEC) => {
           if (rec.tag === modResponse.key[0]) {
-            rec = Object.assign(rec, modResponse.value);
+            if (modResponse.value.interval) {
+              rec.interval = Converter.mapTimeStampToHHMMSS(
+                modResponse.value.interval
+              );
+            } else if (modResponse.value.lastSeen) {
+              rec.lastSeen = covertTimeStampToDate(modResponse.value.lastSeen);
+            } else {
+              rec = Object.assign(rec, modResponse.value);
+            }
             rec._name = this.deriveName(rec);
           }
         });
@@ -218,8 +229,8 @@ export default mixins(webSocket, Vue).extend({
         });
       }
     },
-    deriveName(rec: MeterIEC) {
-      return `${rec.host}:${rec.port}`;
+    deriveName(rec: UiMeterIEC) {
+      return `${rec.meter}`;
     }
   },
   beforeRouteEnter(to: Route, from: Route, next: any) {

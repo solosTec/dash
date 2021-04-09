@@ -4,4 +4,5 @@ export interface MeterIEC {
   host: string;
   port: number;
   interval: string;
+  lastSeen?: string;
 }
