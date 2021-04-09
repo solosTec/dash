@@ -59,7 +59,7 @@ import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
 import store from "@/store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import { BTableItem } from "@/shared/b-table-item";
-import { SmfDialogService } from "@/shared/smf-dialog.service";
+import { DialogMode, SmfDialogService } from "@/shared/smf-dialog.service";
 import SmfNewOrEditWmBusDialogDialog from "@/components/dialogs/smf-new-or-edit-wm-bus-config.dialog.vue";
 import { MeterWMBus } from "@/api/meter-wm-bus";
 import { Converter } from "@/shared/converter";
@@ -190,7 +190,8 @@ export default mixins(webSocket, Vue).extend({
         this,
         "Update wM-Bus Config",
         SmfNewOrEditWmBusDialogDialog,
-        this.selected[0]
+        this.selected[0],
+        DialogMode.UPDATE
       );
       if (data) {
         this.ws_submit_record(Cmd.modify, Channel.ConfigWMBus, {
@@ -211,7 +212,8 @@ export default mixins(webSocket, Vue).extend({
         this,
         "Add new wM-Bus config",
         SmfNewOrEditWmBusDialogDialog,
-        { address: "0.0.0.0", port: 7009 }
+        { address: "0.0.0.0", port: 7009 },
+        DialogMode.ADD
       );
       console.log(newConfig);
       if (newConfig) {

@@ -12,6 +12,7 @@
       :max="max ? max : ''"
       :number="type === 'number'"
       v-mask="mask ? mask : ''"
+      :disabled="disabled"
       @input="transformInput"
       v-model="vuelidateFormModel.$model[formProperty]"
       :placeholder="$t(lableKey) | fmtPlaceholder"
@@ -79,6 +80,10 @@ export default Vue.extend({
     },
     inputTransformer: {
       type: Object as PropType<InputTransformer>,
+      required: false
+    },
+    disabled: {
+      type: Boolean,
       required: false
     }
   },

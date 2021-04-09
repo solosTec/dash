@@ -8,6 +8,7 @@
       :error-messages="{
         required: 'wmbus-config-address-is-required'
       }"
+      :disabled="true"
     >
     </smf-input>
 
@@ -19,6 +20,18 @@
       :error-messages="{
         required: 'wmbus-config-port-is-required'
       }"
+      :disabled="true"
+    >
+    </smf-input>
+
+    <smf-input
+      lable-key="wmbus-config-meter"
+      :vuelidate-form-model="$v.formModel"
+      form-property="meter"
+      :error-messages="{
+        required: 'wmbus-config-meter-is-required'
+      }"
+      :disabled="dialogMode === DialogMode.UPDATE"
     >
     </smf-input>
 
@@ -37,7 +50,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { helpers, required } from "vuelidate/lib/validators";
-import { SmfDialogContentMixin } from "@/shared/smf-dialog.service";
+import { DialogMode, SmfDialogContentMixin } from "@/shared/smf-dialog.service";
 import { i18n } from "@/plugins/i18n";
 import SmfInput from "@/components/form-inputs/smf-input.vue";
 
@@ -46,14 +59,23 @@ export default Vue.extend({
   mixins: [SmfDialogContentMixin],
   components: { SmfInput },
   i18n,
+  props: {
+    dialogMode: {
+      type: Number,
+      required: true
+    }
+  },
   data() {
-    return {};
+    return {
+      DialogMode: DialogMode
+    };
   },
   validations: {
     formModel: {
       address: { required },
       port: { required },
-      aes: { required, aesHex }
+      aes: { required, aesHex },
+      meter: { required }
     }
   },
   methods: {}

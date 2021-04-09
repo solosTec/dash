@@ -347,5 +347,7 @@
     "wmbus-config-port-is-required": "Port is required",
     "wmbus-config-aes": "AES Key",
     "wmbus-config-aes-is-required": "AES Key is required",
-    "wmbus-config-aes-must-be-hex": "Only hexadecimal characters are allowed"
+    "wmbus-config-aes-must-be-hex": "Only hexadecimal characters are allowed",
+    "wmbus-config-meter": "Meter",
+    "wmbus-config-meter-is-required": "Meter is required"
 }

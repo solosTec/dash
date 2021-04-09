@@ -1422,7 +1422,7 @@ export default mixins(webSocket, Vue).extend({
       }
     },
     async onMeterInsert() {
-      const newMeterIdentifier: MeterIdentifier = await SmfDialogService.openFormDialog(
+      const newMeterIdentifier: MeterIdentifier | null = await SmfDialogService.openFormDialog(
         this,
         this.$t("smf-new-meter-identifier"),
         SmfNewMeterIdentifierDialog,

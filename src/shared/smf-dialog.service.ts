@@ -9,6 +9,10 @@ export interface DialogFormState<T> {
   formModel: T;
 }
 
+export enum DialogMode {
+  ADD,
+  UPDATE
+}
 export type VueComponentInstance = CombinedVueInstance<any, any, any, any, any>;
 
 export class SmfDialogService {
@@ -28,24 +32,27 @@ export class SmfDialogService {
     parent: VueComponentInstance,
     title: string | LocaleMessages,
     dialogComponentType: VueConstructor,
-    formModel: T
-  ): Promise<T> {
+    formModel: T,
+    dialogMode: DialogMode = DialogMode.ADD
+  ): Promise<T | null> {
     const dialogContentComponent = new dialogComponentType({
       // pass a copy to avoid changing the input data in the view - even if they are not saved
-      propsData: { formModel: Object.assign({}, formModel) }
+      propsData: { formModel: Object.assign({}, formModel), dialogMode }
     });
 
-    return new Promise<T>(resolve => {
+    return new Promise<T | null>(resolve => {
       new SmfGenericFormDialog({
         propsData: { parent, dialogContentComponent, title }
-      }).$on("close", (e: T) => {
+      }).$on("close", (e: T | null) => {
         // remove all properties from the processed object thatstrat
         // with _. These props are client only
-        Object.keys(e).forEach(key => {
-          if (key.startsWith("_")) {
-            delete (e as any)[key];
-          }
-        });
+        if (e) {
+          Object.keys(e).forEach(key => {
+            if (key.startsWith("_")) {
+              delete (e as any)[key];
+            }
+          });
+        }
         resolve(e);
       });
     });
