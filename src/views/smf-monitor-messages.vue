@@ -300,7 +300,7 @@ export default mixins(webSocket, Vue).extend({
               this.stat.info++;
               rec["_rowVariant"] = "success";
               break;
-            case "WARN":
+            case "WARNING":
               this.stat.warn++;
               rec["_rowVariant"] = "secondary";
               break;

@@ -2,7 +2,7 @@ export type MessageSeverity =
   | "TRACE"
   | "DEBUG"
   | "INFO"
-  | "WARN"
+  | "WARNING"
   | "ERROR"
   | "FATAL";
 
