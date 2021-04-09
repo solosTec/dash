@@ -25,4 +25,10 @@ export namespace Converter {
     }
     return dirtyValue;
   };
+
+  export const covertTimeStampToDate = (
+    timeStamp: string | null | undefined
+  ): Date | undefined => {
+    return timeStamp ? new Date(timeStamp.substring(0, 19)) : undefined;
+  };
 }

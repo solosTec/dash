@@ -4,4 +4,5 @@ export interface MeterWMBus {
   address: string;
   port: number;
   aes: string; //AES Hex String
+  lastSeen?: string;
 }

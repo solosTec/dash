@@ -62,6 +62,8 @@ import { BTableItem } from "@/shared/b-table-item";
 import { SmfDialogService } from "@/shared/smf-dialog.service";
 import SmfNewOrEditWmBusDialogDialog from "@/components/dialogs/smf-new-or-edit-wm-bus-config.dialog.vue";
 import { MeterWMBus } from "@/api/meter-wm-bus";
+import { Converter } from "@/shared/converter";
+import covertTimeStampToDate = Converter.covertTimeStampToDate;
 
 interface UiMeterWMBus extends BTableItem {
   _name?: string;
@@ -70,14 +72,10 @@ interface UiMeterWMBus extends BTableItem {
   address: string;
   port: number;
   aes: string;
+  lastSeen?: Date;
 }
 
 const fields = [
-  {
-    key: "tag",
-    label: "Tag",
-    sortable: true
-  },
   {
     key: "meter",
     label: "Meter",
@@ -95,6 +93,11 @@ const fields = [
   {
     key: "aes",
     label: "AES",
+    sortable: true
+  },
+  {
+    key: "lastSeen",
+    label: "Last Seen",
     sortable: true
   }
 ];
@@ -138,7 +141,8 @@ export default mixins(webSocket, Vue).extend({
           meter: bWmBus.meter,
           address: bWmBus.address != null ? bWmBus.address : "0.0.0.0",
           port: bWmBus.port != null ? bWmBus.port : 7009,
-          aes: bWmBus.aes
+          aes: bWmBus.aes,
+          lastSeen: covertTimeStampToDate(bWmBus.lastSeen)
         };
         rec._name = this.deriveName(rec);
 
@@ -151,7 +155,11 @@ export default mixins(webSocket, Vue).extend({
         const modResponse = obj as WSModifyResponse<MeterWMBus>;
         this.configs.forEach((rec: UiMeterWMBus) => {
           if (rec.tag === modResponse.key[0]) {
-            rec = Object.assign(rec, modResponse.value);
+            if (!modResponse.value.lastSeen) {
+              rec = Object.assign(rec, modResponse.value);
+            } else {
+              rec.lastSeen = covertTimeStampToDate(modResponse.value.lastSeen);
+            }
             rec._name = this.deriveName(rec);
           }
         });
@@ -216,7 +224,7 @@ export default mixins(webSocket, Vue).extend({
       }
     },
     deriveName(rec: UiMeterWMBus) {
-      return `${rec.address}:${rec.port}`;
+      return `${rec.meter}`;
     }
   },
   beforeRouteEnter(to: Route, from: Route, next: any) {
