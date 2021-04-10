@@ -34,7 +34,12 @@ export const enum Channel {
   ConfigLoRa = "config.lora",
   ConfigSnapshot = "config.snapshot",
   ConfigWMBus = "config.wmbus",
-  ConfigIec = "config.iec"
+  ConfigIec = "config.iec",
+  ConfigUploadDevices = "config.upload.devices",
+  ConfigUploadGateways = "config.upload.gateways",
+  ConfigUploadMeters = "config.upload.meters",
+  ConfigUploadLoRa = "config.upload.loRa",
+  ConfigUploadBridge = "config.upload.bridge"
 }
 
 export interface WSResponse {

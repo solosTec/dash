@@ -60,11 +60,11 @@
               type="submit"
               variant="primary"
               class="mt-3 mr-3"
-              >Start Upload &#8682;</b-button
-            >
+              >Start Upload &#8682;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
 
@@ -98,11 +98,11 @@
               type="submit"
               variant="primary"
               class="mt-3 mr-3"
-              >Start Upload &#8682;</b-button
-            >
+              >Start Upload &#8682;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
 
@@ -136,11 +136,11 @@
               type="submit"
               variant="primary"
               class="mt-3 mr-3"
-              >Start Upload &#8682;</b-button
-            >
+              >Start Upload &#8682;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
 
@@ -174,11 +174,11 @@
               type="submit"
               variant="primary"
               class="mt-3 mr-3"
-              >Start Upload &#8682;</b-button
-            >
+              >Start Upload &#8682;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
 
@@ -212,11 +212,11 @@
               type="submit"
               variant="primary"
               class="mt-3 mr-3"
-              >Start Upload &#8682;</b-button
-            >
+              >Start Upload &#8682;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
       </b-card-group>
@@ -225,7 +225,7 @@
 </template>
 
 <script lang="ts">
-import { webSocket } from "@/mixins/web-socket";
+import { Channel, Cmd, webSocket } from "@/mixins/web-socket";
 import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
 import store from "../store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
@@ -309,165 +309,140 @@ export default mixins(webSocket, Vue).extend({
         }
       }
     },
+    uploadData(
+      file: File,
+      channel: Channel,
+      additionalInfo: object
+    ): Promise<object> {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.onloadend = () => {
+          const data = {
+            fileName: file.name,
+            fileContent: btoa(fileReader.result as string),
+            ...additionalInfo
+          };
+          this.ws_submit_record(Cmd.insert, channel, {
+            data
+          });
+          resolve(data);
+        };
+        fileReader.onerror = error => {
+          console.error(error);
+          reject(error);
+        };
+        fileReader.readAsBinaryString(file);
+      });
+    },
     onSubmitDevices(evt: Event) {
       evt.preventDefault();
-      //alert(JSON.stringify(this.dev))
-      //console.log(this.dev);
-      let formData = new FormData();
-      formData.append("file", this.dev.file!);
-      formData.append("policy", this.dev.policy);
-      formData.append("version", this.dev.version);
-
-      this.$http
-        .post(`${extraBackendPath}/upload/config/device/`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          },
-          progress(e) {
-            if (e.lengthComputable) {
-              console.log((e.loaded / e.total) * 100);
-            }
-          }
+      this.uploadData(this.dev.file, Channel.ConfigUploadDevices, {
+        policy: this.dev.policy,
+        version: this.dev.version
+      })
+        .then(() => {
+          this.$toasted.global.sml_attention_ok(
+            " Device configuration uploaded",
+            "info"
+          );
         })
-        .then(
-          res => {
-            console.log(res);
-          },
-          (err: any) => {
-            console.log(err);
-          }
-        );
+        .finally(() => {
+          this.onResetDevices(null);
+        });
     },
-    onResetDevices(evt: Event) {
-      evt.preventDefault();
+    onResetDevices(evt: Event | null) {
+      if (evt) {
+        evt.preventDefault();
+      }
       this.dev.file = null;
       this.dev.policy = "append";
       this.dev.version = "v0.8";
     },
-
     onSubmitGateway(evt: Event) {
       evt.preventDefault();
-      // alert(JSON.stringify(this.gw))
-      let formData = new FormData();
-      formData.append("file", this.gw.file!);
-      formData.append("policy", this.gw.policy);
-      this.$http
-        .post(`${extraBackendPath}/upload/config/gw/`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          },
-          progress(e) {
-            if (e.lengthComputable) {
-              console.log((e.loaded / e.total) * 100);
-            }
-          }
+      this.uploadData(this.gw.file, Channel.ConfigUploadGateways, {
+        policy: this.gw.policy
+      })
+        .then(() => {
+          this.$toasted.global.sml_attention_ok(
+            " Gateway configuration uploaded",
+            "info"
+          );
         })
-        .then(
-          res => {
-            console.log(res);
-          },
-          err => {
-            console.log(err);
-          }
-        );
+        .finally(() => {
+          this.onResetGateway(null);
+        });
     },
-    onResetGateway(evt: Event) {
-      evt.preventDefault();
+    onResetGateway(evt: Event | null) {
+      if (evt) {
+        evt.preventDefault();
+      }
       this.gw.file = null;
       this.gw.policy = "append";
     },
     onSubmitMeter(evt: Event) {
       evt.preventDefault();
-      // alert(JSON.stringify(this.meter))
-      let formData = new FormData();
-      formData.append("file", this.meter.file!);
-      formData.append("policy", this.meter.policy);
-      this.$http
-        .post(`${extraBackendPath}/upload/config/meter/`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          },
-          progress(e) {
-            if (e.lengthComputable) {
-              console.log((e.loaded / e.total) * 100);
-            }
-          }
+      this.uploadData(this.meter.file, Channel.ConfigUploadMeters, {
+        policy: this.meter.policy
+      })
+        .then(() => {
+          this.$toasted.global.sml_attention_ok(
+            " Meter configuration uploaded",
+            "info"
+          );
         })
-        .then(
-          res => {
-            console.log(res);
-          },
-          err => {
-            console.log(err);
-          }
-        );
+        .finally(() => {
+          this.onResetMeter(null);
+        });
     },
-    onResetMeter(evt: Event) {
-      evt.preventDefault();
+    onResetMeter(evt: Event | null) {
+      if (evt) {
+        evt.preventDefault();
+      }
       this.meter.file = null;
       this.meter.policy = "append";
     },
     onSubmitLoRa(evt: Event) {
       evt.preventDefault();
-      // alert(JSON.stringify(this.LoRa))
-      let formData = new FormData();
-      formData.append("file", this.LoRa.file!);
-      formData.append("policy", this.LoRa.policy);
-      this.$http
-        .post(`${extraBackendPath}/upload/config/LoRa/`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          },
-          progress(e) {
-            if (e.lengthComputable) {
-              console.log((e.loaded / e.total) * 100);
-            }
-          }
+      this.uploadData(this.LoRa.file, Channel.ConfigUploadLoRa, {
+        policy: this.LoRa.policy
+      })
+        .then(() => {
+          this.$toasted.global.sml_attention_ok(
+            " LoRa configuration uploaded",
+            "info"
+          );
         })
-        .then(
-          res => {
-            console.log(res);
-          },
-          err => {
-            console.log(err);
-          }
-        );
+        .finally(() => {
+          this.onResetLoRa(null);
+        });
     },
-    onResetLoRa(evt: Event) {
-      evt.preventDefault();
+    onResetLoRa(evt: Event | null) {
+      if (evt) {
+        evt.preventDefault();
+      }
       this.LoRa.file = null;
       this.LoRa.policy = "append";
     },
-
     onSubmitIEC(evt: Event) {
       evt.preventDefault();
-      console.log(this.bridge);
-      let formData = new FormData();
-      formData.append("file", this.bridge.file!);
-      formData.append("policy", this.bridge.policy);
-
-      this.$http
-        .post(`${extraBackendPath}/upload/config/bridge/`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          },
-          progress(e) {
-            if (e.lengthComputable) {
-              console.log((e.loaded / e.total) * 100);
-            }
-          }
+      this.uploadData(this.bridge.file, Channel.ConfigUploadBridge, {
+        policy: this.bridge.policy
+      })
+        .then(() => {
+          this.$toasted.global.sml_attention_ok(
+            " Bridge configuration uploaded",
+            "info"
+          );
         })
-        .then(
-          res => {
-            console.log(res);
-          },
-          (err: any) => {
-            console.log(err);
-          }
-        );
+        .finally(() => {
+          this.onResetIEC(null);
+        });
     },
-    onResetIEC(evt: Event) {
-      evt.preventDefault();
+    onResetIEC(evt: Event | null) {
+      if (evt) {
+        evt.preventDefault();
+      }
       this.bridge.file = null;
       this.bridge.policy = "subst";
     }
@@ -513,7 +488,7 @@ export default mixins(webSocket, Vue).extend({
       );
     },
     iec_text(): string {
-      if (!this.LoRa.file) {
+      if (!this.bridge.file) {
         return "Select a Bridge configuration file...";
       }
       return (
@@ -533,12 +508,6 @@ export default mixins(webSocket, Vue).extend({
       next(result ? true : NO_ACCESS_ROUTE);
     });
   }
-
-  //watch: {
-  //    'dev.file'(newVal, oldVal) {
-  //        console.log('dev.file ' + oldVal + " => " + newVal);
-  //    }
-  //}
 });
 </script>
 
