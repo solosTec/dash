@@ -305,7 +305,7 @@ export default mixins(webSocket, Vue).extend({
           const bSession = insertResponse.rec.data;
           const loginTime = new Date(bSession.loginTime.substring(0, 19));
           const rec: UiSession = {
-            pk: bSession.tag,
+            pk: insertResponse.rec.key.tag as string,
             name: bSession.name,
             source: bSession.source,
             pLayer: bSession.pLayer,
