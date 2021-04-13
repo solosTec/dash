@@ -208,10 +208,7 @@ export default mixins(webSocket, Vue).extend({
         } else if (obj.cmd === Cmd.clear) {
           this.devices = [];
         } else if (obj.cmd === Cmd.delete) {
-          // FIXME @Sylko: warum kommt hier ein array? und ist das immer ein array?
-          const key = Array.isArray((obj as WSDeleteResponse).key)
-            ? (obj as WSDeleteResponse).key[0]
-            : (obj as WSDeleteResponse).key;
+          const key = (obj as WSDeleteResponse).key[0];
           this.devices = this.devices.filter(d => d.tag !== key);
         } else if (obj.cmd === Cmd.load) {
           const loadResponse = obj as WSLoadResponse;

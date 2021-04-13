@@ -326,7 +326,7 @@ export default mixins(webSocket, Vue).extend({
           this.records = [];
         } else if (obj.cmd == "delete") {
           //console.log('lookup record ' + obj.key);
-          const idx = this.records.findIndex(rec => rec.id == obj.key);
+          const idx = this.records.findIndex(rec => rec.id == obj.key[0]);
           console.log("delete index " + idx);
           this.records.splice(idx, 1);
         } else if (obj.cmd == "load") {

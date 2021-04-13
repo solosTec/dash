@@ -299,13 +299,13 @@ export default mixins(webSocket, Vue).extend({
           this.nodes = [];
         } else if (obj.cmd == "delete") {
           // console.log('lookup node ' + obj.key);
-          const idx = this.nodes.findIndex(rec => rec.key == obj.key);
+          const idx = this.nodes.findIndex(rec => rec.key == obj.key[0]);
           // console.log('delete index ' + idx);
           this.nodes.splice(idx, 1);
         } else if (obj.cmd == "modify") {
           if (obj.channel == "status.cluster") {
             this.nodes.find(function(rec) {
-              if (rec.key == obj.key) {
+              if (rec.key == obj.key[0]) {
                 //console.log('modify record ' + rec.key);
                 if (obj.value.clients != null) {
                   rec.clients = obj.value.clients;

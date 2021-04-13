@@ -71,12 +71,12 @@ export interface WSUpdateResponse extends WSResponse {
 }
 
 export interface WSModifyResponse<T> extends WSResponse {
-  key: any;
+  key: string[];
   value: Partial<T>;
 }
 
 export interface WSDeleteResponse extends WSResponse {
-  key: any;
+  key: string[];
 }
 
 export interface WSLoadResponse extends WSResponse {

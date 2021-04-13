@@ -172,7 +172,7 @@ export default mixins(webSocket, Vue).extend({
       } else if (obj.cmd === Cmd.clear) {
         this.configs = [];
       } else if (obj.cmd === Cmd.delete) {
-        const key = (obj as WSDeleteResponse).key;
+        const key = (obj as WSDeleteResponse).key[0];
         this.configs = this.configs.filter(d => d.tag !== key);
       } else if (obj.cmd === Cmd.load) {
         const loadResponse = obj as WSLoadResponse;

@@ -325,14 +325,14 @@ export default mixins(webSocket, Vue).extend({
           }
         } else if (obj.cmd === Cmd.delete) {
           const idx = this.sessions.findIndex(
-            rec => rec.pk == (obj as WSDeleteResponse).key
+            rec => rec.pk == (obj as WSDeleteResponse).key[0]
           );
           console.log("delete index " + idx);
           this.sessions.splice(idx, 1);
         } else if (obj.cmd == Cmd.modify) {
           const modResponse = obj as WSModifyResponse<Session>;
           this.sessions.find(rec => {
-            if (rec.pk == modResponse.key) {
+            if (rec.pk == modResponse.key[0]) {
               // console.log('modify record ' + rec.name);
               if (modResponse.value.rx != null) {
                 rec.rx = modResponse.value.rx;

@@ -322,7 +322,7 @@ export default mixins(webSocket, Vue).extend({
         } else if (obj.cmd == "delete") {
           const deleteResponse = obj as WSDeleteResponse;
           console.log("lookup message " + deleteResponse.key);
-          const idx = this.messages.findIndex(rec => rec.id == obj.key);
+          const idx = this.messages.findIndex(rec => rec.id == obj.key[0]);
           console.log("delete index " + idx);
           this.messages.splice(idx, 1);
         } else if (obj.cmd == "load") {

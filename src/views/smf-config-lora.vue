@@ -304,15 +304,15 @@ export default mixins(webSocket, Vue).extend({
             gwEUI: obj.rec.data.GatewayEUI
           });
         } else if (obj.cmd == "delete") {
-          console.log("lookup gateway " + obj.tag);
-          var idx = this.gateways.findIndex(rec => rec.tag == obj.tag);
+          console.log("lookup gateway " + obj.key);
+          var idx = this.gateways.findIndex(rec => rec.tag == obj.key[0]);
           console.log("delete index " + idx);
           this.gateways.splice(idx, 1);
         } else if (obj.cmd == "modify") {
           console.log("lookup device " + obj.key);
           var self = this;
           this.gateways.find(function(rec) {
-            if (rec.tag == obj.key) {
+            if (rec.tag == obj.key[0]) {
               if (obj.value.DevEUI != null) {
                 rec.euid = obj.value.DevEUI;
                 if (self.form.tag == obj.key) self.form.euid = obj.value.DevEUI;

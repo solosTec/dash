@@ -35,7 +35,7 @@
             @row-selected="rowSelected"
             :fields="fields"
             :items="connections"
-            primary_key="pk1 + pk2"
+            primary_key="tag"
             :busy="isBusy"
             :current-page="currentPage"
             :per-page="perPage"
@@ -172,8 +172,7 @@ export default mixins(webSocket, Vue).extend({
         if (obj.cmd == "insert") {
           const start = new Date(obj.rec.data.start.substring(0, 19));
           const rec = {
-            pk1: obj.rec.key.first,
-            pk2: obj.rec.key.second,
+            tag: obj.rec.key.tag,
             caller: obj.rec.data.aName,
             callee: obj.rec.data.bName,
             aLayer: obj.rec.data.aLayer,
@@ -184,22 +183,12 @@ export default mixins(webSocket, Vue).extend({
           };
           this.connections.push(rec);
         } else if (obj.cmd == "delete") {
-          // var idx = this.sessions.findIndex(rec => rec.pk == obj.key);
-          const idx = this.connections.findIndex(
-            rec =>
-              obj.key.length == 2 &&
-              obj.key[0] == rec.pk1 &&
-              obj.key[1] == rec.pk2
-          );
+          const idx = this.connections.findIndex(rec => obj.key[0] == rec.tag);
           console.log("delete index " + idx);
           this.connections.splice(idx, 1);
         } else if (obj.cmd == "modify") {
           this.connections.find(function(rec) {
-            if (
-              obj.key.length == 2 &&
-              obj.key[0] == rec.pk1 &&
-              obj.key[1] == rec.pk2
-            ) {
+            if (obj.key[0] == rec.tag) {
               // console.log('modify record ' + rec.name);
               if (obj.value.throughput != null) {
                 rec.throughput = obj.value.throughput;
