@@ -173,8 +173,8 @@ export default mixins(webSocket, Vue).extend({
           const start = new Date(obj.rec.data.start.substring(0, 19));
           const rec = {
             tag: obj.rec.key.tag,
-            caller: obj.rec.data.aName,
-            callee: obj.rec.data.bName,
+            caller: obj.rec.data.caller,
+            callee: obj.rec.data.callee,
             aLayer: obj.rec.data.aLayer,
             bLayer: obj.rec.data.bLayer,
             local: obj.rec.data.local,
