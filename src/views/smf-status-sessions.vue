@@ -303,7 +303,7 @@ export default mixins(webSocket, Vue).extend({
         if (obj.cmd == Cmd.insert) {
           const insertResponse = obj as WSInsertResponse<Session>;
           const bSession = insertResponse.rec.data;
-          const loginTime = new Date(bSession.loginTime.substring(0, 19));
+          const loginTime = new Date(bSession.loginTime);
           const rec: UiSession = {
             pk: insertResponse.rec.key.tag as string,
             name: bSession.name,
