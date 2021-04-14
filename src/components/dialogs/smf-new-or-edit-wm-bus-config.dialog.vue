@@ -54,7 +54,7 @@ import { DialogMode, SmfDialogContentMixin } from "@/shared/smf-dialog.service";
 import { i18n } from "@/plugins/i18n";
 import SmfInput from "@/components/form-inputs/smf-input.vue";
 
-const aesHex = helpers.regex("alpha", /^[a-fA-F0-9]{1,256}$/);
+const aesHex = helpers.regex("alpha", /^[a-fA-F0-9]{32}$/);
 export default Vue.extend({
   mixins: [SmfDialogContentMixin],
   components: { SmfInput },
