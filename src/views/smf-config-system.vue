@@ -492,62 +492,62 @@ export default mixins(webSocket, Vue).extend({
       if (obj.cmd != null) {
         // console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
         if (obj.cmd == "insert") {
-          if (obj.rec.key.name == "connection-auto-login") {
+          if (obj.rec.key.key == "auto-login") {
             this.cfg.auto_login = obj.rec.data.value;
-          } else if (obj.rec.key.name == "connection-auto-enabled") {
+          } else if (obj.rec.key.key == "auto-enabled") {
             this.cfg.auto_enabled = obj.rec.data.value;
-          } else if (obj.rec.key.name == "connection-superseed") {
+          } else if (obj.rec.key.key == "superseed") {
             this.cfg.supersede = obj.rec.data.value;
-          } else if (obj.rec.key.name == "gw-cache") {
+          } else if (obj.rec.key.key == "gw-cache") {
             this.cfg.gwConfigCaching = obj.rec.data.value;
-          } else if (obj.rec.key.name == "generate-time-series") {
+          } else if (obj.rec.key.key == "generate-time-series") {
             this.cfg.tsdb = obj.rec.data.value;
-          } else if (obj.rec.key.name == "host-name") {
+          } else if (obj.rec.key.key == "host-name") {
             this.cfg.hostname = obj.rec.data.value;
-          } else if (obj.rec.key.name == "smf-version") {
+          } else if (obj.rec.key.key == "smf-version") {
             this.cfg.version = obj.rec.data.value;
-          } else if (obj.rec.key.name == "connection-auto-login-default") {
+          } else if (obj.rec.key.key == "auto-login-default") {
             this.cfg.def.auto_login = obj.rec.data.value;
-          } else if (obj.rec.key.name == "connection-auto-enabled-default") {
+          } else if (obj.rec.key.key == "auto-enabled-default") {
             this.cfg.def.auto_enabled = obj.rec.data.value;
-          } else if (obj.rec.key.name == "connection-superseed-default") {
+          } else if (obj.rec.key.key == "superseed-default") {
             this.cfg.def.auto_supersede = obj.rec.data.value;
-          } else if (obj.rec.key.name == "generate-time-series-default") {
+          } else if (obj.rec.key.key == "generate-time-series-default") {
             this.cfg.def.tsdb = obj.rec.data.value;
-          } else if (obj.rec.key.name == "generate-time-series-dir") {
+          } else if (obj.rec.key.key == "generate-time-series-dir") {
             // $("#smf-config-system-time-series-dir").html('<a href="file:///' + obj.rec.data.value + '">' + obj.rec.data.value + '</a>');
             this.cfg.tsdb_dir = obj.rec.data.value;
-          } else if (obj.rec.key.name == "max-messages") {
+          } else if (obj.rec.key.key == "max-messages") {
             this.cfg.maxMessages = obj.rec.data.value;
-          } else if (obj.rec.key.name == "max-events") {
+          } else if (obj.rec.key.key == "max-events") {
             this.cfg.maxEvents = obj.rec.data.value;
-          } else if (obj.rec.key.name == "max-LoRa-records") {
+          } else if (obj.rec.key.key == "max-LoRa-records") {
             this.cfg.maxLoRaRecords = obj.rec.data.value;
-          } else if (obj.rec.key.name == "max-wMBus-records") {
+          } else if (obj.rec.key.key == "max-wMBus-records") {
             this.cfg.maxwMBusRecords = obj.rec.data.value;
-          } else if (obj.rec.key.name == "max-IEC-records") {
+          } else if (obj.rec.key.key == "max-IEC-records") {
             this.cfg.maxIECRecords = obj.rec.data.value;
-          } else if (obj.rec.key.name == "catch-meters") {
+          } else if (obj.rec.key.key == "catch-meters") {
             this.cfg.catch_meters = obj.rec.data.value;
-          } else if (obj.rec.key.name == "catch-lora") {
+          } else if (obj.rec.key.key == "catch-lora") {
             this.cfg.catch_lora = obj.rec.data.value;
-          } else if (obj.rec.key.name == "country-code") {
+          } else if (obj.rec.key.key == "country-code") {
             this.cfg.countryCode = obj.rec.data.value;
-          } else if (obj.rec.key.name == "country-code-default") {
+          } else if (obj.rec.key.key == "country-code-default") {
             this.cfg.def.countryCode = obj.rec.data.value;
-          } else if (obj.rec.key.name == "language-code") {
+          } else if (obj.rec.key.key == "language-code") {
             this.cfg.languageCode = obj.rec.data.value;
-          } else if (obj.rec.key.name == "language-code-default") {
+          } else if (obj.rec.key.key == "language-code-default") {
             this.cfg.def.languageCode = obj.rec.data.value;
-          } else if (obj.rec.key.name == "catch-meters-default") {
+          } else if (obj.rec.key.key == "catch-meters-default") {
             this.cfg.def.catch_meters = obj.rec.data.value;
-          } else if (obj.rec.key.name == "catch-lora-default") {
+          } else if (obj.rec.key.key == "catch-lora-default") {
             this.cfg.def.catch_lora = obj.rec.data.value;
-          } else if (obj.rec.key.name == "sys-version") {
+          } else if (obj.rec.key.key == "sys-version") {
             this.sys.version = obj.rec.data.value;
-          } else if (obj.rec.key.name == "boost-version") {
+          } else if (obj.rec.key.key == "boost-version") {
             this.sys.boostVersion = obj.rec.data.value;
-          } else if (obj.rec.key.name == "ssl-version") {
+          } else if (obj.rec.key.key == "ssl-version") {
             this.sys.sslVersion = obj.rec.data.value;
           } else {
             console.log(
@@ -557,129 +557,129 @@ export default mixins(webSocket, Vue).extend({
                 " / " +
                 obj.channel +
                 " / " +
-                obj.rec.key.name
+                obj.rec.key.key
             );
           }
         } else if (obj.cmd == "modify") {
           //console.log('modify ' + obj.key[0] + ": " + obj.value);
-          if (obj.key[0] == "connection-auto-login") {
+          if (obj.key[0] == "auto-login") {
             //console.log("modify cfg.auto_login ", obj.value, typeof obj.value);
-            this.cfg.auto_login = obj.value;
-          } else if (obj.key[0] == "connection-auto-enabled") {
-            this.cfg.auto_enabled = obj.value;
-          } else if (obj.key[0] == "connection-superseed") {
-            this.cfg.supersede = obj.value;
+            this.cfg.auto_login = obj.value.value;
+          } else if (obj.key[0] == "auto-enabled") {
+            this.cfg.auto_enabled = obj.value.value;
+          } else if (obj.key[0] == "superseed") {
+            this.cfg.supersede = obj.value.value;
           } else if (obj.key[0] == "gw-cache") {
-            this.cfg.gwConfigCaching = obj.value;
+            this.cfg.gwConfigCaching = obj.value.value;
           } else if (obj.key[0] == "generate-time-series") {
-            this.cfg.tsdb = obj.value;
+            this.cfg.tsdb = obj.value.value;
           } else if (obj.key[0] == "max-messages") {
-            this.cfg.maxMessages = obj.value;
+            this.cfg.maxMessages = obj.value.value;
           } else if (obj.key[0] == "max-events") {
-            this.cfg.maxEvents = obj.value;
+            this.cfg.maxEvents = obj.value.value;
           } else if (obj.key[0] == "max-LoRa-records") {
-            this.cfg.maxLoRaRecords = obj.value;
+            this.cfg.maxLoRaRecords = obj.value.value;
           } else if (obj.key[0] == "max-wMBus-records") {
-            this.cfg.maxwMBusRecords = obj.value;
+            this.cfg.maxwMBusRecords = obj.value.value;
           } else if (obj.key[0] == "max-IEC-records") {
-            this.cfg.maxIECRecords = obj.value;
+            this.cfg.maxIECRecords = obj.value.value;
           } else if (obj.key[0] == "catch-meters") {
-            this.cfg.catch_meters = obj.value;
+            this.cfg.catch_meters = obj.value.value;
           } else if (obj.key[0] == "catch-lora") {
-            this.cfg.catch_lora = obj.value;
+            this.cfg.catch_lora = obj.value.value;
           } else if (obj.key[0] == "country-code") {
-            this.cfg.countryCode = obj.value;
+            this.cfg.countryCode = obj.value.value;
           } else if (obj.key[0] == "language-code") {
-            this.cfg.languageCode = obj.value;
+            this.cfg.languageCode = obj.value.value;
           }
         }
         // eslint-disable-next-line
-                    else if (obj.cmd == 'load') {
+               else if (obj.cmd == 'load') {
         }
       }
     },
     changeMaxMessages(newValue: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "max-messages" },
+        key: ["max-messages"],
         data: { value: newValue }
       });
     },
     changeMaxEvents(newValue: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "max-events" },
+        key: ["max-events"],
         data: { value: newValue }
       });
     },
     changeMaxLoRaRecords(newValue: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "max-LoRa-records" },
+        key: ["max-LoRa-records"],
         data: { value: newValue }
       });
     },
     changeMaxwMBusRecords(newValue: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "max-wMBus-records" },
+        key: ["max-wMBus-records"],
         data: { value: newValue }
       });
     },
     changeMaxIECRecords(newValue: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "max-IEC-records" },
+        key: ["max-IEC-records"],
         data: { value: newValue }
       });
     },
     autoLoginChange(targetState: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "connection-auto-login" },
+        key: ["auto-login"],
         data: { value: targetState }
       });
     },
     autoEnabledChange(targetState: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "connection-auto-enabled" },
+        key: ["auto-enabled"],
         data: { value: targetState }
       });
     },
     supersedeChange(targetState: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "connection-superseed" },
+        key: ["superseed"],
         data: { value: targetState }
       });
     },
     gwCacheChange(targetState: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "gw-cache" },
+        key: ["gw-cache"],
         data: { value: targetState }
       });
     },
     tsdbChange(targetState: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "generate-time-series" },
+        key: ["generate-time-series"],
         data: { value: targetState }
       });
     },
     catchMetersChange(targetState: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "catch-meters" },
+        key: ["catch-meters"],
         data: { value: targetState }
       });
     },
     catchLoRaChange(targetState: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "catch-lora" },
+        key: ["catch-lora"],
         data: { value: targetState }
       });
     },
     countryCodeChange(newValue: any) {
-      console.log("new country code " + newValue);
+      //console.log("new country code " + newValue);
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "country-code" },
+        key: ["country-code"],
         data: { value: newValue }
       });
     },
     languageCodeChange(newValue: any) {
       this.ws_submit_record("modify", "config.system", {
-        key: { name: "language-code" },
+        key: ["language-code"],
         data: { value: newValue }
       });
     }
