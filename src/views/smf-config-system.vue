@@ -474,11 +474,11 @@ export default mixins(webSocket, Vue).extend({
       //  ISO 639-1
       language: {
         options: [
-          { value: "EN", text: "english" },
-          { value: "DE", text: "deutsch" },
-          { value: "ES", text: "español" },
-          { value: "FR", text: "français" },
-          { value: "RU", text: "русский" }
+          { value: "en-GB", text: "english" },
+          { value: "de", text: "deutsch" },
+          { value: "es", text: "español" },
+          { value: "fr", text: "français" },
+          { value: "ru", text: "русский" }
         ]
       }
     };
@@ -506,6 +506,7 @@ export default mixins(webSocket, Vue).extend({
             this.cfg.hostname = obj.rec.data.value;
           } else if (obj.rec.key.key == "smf-version") {
             this.cfg.version = obj.rec.data.value;
+            this.sys.version = obj.rec.data.value;
           } else if (obj.rec.key.key == "auto-login-default") {
             this.cfg.def.auto_login = obj.rec.data.value;
           } else if (obj.rec.key.key == "auto-enabled-default") {
@@ -543,8 +544,6 @@ export default mixins(webSocket, Vue).extend({
             this.cfg.def.catch_meters = obj.rec.data.value;
           } else if (obj.rec.key.key == "catch-lora-default") {
             this.cfg.def.catch_lora = obj.rec.data.value;
-          } else if (obj.rec.key.key == "sys-version") {
-            this.sys.version = obj.rec.data.value;
           } else if (obj.rec.key.key == "boost-version") {
             this.sys.boostVersion = obj.rec.data.value;
           } else if (obj.rec.key.key == "ssl-version") {
