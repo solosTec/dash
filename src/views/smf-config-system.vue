@@ -451,7 +451,7 @@ export default mixins(webSocket, Vue).extend({
           catch_meters: false,
           catch_lora: false,
           countryCode: "AU",
-          languageCode: "EN",
+          languageCode: "en-GB",
           gwConfigCaching: false,
           auto_supersede: false
         }
