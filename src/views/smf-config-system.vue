@@ -387,6 +387,9 @@
             <b-list-group-item
               >SSL Version: {{ sys.sslVersion }}</b-list-group-item
             >
+            <b-list-group-item
+              >Compiler: {{ sys.compilerVersion }}</b-list-group-item
+            >
           </b-list-group>
         </b-card>
       </b-card-group>
@@ -456,7 +459,8 @@ export default mixins(webSocket, Vue).extend({
       sys: {
         version: "SMF/v0.0",
         boostVersion: "",
-        sslVersion: ""
+        sslVersion: "",
+        compilerVersion: ""
       },
       country: {
         options: [
@@ -548,6 +552,8 @@ export default mixins(webSocket, Vue).extend({
             this.sys.boostVersion = obj.rec.data.value;
           } else if (obj.rec.key.key == "ssl-version") {
             this.sys.sslVersion = obj.rec.data.value;
+          } else if (obj.rec.key.key == "compiler-version") {
+            this.sys.compilerVersion = obj.rec.data.value;
           } else {
             console.log(
               this.$options.name +
