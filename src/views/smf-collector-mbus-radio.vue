@@ -312,7 +312,7 @@ export default mixins(webSocket, Vue).extend({
         } else if (obj.cmd == "insert") {
           console.log("message " + obj.rec.key.id);
           let rec = {
-            id: obj.rec.key.id,
+            id: obj.rec.key.tag,
             ts: obj.rec.data.ts,
             serverId: obj.rec.data.serverId,
             manufacturer: obj.rec.data.manufacturer,

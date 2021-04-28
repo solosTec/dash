@@ -219,7 +219,7 @@ export default mixins(webSocket, Vue).extend({
             }
           }
         } else if (obj.cmd == "insert") {
-          console.log("message " + obj.rec.key.id);
+          console.log("message " + obj.rec.key.tag);
           let rec = {
             id: obj.rec.key.id,
             ts: obj.rec.data.ts,
