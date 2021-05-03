@@ -224,6 +224,62 @@
             >
           </b-form>
         </b-card>
+
+        <b-card title="Download IEC meters" class="shadow">
+          <div slot="footer">
+            <small class="text-muted">{{ iecCount }} meter available</small>
+          </div>
+          <b-form @submit="onSubmitIEC" @reset="onResetIEC">
+            <b-form-radio-group
+              id="msg-uplink-type"
+              v-model="iec.fmt"
+              name="iec-download-type"
+              class="mt-3"
+            >
+              <b-form-radio value="XML">XML</b-form-radio>
+              <b-form-radio value="JSON">JSON</b-form-radio>
+              <b-form-radio value="CSV">CSV</b-form-radio>
+            </b-form-radio-group>
+            <b-button
+              type="submit"
+              variant="primary"
+              class="mt-3 mr-3"
+              :disabled="iecCount == 0"
+              >Download &#8681;</b-button
+            >
+            <b-button type="reset" variant="danger" class="mt-3"
+              >Reset</b-button
+            >
+          </b-form>
+        </b-card>
+
+        <b-card title="Download wM-Bus meters" class="shadow">
+          <div slot="footer">
+            <small class="text-muted">{{ wmBusCount }} meter available</small>
+          </div>
+          <b-form @submit="onSubmitwMBus" @reset="onResetwMBus">
+            <b-form-radio-group
+              id="wMBus-uplink-type"
+              v-model="wMBus.fmt"
+              name="wMBus-download-type"
+              class="mt-3"
+            >
+              <b-form-radio value="XML">XML</b-form-radio>
+              <b-form-radio value="JSON">JSON</b-form-radio>
+              <b-form-radio value="CSV">CSV</b-form-radio>
+            </b-form-radio-group>
+            <b-button
+              type="submit"
+              variant="primary"
+              class="mt-3 mr-3"
+              :disabled="wmBusCount == 0"
+              >Download &#8681;</b-button
+            >
+            <b-button type="reset" variant="danger" class="mt-3"
+              >Reset</b-button
+            >
+          </b-form>
+        </b-card>
       </b-card-group>
     </b-container>
   </section>
@@ -257,31 +313,41 @@ export default mixins(webSocket, Vue).extend({
       LoRaCount: 0,
       uplinkCount: 0,
       msgCount: 0,
+      iecCount: 0,
+      wmBusCount: 0,
       dev: {
         type: "dev",
-        fmt: "XML",
+        fmt: "JSON",
         version: "v50"
       },
       gw: {
         type: "gw",
-        fmt: "XML"
+        fmt: "JSON"
       },
       meter: {
         type: "meter",
-        fmt: "XML"
+        fmt: "JSON"
       },
       LoRa: {
         type: "LoRa",
-        fmt: "XML",
+        fmt: "JSON",
         vendor: "swisscom"
       },
       uplink: {
         type: "uplink",
-        fmt: "XML"
+        fmt: "JSON"
       },
       msg: {
         type: "msg",
-        fmt: "XML"
+        fmt: "JSON"
+      },
+      iec: {
+        type: "iec",
+        fmt: "JSON"
+      },
+      wMBus: {
+        type: "wMBus",
+        fmt: "JSON"
       }
     };
   },
@@ -297,7 +363,9 @@ export default mixins(webSocket, Vue).extend({
       this.ws_subscribe("table.meter.count");
       this.ws_subscribe("table.msg.count");
       this.ws_subscribe("table.LoRa.count");
-      this.ws_subscribe("table.uplink.count");
+      this.ws_subscribe("table.loRaUplink.count");
+      this.ws_subscribe("table.iec.count");
+      this.ws_subscribe("table.wmbus.count");
     },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
@@ -312,10 +380,14 @@ export default mixins(webSocket, Vue).extend({
               this.meterCount = obj.value;
             } else if (obj.channel == "table.LoRa.count") {
               this.LoRaCount = obj.value;
-            } else if (obj.channel == "table.uplink.count") {
+            } else if (obj.channel == "table.loRaUplink.count") {
               this.uplinkCount = obj.value;
             } else if (obj.channel == "table.msg.count") {
               this.msgCount = obj.value;
+            } else if (obj.channel == "table.iec.count") {
+              this.iecCount = obj.value;
+            } else if (obj.channel == "table.wmbus.count") {
+              this.wmBusCount = obj.value;
             }
           }
         }
@@ -527,7 +599,68 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetMsg(evt: Event) {
       evt.preventDefault();
-      this.msg.type = "XML";
+      this.msg.type = "JSON";
+    },
+    onSubmitIEC(evt: Event) {
+      evt.preventDefault();
+      //alert(JSON.stringify(this.msg))
+      this.$http
+        .post(`${extraBackendPath}/download.iec`, this.iec, {
+          headers: {
+            Accept: "application/xml, application/json, application/csv, */*"
+          },
+          // @ts-ignore
+          responseType: "blob",
+          progress(e) {
+            if (e.lengthComputable) {
+              console.log((e.loaded / e.total) * 100);
+            }
+          }
+        })
+        .then(
+          (res: any) => {
+            this.saveOrOpenBlob(res.body, "iec." + this.iec.fmt.toLowerCase());
+          },
+          (res: any) => {
+            console.log("error: " + res);
+          }
+        );
+    },
+    onResetIEC(evt: Event) {
+      evt.preventDefault();
+      this.msg.type = "JSON";
+    },
+    onSubmitwMBus(evt: Event) {
+      evt.preventDefault();
+      //alert(JSON.stringify(this.msg))
+      this.$http
+        .post(`${extraBackendPath}/download.wMBus`, this.iec, {
+          headers: {
+            Accept: "application/xml, application/json, application/csv, */*"
+          },
+          // @ts-ignore
+          responseType: "blob",
+          progress(e) {
+            if (e.lengthComputable) {
+              console.log((e.loaded / e.total) * 100);
+            }
+          }
+        })
+        .then(
+          (res: any) => {
+            this.saveOrOpenBlob(
+              res.body,
+              "wMBus." + this.wMBus.fmt.toLowerCase()
+            );
+          },
+          (res: any) => {
+            console.log("error: " + res);
+          }
+        );
+    },
+    onResetwMBus(evt: Event) {
+      evt.preventDefault();
+      this.msg.type = "JSON";
     },
     saveOrOpenBlob(blob: Blob, fileName: string) {
       var a = document.createElement("a");
