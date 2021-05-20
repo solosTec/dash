@@ -170,14 +170,14 @@
         <b-card title="Download LoRa uplink records" class="shadow">
           <div slot="footer">
             <small class="text-muted"
-              >{{ uplinkCount }} uplink records available</small
+              >{{ LoRaUplinkCount }} uplink records available</small
             >
           </div>
           <b-form @submit="onSubmitUplink" @reset="onResetUplink">
             <b-form-radio-group
-              id="meter-uplink-type"
-              v-model="uplink.fmt"
-              name="uplink-download-type"
+              id="LoRa-uplink-type"
+              v-model="uplinkLoRa.fmt"
+              name="uplinkLoRa-download-type"
               class="mt-3"
             >
               <b-form-radio value="XML">XML</b-form-radio>
@@ -188,7 +188,67 @@
               type="submit"
               variant="primary"
               class="mt-3 mr-3"
-              :disabled="uplinkCount == 0"
+              :disabled="LoRaUplinkCount == 0"
+              >Download &#8681;</b-button
+            >
+            <b-button type="reset" variant="danger" class="mt-3"
+              >Reset</b-button
+            >
+          </b-form>
+        </b-card>
+
+        <b-card title="Download IEC uplink records" class="shadow">
+          <div slot="footer">
+            <small class="text-muted"
+              >{{ iecUplinkCount }} uplink records available</small
+            >
+          </div>
+          <b-form @submit="onSubmitIecUplink" @reset="onResetIecUplink">
+            <b-form-radio-group
+              id="IEC-uplink-type"
+              v-model="uplinkIec.fmt"
+              name="IEC-download-type"
+              class="mt-3"
+            >
+              <b-form-radio value="XML">XML</b-form-radio>
+              <b-form-radio value="JSON">JSON</b-form-radio>
+              <b-form-radio value="CSV">CSV</b-form-radio>
+            </b-form-radio-group>
+            <b-button
+              type="submit"
+              variant="primary"
+              class="mt-3 mr-3"
+              :disabled="iecUplinkCount == 0"
+              >Download &#8681;</b-button
+            >
+            <b-button type="reset" variant="danger" class="mt-3"
+              >Reset</b-button
+            >
+          </b-form>
+        </b-card>
+
+        <b-card title="Download wM-Bus uplink records" class="shadow">
+          <div slot="footer">
+            <small class="text-muted"
+              >{{ wmBusUplinkCount }} uplink records available</small
+            >
+          </div>
+          <b-form @submit="onSubmitwMBusUplink" @reset="onResetwMBusUplink">
+            <b-form-radio-group
+              id="wMBus-uplink-type"
+              v-model="uplinkwMBus.fmt"
+              name="wMBus-download-type"
+              class="mt-3"
+            >
+              <b-form-radio value="XML">XML</b-form-radio>
+              <b-form-radio value="JSON">JSON</b-form-radio>
+              <b-form-radio value="CSV">CSV</b-form-radio>
+            </b-form-radio-group>
+            <b-button
+              type="submit"
+              variant="primary"
+              class="mt-3 mr-3"
+              :disabled="wmBusUplinkCount == 0"
               >Download &#8681;</b-button
             >
             <b-button type="reset" variant="danger" class="mt-3"
@@ -311,10 +371,12 @@ export default mixins(webSocket, Vue).extend({
       gatewayCount: 0,
       meterCount: 0,
       LoRaCount: 0,
-      uplinkCount: 0,
+      LoRaUplinkCount: 0,
       msgCount: 0,
       iecCount: 0,
       wmBusCount: 0,
+      iecUplinkCount: 0,
+      wmBusUplinkCount: 0,
       dev: {
         type: "dev",
         fmt: "JSON",
@@ -333,8 +395,8 @@ export default mixins(webSocket, Vue).extend({
         fmt: "JSON",
         vendor: "swisscom"
       },
-      uplink: {
-        type: "uplink",
+      uplinkLoRa: {
+        type: "uplinkLoRa",
         fmt: "JSON"
       },
       msg: {
@@ -347,6 +409,14 @@ export default mixins(webSocket, Vue).extend({
       },
       wMBus: {
         type: "wMBus",
+        fmt: "JSON"
+      },
+      uplinkIec: {
+        type: "uplinkIec",
+        fmt: "JSON"
+      },
+      uplinkwMBus: {
+        type: "uplinkwMBus",
         fmt: "JSON"
       }
     };
@@ -366,6 +436,8 @@ export default mixins(webSocket, Vue).extend({
       this.ws_subscribe("table.loRaUplink.count");
       this.ws_subscribe("table.iec.count");
       this.ws_subscribe("table.wmbus.count");
+      this.ws_subscribe("table.wMBusUplink.count");
+      this.ws_subscribe("table.IECUplink.count");
     },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
@@ -381,13 +453,17 @@ export default mixins(webSocket, Vue).extend({
             } else if (obj.channel == "table.LoRa.count") {
               this.LoRaCount = obj.value;
             } else if (obj.channel == "table.loRaUplink.count") {
-              this.uplinkCount = obj.value;
+              this.LoRaUplinkCount = obj.value;
             } else if (obj.channel == "table.msg.count") {
               this.msgCount = obj.value;
             } else if (obj.channel == "table.iec.count") {
               this.iecCount = obj.value;
             } else if (obj.channel == "table.wmbus.count") {
               this.wmBusCount = obj.value;
+            } else if (obj.channel == "table.IECUplink.count") {
+              this.iecUplinkCount = obj.value;
+            } else if (obj.channel == "table.wMBusUplink.count") {
+              this.wmBusUplinkCount = obj.value;
             }
           }
         }
@@ -427,7 +503,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetDevices(evt: Event) {
       evt.preventDefault();
-      this.dev.type = "XML";
+      this.dev.type = "JSON";
       this.dev.version = "v50";
     },
     onSubmitGateways(evt: Event) {
@@ -469,7 +545,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetGateways(evt: Event) {
       evt.preventDefault();
-      this.gw.type = "XML";
+      this.gw.type = "JSON";
     },
     onSubmitMeters(evt: Event) {
       evt.preventDefault();
@@ -502,7 +578,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetMeters(evt: Event) {
       evt.preventDefault();
-      this.meter.type = "XML";
+      this.meter.type = "JSON";
     },
     onSubmitLoRa(evt: Event) {
       evt.preventDefault();
@@ -534,14 +610,14 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetLoRa(evt: Event) {
       evt.preventDefault();
-      this.LoRa.type = "XML";
+      this.LoRa.type = "JSON";
       this.LoRa.vendor = "swisscom";
     },
     onSubmitUplink(evt: Event) {
       evt.preventDefault();
-      //alert(JSON.stringify(this.uplink))
+      //alert(JSON.stringify(this.uplinkLoRa))
       this.$http
-        .post(`${extraBackendPath}/download.uplink`, this.uplink, {
+        .post(`${extraBackendPath}/download.uplinkLoRa`, this.uplinkLoRa, {
           headers: {
             Accept: "application/xml, application/json, application/csv, */*"
           },
@@ -557,7 +633,7 @@ export default mixins(webSocket, Vue).extend({
           (res: any) => {
             this.saveOrOpenBlob(
               res.body,
-              "uplink." + this.uplink.fmt.toLowerCase()
+              "uplinkLoRa." + this.uplinkLoRa.fmt.toLowerCase()
             );
           },
           (res: any) => {
@@ -567,7 +643,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetUplink(evt: Event) {
       evt.preventDefault();
-      this.uplink.type = "XML";
+      this.uplinkLoRa.type = "JSON";
     },
     onSubmitMsg(evt: Event) {
       evt.preventDefault();
@@ -634,7 +710,7 @@ export default mixins(webSocket, Vue).extend({
       evt.preventDefault();
       //alert(JSON.stringify(this.msg))
       this.$http
-        .post(`${extraBackendPath}/download.wMBus`, this.iec, {
+        .post(`${extraBackendPath}/download.wMBus`, this.wMBus, {
           headers: {
             Accept: "application/xml, application/json, application/csv, */*"
           },
@@ -659,6 +735,70 @@ export default mixins(webSocket, Vue).extend({
         );
     },
     onResetwMBus(evt: Event) {
+      evt.preventDefault();
+      this.msg.type = "JSON";
+    },
+    onSubmitIecUplink(evt: Event) {
+      evt.preventDefault();
+      //alert(JSON.stringify(this.msg))
+      this.$http
+        .post(`${extraBackendPath}/download.IECUplink`, this.uplinkIec, {
+          headers: {
+            Accept: "application/xml, application/json, application/csv, */*"
+          },
+          // @ts-ignore
+          responseType: "blob",
+          progress(e) {
+            if (e.lengthComputable) {
+              console.log((e.loaded / e.total) * 100);
+            }
+          }
+        })
+        .then(
+          (res: any) => {
+            this.saveOrOpenBlob(
+              res.body,
+              "IECUplink." + this.uplinkIec.fmt.toLowerCase()
+            );
+          },
+          (res: any) => {
+            console.log("error: " + res);
+          }
+        );
+    },
+    onResetIecUplink(evt: Event) {
+      evt.preventDefault();
+      this.msg.type = "JSON";
+    },
+    onSubmitwMBusUplink(evt: Event) {
+      evt.preventDefault();
+      //alert(JSON.stringify(this.msg))
+      this.$http
+        .post(`${extraBackendPath}/download.wMBusUplink`, this.uplinkwMBus, {
+          headers: {
+            Accept: "application/xml, application/json, application/csv, */*"
+          },
+          // @ts-ignore
+          responseType: "blob",
+          progress(e) {
+            if (e.lengthComputable) {
+              console.log((e.loaded / e.total) * 100);
+            }
+          }
+        })
+        .then(
+          (res: any) => {
+            this.saveOrOpenBlob(
+              res.body,
+              "wMBusUplink." + this.uplinkwMBus.fmt.toLowerCase()
+            );
+          },
+          (res: any) => {
+            console.log("error: " + res);
+          }
+        );
+    },
+    onResetwMBusUplink(evt: Event) {
       evt.preventDefault();
       this.msg.type = "JSON";
     },
