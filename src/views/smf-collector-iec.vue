@@ -142,7 +142,7 @@ export default mixins(webSocket, Vue).extend({
       ts: new Date(),
       event: "EVENT",
       ep: "address:port",
-      tag: "918273981273"
+      tag: 1
     } as any;
     //rec["_rowVariant"] = 'success';
     this.records.push(rec);
@@ -221,7 +221,7 @@ export default mixins(webSocket, Vue).extend({
         } else if (obj.cmd == "insert") {
           console.log("message " + obj.rec.key.tag);
           let rec = {
-            id: obj.rec.key.id,
+            id: obj.rec.key.tag,
             ts: obj.rec.data.ts,
             event: obj.rec.data.event,
             ep: obj.rec.data.ep

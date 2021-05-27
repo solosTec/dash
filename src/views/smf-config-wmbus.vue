@@ -98,6 +98,9 @@ const fields = [
   {
     key: "lastSeen",
     label: "Last Seen",
+    formatter: (value: any) => {
+      return value == null ? "" : value.toLocaleString();
+    },
     sortable: true
   }
 ];

@@ -136,7 +136,7 @@ export default mixins(webSocket, Vue).extend({
       id: 0,
       ts: new Date(),
       data: "DATA",
-      tag: "918273981273"
+      tag: 1
     } as any;
     //rec["_rowVariant"] = 'success';
     this.records.push(rec);
