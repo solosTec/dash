@@ -124,6 +124,11 @@
               to="/monitor/messages"
               >{{ $t("nav-messages") }}</b-dropdown-item
             >
+            <b-dropdown-item
+              :disabled="!hasPrivs(MODULES.MONITOR_MESSAGES, PRIVILEGES.VIEW)"
+              to="/monitor/IECgw"
+              >IEC</b-dropdown-item
+            >
             <!--<b-dropdown-item :disabled="!hasPrivs(MODULES.MONITOR_TSDB, PRIVILEGES.VIEW)" to="/monitor/tsdb">{{ $t('nav-tsdb') }}</b-dropdown-item>-->
           </b-nav-item-dropdown>
 

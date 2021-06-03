@@ -72,6 +72,8 @@
     "lead-collector-mbus-radio": "Сохранение %{count} восходящих линий связи",
     "header-collector-iec": "IEC Daten",
     "lead-collector-iec": "%{count} events stored",
+    "header-monitor-iec-gw": "Статус шлюза IEC",
+    "lead-monitor-iec-gw": "Настроено %{count} шлюзов IEC.",
 
     "com-default": "Стандарт",
 

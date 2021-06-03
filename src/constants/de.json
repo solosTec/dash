@@ -75,6 +75,8 @@
     "lead-collector-mbus-radio": "%{count} Uplinks gespeichert",
     "header-collector-iec": "IEC Daten",
     "lead-collector-iec": "%{count} Ereignisse gespeichert",
+    "header-monitor-iec-gw": "IEC Gateway Status",
+    "lead-monitor-iec-gw": "%{count} IEC Gateways konfiguriert",
 
     "com-default": "Voreinstellung",
 
@@ -324,5 +326,5 @@
     "smf-form-meter-medium-display": "Anzeige",
     "smf-form-meter-medium-sewage": "Abwasser",
     "smf-form-meter-medium-waste": "Abfall",
-    "smf-form-meter-medium-carbon-dioxide":"Kohlendioxid"
+    "smf-form-meter-medium-carbon-dioxide": "Kohlendioxid"
 }

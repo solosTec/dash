@@ -72,6 +72,8 @@
     "lead-collector-mbus-radio": "%{count} liaisons montantes stockées",
     "header-collector-iec": "IEC Daten",
     "lead-collector-iec": "%{count} events stored",
+    "header-monitor-iec-gw": "Statut de la passerelle IEC",
+    "lead-monitor-iec-gw": "%{count} passerelles IEC sont configurées.",
 
     "com-default": "par défaut",
 
