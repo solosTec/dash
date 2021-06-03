@@ -220,9 +220,11 @@ export default mixins(webSocket, Vue).extend({
               connectCounter: obj.rec.data.connectCounter,
               failureCounter: obj.rec.data.failureCounter,
               rate:
-                100 -
-                (100 * obj.rec.data.failureCounter) /
-                  obj.rec.data.connectCounter,
+                obj.rec.data.connectCounter == 0
+                  ? 0
+                  : 100 -
+                    (100 * obj.rec.data.failureCounter) /
+                      obj.rec.data.connectCounter,
               meter: obj.rec.data.index,
               state: obj.rec.data.state,
               interval: obj.rec.data.interval,
