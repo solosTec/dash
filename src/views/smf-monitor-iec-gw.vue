@@ -120,7 +120,7 @@ export default mixins(webSocket, Vue).extend({
           key: "rate",
           label: "Availability",
           sortable: true,
-          formatter: (value: Number) => {
+          formatter: (value: number) => {
             return value.toFixed(2) + " %";
           },
           class: "text-right"
@@ -146,7 +146,7 @@ export default mixins(webSocket, Vue).extend({
         {
           key: "interval",
           label: "Interval",
-          formatter: (value: String) => {
+          formatter: (value: string) => {
             //    00:14:0.000000
             return value.substr(0, 9);
           },
@@ -191,6 +191,11 @@ export default mixins(webSocket, Vue).extend({
       this.ws_subscribe("table.gwIEC.count");
     },
 
+    calculate_availability(connectCounter: number, failureCounter: number) {
+      return connectCounter == 0
+        ? 0
+        : 100 - (100 * failureCounter) / connectCounter;
+    },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
         console.log(
@@ -219,12 +224,10 @@ export default mixins(webSocket, Vue).extend({
               meterCounter: obj.rec.data.meterCounter,
               connectCounter: obj.rec.data.connectCounter,
               failureCounter: obj.rec.data.failureCounter,
-              rate:
-                obj.rec.data.connectCounter == 0
-                  ? 0
-                  : 100 -
-                    (100 * obj.rec.data.failureCounter) /
-                      obj.rec.data.connectCounter,
+              rate: this.calculate_availability(
+                obj.rec.data.connectCounter,
+                obj.rec.data.failureCounter
+              ),
               meter: obj.rec.data.index,
               state: obj.rec.data.state,
               interval: obj.rec.data.interval,
@@ -270,6 +273,10 @@ export default mixins(webSocket, Vue).extend({
                       break;
                   }
                 }
+                rec.rate = this.calculate_availability(
+                  rec.connectCounter,
+                  rec.failureCounter
+                );
               }
             });
           } else {
