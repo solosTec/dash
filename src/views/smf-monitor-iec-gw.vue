@@ -245,6 +245,7 @@ export default mixins(webSocket, Vue).extend({
           this.gateways.splice(idx, 1);
         } else if (obj.cmd == "modify") {
           if (obj.channel == "status.IECgw") {
+            const self = this;
             this.gateways.find(function(rec) {
               if (rec.key == obj.key[0]) {
                 console.log("modify record " + rec.key);
@@ -273,7 +274,7 @@ export default mixins(webSocket, Vue).extend({
                       break;
                   }
                 }
-                rec.rate = this.calculate_availability(
+                rec.rate = self.calculate_availability(
                   rec.connectCounter,
                   rec.failureCounter
                 );
