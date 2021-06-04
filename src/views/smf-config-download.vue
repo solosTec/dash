@@ -16,8 +16,8 @@
       :lead="$t('lead-download')"
     />
 
+    <h2>Persistent Data</h2>
     <b-container fluid>
-      <h2>Persistent Data</h2>
       <b-card-group columns>
         <b-card title="Download Devices" class="shadow">
           <div slot="footer">
@@ -224,9 +224,9 @@
           </b-form>
         </b-card>
       </b-card-group>
-
-      <hr />
-      <h2>Temporary Data</h2>
+    </b-container>
+    <h2>Temporary Data</h2>
+    <b-container fluid>
       <b-card-group columns>
         <b-card title="Download LoRa uplink records" class="shadow">
           <div slot="footer">
