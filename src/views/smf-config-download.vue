@@ -41,14 +41,14 @@
               name="smf-download-config-device-version"
             >
               <b-form-radio :disabled="dev.fmt != 'XML'" value="v32"
-                >Version 3.2</b-form-radio
-              >
+                >Version 3.2
+              </b-form-radio>
               <b-form-radio :disabled="dev.fmt != 'XML'" value="v40"
-                >Version 4.0</b-form-radio
-              >
+                >Version 4.0
+              </b-form-radio>
               <b-form-radio :disabled="dev.fmt != 'XML'" value="v50"
-                >Version 5.0</b-form-radio
-              >
+                >Version 5.0
+              </b-form-radio>
             </b-form-radio-group>
             <input
               type="hidden"
@@ -61,11 +61,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="deviceCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
 
@@ -91,11 +91,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="gatewayCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
 
@@ -121,11 +121,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="meterCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
 
@@ -160,11 +160,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="LoRaCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
 
@@ -188,11 +188,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="iecCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
 
@@ -216,11 +216,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="wmBusCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
       </b-card-group>
@@ -250,11 +250,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="LoRaUplinkCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
         <b-card title="Download IEC uplink records" class="shadow">
@@ -279,11 +279,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="iecUplinkCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
         <b-card title="Download wM-Bus uplink records" class="shadow">
@@ -308,11 +308,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="wmBusUplinkCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
         <b-card title="Download System Messages" class="shadow">
@@ -335,11 +335,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="msgCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
         <b-card title="Download IEC gateway status" class="shadow">
@@ -364,11 +364,11 @@
               variant="primary"
               class="mt-3 mr-3"
               :disabled="gwIECCount == 0"
-              >Download &#8681;</b-button
-            >
+              >Download &#8681;
+            </b-button>
             <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
+              >Reset
+            </b-button>
           </b-form>
         </b-card>
       </b-card-group>
@@ -892,4 +892,17 @@ export default mixins(webSocket, Vue).extend({
 });
 </script>
 
-<style scoped lang="css"></style>
+<style scoped lang="scss">
+.smf-config-download {
+  background-color: #e9ecef;
+
+  h2 {
+    padding-left: 17px;
+  }
+
+  .container-fluid {
+    padding-top: 15px;
+    background-color: white;
+  }
+}
+</style>

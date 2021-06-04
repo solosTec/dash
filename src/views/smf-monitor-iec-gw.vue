@@ -19,6 +19,28 @@
 
     <b-container fluid>
       <b-row>
+        <b-col md="4"> </b-col>
+        <b-col md="4">
+          <b-form-row>
+            <smf-row-count-selector
+              v-model="perPage"
+              store-key="iecGatewayStatus"
+              class="col"
+            />
+          </b-form-row>
+        </b-col>
+        <b-col md="4">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="gateways.length"
+            :per-page="perPage"
+            class="justify-content-end"
+            align="fill"
+            size="sm"
+          />
+        </b-col>
+      </b-row>
+      <b-row>
         <b-col md="12">
           <b-table
             ref="sysTable"
@@ -45,6 +67,10 @@
           >
             <!-- A virtual column -->
             <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
+
+            <template #cell(state)="data">
+              <span v-html="data.value"></span>
+            </template>
 
             <!-- loading slot -->
             <div slot="table-busy" class="text-center text-danger">
@@ -133,7 +159,7 @@ export default mixins(webSocket, Vue).extend({
               case 0:
                 return "offline";
               case 1:
-                return "waiting";
+                return "<b>waiting</b>";
               case 2:
                 return "online";
               default:
