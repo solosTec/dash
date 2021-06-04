@@ -257,7 +257,7 @@ export default mixins(webSocket, Vue).extend({
                 } else if (obj.value.failureCounter != null) {
                   rec.failureCounter = obj.value.failureCounter;
                 } else if (obj.value.index != null) {
-                  rec.index = obj.value.index;
+                  rec.meter = obj.value.index;
                 } else if (obj.value.state != null) {
                   rec.state = obj.value.state;
                   switch (rec.state) {
