@@ -17,6 +17,7 @@
     />
 
     <b-container fluid>
+      <h2>Persistent Data</h2>
       <b-card-group columns>
         <b-card title="Download Devices" class="shadow">
           <div slot="footer">
@@ -167,124 +168,6 @@
           </b-form>
         </b-card>
 
-        <b-card title="Download LoRa uplink records" class="shadow">
-          <div slot="footer">
-            <small class="text-muted"
-              >{{ LoRaUplinkCount }} uplink records available</small
-            >
-          </div>
-          <b-form @submit="onSubmitUplink" @reset="onResetUplink">
-            <b-form-radio-group
-              id="LoRa-uplink-type"
-              v-model="uplinkLoRa.fmt"
-              name="uplinkLoRa-download-type"
-              class="mt-3"
-            >
-              <b-form-radio value="XML">XML</b-form-radio>
-              <b-form-radio value="JSON">JSON</b-form-radio>
-              <b-form-radio value="CSV">CSV</b-form-radio>
-            </b-form-radio-group>
-            <b-button
-              type="submit"
-              variant="primary"
-              class="mt-3 mr-3"
-              :disabled="LoRaUplinkCount == 0"
-              >Download &#8681;</b-button
-            >
-            <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
-          </b-form>
-        </b-card>
-
-        <b-card title="Download IEC uplink records" class="shadow">
-          <div slot="footer">
-            <small class="text-muted"
-              >{{ iecUplinkCount }} uplink records available</small
-            >
-          </div>
-          <b-form @submit="onSubmitIecUplink" @reset="onResetIecUplink">
-            <b-form-radio-group
-              id="IEC-uplink-type"
-              v-model="uplinkIec.fmt"
-              name="IEC-download-type"
-              class="mt-3"
-            >
-              <b-form-radio value="XML">XML</b-form-radio>
-              <b-form-radio value="JSON">JSON</b-form-radio>
-              <b-form-radio value="CSV">CSV</b-form-radio>
-            </b-form-radio-group>
-            <b-button
-              type="submit"
-              variant="primary"
-              class="mt-3 mr-3"
-              :disabled="iecUplinkCount == 0"
-              >Download &#8681;</b-button
-            >
-            <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
-          </b-form>
-        </b-card>
-
-        <b-card title="Download wM-Bus uplink records" class="shadow">
-          <div slot="footer">
-            <small class="text-muted"
-              >{{ wmBusUplinkCount }} uplink records available</small
-            >
-          </div>
-          <b-form @submit="onSubmitwMBusUplink" @reset="onResetwMBusUplink">
-            <b-form-radio-group
-              id="wMBus-uplink-type"
-              v-model="uplinkwMBus.fmt"
-              name="wMBus-download-type"
-              class="mt-3"
-            >
-              <b-form-radio value="XML">XML</b-form-radio>
-              <b-form-radio value="JSON">JSON</b-form-radio>
-              <b-form-radio value="CSV">CSV</b-form-radio>
-            </b-form-radio-group>
-            <b-button
-              type="submit"
-              variant="primary"
-              class="mt-3 mr-3"
-              :disabled="wmBusUplinkCount == 0"
-              >Download &#8681;</b-button
-            >
-            <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
-          </b-form>
-        </b-card>
-
-        <b-card title="Download System Messages" class="shadow">
-          <div slot="footer">
-            <small class="text-muted">{{ msgCount }} messages available</small>
-          </div>
-          <b-form @submit="onSubmitMsg" @reset="onResetMsg">
-            <b-form-radio-group
-              id="msg-uplink-type"
-              v-model="msg.fmt"
-              name="msg-download-type"
-              class="mt-3"
-            >
-              <b-form-radio value="XML">XML</b-form-radio>
-              <b-form-radio value="JSON">JSON</b-form-radio>
-              <b-form-radio value="CSV">CSV</b-form-radio>
-            </b-form-radio-group>
-            <b-button
-              type="submit"
-              variant="primary"
-              class="mt-3 mr-3"
-              :disabled="msgCount == 0"
-              >Download &#8681;</b-button
-            >
-            <b-button type="reset" variant="danger" class="mt-3"
-              >Reset</b-button
-            >
-          </b-form>
-        </b-card>
-
         <b-card title="Download IEC meters" class="shadow">
           <div slot="footer">
             <small class="text-muted">{{ iecCount }} meter available</small>
@@ -341,6 +224,154 @@
           </b-form>
         </b-card>
       </b-card-group>
+
+      <hr />
+      <h2>Temporary Data</h2>
+      <b-card-group columns>
+        <b-card title="Download LoRa uplink records" class="shadow">
+          <div slot="footer">
+            <small class="text-muted"
+              >{{ LoRaUplinkCount }} uplink records available</small
+            >
+          </div>
+          <b-form @submit="onSubmitUplink" @reset="onResetUplink">
+            <b-form-radio-group
+              id="LoRa-uplink-type"
+              v-model="uplinkLoRa.fmt"
+              name="uplinkLoRa-download-type"
+              class="mt-3"
+            >
+              <b-form-radio value="XML">XML</b-form-radio>
+              <b-form-radio value="JSON">JSON</b-form-radio>
+              <b-form-radio value="CSV">CSV</b-form-radio>
+            </b-form-radio-group>
+            <b-button
+              type="submit"
+              variant="primary"
+              class="mt-3 mr-3"
+              :disabled="LoRaUplinkCount == 0"
+              >Download &#8681;</b-button
+            >
+            <b-button type="reset" variant="danger" class="mt-3"
+              >Reset</b-button
+            >
+          </b-form>
+        </b-card>
+        <b-card title="Download IEC uplink records" class="shadow">
+          <div slot="footer">
+            <small class="text-muted"
+              >{{ iecUplinkCount }} uplink records available</small
+            >
+          </div>
+          <b-form @submit="onSubmitIecUplink" @reset="onResetIecUplink">
+            <b-form-radio-group
+              id="IEC-uplink-type"
+              v-model="uplinkIec.fmt"
+              name="IEC-download-type"
+              class="mt-3"
+            >
+              <b-form-radio value="XML">XML</b-form-radio>
+              <b-form-radio value="JSON">JSON</b-form-radio>
+              <b-form-radio value="CSV">CSV</b-form-radio>
+            </b-form-radio-group>
+            <b-button
+              type="submit"
+              variant="primary"
+              class="mt-3 mr-3"
+              :disabled="iecUplinkCount == 0"
+              >Download &#8681;</b-button
+            >
+            <b-button type="reset" variant="danger" class="mt-3"
+              >Reset</b-button
+            >
+          </b-form>
+        </b-card>
+        <b-card title="Download wM-Bus uplink records" class="shadow">
+          <div slot="footer">
+            <small class="text-muted"
+              >{{ wmBusUplinkCount }} uplink records available</small
+            >
+          </div>
+          <b-form @submit="onSubmitwMBusUplink" @reset="onResetwMBusUplink">
+            <b-form-radio-group
+              id="wMBus-uplink-type"
+              v-model="uplinkwMBus.fmt"
+              name="wMBus-download-type"
+              class="mt-3"
+            >
+              <b-form-radio value="XML">XML</b-form-radio>
+              <b-form-radio value="JSON">JSON</b-form-radio>
+              <b-form-radio value="CSV">CSV</b-form-radio>
+            </b-form-radio-group>
+            <b-button
+              type="submit"
+              variant="primary"
+              class="mt-3 mr-3"
+              :disabled="wmBusUplinkCount == 0"
+              >Download &#8681;</b-button
+            >
+            <b-button type="reset" variant="danger" class="mt-3"
+              >Reset</b-button
+            >
+          </b-form>
+        </b-card>
+        <b-card title="Download System Messages" class="shadow">
+          <div slot="footer">
+            <small class="text-muted">{{ msgCount }} messages available</small>
+          </div>
+          <b-form @submit="onSubmitMsg" @reset="onResetMsg">
+            <b-form-radio-group
+              id="msg-uplink-type"
+              v-model="msg.fmt"
+              name="msg-download-type"
+              class="mt-3"
+            >
+              <b-form-radio value="XML">XML</b-form-radio>
+              <b-form-radio value="JSON">JSON</b-form-radio>
+              <b-form-radio value="CSV">CSV</b-form-radio>
+            </b-form-radio-group>
+            <b-button
+              type="submit"
+              variant="primary"
+              class="mt-3 mr-3"
+              :disabled="msgCount == 0"
+              >Download &#8681;</b-button
+            >
+            <b-button type="reset" variant="danger" class="mt-3"
+              >Reset</b-button
+            >
+          </b-form>
+        </b-card>
+        <b-card title="Download IEC gateway status" class="shadow">
+          <div slot="footer">
+            <small class="text-muted"
+              >{{ gwIECCount }} gateways configured</small
+            >
+          </div>
+          <b-form @submit="onSubmitgwIEC" @reset="onResetgwIEC">
+            <b-form-radio-group
+              id="gwIEC-uplink-type"
+              v-model="gwIEC.fmt"
+              name="gwIEC-download-type"
+              class="mt-3"
+            >
+              <b-form-radio value="XML">XML</b-form-radio>
+              <b-form-radio value="JSON">JSON</b-form-radio>
+              <b-form-radio value="CSV">CSV</b-form-radio>
+            </b-form-radio-group>
+            <b-button
+              type="submit"
+              variant="primary"
+              class="mt-3 mr-3"
+              :disabled="gwIECCount == 0"
+              >Download &#8681;</b-button
+            >
+            <b-button type="reset" variant="danger" class="mt-3"
+              >Reset</b-button
+            >
+          </b-form>
+        </b-card>
+      </b-card-group>
     </b-container>
   </section>
 </template>
@@ -377,6 +408,7 @@ export default mixins(webSocket, Vue).extend({
       wmBusCount: 0,
       iecUplinkCount: 0,
       wmBusUplinkCount: 0,
+      gwIECCount: 0,
       dev: {
         type: "dev",
         fmt: "JSON",
@@ -418,6 +450,10 @@ export default mixins(webSocket, Vue).extend({
       uplinkwMBus: {
         type: "uplinkwMBus",
         fmt: "JSON"
+      },
+      gwIEC: {
+        type: "gwIEC",
+        fmt: "JSON"
       }
     };
   },
@@ -438,6 +474,7 @@ export default mixins(webSocket, Vue).extend({
       this.ws_subscribe("table.wmbus.count");
       this.ws_subscribe("table.wMBusUplink.count");
       this.ws_subscribe("table.IECUplink.count");
+      this.ws_subscribe("table.gwIEC.count");
     },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
@@ -464,6 +501,8 @@ export default mixins(webSocket, Vue).extend({
               this.iecUplinkCount = obj.value;
             } else if (obj.channel == "table.wMBusUplink.count") {
               this.wmBusUplinkCount = obj.value;
+            } else if (obj.channel == "table.gwIEC.count") {
+              this.gwIECCount = obj.value;
             }
           }
         }
@@ -799,6 +838,39 @@ export default mixins(webSocket, Vue).extend({
         );
     },
     onResetwMBusUplink(evt: Event) {
+      evt.preventDefault();
+      this.msg.type = "JSON";
+    },
+
+    onSubmitgwIEC(evt: Event) {
+      evt.preventDefault();
+      //alert(JSON.stringify(this.msg))
+      this.$http
+        .post(`${extraBackendPath}/download.gwIEC`, this.gwIEC, {
+          headers: {
+            Accept: "application/xml, application/json, application/csv, */*"
+          },
+          // @ts-ignore
+          responseType: "blob",
+          progress(e) {
+            if (e.lengthComputable) {
+              console.log((e.loaded / e.total) * 100);
+            }
+          }
+        })
+        .then(
+          (res: any) => {
+            this.saveOrOpenBlob(
+              res.body,
+              "gwIEC." + this.uplinkwMBus.fmt.toLowerCase()
+            );
+          },
+          (res: any) => {
+            console.log("error: " + res);
+          }
+        );
+    },
+    onResetgwIEC(evt: Event) {
       evt.preventDefault();
       this.msg.type = "JSON";
     },
