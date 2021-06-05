@@ -862,7 +862,7 @@ export default mixins(webSocket, Vue).extend({
           (res: any) => {
             this.saveOrOpenBlob(
               res.body,
-              "gwIEC." + this.uplinkwMBus.fmt.toLowerCase()
+              "gwIEC." + this.gwIEC.fmt.toLowerCase()
             );
           },
           (res: any) => {
