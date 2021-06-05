@@ -128,6 +128,7 @@ export default mixins(webSocket, Vue).extend({
         {
           key: "meterCounter",
           label: "Meters",
+          sortable: true,
           class: "text-right"
         },
         {
