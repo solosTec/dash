@@ -188,6 +188,10 @@ export default mixins(webSocket, Vue).extend({
           class: "text-right"
         },
         {
+          key: "id",
+          label: "Meter"
+        },
+        {
           key: "lastSeen",
           label: "Last Update",
           formatter: (value: any) => {
@@ -256,6 +260,7 @@ export default mixins(webSocket, Vue).extend({
                 obj.rec.data.failureCounter
               ),
               meter: obj.rec.data.index,
+              id: obj.rec.data.meter,
               state: obj.rec.data.state,
               interval: obj.rec.data.interval,
               lastSeen: new Date()
@@ -285,6 +290,8 @@ export default mixins(webSocket, Vue).extend({
                   rec.failureCounter = obj.value.failureCounter;
                 } else if (obj.value.index != null) {
                   rec.meter = obj.value.index;
+                } else if (obj.value.meter != null) {
+                  rec.id = obj.value.meter;
                 } else if (obj.value.state != null) {
                   rec.state = obj.value.state;
                   switch (rec.state) {
