@@ -72,8 +72,10 @@
     "lead-collector-mbus-radio": "%{count} records stored",
     "header-collector-iec": "IEC uplink Data",
     "lead-collector-iec": "%{count} events stored",
-    "header-monitor-iec-gw": "IEC gateway Status",
+    "header-monitor-iec-gw": "IEC gateway status",
     "lead-monitor-iec-gw": "%{count} IEC gateways configured",
+    "header-monitor-wmbus-gw": "wMBus gateway status",
+    "lead-monitor-wmbus-gw": "%{count} wMBus gateways configured",
 
     "com-default": "default",
 

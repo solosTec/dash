@@ -16,6 +16,7 @@ import smfStatusConnection from "./views/smf-status-connections.vue";
 import smfMonitorSystem from "./views/smf-monitor-system.vue";
 import smfMonitorMessages from "./views/smf-monitor-messages.vue";
 import smfMonitorIECgw from "./views/smf-monitor-iec-gw.vue";
+import smfMonitorWMBusgw from "./views/smf-monitor-wmbus-gw.vue";
 import smfMonitorLora from "./views/smf-monitor-lora.vue";
 import smfCollectorMBusRadio from "./views/smf-collector-mbus-radio.vue";
 import smfCollectorIEC from "./views/smf-collector-iec.vue";
@@ -151,6 +152,11 @@ export default new Router({
       path: "/monitor/IECgw",
       name: "smfMonitorIECgw",
       component: smfMonitorIECgw
+    },
+    {
+      path: "/monitor/wMBusgw",
+      name: "smfMonitorWMBusgw",
+      component: smfMonitorWMBusgw
     },
 
     //

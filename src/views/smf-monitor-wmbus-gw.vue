@@ -1,20 +1,19 @@
 <template lang="html">
-  <section class="smf-monitor-iec-gw">
+  <section class="smf-monitor-wmbus-gw">
     <template>
       <div>
         <vue-headful
-          title="smf :: monitor IEC gw"
+          title="smf :: monitor wMBus gw"
           description="SMF dashboard"
           keywords="SMF, solosTec"
         />
       </div>
     </template>
 
-    <!-- <b-jumbotron fluid header="System Status" :lead="nodes.length + ' nodes online'" /> -->
     <b-jumbotron
       fluid
-      :header="$t('header-monitor-iec-gw')"
-      :lead="$t('lead-monitor-iec-gw', { count: this.gateways.length })"
+      :header="$t('header-monitor-wmbus-gw')"
+      :lead="$t('lead-monitor-wmbus-gw', { count: this.gateways.length })"
     />
 
     <b-container fluid>
@@ -24,7 +23,7 @@
           <b-form-row>
             <smf-row-count-selector
               v-model="perPage"
-              store-key="iecGatewayStatus"
+              store-key="wmbusGatewayStatus"
               class="col"
             />
           </b-form-row>
@@ -76,10 +75,6 @@
             <div slot="table-busy" class="text-center text-danger">
               <strong>Loading... {{ busyLevel }}%</strong>
             </div>
-
-            <!-- <template slot="empty" slot-scope="scope">
-              <p>{{ scope.emptyText }}</p>
-            </template> -->
           </b-table>
         </b-col>
       </b-row>
@@ -97,11 +92,11 @@ import mixins from "vue-typed-mixins";
 import Vue from "vue";
 
 export default mixins(webSocket, Vue).extend({
-  name: "smfMonitorIECgw",
+  name: "smfMonitorWMBusgw",
   props: [],
   mixins: [webSocket],
   mounted() {
-    this.ws_open("/smf/api/iecgw/v0.9");
+    this.ws_open("/smf/api/wmbusgw/v0.9");
   },
   data() {
     return {
@@ -218,8 +213,8 @@ export default mixins(webSocket, Vue).extend({
       //  clear table
       this.gateways = [];
 
-      this.ws_subscribe("status.IECgw");
-      this.ws_subscribe("table.gwIEC.count");
+      this.ws_subscribe("status.wMBusgw");
+      this.ws_subscribe("table.gwwMBus.count");
     },
 
     calculate_availability(connectCounter: number, failureCounter: number) {
@@ -240,14 +235,14 @@ export default mixins(webSocket, Vue).extend({
         if (obj.cmd == "update") {
           if (obj.channel != null) {
             //console.log('update channel ' + obj.channel + ": " + obj.value);
-            if (obj.channel == "table.gwIEC.count") {
+            if (obj.channel == "table.gwwMBus.count") {
               //  unused yet
             } else {
               console.error("update - unknown channel: " + obj.channel);
             }
           }
         } else if (obj.cmd == "insert") {
-          if (obj.channel == "status.IECgw") {
+          if (obj.channel == "status.wMBusgw") {
             const rec = {
               key: obj.rec.key.tag,
               host: obj.rec.data.host,
@@ -262,7 +257,6 @@ export default mixins(webSocket, Vue).extend({
               meter: obj.rec.data.index,
               id: obj.rec.data.meter,
               state: obj.rec.data.state,
-              interval: obj.rec.data.interval,
               lastSeen: new Date()
             };
             this.gateways.push(rec);
@@ -276,7 +270,7 @@ export default mixins(webSocket, Vue).extend({
           // console.log('delete index ' + idx);
           this.gateways.splice(idx, 1);
         } else if (obj.cmd == "modify") {
-          if (obj.channel == "status.IECgw") {
+          if (obj.channel == "status.wMBusgw") {
             const self = this;
             this.gateways.find(function(rec) {
               if (rec.key == obj.key[0]) {
@@ -331,7 +325,7 @@ export default mixins(webSocket, Vue).extend({
   },
   computed: {
     tableCaption(): string {
-      return "Showing " + this.gateways.length + " IEC gateways";
+      return "Showing " + this.gateways.length + " wMBus gateways";
     },
     ...mapState({
       totalIoFormatted: function(state: AppState) {
