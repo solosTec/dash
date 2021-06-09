@@ -74,6 +74,8 @@
     "lead-collector-iec": "%{count} events stored",
     "header-monitor-iec-gw": "Статус шлюза IEC",
     "lead-monitor-iec-gw": "Настроено %{count} шлюзов IEC.",
+    "header-monitor-wmbus-gw": "состояние беспроводного шлюза M-Bus",
+    "lead-monitor-wmbus-gw": "Найдено %{count} беспроводных шлюза M-Bus",
 
     "com-default": "Стандарт",
 

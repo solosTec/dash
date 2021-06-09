@@ -118,33 +118,13 @@ export default mixins(webSocket, Vue).extend({
         {
           key: "port",
           label: "Port",
+          class: "text-right",
           sortable: true
-        },
-        {
-          key: "meterCounter",
-          label: "Meters",
-          sortable: true,
-          class: "text-right"
         },
         {
           key: "connectCounter",
           label: "Connects",
           sortable: true,
-          class: "text-right"
-        },
-        {
-          key: "failureCounter",
-          label: "Unreachable",
-          sortable: true,
-          class: "text-right"
-        },
-        {
-          key: "rate",
-          label: "Availability",
-          sortable: true,
-          formatter: (value: number) => {
-            return value.toFixed(2) + " %";
-          },
           class: "text-right"
         },
         {
@@ -166,25 +146,9 @@ export default mixins(webSocket, Vue).extend({
           sortable: true
         },
         {
-          key: "interval",
-          label: "Interval",
-          formatter: (value: string) => {
-            //    00:14:0.000000
-            return value.substr(0, 9);
-          },
-          sortable: true
-        },
-        {
           key: "meter",
-          label: "Nr",
-          formatter: (value: any) => {
-            return value + 1;
-          },
-          class: "text-right"
-        },
-        {
-          key: "id",
-          label: "Meter"
+          label: "Meter",
+          sortable: true
         },
         {
           key: "lastSeen",
@@ -217,11 +181,6 @@ export default mixins(webSocket, Vue).extend({
       this.ws_subscribe("table.gwwMBus.count");
     },
 
-    calculate_availability(connectCounter: number, failureCounter: number) {
-      return connectCounter == 0
-        ? 0
-        : 100 - (100 * failureCounter) / connectCounter;
-    },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
         console.log(
@@ -247,15 +206,8 @@ export default mixins(webSocket, Vue).extend({
               key: obj.rec.key.tag,
               host: obj.rec.data.host,
               port: obj.rec.data.port,
-              meterCounter: obj.rec.data.meterCounter,
               connectCounter: obj.rec.data.connectCounter,
-              failureCounter: obj.rec.data.failureCounter,
-              rate: this.calculate_availability(
-                obj.rec.data.connectCounter,
-                obj.rec.data.failureCounter
-              ),
-              meter: obj.rec.data.index,
-              id: obj.rec.data.meter,
+              meter: obj.rec.data.meter,
               state: obj.rec.data.state,
               lastSeen: new Date()
             };
@@ -271,21 +223,17 @@ export default mixins(webSocket, Vue).extend({
           this.gateways.splice(idx, 1);
         } else if (obj.cmd == "modify") {
           if (obj.channel == "status.wMBusgw") {
-            const self = this;
+            //const self = this;
             this.gateways.find(function(rec) {
               if (rec.key == obj.key[0]) {
                 console.log("modify record " + rec.key);
                 rec.lastSeen = new Date();
-                if (obj.value.meterCounter != null) {
-                  rec.meterCounter = obj.value.meterCounter;
-                } else if (obj.value.connectCounter != null) {
+                if (obj.value.connectCounter != null) {
                   rec.connectCounter = obj.value.connectCounter;
-                } else if (obj.value.failureCounter != null) {
-                  rec.failureCounter = obj.value.failureCounter;
-                } else if (obj.value.index != null) {
-                  rec.meter = obj.value.index;
                 } else if (obj.value.meter != null) {
-                  rec.id = obj.value.meter;
+                  rec.meter = obj.value.meter;
+                } else if (obj.value.port != null) {
+                  rec.port = obj.value.port;
                 } else if (obj.value.state != null) {
                   rec.state = obj.value.state;
                   switch (rec.state) {
@@ -302,10 +250,6 @@ export default mixins(webSocket, Vue).extend({
                       break;
                   }
                 }
-                rec.rate = self.calculate_availability(
-                  rec.connectCounter,
-                  rec.failureCounter
-                );
               }
             });
           } else {

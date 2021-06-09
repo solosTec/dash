@@ -74,8 +74,8 @@
     "lead-collector-iec": "%{count} events stored",
     "header-monitor-iec-gw": "IEC gateway status",
     "lead-monitor-iec-gw": "%{count} IEC gateways configured",
-    "header-monitor-wmbus-gw": "wMBus gateway status",
-    "lead-monitor-wmbus-gw": "%{count} wMBus gateways configured",
+    "header-monitor-wmbus-gw": "wireless M-Bus gateway status",
+    "lead-monitor-wmbus-gw": "%{count} wMBus gateways found",
 
     "com-default": "default",
 
