@@ -192,7 +192,7 @@ export default mixins(webSocket, Vue).extend({
   mixins: [webSocket],
 
   mounted() {
-    this.ws_open("/smf/api/lora/v0.8");
+    this.ws_open("/smf/api/lora/v0.9");
   },
 
   data() {

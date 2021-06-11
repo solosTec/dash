@@ -140,7 +140,7 @@ export default mixins(webSocket, Vue).extend({
     } as any;
     //rec["_rowVariant"] = 'success';
     this.records.push(rec);
-    this.ws_open("/smf/api/wmbus/v0.8");
+    this.ws_open("/smf/api/wmbus/v0.9");
     this.isBusy = false;
   },
   data() {

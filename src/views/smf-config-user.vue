@@ -133,7 +133,7 @@ export default mixins(webSocket, Vue).extend({
   mounted() {
     // init the form with default props and values
     this.form = Object.assign({}, FormInit) as User;
-    this.ws_open("/smf/api/user/v0.8");
+    this.ws_open("/smf/api/user/v0.9");
     // mock code
     setTimeout(() => {
       this.busyLevel = 100;

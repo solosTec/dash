@@ -198,7 +198,7 @@ export default mixins(webSocket, Vue).extend({
     let rec = { id: 0, ts: new Date(), severity: 3, msg: "mounted" } as any;
     rec["_rowVariant"] = "success";
     this.messages.push(rec);
-    this.ws_open("/smf/api/gw/v0.8");
+    this.ws_open("/smf/api/gw/v0.9");
     this.isBusy = true;
   },
 

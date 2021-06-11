@@ -1794,7 +1794,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.ws_open("/smf/api/gw/v0.8");
+    this.ws_open("/smf/api/gw/v0.9");
   },
 
   data() {

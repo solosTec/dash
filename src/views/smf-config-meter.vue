@@ -849,7 +849,7 @@ export default mixins(webSocket, Vue).extend({
   },
 
   mounted() {
-    this.ws_open("/smf/api/meter/v0.8");
+    this.ws_open("/smf/api/meter/v0.9");
   },
 
   data() {

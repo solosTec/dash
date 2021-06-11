@@ -33,7 +33,7 @@ export default mixins(webSocket, Vue).extend({
       return;
     }
 
-    this.ws_open("/smf/api/device/v0.8");
+    this.ws_open("/smf/api/device/v0.9");
   },
   beforeDestroy() {
     this.ws_close();

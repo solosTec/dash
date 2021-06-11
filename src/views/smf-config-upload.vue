@@ -53,7 +53,7 @@
             >
               <b-form-radio value="v3.2">Version 3.2</b-form-radio>
               <b-form-radio value="v4.0">Version 4.0</b-form-radio>
-              <b-form-radio value="v0.8">Version 0.8</b-form-radio>
+              <b-form-radio value="v0.9">Version 0.9</b-form-radio>
             </b-form-radio-group>
             <b-button
               :disabled="!Boolean(dev.file)"
@@ -206,6 +206,12 @@
               <b-form-radio value="append">Append</b-form-radio>
               <b-form-radio value="merge">Merge</b-form-radio>
               <b-form-radio value="subst">Overwrite</b-form-radio>
+              <b-form-radio
+                value="delete"
+                v-b-tooltip.hover
+                title="Removes all specified meters"
+                >Delete</b-form-radio
+              >
             </b-form-radio-group>
             <b-button
               :disabled="!Boolean(bridge.file)"
@@ -242,7 +248,7 @@ export default mixins(webSocket, Vue).extend({
 
   mounted() {
     //   console.log("$http: "+ this.$http);
-    this.ws_open("/smf/api/upload/v0.8");
+    this.ws_open("/smf/api/upload/v0.9");
   },
 
   data() {
@@ -255,7 +261,7 @@ export default mixins(webSocket, Vue).extend({
       dev: {
         file: null as any,
         policy: "append",
-        version: "v0.8"
+        version: "v0.9"
       },
       gw: {
         file: null as any,
@@ -356,7 +362,7 @@ export default mixins(webSocket, Vue).extend({
       }
       this.dev.file = null;
       this.dev.policy = "append";
-      this.dev.version = "v0.8";
+      this.dev.version = "v0.9";
     },
     onSubmitGateway(evt: Event) {
       evt.preventDefault();
