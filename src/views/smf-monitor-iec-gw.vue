@@ -66,7 +66,7 @@
             class="shadow"
           >
             <!-- A virtual column -->
-            <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
+            <template v-slot:cell(index)="data"> {{ data.index + 1 }}</template>
 
             <template #cell(state)="data">
               <span v-html="data.value"></span>
@@ -77,9 +77,28 @@
               <strong>Loading... {{ busyLevel }}%</strong>
             </div>
 
-            <!-- <template slot="empty" slot-scope="scope">
-              <p>{{ scope.emptyText }}</p>
-            </template> -->
+            <template v-slot:cell(details)="data">
+              <b-button
+                variant="outline"
+                style="margin-left: 5px"
+                v-if="data.item.units && data.item.units.length > 0"
+                size="sm"
+                @click="data.toggleDetails"
+                ><b-icon-zoom-in v-if="!data.detailsShowing"></b-icon-zoom-in
+                ><b-icon-zoom-out
+                  v-if="data.detailsShowing"
+                ></b-icon-zoom-out></b-button
+            ></template>
+
+            <template #row-details="row">
+              <div v-if="row.item.units && row.item.units.length > 0">
+                <ul class="unit-list">
+                  <template v-for="unit in row.item.units"
+                    ><li :key="unit">{{ unit }}</li></template
+                  >
+                </ul>
+              </div>
+            </template>
           </b-table>
         </b-col>
       </b-row>
@@ -198,6 +217,11 @@ export default mixins(webSocket, Vue).extend({
             return value == null ? "" : value.toLocaleString();
           },
           sortable: true
+        },
+        {
+          key: "details",
+          label: "",
+          class: "details-cell"
         }
       ],
       gateways: [] as any[],
@@ -263,7 +287,9 @@ export default mixins(webSocket, Vue).extend({
               id: obj.rec.data.meter,
               state: obj.rec.data.state,
               interval: obj.rec.data.interval,
-              lastSeen: new Date()
+              lastSeen: new Date(),
+              units: obj.rec.data.units,
+              _showDetails: false
             };
             this.gateways.push(rec);
           }
@@ -357,4 +383,13 @@ export default mixins(webSocket, Vue).extend({
 });
 </script>
 
-<style scoped lang="css"></style>
+<style scoped lang="scss">
+.unit-list {
+  text-align: right;
+  margin-bottom: 0;
+  margin-right: 15px;
+  li {
+    list-style: none;
+  }
+}
+</style>
