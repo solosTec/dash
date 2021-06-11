@@ -182,10 +182,14 @@
           </b-form>
         </b-card>
 
+        <!--iecCount: 0,
+        wmbusCount: 0,-->
+
         <b-card title="Upload Bridge Configuration" class="shadow">
           <div slot="footer">
             <small class="text-muted"
-              >{{ BridgeCount }} meters(s) configured</small
+              >{{ iecCount }} IEC and {{ wmbusCount }} wM-Bus meters(s)
+              configured</small
             >
           </div>
           <b-form @submit="onSubmitIEC" @reset="onResetIEC">
@@ -257,7 +261,9 @@ export default mixins(webSocket, Vue).extend({
       gatewayCount: 0,
       meterCount: 0,
       LoRaCount: 0,
-      BridgeCount: 0,
+      //BridgeCount: 0,
+      iecCount: 0,
+      wmbusCount: 0,
       dev: {
         file: null as any,
         policy: "append",
@@ -293,7 +299,9 @@ export default mixins(webSocket, Vue).extend({
       this.ws_subscribe("table.meter.count");
       this.ws_subscribe("table.msg.count");
       this.ws_subscribe("table.LoRa.count");
-      this.ws_subscribe("table.bridge.count"); // TBridge
+      //     this.ws_subscribe("table.bridge.count"); // TBridge
+      this.ws_subscribe("table.iec.count");
+      this.ws_subscribe("table.wmbus.count");
     },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
@@ -308,8 +316,10 @@ export default mixins(webSocket, Vue).extend({
               this.meterCount = obj.value;
             } else if (obj.channel == "table.LoRa.count") {
               this.LoRaCount = obj.value;
-            } else if (obj.channel == "table.bridge.count") {
-              this.BridgeCount = obj.value;
+            } else if (obj.channel == "table.iec.count") {
+              this.iecCount = obj.value;
+            } else if (obj.channel == "table.wmbus.count") {
+              this.wmbusCount = obj.value;
             }
           }
         }
