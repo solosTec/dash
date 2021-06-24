@@ -77,6 +77,14 @@
     "header-monitor-wmbus-gw": "wireless M-Bus gateway status",
     "lead-monitor-wmbus-gw": "%{count} wMBus gateways found",
 
+    "footer-counter-dev": "%{count} device(s) configured",
+    "footer-counter-gw": "%{count} gateway(s) configured",
+    "footer-counter-meter": "%{count} meter(s) configured",
+    "footer-counter-lora": "%{count} LoRa device(s) configured",
+    "footer-counter-session": "%{count} session(s) online",
+    "footer-counter-targets": "%{count} target(s) registered",
+    "footer-counter-connections": "%{count} connections are open",
+
     "com-default": "default",
 
     "action-del": "Delete",
@@ -353,5 +361,11 @@
     "wmbus-config-aes-is-required": "AES Key is required",
     "wmbus-config-aes-must-be-hex": "Only 32 hexadecimal characters are allowed",
     "wmbus-config-meter": "Meter",
-    "wmbus-config-meter-is-required": "Meter is required"
+    "wmbus-config-meter-is-required": "Meter is required",
+
+    "upload-title-01": "Upload Devices",
+    "upload-title-02": "Upload Gateways",
+    "upload-title-03": "Upload Meter",
+    "upload-title-04": "Upload LoRa Devices",
+    "upload-title-05": "Upload IEC/wM-Bus Configuration"
 }

@@ -77,6 +77,14 @@
     "header-monitor-wmbus-gw": "état de la passerelle M-Bus sans fil",
     "lead-monitor-wmbus-gw": "%{count} passerelles M-Bus sans fil trouvées",
 
+    "footer-counter-dev": "%{count} device(s) configured",
+    "footer-counter-gw": "%{count} gateway(s) configured",
+    "footer-counter-meter": "%{count} meter(s) configured",
+    "footer-counter-lora": "%{count} LoRa device(s) configured",
+    "footer-counter-session": "%{count} session(s) online",
+    "footer-counter-targets": "%{count} target(s) registered",
+    "footer-counter-connections": "%{count} connections are open",
+
     "com-default": "par défaut",
 
     "action-del": "Supprimer",
@@ -279,6 +287,12 @@
     "config-meter-27": "Description",
     "config-meter-28": "Protocol",
     "config-meter-29": "Data protocol layer",
-    "config-meter-30": "Location"
+    "config-meter-30": "Location",
+
+    "upload-title-01": "Configuration de l'appareil",
+    "upload-title-02": "Configuration des passerelles",
+    "upload-title-03": "Configuration du compteur",
+    "upload-title-04": "Configuration du dispositif LoRa",
+    "upload-title-05": "Configuration du M-Bus IEC/wireless"
 
 }

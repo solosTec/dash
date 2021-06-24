@@ -77,6 +77,14 @@
     "header-monitor-wmbus-gw": "состояние беспроводного шлюза M-Bus",
     "lead-monitor-wmbus-gw": "Найдено %{count} беспроводных шлюза M-Bus",
 
+    "footer-counter-dev": "%{count} device(s) configured",
+    "footer-counter-gw": "%{count} gateway(s) configured",
+    "footer-counter-meter": "%{count} meter(s) configured",
+    "footer-counter-lora": "%{count} LoRa device(s) configured",
+    "footer-counter-session": "%{count} session(s) online",
+    "footer-counter-targets": "%{count} target(s) registered",
+    "footer-counter-connections": "%{count} connections are open",
+
     "com-default": "Стандарт",
 
     "action-del": "Удалить",
@@ -279,5 +287,11 @@
     "config-meter-27": "Description",
     "config-meter-28": "Protocol",
     "config-meter-29": "Data protocol layer",
-    "config-meter-30": "Location"
+    "config-meter-30": "Location",
+
+    "upload-title-01": "Конфигурация устройства",
+    "upload-title-02": "Управление шлюзами",
+    "upload-title-03": "Конфигурация счетчикаr",
+    "upload-title-04": "Конфигурация LoRa-устройства",
+    "upload-title-05": "IEC/беспроводная M-Bus-конфигурация"
 }

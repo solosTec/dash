@@ -80,6 +80,13 @@
     "header-monitor-wmbus-gw": "wireless M-Bus Gateway Status",
     "lead-monitor-wmbus-gw": "%{count} wMBus Gateways gefunden",
 
+    "footer-counter-dev": "%{count} device(s) configured",
+    "footer-counter-gw": "%{count} gateway(s) configured",
+    "footer-counter-meter": "%{count} meter(s) configured",
+    "footer-counter-lora": "%{count} LoRa device(s) configured",
+    "footer-counter-session": "%{count} session(s) online",
+    "footer-counter-targets": "%{count} target(s) registered",
+    "footer-counter-connections": "%{count} connections are open",
 
     "com-default": "Voreinstellung",
 
@@ -329,5 +336,12 @@
     "smf-form-meter-medium-display": "Anzeige",
     "smf-form-meter-medium-sewage": "Abwasser",
     "smf-form-meter-medium-waste": "Abfall",
-    "smf-form-meter-medium-carbon-dioxide": "Kohlendioxid"
+    "smf-form-meter-medium-carbon-dioxide": "Kohlendioxid",
+
+    "upload-title-01": "Geräte-Konfiguration",
+    "upload-title-02": "Gateway-Konfiguration",
+    "upload-title-03": "Zähler-Konfiguration",
+    "upload-title-04": "LoRa Geräte",
+    "upload-title-05": "IEC und wireless M-Bus"
+
 }

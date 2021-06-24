@@ -18,7 +18,7 @@
 
     <b-container fluid>
       <b-card-group columns>
-        <b-card title="Upload Devices" class="shadow">
+        <b-card :title="$t('upload-title-01')" class="shadow">
           <div slot="footer">
             <small class="text-muted"
               >{{ deviceCount }} device(s) configured</small
@@ -68,7 +68,7 @@
           </b-form>
         </b-card>
 
-        <b-card title="Upload Gateways" class="shadow">
+        <b-card :title="$t('upload-title-02')" class="shadow">
           <div slot="footer">
             <small class="text-muted"
               >{{ gatewayCount }} gateway(s) configured</small
@@ -106,7 +106,7 @@
           </b-form>
         </b-card>
 
-        <b-card title="Upload Meter" class="shadow">
+        <b-card :title="$t('upload-title-03')" class="shadow">
           <div slot="footer">
             <small class="text-muted"
               >{{ meterCount }} meter(s) configured</small
@@ -144,7 +144,7 @@
           </b-form>
         </b-card>
 
-        <b-card title="Upload LoRa Devices" class="shadow">
+        <b-card :title="$t('upload-title-04')" class="shadow">
           <div slot="footer">
             <small class="text-muted"
               >{{ LoRaCount }} LoRa devices(s) configured</small
@@ -185,7 +185,7 @@
         <!--iecCount: 0,
         wmbusCount: 0,-->
 
-        <b-card title="Upload Bridge Configuration" class="shadow">
+        <b-card :title="$t('upload-title-05')" class="shadow">
           <div slot="footer">
             <small class="text-muted"
               >{{ iecCount }} IEC and {{ wmbusCount }} wM-Bus meters(s)
