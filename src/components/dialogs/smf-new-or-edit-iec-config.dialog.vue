@@ -30,6 +30,7 @@
       :error-messages="{
         required: 'iec-config-interval-is-required'
       }"
+      :disabled="true"
     >
     </smf-input>
   </b-form>
