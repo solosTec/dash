@@ -62,7 +62,7 @@ import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import { BTableItem } from "@/shared/b-table-item";
 import { MeterIEC } from "@/api/meter-iec";
 import { Converter } from "@/shared/converter";
-import { SmfDialogService } from "@/shared/smf-dialog.service";
+import { DialogMode, SmfDialogService } from "@/shared/smf-dialog.service";
 import SmfNewOrEditIecDialogDialog from "@/components/dialogs/smf-new-or-edit-iec-config.dialog.vue";
 import covertTimeStampToDate = Converter.covertTimeStampToDate;
 
@@ -199,7 +199,8 @@ export default mixins(webSocket, Vue).extend({
         this,
         "Update IEC Config",
         SmfNewOrEditIecDialogDialog,
-        this.selected[0]
+        this.selected[0],
+        DialogMode.DISABLE_INTERVALL
       );
       if (data) {
         this.ws_submit_record(Cmd.modify, Channel.ConfigIec, {

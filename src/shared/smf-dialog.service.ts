@@ -11,7 +11,8 @@ export interface DialogFormState<T> {
 
 export enum DialogMode {
   ADD,
-  UPDATE
+  UPDATE,
+  DISABLE_INTERVALL
 }
 export type VueComponentInstance = CombinedVueInstance<any, any, any, any, any>;
 

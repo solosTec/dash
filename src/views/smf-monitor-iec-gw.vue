@@ -19,7 +19,7 @@
 
     <b-container fluid>
       <b-row>
-        <b-col md="4"> </b-col>
+        <b-col md="4"></b-col>
         <b-col md="4">
           <b-form-row>
             <smf-row-count-selector
@@ -40,6 +40,15 @@
           />
         </b-col>
       </b-row>
+      <div class="edit-buttons">
+        <b-button
+          :disabled="selected.length === 0"
+          type="button"
+          variant="primary"
+          v-on:click.stop="onUpdate"
+          >{{ btnUpdateTitle }}
+        </b-button>
+      </div>
       <b-row>
         <b-col md="12">
           <b-table
@@ -84,18 +93,18 @@
                 v-if="data.item.units && data.item.units.length > 0"
                 size="sm"
                 @click="data.toggleDetails"
-                ><b-icon-zoom-in v-if="!data.detailsShowing"></b-icon-zoom-in
-                ><b-icon-zoom-out
-                  v-if="data.detailsShowing"
-                ></b-icon-zoom-out></b-button
-            ></template>
+              >
+                <b-icon-zoom-in v-if="!data.detailsShowing"></b-icon-zoom-in>
+                <b-icon-zoom-out v-if="data.detailsShowing"></b-icon-zoom-out>
+              </b-button>
+            </template>
 
             <template #row-details="row">
               <div v-if="row.item.units && row.item.units.length > 0">
                 <ul class="unit-list">
-                  <template v-for="unit in row.item.units"
-                    ><li :key="unit">{{ unit }}</li></template
-                  >
+                  <template v-for="unit in row.item.units">
+                    <li :key="unit">{{ unit }}</li>
+                  </template>
                 </ul>
               </div>
             </template>
@@ -114,6 +123,9 @@ import store, { AppState } from "../store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
+import { TranslateResult } from "vue-i18n";
+import { DialogMode, SmfDialogService } from "@/shared/smf-dialog.service";
+import SmfNewOrEditIecDialogDialog from "@/components/dialogs/smf-new-or-edit-iec-config.dialog.vue";
 
 export default mixins(webSocket, Vue).extend({
   name: "smfMonitorIECgw",
@@ -229,7 +241,8 @@ export default mixins(webSocket, Vue).extend({
       gateways: [] as any[],
       sortBy: "class",
       sortDesc: false,
-      sortDirection: "desc"
+      sortDirection: "desc",
+      selected: [] as any[]
     };
   },
 
@@ -238,7 +251,9 @@ export default mixins(webSocket, Vue).extend({
   },
 
   methods: {
-    rowSelected() {},
+    rowSelected(items: any) {
+      this.selected = items;
+    },
 
     ws_on_open() {
       //  clear table
@@ -355,11 +370,36 @@ export default mixins(webSocket, Vue).extend({
           }
         }
       }
+    },
+    async onUpdate() {
+      const data = await SmfDialogService.openFormDialog(
+        this,
+        "Update IEC Config",
+        SmfNewOrEditIecDialogDialog,
+        this.selected[0],
+        DialogMode.UPDATE
+      );
+      if (data) {
+        console.log(data);
+        // FIXME @sylko
+        // this.ws_submit_record(Cmd.modify, Channel.ConfigIec, {
+        //     key: [data.tag],
+        //     data
+        // });
+      }
     }
   },
   computed: {
     tableCaption(): string {
       return "Showing " + this.gateways.length + " IEC gateways";
+    },
+
+    btnUpdateTitle(): string | TranslateResult {
+      if (this.selected.length > 0) {
+        return `${this.$t("action-update")} ${this.selected[0].host ||
+          this.selected[0].host}`;
+      }
+      return this.$t("action-update");
     },
     ...mapState({
       totalIoFormatted: function(state: AppState) {
@@ -390,8 +430,19 @@ export default mixins(webSocket, Vue).extend({
   text-align: right;
   margin-bottom: 0;
   margin-right: 15px;
+
   li {
     list-style: none;
+  }
+}
+
+.edit-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.75em;
+
+  button {
+    margin-left: 0.25em;
   }
 }
 </style>
