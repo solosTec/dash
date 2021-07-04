@@ -34,7 +34,8 @@ export const enum Channel {
   ConfigLoRa = "config.lora",
   ConfigSnapshot = "config.snapshot",
   ConfigWMBus = "config.wmbus",
-  ConfigIec = "config.iec",
+  ConfigIec = "config.iec", //  table ""meterIEC"
+  ConfigGwIec = "status.IECgw", //  table "gwIEC"
   ConfigUploadDevices = "config.upload.devices",
   ConfigUploadGateways = "config.upload.gateways",
   ConfigUploadMeters = "config.upload.meters",

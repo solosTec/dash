@@ -116,7 +116,7 @@
 </template>
 
 <script lang="ts">
-import { webSocket } from "@/mixins/web-socket";
+import { Channel, Cmd, webSocket } from "@/mixins/web-socket";
 import { mapState } from "vuex";
 import { hasPrivilegesWaitForUser } from "@/mixins/privileges";
 import store, { AppState } from "../store";
@@ -290,7 +290,7 @@ export default mixins(webSocket, Vue).extend({
         } else if (obj.cmd == "insert") {
           if (obj.channel == "status.IECgw") {
             const rec = {
-              key: obj.rec.key.tag,
+              tag: obj.rec.key.tag,
               host: obj.rec.data.host,
               port: obj.rec.data.port,
               meterCounter: obj.rec.data.meterCounter,
@@ -315,15 +315,15 @@ export default mixins(webSocket, Vue).extend({
           this.gateways = [];
         } else if (obj.cmd == "delete") {
           // console.log('lookup node ' + obj.key);
-          const idx = this.gateways.findIndex(rec => rec.key == obj.key[0]);
+          const idx = this.gateways.findIndex(rec => rec.tag == obj.key[0]);
           // console.log('delete index ' + idx);
           this.gateways.splice(idx, 1);
         } else if (obj.cmd == "modify") {
           if (obj.channel == "status.IECgw") {
             const self = this;
             this.gateways.find(function(rec) {
-              if (rec.key == obj.key[0]) {
-                console.log("modify record " + rec.key);
+              if (rec.tag == obj.key[0]) {
+                console.log("modify record " + rec.tag);
                 rec.lastSeen = new Date();
                 if (obj.value.meterCounter != null) {
                   rec.meterCounter = obj.value.meterCounter;
@@ -335,6 +335,8 @@ export default mixins(webSocket, Vue).extend({
                   rec.meter = obj.value.index;
                 } else if (obj.value.meter != null) {
                   rec.id = obj.value.meter;
+                } else if (obj.value.interval != null) {
+                  rec.interval = obj.value.interval;
                 } else if (obj.value.state != null) {
                   rec.state = obj.value.state;
                   switch (rec.state) {
@@ -381,11 +383,15 @@ export default mixins(webSocket, Vue).extend({
       );
       if (data) {
         console.log(data);
-        // FIXME @sylko
-        // this.ws_submit_record(Cmd.modify, Channel.ConfigIec, {
-        //     key: [data.tag],
-        //     data
-        // });
+        this.ws_submit_record(Cmd.modify, Channel.ConfigGwIec, {
+          key: [data.tag],
+          data: {
+            host: data.host,
+            port: data.port,
+            meter: data.id,
+            interval: data.interval
+          }
+        });
       }
     }
   },
