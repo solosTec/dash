@@ -337,6 +337,10 @@ export default mixins(webSocket, Vue).extend({
                   rec.id = obj.value.meter;
                 } else if (obj.value.interval != null) {
                   rec.interval = obj.value.interval;
+                } else if (obj.value.host != null) {
+                  rec.host = obj.value.host;
+                } else if (obj.value.port != null) {
+                  rec.port = obj.value.port;
                 } else if (obj.value.state != null) {
                   rec.state = obj.value.state;
                   switch (rec.state) {
