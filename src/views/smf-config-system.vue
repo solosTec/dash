@@ -397,7 +397,9 @@
           <div slot="footer">
             <small class="text-muted">
               {{ $t("com-default") }} =
-              <b>{{ cfg.def.defIECInterval }} minutes</b>
+              <b>{{ cfg.def.defIECInterval }} minutes.</b> ({{
+                $t("config-sys-footer-23", { count: this.size.gwIEC })
+              }})
             </small>
           </div>
         </b-card>
@@ -409,23 +411,26 @@
     <b-container fluid>
       <b-card-group columns>
         <b-card
-          header="System Info"
+          :header="$t('config-sys-28')"
           header-bg-variant="info"
           header-text-variant="white"
           no-body
         >
           <b-list-group flush>
             <b-list-group-item
-              >System Version: {{ sys.version }}</b-list-group-item
+              >{{ $t("config-sys-24") }}: {{ sys.version }}</b-list-group-item
             >
             <b-list-group-item
-              >Boost Version: {{ sys.boostVersion }}</b-list-group-item
+              >{{ $t("config-sys-25") }}:
+              {{ sys.boostVersion }}</b-list-group-item
             >
             <b-list-group-item
-              >SSL Version: {{ sys.sslVersion }}</b-list-group-item
+              >{{ $t("config-sys-26") }}:
+              {{ sys.sslVersion }}</b-list-group-item
             >
             <b-list-group-item
-              >Compiler: {{ sys.compilerVersion }}</b-list-group-item
+              >{{ $t("config-sys-27") }}:
+              {{ sys.compilerVersion }}</b-list-group-item
             >
           </b-list-group>
         </b-card>
@@ -501,6 +506,9 @@ export default mixins(webSocket, Vue).extend({
         sslVersion: "",
         compilerVersion: ""
       },
+      size: {
+        gwIEC: 0
+      },
       country: {
         options: [
           { value: "AU", text: "Australia" },
@@ -530,6 +538,7 @@ export default mixins(webSocket, Vue).extend({
   methods: {
     ws_on_open() {
       this.ws_subscribe("config.system");
+      this.ws_subscribe("table.gwIEC.count");
     },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
@@ -637,6 +646,10 @@ export default mixins(webSocket, Vue).extend({
             this.cfg.countryCode = obj.value.value;
           } else if (obj.key[0] == "language-code") {
             this.cfg.languageCode = obj.value.value;
+          }
+        } else if (obj.cmd == "update") {
+          if (obj.channel == "table.gwIEC.count") {
+            this.size.gwIEC = obj.value;
           }
         }
         // eslint-disable-next-line

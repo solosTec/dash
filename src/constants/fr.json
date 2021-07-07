@@ -138,6 +138,12 @@
     "config-sys-21": "Enregistrements de la liaison montante M-Bus sans fil",
     "config-sys-22": "IEC Uplink Records",
     "config-sys-23": "Intervalle de lecture CEI",
+    "config-sys-footer-23": "%{count} passerelles sont affectées",
+    "config-sys-24": "Version du système",
+    "config-sys-25": "Version Boost",
+    "config-sys-26": "Version SSL",
+    "config-sys-27": "Compilateur",
+    "config-sys-28": "Informations sur le système",
 
     "config-device-01": "Nom de l'appareil",
     "config-device-01-01": "<Nom de l'appareil>",

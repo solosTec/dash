@@ -138,6 +138,12 @@
     "config-sys-21": "беспроводные M-Bus Uplink Records",
     "config-sys-22": "IEC Uplink Records",
     "config-sys-23": "Интервал считывания IEC",
+    "config-sys-footer-23": "Затронуты %{count} шлюза",
+    "config-sys-24": "Версия системы",
+    "config-sys-25": "Версия Boost",
+    "config-sys-26": "Версия SSL",
+    "config-sys-27": "Компилятор",
+    "config-sys-28": "Системная информация",
 
     "config-device-01": "Имя устройства",
     "config-device-01-01": "<Имя устройства>",
