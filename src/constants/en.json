@@ -91,6 +91,7 @@
     "action-remove": "Remove",
     "action-clear": "Clear",
     "action-apply": "Commit",
+    "action-apply-force": "Apply now",
     "action-update": "Update",
     "action-insert": "Insert",
     "action-add": "Add",
@@ -136,6 +137,7 @@
     "config-sys-20": "LoRa Uplink Records",
     "config-sys-21": "wM-Bus Uplink Records",
     "config-sys-22": "IEC Uplink Records",
+    "config-sys-23": "IEC Readout Interval",
 
     "config-device-01": "Device name",
     "config-device-01-01": "<Device name>",

@@ -91,6 +91,7 @@
     "action-remove": "Удалить",
     "action-clear": "чёткий ",
     "action-apply": "поручаться",
+    "action-apply-force": "Применить немедленно",
     "action-update": "Обновить",
     "action-insert": "Вставить",
     "action-close": "Закрыть",
@@ -135,6 +136,9 @@
     "config-sys-19": "Создать и поддерживать кэш для данных конфигурации шлюза.",
     "config-sys-20": "LoRa Uplink Рекорды",
     "config-sys-21": "беспроводные M-Bus Uplink Records",
+    "config-sys-22": "IEC Uplink Records",
+    "config-sys-23": "Интервал считывания IEC",
+
     "config-device-01": "Имя устройства",
     "config-device-01-01": "<Имя устройства>",
     "config-device-02": "Пассворт",

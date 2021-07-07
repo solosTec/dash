@@ -45,10 +45,10 @@
             {{ $t("config-sys-04") }}
           </b-form-checkbox>
           <div slot="footer">
-            <small class="text-muted"
-              >{{ $t("com-default") }} =
-              <b>{{ cfg.def.auto_enabled }}</b></small
-            >
+            <small class="text-muted">
+              {{ $t("com-default") }} =
+              <b>{{ cfg.def.auto_enabled }}</b>
+            </small>
           </div>
         </b-card>
 
@@ -72,8 +72,8 @@
         <b-card :title="$t('config-sys-18')" class="shadow">
           <!--process.env.NODE_ENV is undefined-->
           <!--<b-alert show dismissible class="bg-warning" v-if="process.env.NODE_ENV === 'production'">
-                        <span style="font-weight: bold">Note:</span> May be expensive when connecting over cellular networks.
-                    </b-alert>-->
+                          <span style="font-weight: bold">Note:</span> May be expensive when connecting over cellular networks.
+                      </b-alert>-->
           <b-form-checkbox
             switch
             v-model="cfg.gwConfigCaching"
@@ -84,10 +84,10 @@
             <!-- cachinf gateway configuration data -->
           </b-form-checkbox>
           <div slot="footer">
-            <small class="text-muted"
-              >{{ $t("com-default") }} =
-              <b>{{ cfg.def.gwConfigCaching }}</b></small
-            >
+            <small class="text-muted">
+              {{ $t("com-default") }} =
+              <b>{{ cfg.def.gwConfigCaching }}</b>
+            </small>
           </div>
         </b-card>
       </b-card-group>
@@ -105,10 +105,10 @@
             {{ $t("config-sys-15") }}
           </b-form-checkbox>
           <div slot="footer">
-            <small class="text-muted"
-              >{{ $t("com-default") }} =
-              <b>{{ cfg.def.catch_meters }}</b></small
-            >
+            <small class="text-muted">
+              {{ $t("com-default") }} =
+              <b>{{ cfg.def.catch_meters }}</b>
+            </small>
           </div>
         </b-card>
 
@@ -170,10 +170,10 @@
 
           <!-- Maximum number of messages to be displayed. -->
           <div slot="footer">
-            <small class="text-muted"
-              >{{ $t("com-default") }} =
-              <b>{{ cfg.def.languageCode }}</b></small
-            >
+            <small class="text-muted">
+              {{ $t("com-default") }} =
+              <b>{{ cfg.def.languageCode }}</b>
+            </small>
           </div>
         </b-card>
       </b-card-group>
@@ -271,10 +271,10 @@
 
           <!-- Maximum number of events to be displayed. -->
           <div slot="footer">
-            <small class="text-muted"
-              >{{ $t("com-default") }} =
-              <b>{{ cfg.def.maxLoRaRecords }}</b></small
-            >
+            <small class="text-muted">
+              {{ $t("com-default") }} =
+              <b>{{ cfg.def.maxLoRaRecords }}</b>
+            </small>
           </div>
         </b-card>
 
@@ -304,10 +304,10 @@
 
           <!-- Maximum number of events to be displayed. -->
           <div slot="footer">
-            <small class="text-muted"
-              >{{ $t("com-default") }} =
-              <b>{{ cfg.def.maxwMBusRecords }}</b></small
-            >
+            <small class="text-muted">
+              {{ $t("com-default") }} =
+              <b>{{ cfg.def.maxwMBusRecords }}</b>
+            </small>
           </div>
         </b-card>
       </b-card-group>
@@ -367,7 +367,44 @@
       </b-card-group>
 
       <br />
+
+      <b-card-group deck>
+        <b-card :title="$t('config-sys-22')" class="shadow">
+          <b-input-group prepend="minutes" class="mt-3">
+            <b-form-input
+              v-model.number="cfg.defIECInterval"
+              type="number"
+              min="10"
+              max="120"
+              step="5"
+              placeholder="<readout interval in minutes>"
+            />
+            <b-input-group-append>
+              <b-button
+                variant="secondary"
+                @click="cfg.defIECInterval = cfg.def.defIECInterval"
+                >{{ $t("com-default") }}</b-button
+              >
+              <b-button
+                variant="danger "
+                @click="changeDefaultIECInterval(cfg.defIECInterval)"
+                >{{ $t("action-apply-force") }}</b-button
+              >
+            </b-input-group-append>
+          </b-input-group>
+
+          <!-- Maximum number of events to be displayed. -->
+          <div slot="footer">
+            <small class="text-muted">
+              {{ $t("com-default") }} =
+              <b>{{ cfg.def.defIECInterval }} minutes</b>
+            </small>
+          </div>
+        </b-card>
+      </b-card-group>
     </b-container>
+
+    <br />
 
     <b-container fluid>
       <b-card-group columns>
@@ -438,6 +475,7 @@ export default mixins(webSocket, Vue).extend({
         countryCode: "",
         languageCode: "",
         gwConfigCaching: true,
+        defIECInterval: 20,
         def: {
           auto_login: false,
           auto_enabled: true,
@@ -453,7 +491,8 @@ export default mixins(webSocket, Vue).extend({
           countryCode: "AU",
           languageCode: "en-GB",
           gwConfigCaching: false,
-          auto_supersede: false
+          auto_supersede: false,
+          defIECInterval: 30
         }
       },
       sys: {
@@ -554,6 +593,8 @@ export default mixins(webSocket, Vue).extend({
             this.sys.sslVersion = obj.rec.data.value;
           } else if (obj.rec.key.key == "compiler-version") {
             this.sys.compilerVersion = obj.rec.data.value;
+          } else if (obj.rec.key.key == "def-IEC-interval") {
+            this.cfg.defIECInterval = obj.rec.data.value;
           } else {
             console.log(
               this.$options.name +
@@ -630,6 +671,12 @@ export default mixins(webSocket, Vue).extend({
     changeMaxIECRecords(newValue: any) {
       this.ws_submit_record("modify", "config.system", {
         key: ["max-IEC-records"],
+        data: { value: newValue }
+      });
+    },
+    changeDefaultIECInterval(newValue: any) {
+      this.ws_submit_record("modify", "config.system", {
+        key: ["def-IEC-interval"],
         data: { value: newValue }
       });
     },

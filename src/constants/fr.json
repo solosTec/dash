@@ -91,6 +91,7 @@
     "action-remove": "Retirer",
     "action-clear": "Clair",
     "action-apply": "Commettre",
+    "action-apply-force": "Appliquer immédiatement",
     "action-update": "Mise à jour",
     "action-insert": "Insérer",
     "action-close": "Fermer",
@@ -135,6 +136,9 @@
     "config-sys-19": "Créer et maintenir un cache pour les données de configuration de la passerelle.",
     "config-sys-20": "Enregistrements de liaison montante LoRa",
     "config-sys-21": "Enregistrements de la liaison montante M-Bus sans fil",
+    "config-sys-22": "IEC Uplink Records",
+    "config-sys-23": "Intervalle de lecture CEI",
+
     "config-device-01": "Nom de l'appareil",
     "config-device-01-01": "<Nom de l'appareil>",
     "config-device-02": "Mot de passe",
