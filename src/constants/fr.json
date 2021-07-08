@@ -23,6 +23,8 @@
     "nav-monitoring": "Surveillance",
     "nav-tasks": "Tâches",
     "nav-messages": "Messages",
+    "nav-status-iec": "Passerelles IEC",
+    "nav-status-wmbus": "Passerelles wM-Bus",
     "nav-tsdb": "Séries chronologiques",
     "nav-lora-uplink": "LoRa Uplink",
     "nav-plausibility": "Plausibilité",

@@ -22,6 +22,8 @@
     "nav-connections": "Connections",
     "nav-monitoring": "Monitoring",
     "nav-messages": "Messages",
+    "nav-status-iec": "IEC Gateways",
+    "nav-status-wmbus": "wM-Bus Gateways",
     "nav-tsdb": "Time Series",
     "nav-lora-uplink": "LoRa Uplink",
     "nav-tasks": "Tasks",

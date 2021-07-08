@@ -22,6 +22,8 @@
     "nav-connections": "Соединения",
     "nav-monitoring": "Мониторинг",
     "nav-messages": "Сообщения",
+    "nav-status-iec": "Шлюзы IEC",
+    "nav-status-wmbus": "Шлюзы wM-Bus",
     "nav-tsdb": "Временные ряды",
     "nav-lora-uplink": "ЛоРа Подключение",
     "nav-tasks": "Задачи",

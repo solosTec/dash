@@ -127,14 +127,15 @@
             <b-dropdown-item
               :disabled="!hasPrivs(MODULES.MONITOR_MESSAGES, PRIVILEGES.VIEW)"
               to="/monitor/IECgw"
-              >IEC</b-dropdown-item
             >
+              {{ $t("nav-status-iec") }}
+            </b-dropdown-item>
 
             <b-dropdown-item
               :disabled="!hasPrivs(MODULES.MONITOR_MESSAGES, PRIVILEGES.VIEW)"
               to="/monitor/wMBusgw"
-              >wMBus</b-dropdown-item
-            >
+              >{{ $t("nav-status-wmbus") }}
+            </b-dropdown-item>
             <!--<b-dropdown-item :disabled="!hasPrivs(MODULES.MONITOR_TSDB, PRIVILEGES.VIEW)" to="/monitor/tsdb">{{ $t('nav-tsdb') }}</b-dropdown-item>-->
           </b-nav-item-dropdown>
 
