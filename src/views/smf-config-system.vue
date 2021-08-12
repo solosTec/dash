@@ -369,7 +369,7 @@
       <br />
 
       <b-card-group deck>
-        <b-card :title="$t('config-sys-22')" class="shadow">
+        <b-card :title="$t('config-sys-23')" class="shadow">
           <b-input-group prepend="minutes" class="mt-3">
             <b-form-input
               v-model.number="cfg.defIECInterval"
