@@ -88,16 +88,20 @@ const fields = [
   },
   {
     key: "port",
-    label: "Port"
+    label: "Port",
+    tdClass: "smfTTFont",
+    class: "text-right"
   },
   {
     key: "aes",
     label: "AES",
+    tdClass: "smfTTFont",
     sortable: true
   },
   {
     key: "lastSeen",
     label: "Last Seen",
+    class: "text-right",
     formatter: (value: any) => {
       return value == null ? "" : value.toLocaleString();
     },

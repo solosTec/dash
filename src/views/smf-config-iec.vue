@@ -89,7 +89,9 @@ const fields = [
   },
   {
     key: "port",
-    label: "Port"
+    label: "Port",
+    tdClass: "smfTTFont",
+    class: "text-right"
   },
   {
     key: "interval",
