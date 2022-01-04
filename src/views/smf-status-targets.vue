@@ -135,9 +135,18 @@ export default mixins(webSocket, Vue).extend({
           }
         },
         {
+          key: "channels",
+          label: "Channels",
+          sortable: true,
+          class: "text-right",
+          formatter: (value: number) => {
+            return value == 0 ? "" : value.toString();
+          }
+        },
+        {
           //  pk
           key: "tag",
-          label: "Channel",
+          label: "ID",
           sortable: true,
           class: "text-right",
           formatter: (value: any) => {
@@ -184,6 +193,7 @@ export default mixins(webSocket, Vue).extend({
             account: obj.rec.data.account,
             px: obj.rec.data.px,
             counter: obj.rec.data.counter,
+            channels: obj.rec.data.channels,
             regTime: regTime
           };
           this.targets.push(rec);
@@ -200,6 +210,8 @@ export default mixins(webSocket, Vue).extend({
                 rec.px = obj.value.px;
               } else if (obj.value.counter != null) {
                 rec.counter = obj.value.counter;
+              } else if (obj.value.channels != null) {
+                rec.channels = obj.value.channels;
               }
             }
           });
