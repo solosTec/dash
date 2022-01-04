@@ -192,7 +192,7 @@
               configured</small
             >
           </div>
-          <b-form @submit="onSubmitIEC" @reset="onResetIEC">
+          <b-form @submit="onSubmitBridge" @reset="onResetBridge">
             <b-form-file
               v-model="bridge.file"
               :state="Boolean(bridge.file)"
@@ -440,7 +440,7 @@ export default mixins(webSocket, Vue).extend({
       this.LoRa.file = null;
       this.LoRa.policy = "append";
     },
-    onSubmitIEC(evt: Event) {
+    onSubmitBridge(evt: Event) {
       evt.preventDefault();
       this.uploadData(this.bridge.file, Channel.ConfigUploadBridge, {
         policy: this.bridge.policy
@@ -452,10 +452,10 @@ export default mixins(webSocket, Vue).extend({
           );
         })
         .finally(() => {
-          this.onResetIEC(null);
+          this.onResetBridge(null);
         });
     },
-    onResetIEC(evt: Event | null) {
+    onResetBridge(evt: Event | null) {
       if (evt) {
         evt.preventDefault();
       }

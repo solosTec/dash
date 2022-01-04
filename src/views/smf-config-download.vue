@@ -371,6 +371,33 @@
             </b-button>
           </b-form>
         </b-card>
+        <b-card title="Download IEC/wM-Bus Configuration" class="shadow">
+          <div slot="footer">
+            <small class="text-muted">{{ meterCount }} meters configured</small>
+          </div>
+          <b-form @submit="onSubmitBridge" @reset="onResetBridge">
+            <b-form-radio-group
+              id="bridge-uplink-type"
+              v-model="bridge.fmt"
+              name="bridge-download-type"
+              class="mt-3"
+            >
+              <b-form-radio value="XML">XML</b-form-radio>
+              <b-form-radio value="JSON">JSON</b-form-radio>
+              <b-form-radio value="CSV">CSV</b-form-radio>
+            </b-form-radio-group>
+            <b-button
+              type="submit"
+              variant="primary"
+              class="mt-3 mr-3"
+              :disabled="meterCount == 0"
+              >Download &#8681;
+            </b-button>
+            <b-button type="reset" variant="danger" class="mt-3"
+              >Reset
+            </b-button>
+          </b-form>
+        </b-card>
       </b-card-group>
     </b-container>
   </section>
@@ -454,6 +481,10 @@ export default mixins(webSocket, Vue).extend({
       gwIEC: {
         type: "gwIEC",
         fmt: "JSON"
+      },
+      bridge: {
+        type: "bridge",
+        fmt: "CSV"
       }
     };
   },
@@ -542,7 +573,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetDevices(evt: Event) {
       evt.preventDefault();
-      this.dev.type = "JSON";
+      this.dev.type = this.dev.fmt;
       this.dev.version = "v50";
     },
     onSubmitGateways(evt: Event) {
@@ -584,7 +615,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetGateways(evt: Event) {
       evt.preventDefault();
-      this.gw.type = "JSON";
+      this.gw.fmt = "JSON";
     },
     onSubmitMeters(evt: Event) {
       evt.preventDefault();
@@ -617,7 +648,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetMeters(evt: Event) {
       evt.preventDefault();
-      this.meter.type = "JSON";
+      this.meter.fmt = "JSON";
     },
     onSubmitLoRa(evt: Event) {
       evt.preventDefault();
@@ -649,7 +680,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetLoRa(evt: Event) {
       evt.preventDefault();
-      this.LoRa.type = "JSON";
+      this.LoRa.fmt = "JSON";
       this.LoRa.vendor = "swisscom";
     },
     onSubmitUplink(evt: Event) {
@@ -682,7 +713,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetUplink(evt: Event) {
       evt.preventDefault();
-      this.uplinkLoRa.type = "JSON";
+      this.uplinkLoRa.fmt = "JSON";
     },
     onSubmitMsg(evt: Event) {
       evt.preventDefault();
@@ -714,7 +745,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetMsg(evt: Event) {
       evt.preventDefault();
-      this.msg.type = "JSON";
+      this.msg.fmt = "JSON";
     },
     onSubmitIEC(evt: Event) {
       evt.preventDefault();
@@ -743,7 +774,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetIEC(evt: Event) {
       evt.preventDefault();
-      this.msg.type = "JSON";
+      this.iec.fmt = "JSON";
     },
     onSubmitwMBus(evt: Event) {
       evt.preventDefault();
@@ -775,7 +806,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetwMBus(evt: Event) {
       evt.preventDefault();
-      this.msg.type = "JSON";
+      this.wMBus.fmt = "JSON";
     },
     onSubmitIecUplink(evt: Event) {
       evt.preventDefault();
@@ -807,7 +838,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetIecUplink(evt: Event) {
       evt.preventDefault();
-      this.msg.type = "JSON";
+      this.uplinkIec.fmt = "JSON";
     },
     onSubmitwMBusUplink(evt: Event) {
       evt.preventDefault();
@@ -839,7 +870,7 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetwMBusUplink(evt: Event) {
       evt.preventDefault();
-      this.msg.type = "JSON";
+      this.uplinkwMBus.fmt = "JSON";
     },
 
     onSubmitgwIEC(evt: Event) {
@@ -872,7 +903,40 @@ export default mixins(webSocket, Vue).extend({
     },
     onResetgwIEC(evt: Event) {
       evt.preventDefault();
-      this.msg.type = "JSON";
+      this.gwIEC.fmt = "JSON";
+    },
+
+    onSubmitBridge(evt: Event) {
+      evt.preventDefault();
+      //alert(JSON.stringify(this.msg))
+      this.$http
+        .post(`${extraBackendPath}/download.bridge`, this.bridge, {
+          headers: {
+            Accept: "application/xml, application/json, application/csv, */*"
+          },
+          // @ts-ignore
+          responseType: "blob",
+          progress(e) {
+            if (e.lengthComputable) {
+              console.log((e.loaded / e.total) * 100);
+            }
+          }
+        })
+        .then(
+          (res: any) => {
+            this.saveOrOpenBlob(
+              res.body,
+              "bridge." + this.bridge.fmt.toLowerCase()
+            );
+          },
+          (res: any) => {
+            console.log("error: " + res);
+          }
+        );
+    },
+    onResetBridge(evt: Event) {
+      evt.preventDefault();
+      this.bridge.fmt = "CSV";
     },
     saveOrOpenBlob(blob: Blob, fileName: string) {
       var a = document.createElement("a");
