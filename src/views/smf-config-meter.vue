@@ -341,10 +341,9 @@
                       <b-form-input
                         id="smf-form-location-lat"
                         v-model="location.lat"
-                        max="90"
-                        min="-90"
-                        step="0.001"
-                        type="range"
+                        placeholder="<Latitude>"
+                        readonly
+                        type="text"
                       />
                     </b-form-group>
                   </b-col>
@@ -390,10 +389,9 @@
                       <b-form-input
                         id="smf-form-location-long"
                         v-model="location.long"
-                        max="180"
-                        min="-180"
-                        step="0.001"
-                        type="range"
+                        placeholder="<Longitude>"
+                        readonly
+                        type="text"
                       />
                     </b-form-group>
                   </b-col>
