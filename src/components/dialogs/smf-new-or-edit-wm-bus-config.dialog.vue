@@ -39,6 +39,7 @@
       lable-key="wmbus-config-aes"
       :vuelidate-form-model="$v.formModel"
       form-property="aes"
+      description-key="wmbus-config-aes-description"
       :error-messages="{
         required: 'wmbus-config-aes-is-required',
         aesHex: 'wmbus-config-aes-must-be-hex'
