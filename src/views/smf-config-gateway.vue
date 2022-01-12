@@ -1216,13 +1216,14 @@
                   </b-col>
                   <b-col md="3">
                     <b-button
+                      :disabled="selected[0].online === 0"
                       type="submit"
                       variant="primary"
                       v-b-tooltip.hover
                       title="Backup complete gateway configuration with setup service (not implemented yet)"
                       v-on:click.stop="onProxyCacheSync"
-                      >Sync Cache</b-button
-                    >
+                      >Create Snapshot
+                    </b-button>
                   </b-col>
                   <b-col md="3">
                     <b-button
@@ -1300,20 +1301,21 @@
               <b-form @submit.prevent="">
                 <b-row class="p-3">
                   <b-col md="12">
+                    <snapshots
+                      :items="tabSnapshots.data.items"
+                      :nav="tabSnapshots.nav"
+                    />
+                  </b-col>
+                </b-row>
+                <b-row class="p-3">
+                  <b-col md="12">
                     <b-button
+                      :disabled="selected[0].online === 0"
                       type="submit"
                       variant="primary"
                       v-on:click.stop="onProxyCacheSync"
                       >Create Snapshot</b-button
                     >
-                  </b-col>
-                </b-row>
-                <b-row class="p-3">
-                  <b-col md="12">
-                    <snapshots
-                      :items="tabSnapshots.data.items"
-                      :nav="tabSnapshots.nav"
-                    />
                   </b-col>
                 </b-row>
               </b-form>
@@ -3069,33 +3071,37 @@ export default Vue.extend({
     },
     onProxyCacheReset() {
       this.spinner.reset = true;
-      this.ws_proxy(
-        "cache.reset",
-        [this.form.tag!],
-        [
-          SML_CODES.CLASS_OP_LOG_STATUS_WORD,
-          SML_CODES.CODE_ROOT_IPT_PARAM,
-          SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
-          SML_CODES.CODE_ROOT_ACTIVE_DEVICES,
-          SML_CODES.CODE_ROOT_VISIBLE_DEVICES
-        ]
-      );
+      this.ws_config("reset", [this.form.tag!], {
+        type: "gateway",
+        id: this.form.serverId
+      });
     },
     onProxyCacheSections() {
-      this.ws_proxy("cache.sections", [this.form.tag!]);
+      this.ws_config("query", [this.form.tag!], {
+        type: "gateway",
+        id: this.form.serverId
+      });
     },
     onProxyCacheUpdate() {
-      this.ws_proxy(
-        "cache.update",
+      this.ws_config(
+        "update",
         [this.form.tag!],
+        {
+          type: "gateway",
+          id: this.form.serverId
+        },
         [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]
       );
     },
     onProxyCacheSync() {
       //  create snapshot of current configuration
-      this.ws_proxy(
-        "cache.sync",
+      this.ws_config(
+        "backup",
         [this.form.tag!],
+        {
+          type: "gateway",
+          id: this.form.serverId
+        },
         [
           SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
           SML_CODES.CODE_ROOT_ACTIVE_DEVICES,
@@ -3104,9 +3110,13 @@ export default Vue.extend({
       );
     },
     onProxyCacheQuery() {
-      this.ws_proxy(
-        "cache.query",
+      this.ws_config(
+        "query",
         [this.form.tag!],
+        {
+          type: "gateway",
+          id: this.form.serverId
+        },
         [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]
       );
     },

@@ -316,18 +316,21 @@ export const webSocket = Vue.extend({
     //  params: optional vector of strings to select specific sections
     //  of the gateway
     //
-    ws_proxy(
+    ws_config(
       job: string,
       pk_gw: string | string[],
+      meta: any,
       sections = new Array<string>()
     ) {
       if (!this.ws_is_open() || !this.ws) return;
       const msg = JSON.stringify({
-        cmd: "com:proxy",
+        cmd: "config",
         channel: job,
-        gw: pk_gw,
+        key: pk_gw,
+        meta: meta,
         sections: sections
       });
+      console.log(msg);
       this.ws.send(msg);
       this.sx += msg.length;
       this.ws_emit_event_sx();
