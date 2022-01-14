@@ -293,4 +293,8 @@ export default mixins(webSocket, Vue).extend({
   }
 });
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+td fieldset {
+  margin-bottom: 0;
+}
+</style>
