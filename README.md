@@ -87,4 +87,8 @@ docker login -u "$DOCKER_USERNAME" --password-stdin
 docker build . -t solostec/smf -f docker/Dockerfile 
 docker push solostec/smf:latest
 
+# Contributors #
+
+![Top Contributors](https://images.repography.com/23255267/solosTec/dash/top-contributors/a5d96d64717d4dc514efee6405548974.svg)
+
 
