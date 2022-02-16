@@ -1,4 +1,4 @@
-<template lang="html">
+﻿<template lang="html">
   <section class="smf-monitor-system">
     <template>
       <div>
@@ -22,7 +22,7 @@
         <b-col md="12">
           <b-card-group deck>
             <b-card title="CPU" class="shadow">
-              <b-card-text>CPU load in %</b-card-text>
+              <b-card-text>CPU load {{ stat.cpuLoad.value }}%</b-card-text>
               <!-- https://stackoverflow.com/a/52142602/3979819 -->
               <b-progress
                 class="mt-2"
@@ -187,6 +187,15 @@ export default mixins(webSocket, Vue).extend({
           label: "PID",
           sortable: true,
           class: "text-right"
+        },
+        {
+          key: "cfg",
+          label: "CFG",
+          sortable: true,
+          class: "text-center",
+          formatter: (value: boolean) => {
+            return value ? "✔" : "❏";
+          }
         }
       ],
       nodes: [] as any[],
@@ -290,7 +299,8 @@ export default mixins(webSocket, Vue).extend({
               loginTime: obj.rec.data.loginTime,
               ping: obj.rec.data.ping,
               ep: obj.rec.data.ep,
-              pid: obj.rec.data.pid
+              pid: obj.rec.data.pid,
+              cfg: obj.rec.data.cfg
             };
             this.nodes.push(rec);
           }
