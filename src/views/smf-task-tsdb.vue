@@ -461,9 +461,9 @@ export default mixins(webSocket, Vue).extend({
         this.ws_submit_command(
           "com:task",
           "req.config",
-          items[0].key,
-          ["tsdb"],
-          ["single", "multiple", "db", "lineProtocol", "influxdb", "monitor"]
+          items[0].key
+          //  ["tsdb"],
+          //  ["single", "multiple", "db", "lineProtocol", "influxdb", "monitor"]
         );
       }
     },

@@ -21,7 +21,10 @@ export const enum Cmd {
   delete = "delete",
   load = "load",
   cleanup = "cleanup",
-  readout = "readout"
+  readout = "readout",
+  install = "install",
+  backup = "backup",
+  SMLChannel = "channel:sml"
 }
 
 export const enum Channel {
@@ -36,6 +39,7 @@ export const enum Channel {
   ConfigWMBus = "config.wmbus",
   ConfigIec = "config.iec", //  table ""meterIEC"
   ConfigGwIec = "status.IECgw", //  table "gwIEC"
+  ConfigSetMeta = "config.cfgSetMeta", //  table "cfgSetMeta"
   ConfigUploadDevices = "config.upload.devices",
   ConfigUploadGateways = "config.upload.gateways",
   ConfigUploadMeters = "config.upload.meters",
@@ -265,21 +269,14 @@ export const webSocket = Vue.extend({
       this.sx += msg.length;
       this.ws_emit_event_sx();
     },
-    ws_submit_command(
-      cmd: string,
-      channel: string,
-      key: string,
-      params: any,
-      section: string | string[]
-    ) {
+    ws_submit_command(cmd: string, channel: string | Channel, key: any) {
       if (!this.ws_is_open() || !this.ws) return;
       const msg = JSON.stringify({
         cmd: cmd,
         channel: channel,
-        key: key,
-        params: params,
-        section: section
+        key: key
       });
+      console.log(msg);
       this.ws.send(msg);
       this.sx += msg.length;
       this.ws_emit_event_sx();
@@ -296,11 +293,11 @@ export const webSocket = Vue.extend({
       msgType: MESSAGE_REQUEST,
       root: string,
       pk_gw: string | string[],
-      params: any = { params: null }
+      params: any = { hint: "empty" }
     ) {
       if (!this.ws_is_open() || !this.ws) return;
       const msg = JSON.stringify({
-        cmd: "com:sml",
+        cmd: Cmd.SMLChannel, // "channel:sml"
         channel: msgType,
         section: root,
         gw: pk_gw,

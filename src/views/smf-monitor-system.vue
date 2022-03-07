@@ -300,7 +300,7 @@ export default mixins(webSocket, Vue).extend({
               ping: obj.rec.data.ping,
               ep: obj.rec.data.ep,
               pid: obj.rec.data.pid,
-              cfg: obj.rec.data.cfg
+              cfg: obj.rec.data.cfg == null ? false : obj.rec.data.cfg
             };
             this.nodes.push(rec);
           }

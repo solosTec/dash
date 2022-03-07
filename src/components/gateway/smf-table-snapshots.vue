@@ -28,7 +28,20 @@
       </template>
 
       <template v-slot:cell(install)="row">
-        <b-button size="sm">Run</b-button>
+        <b-button
+          size="sm"
+          type="submit"
+          variant="secondary"
+          v-on:click.stop="onSnapshotInstall(row.item)"
+          >Install</b-button
+        >&nbsp;
+        <b-button
+          size="sm"
+          type="submit"
+          variant="warning"
+          v-on:click.stop="onSnapshotDelete(row.item)"
+          >Delete</b-button
+        >
       </template>
     </b-table>
   </section>
@@ -57,7 +70,7 @@ export default Vue.extend({
         },
         // pk
         {
-          key: "utc",
+          key: "ts",
           label: "UTC",
           sortable: true,
           formatter: (value: any) => {
@@ -67,15 +80,22 @@ export default Vue.extend({
         {
           key: "serverId",
           label: "Server ID",
+          sortable: true,
+          tdClass: "smfTTFont",
+          class: "text-right"
+        },
+        {
+          key: "fw",
+          label: "Version",
           sortable: true
         },
         {
           key: "install",
-          label: "Install",
+          label: "Command",
           class: "text-center"
         },
         {
-          key: "remark",
+          key: "desc",
           label: "Remark",
           sortable: false
         }
@@ -85,7 +105,16 @@ export default Vue.extend({
       sortDirection: "desc"
     };
   },
-  methods: {},
+  methods: {
+    onSnapshotInstall(item: any) {
+      //console.log(item.key);
+      this.$emit("onSnapshotInstall", item.key);
+    },
+    onSnapshotDelete(item: any) {
+      //console.log(item.key);
+      this.$emit("onSnapshotDelete", item.key);
+    }
+  },
   computed: {}
 });
 </script>

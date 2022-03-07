@@ -1172,7 +1172,7 @@
             </b-tab>
 
             <!-- Access -->
-            <b-tab no-body :smf-context="smfContext.auth">
+            <!--<b-tab no-body :smf-context="smfContext.auth">
               <template slot="title">
                 Access
                 <b-spinner v-if="spinner.auth" type="grow" small />
@@ -1251,7 +1251,7 @@
                   <b-col md="9"> </b-col>
                 </b-row>
               </b-form>
-            </b-tab>
+            </b-tab>-->
 
             <!-- logs -->
             <b-tab
@@ -1304,6 +1304,8 @@
                     <snapshots
                       :items="tabSnapshots.data.items"
                       :nav="tabSnapshots.nav"
+                      @onSnapshotInstall="onSnapshotInstall"
+                      @onSnapshotDelete="onSnapshotDelete"
                     />
                   </b-col>
                 </b-row>
@@ -1684,7 +1686,7 @@
 </template>
 
 <script lang="ts">
-import { webSocket } from "@/mixins/web-socket";
+import { Channel, Cmd, webSocket } from "@/mixins/web-socket";
 import opLog from "@/components/gateway/smf-table-op-log.vue";
 import snapshots from "@/components/gateway/smf-table-snapshots.vue";
 import firmware from "@/components/gateway/smf-table-firmware.vue";
@@ -1787,8 +1789,7 @@ export default Vue.extend({
   mixins: [webSocket],
   components: {
     smfServerConfiguration,
-    smfServerRootAccessRights,
-    smfMeterAccessRights,
+    //    smfMeterAccessRights,
     smfBrokerConfiguration,
     opLog,
     snapshots,
@@ -2127,12 +2128,12 @@ export default Vue.extend({
       tabSnapshots: {
         data: {
           items: [
-            {
-              nr: 1,
-              utc: new Date(),
-              serverId: "0500153B02297E",
-              remark: "nice description"
-            }
+            //  {
+            //    nr: 1,
+            //    ts: new Date(),
+            //    serverId: "0500153B02297E",
+            //    desc: "nice description"
+            //  }
           ]
         },
         nav: {
@@ -2176,23 +2177,32 @@ export default Vue.extend({
       this.gateways = [];
       this.ws_subscribe("config.gateway");
       this.ws_subscribe("table.gateway.count");
+      this.ws_subscribe("config.cfgSetMeta");
     },
 
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
-        // console.log('websocket received ' + obj.cmd);
+        //console.log('websocket received ', obj);
+        //
+        //  update
+        //
         if (obj.cmd === "update") {
           if (obj.channel != null) {
-            console.log("update channel: " + obj.channel);
+            console.log(
+              "update channel: " +
+                obj.channel +
+                ", " +
+                MESSAGE_RESPONSE.getProcParameter
+            );
             if (obj.channel === MESSAGE_RESPONSE.getProcParameter) {
               //console.log("section :::" + obj.section + ":::");
-              //console.log(obj.rec.values);
-              if (obj.section[0] === SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
+              console.log(obj);
+              if (obj.section === SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
                 //  hide loading spinner
                 this.spinner.status = false;
                 this.gw.status = [];
                 // state.variant">{{state.value}
-                if (obj.rec.values.word.FATAL_ERROR) {
+                if (obj.values.word.FATAL_ERROR) {
                   this.gw.status.push({
                     value: "ERROR state",
                     variant: "danger"
@@ -2204,7 +2214,7 @@ export default Vue.extend({
                   });
                 }
 
-                if (obj.rec.values.word.AUTHORIZED_IPT) {
+                if (obj.values.word.AUTHORIZED_IPT) {
                   this.gw.status.push({
                     value: "IP-T connection established",
                     variant: "success"
@@ -2216,7 +2226,7 @@ export default Vue.extend({
                   });
                 }
 
-                if (obj.rec.values.word.OUT_OF_MEMORY) {
+                if (obj.values.word.OUT_OF_MEMORY) {
                   this.gw.status.push({
                     value: "out of memory",
                     variant: "warning"
@@ -2228,7 +2238,7 @@ export default Vue.extend({
                   });
                 }
 
-                if (obj.rec.values.word.SERVICE_IF_AVAILABLE) {
+                if (obj.values.word.SERVICE_IF_AVAILABLE) {
                   this.gw.status.push({
                     value: "customer interface available",
                     variant: null
@@ -2240,7 +2250,7 @@ export default Vue.extend({
                   });
                 }
 
-                if (obj.rec.values.word.EXT_IF_AVAILABLE) {
+                if (obj.values.word.EXT_IF_AVAILABLE) {
                   this.gw.status.push({
                     value: "extension interface available",
                     variant: null
@@ -2252,7 +2262,7 @@ export default Vue.extend({
                   });
                 }
 
-                if (obj.rec.values.word.WIRELESS_BUS_IF_AVAILABLE) {
+                if (obj.values.word.WIRELESS_BUS_IF_AVAILABLE) {
                   this.gw.status.push({
                     value: "wireless M-Bus interface available",
                     variant: "success"
@@ -2264,7 +2274,7 @@ export default Vue.extend({
                   });
                 }
 
-                if (obj.rec.values.word.PLC_AVAILABLE) {
+                if (obj.values.word.PLC_AVAILABLE) {
                   this.gw.status.push({
                     value: "PLC interface available",
                     variant: null
@@ -2276,7 +2286,7 @@ export default Vue.extend({
                   });
                 }
 
-                if (obj.rec.values.word.WIRED_MBUS_IF_AVAILABLE) {
+                if (obj.values.word.WIRED_MBUS_IF_AVAILABLE) {
                   this.gw.status.push({
                     value: "wired M-Bus interface available",
                     variant: "success"
@@ -2288,7 +2298,7 @@ export default Vue.extend({
                   });
                 }
 
-                if (obj.rec.values.word.NO_TIMEBASE) {
+                if (obj.values.word.NO_TIMEBASE) {
                   this.gw.status.push({
                     value: "uncertain timebase",
                     variant: "dark"
@@ -2299,9 +2309,7 @@ export default Vue.extend({
                     variant: "success"
                   });
                 }
-              } else if (
-                obj.section[0] === SML_CODES.CODE_ROOT_VISIBLE_DEVICES
-              ) {
+              } else if (obj.section === SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
                 Object.values(obj.rec.values).forEach((e: any) => {
                   //console.log(e);
                   const lastSeenVisible =
@@ -2682,35 +2690,59 @@ export default Vue.extend({
               console.warn("update unknown channel " + obj.channel, obj);
             }
           }
+          //
+          //  insert
+          //
         } else if (obj.cmd === "insert") {
-          let rec: any = {
-            tag: obj.rec.key.tag,
-            serverId: obj.rec.data.serverId,
-            manufacturer: obj.rec.data.manufacturer,
-            descr: obj.rec.data.descr,
-            name: obj.rec.data.name,
-            model: obj.rec.data.model,
-            vFirmware: obj.rec.data.vFirmware,
-            userName: obj.rec.data.userName,
-            userPwd: obj.rec.data.userPwd,
-            online: obj.rec.data.online
-          };
+          if (obj.channel == "config.gateway") {
+            let rec: any = {
+              tag: obj.rec.key.tag,
+              serverId: obj.rec.data.serverId,
+              manufacturer: obj.rec.data.manufacturer,
+              descr: obj.rec.data.descr,
+              name: obj.rec.data.name,
+              model: obj.rec.data.model,
+              vFirmware: obj.rec.data.vFirmware,
+              userName: obj.rec.data.userName,
+              userPwd: obj.rec.data.userPwd,
+              online: obj.rec.data.online
+            };
 
-          if (obj.rec.data.online === 1) {
-            rec["_rowVariant"] = "success";
-          } else if (obj.rec.data.online === 2) {
-            rec["_rowVariant"] = "warning";
-          } else if (obj.rec.data.online === 3) {
-            rec["_rowVariant"] = "secondary ";
-          }
+            if (obj.rec.data.online === 1) {
+              rec["_rowVariant"] = "success";
+            } else if (obj.rec.data.online === 2) {
+              rec["_rowVariant"] = "warning";
+            } else if (obj.rec.data.online === 3) {
+              rec["_rowVariant"] = "secondary ";
+            }
 
-          if (this.isBusy) {
-            //  bulk insert
-            tmpGateways.push(rec);
-          } else {
-            //  operational insert
-            this.gateways.push(rec);
+            if (this.isBusy) {
+              //  bulk insert
+              tmpGateways.push(rec);
+            } else {
+              //  operational insert
+              this.gateways.push(rec);
+            }
+          } else if (obj.channel == "config.cfgSetMeta") {
+            let rec: any = {
+              key: obj.rec.key.tag,
+              ts: new Date(obj.rec.data.ts.substring(0, 19)),
+              gw: obj.rec.data.gw,
+              serverId:
+                obj.rec.data.serverId === undefined
+                  ? obj.rec.data.gw
+                  : obj.rec.data.serverId,
+              fw:
+                obj.rec.data.vFirmware === undefined
+                  ? "v0.0"
+                  : obj.rec.data.vFirmware,
+              desc: obj.rec.data.desc
+            };
+            this.tabSnapshots.data.items.push(rec);
           }
+          //
+          //  modify
+          //
         } else if (obj.cmd === "modify") {
           //console.log('lookup gateway ' + obj.key[0]);
           this.gateways.find(function(rec: any) {
@@ -2744,26 +2776,53 @@ export default Vue.extend({
               }
             }
           });
+          //
+          //  clear
+          //
         } else if (obj.cmd === "clear") {
           //  clear table
-          this.gateways = [];
-          this.meters.values = [];
-          this.tabOpLog.data.items = [];
+          if (obj.channel == "config.gateway") {
+            this.gateways = [];
+            this.meters.values = [];
+            this.tabOpLog.data.items = [];
+            this.tabSnapshots.data.items = [];
+          } else if (obj.channel == "config.cfgSetMeta") {
+            this.tabSnapshots.data.items = [];
+          }
+          //
+          //  delete
+          //
         } else if (obj.cmd === "delete") {
-          const idx = this.gateways.findIndex(
-            (rec: any) => rec.tag === obj.key[0]
-          );
-          this.gateways.splice(idx, 1);
+          if (obj.channel == "config.gateway") {
+            const idx = this.gateways.findIndex(
+              (rec: any) => rec.tag === obj.key[0]
+            );
+            this.gateways.splice(idx, 1);
+          } else if (obj.channel == "config.cfgSetMeta") {
+            const idx = this.tabSnapshots.data.items.findIndex(
+              (rec: any) => rec.tag === obj.key[0]
+            );
+            this.tabSnapshots.data.items.splice(idx, 1);
+          }
+          //
+          //  load
+          //
         } else if (obj.cmd === "load") {
           //  load status
           if (obj.show != null) {
             this.isBusy = obj.show;
-            tmpGateways = [];
+            if (obj.channel == "config.gateway") {
+              tmpGateways = [];
+            } else if (obj.channel == "config.cfgSetMeta") {
+              //this.tabSnapshots.data.items = [];
+            }
           }
           if (obj.level !== 100) {
             this.busyLevel = obj.level;
           } else {
-            this.gateways = tmpGateways;
+            if (obj.channel == "config.gateway") {
+              this.gateways = tmpGateways;
+            }
           }
         } else {
           console.log("websocket received unknown command " + obj.cmd);
@@ -2785,14 +2844,16 @@ export default Vue.extend({
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CLASS_OP_LOG_STATUS_WORD,
-          [pkGateway]
+          [pkGateway],
+          { path: [SML_CODES.CLASS_OP_LOG_STATUS_WORD] }
         );
       } else if (smfContext === this.smfContext.ipt) {
         this.spinner.ipt = true;
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_ROOT_IPT_PARAM,
-          [pkGateway]
+          [pkGateway],
+          { path: [SML_CODES.CODE_ROOT_IPT_PARAM] }
         );
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
@@ -2817,7 +2878,8 @@ export default Vue.extend({
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_ROOT_DEVICE_IDENT,
-          [pkGateway]
+          [pkGateway],
+          { path: [SML_CODES.CODE_ROOT_DEVICE_IDENT] }
         );
       } else if (smfContext === this.smfContext.memoryUsage) {
         this.spinner.memory = true;
@@ -2832,24 +2894,28 @@ export default Vue.extend({
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_ROOT_VISIBLE_DEVICES,
-          [pkGateway]
+          [pkGateway],
+          { path: [SML_CODES.CODE_ROOT_VISIBLE_DEVICES] }
         );
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_ROOT_ACTIVE_DEVICES,
-          [pkGateway]
+          [pkGateway],
+          { path: [SML_CODES.CODE_ROOT_ACTIVE_DEVICES] }
         );
       } else if (smfContext === this.smfContext.wirlessMBus) {
         this.spinner.wmbus = true;
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_ROOT_W_MBUS_STATUS,
-          [pkGateway]
+          [pkGateway],
+          { path: [SML_CODES.CODE_ROOT_W_MBUS_STATUS] }
         );
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_IF_wMBUS,
-          [pkGateway]
+          [pkGateway],
+          { path: [SML_CODES.CODE_IF_wMBUS] }
         );
       } else if (smfContext === this.smfContext.iec) {
         this.spinner.iec = true;
@@ -3069,35 +3135,34 @@ export default Vue.extend({
       if (typeof mc == "undefined") return true;
       return mc.length > 2 && mc.startsWith("MC");
     },
-    onProxyCacheReset() {
-      this.spinner.reset = true;
-      this.ws_config("reset", [this.form.tag!], {
-        type: "gateway",
-        id: this.form.serverId
-      });
-    },
-    onProxyCacheSections() {
-      this.ws_config("query", [this.form.tag!], {
-        type: "gateway",
-        id: this.form.serverId
-      });
-    },
-    onProxyCacheUpdate() {
-      this.ws_config(
-        "update",
-        [this.form.tag!],
-        {
-          type: "gateway",
-          id: this.form.serverId
-        },
-        [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]
-      );
-    },
+    //onProxyCacheReset() {
+    //  this.spinner.reset = true;
+    //  this.ws_config("reset", [this.form.tag!], {
+    //    type: "gateway",
+    //    id: this.form.serverId
+    //  });
+    //},
+    //onProxyCacheSections() {
+    //  this.ws_config("query", [this.form.tag!], {
+    //    type: "gateway",
+    //    id: this.form.serverId
+    //  });
+    //},
+    //onProxyCacheUpdate() {
+    //  this.ws_config(
+    //    "update",
+    //    [this.form.tag!],
+    //    {
+    //      type: "gateway",
+    //      id: this.form.serverId
+    //    },
+    //    [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]
+    //  );
+    //},
     onProxyCacheSync() {
       //  create snapshot of current configuration
       this.ws_config(
-        "backup",
-        [this.form.tag!],
+        Cmd.backup[this.form.tag!],
         {
           type: "gateway",
           id: this.form.serverId
@@ -3109,41 +3174,51 @@ export default Vue.extend({
         ]
       );
     },
-    onProxyCacheQuery() {
-      this.ws_config(
-        "query",
-        [this.form.tag!],
-        {
-          type: "gateway",
-          id: this.form.serverId
-        },
-        [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]
-      );
-    },
-    onQueryMeter(
-      {
-        role,
-        user,
-        meter
-      }: {
-        role: UIRootAccessRightsRole;
-        user: UIRootAccessUser;
-        meter: UIRootAccessMeter;
-      } /* meter, user, role */
-    ) {
-      // set the current visible meter access rights to null -> make them unvisible
-      this.meterAccessRights = null;
+    //onProxyCacheQuery() {
+    //  this.ws_config(
+    //    "query",
+    //    [this.form.tag!],
+    //    {
+    //      type: "gateway",
+    //      id: this.form.serverId
+    //    },
+    //    [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]
+    //  );
+    //},
+    //onQueryMeter(
+    //  {
+    //    role,
+    //    user,
+    //    meter
+    //  }: {
+    //    role: UIRootAccessRightsRole;
+    //    user: UIRootAccessUser;
+    //    meter: UIRootAccessMeter;
+    //  } /* meter, user, role */
+    //) {
+    //  // set the current visible meter access rights to null -> make them unvisible
+    //  this.meterAccessRights = null;
 
-      this.ws_submit_request(
-        MESSAGE_REQUEST.getProcParameter,
-        SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
-        [this.form.tag!],
-        //  path is [role, user, meterID]
-        {
-          serverId: this.form.serverId,
-          path: [role.role, user.userId, meter.nr]
-        }
-      );
+    //  this.ws_submit_request(
+    //    MESSAGE_REQUEST.getProcParameter,
+    //    SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
+    //    [this.form.tag!],
+    //    //  path is [role, user, meterID]
+    //    {
+    //      serverId: this.form.serverId,
+    //      path: [role.role, user.userId, meter.nr]
+    //    }
+    //  );
+    //},
+    onSnapshotInstall(pk: any) {
+      //console.log('onSnapshotInstall ', pk);
+      this.ws_submit_command(Cmd.install, Channel.ConfigSetMeta, [pk]);
+    },
+    onSnapshotDelete(pk: any) {
+      //console.log('onSnapshotDelete ', pk);
+      this.ws_submit_key(Cmd.delete, Channel.ConfigSetMeta, {
+        tag: [pk]
+      });
     }
   },
 
