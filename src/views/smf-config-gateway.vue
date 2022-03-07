@@ -1831,7 +1831,8 @@ export default Vue.extend({
         reset: false
       },
       form: {
-        tag: "" as string | null,
+        tag: "" as string,
+        //tag: "" as string | null,
         serverId: "",
         manufacturer: "solos::Tec",
         descr: "",
@@ -2127,14 +2128,7 @@ export default Vue.extend({
       },
       tabSnapshots: {
         data: {
-          items: [
-            //  {
-            //    nr: 1,
-            //    ts: new Date(),
-            //    serverId: "0500153B02297E",
-            //    desc: "nice description"
-            //  }
-          ]
+          items: [] as any
         },
         nav: {
           currentPage: 1,
@@ -3161,8 +3155,10 @@ export default Vue.extend({
     //},
     onProxyCacheSync() {
       //  create snapshot of current configuration
+      const tmpTag: string = this.form.tag == null ? "" : this.form.tag;
       this.ws_config(
-        Cmd.backup[this.form.tag!],
+        Cmd.backup,
+        tmpTag,
         {
           type: "gateway",
           id: this.form.serverId
