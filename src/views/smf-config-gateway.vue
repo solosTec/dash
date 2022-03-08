@@ -2182,6 +2182,8 @@ export default Vue.extend({
         //
         if (obj.cmd === "update") {
           if (obj.channel != null) {
+            const section =
+              obj.section == null ? "000000000000" : obj.section.toUpperCase();
             console.log(
               "update channel: " +
                 obj.channel +
@@ -2189,9 +2191,9 @@ export default Vue.extend({
                 MESSAGE_RESPONSE.getProcParameter
             );
             if (obj.channel === MESSAGE_RESPONSE.getProcParameter) {
-              //console.log("section :::" + obj.section + ":::");
+              //console.log("section :::" + section + ":::");
               console.log(obj);
-              if (obj.section === SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
+              if (section === SML_CODES.CLASS_OP_LOG_STATUS_WORD) {
                 //  hide loading spinner
                 this.spinner.status = false;
                 this.gw.status = [];
@@ -2303,8 +2305,8 @@ export default Vue.extend({
                     variant: "success"
                   });
                 }
-              } else if (obj.section === SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
-                Object.values(obj.rec.values).forEach((e: any) => {
+              } else if (section === SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
+                Object.values(obj.values).forEach((e: any) => {
                   //console.log(e);
                   const lastSeenVisible =
                     e[SML_CODES.CURRENT_UTC] != null
@@ -2324,26 +2326,24 @@ export default Vue.extend({
                     serverId: obj.rec.srv
                   } as any;
 
-                  if (obj.rec.values.type < 2) {
+                  if (obj.values.type < 2) {
                     recVisible["_rowVariant"] = "success";
                   }
                   //console.log("visisble ", recVisible);
                   this.meters.values.push(recVisible);
                 });
-              } else if (
-                obj.section[0] === SML_CODES.CODE_ROOT_ACTIVE_DEVICES
-              ) {
+              } else if (section === SML_CODES.CODE_ROOT_ACTIVE_DEVICES) {
                 //  hide loading spinner
                 this.spinner.meters = false;
 
-                Object.values(obj.rec.values).forEach((e: any) => {
+                Object.values(obj.values).forEach((e: any) => {
                   //console.log("active", e);
                   let recActive = this.meters.values.find((meter: any) => {
                     //console.log('active device: compare ' + meter.ident + ' <> ' + e[SML_CODES.CODE_SERVER_ID]);
                     if (meter.ident === e[SML_CODES.CODE_SERVER_ID]) {
                       meter.active = true;
-                      meter.tag = obj.rec.values.tag;
-                      meter.mc = obj.rec.values.mc;
+                      meter.tag = obj.values.tag;
+                      meter.mc = obj.values.mc;
                       return true;
                     }
                     return false;
@@ -2372,7 +2372,7 @@ export default Vue.extend({
                       mc: e.mc
                     };
 
-                    if (obj.rec.values.type < 2) {
+                    if (obj.values.type < 2) {
                       recActive["_rowVariant"] = "success";
                     }
 
@@ -2385,42 +2385,42 @@ export default Vue.extend({
                 //  update download link
                 //
                 this.meterTableComplete();
-              } else if (obj.section[0] === SML_CODES.CODE_ROOT_DEVICE_IDENT) {
+              } else if (section === SML_CODES.CODE_ROOT_DEVICE_IDENT) {
                 //  hide loading spinner
                 this.spinner.firmware = false;
                 //  firmware
                 //  iterate over 8181C78206FF
                 //  this is an array of objects
-                const srv = obj.rec.values["8181C78204FF"];
-                const values = Object.values(obj.rec.values["8181C78206FF"]);
+                const srv = obj.values["8181c78204ff"];
+                const values = Object.values(obj.values["8181c78206ff"]);
                 //console.log(values);
                 values.forEach((e: any, idx: number) => {
                   //console.log(e);
                   const rec = {
                     nr: idx,
-                    name: e["8181C78208FF"],
+                    name: e["8181c78208ff"],
                     version: e["818100020000"],
-                    active: e["8181C7820EFF"],
+                    active: e["8181c7820eff"],
                     srv: srv
                   };
                   this.fw.values.push(rec);
                 });
-              } else if (obj.section[0] === SML_CODES.CODE_ROOT_MEMORY_USAGE) {
+              } else if (section === SML_CODES.CODE_ROOT_MEMORY_USAGE) {
                 //  hide loading spinner
                 this.spinner.memory = false;
-                this.gw.memory.mirror = obj.rec.values["0080800011FF"];
-                this.gw.memory.tmp = obj.rec.values["0080800012FF"];
-              } else if (obj.section[0] === SML_CODES.CODE_ROOT_W_MBUS_STATUS) {
-                this.wmbus.type = obj.rec.values["810600000100"];
-                this.wmbus.id = obj.rec.values["810600000300"];
-                this.wmbus.firmware = obj.rec.values["810600020000"];
-                this.wmbus.hardware = obj.rec.values["8106000203FF"];
-              } else if (obj.section[0] === SML_CODES.CODE_IF_wMBUS) {
+                this.gw.memory.mirror = obj.values["0080800011ff"];
+                this.gw.memory.tmp = obj.values["0080800012ff"];
+              } else if (section === SML_CODES.CODE_ROOT_W_MBUS_STATUS) {
+                this.wmbus.type = obj.values["810600000100"];
+                this.wmbus.id = obj.values["810600000300"];
+                this.wmbus.firmware = obj.values["810600020000"];
+                this.wmbus.hardware = obj.values["8106000203ff"];
+              } else if (section === SML_CODES.CODE_IF_wMBUS) {
                 //  hide loading spinner
                 this.spinner.wmbus = false;
 
                 //  radio protocol (T-mode, S-mode, S/T automatic, S/T parallel)
-                switch (obj.rec.values[SML_CODES.W_MBUS_PROTOCOL]) {
+                switch (obj.values[SML_CODES.W_MBUS_PROTOCOL]) {
                   case 0:
                     this.wmbus.protocol = "T";
                     break;
@@ -2436,7 +2436,7 @@ export default Vue.extend({
                   default:
                     break;
                 }
-                switch (obj.rec.values[SML_CODES.W_MBUS_POWER]) {
+                switch (obj.values[SML_CODES.W_MBUS_POWER]) {
                   case 0:
                     this.wmbus.power = "low";
                     break;
@@ -2445,76 +2445,75 @@ export default Vue.extend({
                     break;
                 }
                 //  reboot (seconds)
-                this.wmbus.reboot = obj.rec.values[SML_CODES.W_MBUS_REBOOT];
+                this.wmbus.reboot = obj.values[SML_CODES.W_MBUS_REBOOT];
                 //  install mode
-                this.wmbus.active =
-                  obj.rec.values[SML_CODES.W_MBUS_INSTALL_MODE];
-                this.wmbus.sMode = obj.rec.values[SML_CODES.W_MBUS_MODE_S];
-                this.wmbus.tMode = obj.rec.values[SML_CODES.W_MBUS_MODE_T];
-              } else if (obj.section[0] === SML_CODES.CODE_ROOT_IPT_STATE) {
-                this.ipt.status.host = obj.rec.values["814917070000"];
-                this.ipt.status.local = obj.rec.values["81491A070000"];
-                this.ipt.status.remote = obj.rec.values["814919070000"];
-              } else if (obj.section[0] === SML_CODES.CODE_ROOT_IPT_PARAM) {
-                //console.log(obj.rec.values);
+                this.wmbus.active = obj.values[SML_CODES.W_MBUS_INSTALL_MODE];
+                this.wmbus.sMode = obj.values[SML_CODES.W_MBUS_MODE_S];
+                this.wmbus.tMode = obj.values[SML_CODES.W_MBUS_MODE_T];
+              } else if (section === SML_CODES.CODE_ROOT_IPT_STATE) {
+                this.ipt.status.host = obj.values["814917070000"];
+                this.ipt.status.local = obj.values["81491a070000"];
+                this.ipt.status.remote = obj.values["814919070000"];
+              } else if (section === SML_CODES.CODE_ROOT_IPT_PARAM) {
+                //console.log(obj.values);
                 //  hide loading spinner
                 this.spinner.ipt = false;
+                //console.log("obj.values: ", obj.values);
                 this.ipt.param[0].host =
-                  obj.rec.values["81490D070001"]["814917070001"];
+                  obj.values["81490d070001"]["814917070001"];
                 this.ipt.param[0].port =
-                  obj.rec.values["81490D070001"]["81491A070001"];
+                  obj.values["81490d070001"]["81491a070001"];
                 this.ipt.param[0].user =
-                  obj.rec.values["81490D070001"]["8149633C0101"];
+                  obj.values["81490d070001"]["8149633c0101"];
                 this.ipt.param[0].pwd =
-                  obj.rec.values["81490D070001"]["8149633C0201"];
+                  obj.values["81490d070001"]["8149633c0201"];
                 this.ipt.param[0].scrambled =
-                  obj.rec.values["81490D070001"]["8149633C0301"];
+                  obj.values["81490d070001"]["8149633c0301"];
 
                 this.ipt.param[1].host =
-                  obj.rec.values["81490D070002"]["814917070002"];
+                  obj.values["81490d070002"]["814917070002"];
                 this.ipt.param[1].port =
-                  obj.rec.values["81490D070002"]["81491A070002"];
+                  obj.values["81490d070002"]["81491a070002"];
                 this.ipt.param[1].user =
-                  obj.rec.values["81490D070002"]["8149633C0102"];
+                  obj.values["81490d070002"]["8149633c0102"];
                 this.ipt.param[1].pwd =
-                  obj.rec.values["81490D070002"]["8149633C0202"];
+                  obj.values["81490d070002"]["8149633c0202"];
                 this.ipt.param[1].scrambled =
-                  obj.rec.values["81490D070002"]["8149633C0302"];
-              } else if (obj.section[0] === SML_CODES.CODE_ROOT_BROKER) {
-                console.log(obj);
+                  obj.values["81490d070002"]["8149633c0302"];
+              } else if (section === SML_CODES.CODE_ROOT_BROKER) {
+                //console.log(obj);
                 this.spinner.broker = false;
-                this.brokers = obj.rec.values.brokers;
-              } else if (obj.section[0] === SML_CODES.CODE_ROOT_HARDWARE_PORT) {
-                console.log(obj);
-                this.brokerPorts = obj.rec.values;
-              } else if (obj.section[0] === SML_CODES.CODE_IF_1107) {
+                this.brokers = obj.values.brokers;
+              } else if (section === SML_CODES.CODE_ROOT_HARDWARE_PORT) {
+                //console.log(obj);
+                this.brokerPorts = obj.values;
+              } else if (section === SML_CODES.CODE_IF_1107) {
                 //  hide loading spinner
                 this.spinner.iec = false;
 
                 this.iec.params[SML_CODES.IF_1107_ACTIVE] =
-                  obj.rec.values[SML_CODES.IF_1107_ACTIVE];
+                  obj.values[SML_CODES.IF_1107_ACTIVE];
                 this.iec.params.loopTime =
-                  obj.rec.values[SML_CODES.IF_1107_LOOP_TIME];
-                this.iec.params.retries =
-                  obj.rec.values[SML_CODES.IF_1107_RETRIES];
+                  obj.values[SML_CODES.IF_1107_LOOP_TIME];
+                this.iec.params.retries = obj.values[SML_CODES.IF_1107_RETRIES];
                 this.iec.params.minTimeout =
-                  obj.rec.values[SML_CODES.IF_1107_MIN_TIMEOUT];
+                  obj.values[SML_CODES.IF_1107_MIN_TIMEOUT];
                 this.iec.params.maxTimeout =
-                  obj.rec.values[SML_CODES.IF_1107_MAX_TIMEOUT];
+                  obj.values[SML_CODES.IF_1107_MAX_TIMEOUT];
                 this.iec.params.maxDataRate =
-                  obj.rec.values[SML_CODES.IF_1107_MAX_DATA_RATE];
+                  obj.values[SML_CODES.IF_1107_MAX_DATA_RATE];
                 this.iec.params.rs485 = Boolean(
-                  obj.rec.values[SML_CODES.IF_1107_RS485]
+                  obj.values[SML_CODES.IF_1107_RS485]
                 );
                 this.iec.params.autoActivation =
-                  obj.rec.values[SML_CODES.IF_1107_AUTO_ACTIVATION];
+                  obj.values[SML_CODES.IF_1107_AUTO_ACTIVATION];
                 this.iec.params.timeGrid =
-                  obj.rec.values[SML_CODES.IF_1107_TIME_GRID];
+                  obj.values[SML_CODES.IF_1107_TIME_GRID];
                 this.iec.params.timeSync =
-                  obj.rec.values[SML_CODES.IF_1107_TIME_SYNC];
+                  obj.values[SML_CODES.IF_1107_TIME_SYNC];
                 this.iec.params.maxVar =
-                  obj.rec.values[SML_CODES.IF_1107_MAX_VARIATION];
-                switch (obj.rec.values[SML_CODES.IF_1107_PROTOCOL_MODE]) {
+                  obj.values[SML_CODES.IF_1107_MAX_VARIATION];
+                switch (obj.values[SML_CODES.IF_1107_PROTOCOL_MODE]) {
                   case 0:
                     this.iec.params.protocolMode = "A";
                     break;
@@ -2532,21 +2531,18 @@ export default Vue.extend({
                     break;
                   default:
                     this.iec.params.protocolMode =
-                      obj.rec.values[SML_CODES.IF_1107_PROTOCOL_MODE];
+                      obj.values[SML_CODES.IF_1107_PROTOCOL_MODE];
                     break;
                 }
                 //  object
-                const whatIsThis = obj.rec.values["8181C79309FF"];
+                const whatIsThis = obj.values["8181c79309ff"];
                 this.iec.params.devices = whatIsThis
                   ? Array.from(whatIsThis)
                   : [];
-              } else if (obj.section[0] === SML_CODES.CODE_ROOT_ACCESS_RIGHTS) {
+              } else if (section === SML_CODES.CODE_ROOT_ACCESS_RIGHTS) {
                 this.spinner.auth = false;
                 console.log(
-                  "update channel " +
-                    obj.channel +
-                    ", section " +
-                    obj.section[0]
+                  "update channel " + obj.channel + ", section " + section
                 );
                 console.log(obj);
                 if (obj.section.length === 1) {
@@ -2555,53 +2551,49 @@ export default Vue.extend({
                   // section contains the path
                   this.meterAccessRights = obj.rec;
                 }
-              } else if (obj.section[0] === SML_CODES.CODE_DEVICE_CLASS) {
+              } else if (section === SML_CODES.CODE_DEVICE_CLASS) {
                 console.log(
-                  "update channel " + obj.channel + " ToDo: " + obj.section[0]
+                  "update channel " + obj.channel + " ToDo: " + section
                 );
-              } else if (obj.section[0] === SML_CODES.DATA_MANUFACTURER) {
+              } else if (section === SML_CODES.DATA_MANUFACTURER) {
                 console.log(
-                  "update channel " + obj.channel + " ToDo: " + obj.section[0]
+                  "update channel " + obj.channel + " ToDo: " + section
                 );
-              } else if (obj.section[0] === SML_CODES.CODE_SERVER_ID) {
+              } else if (section === SML_CODES.CODE_SERVER_ID) {
                 console.log(
-                  "update channel " + obj.channel + " ToDo: " + obj.section[0]
+                  "update channel " + obj.channel + " ToDo: " + section
                 );
-              } else if (
-                obj.section[0] === SML_CODES.CODE_ROOT_CUSTOM_INTERFACE
-              ) {
+              } else if (section === SML_CODES.CODE_ROOT_CUSTOM_INTERFACE) {
                 this.spinner.custom = false;
-                //console.log(obj.rec.values);
+                //console.log(obj.values);
                 this.tabCustom.data.ipt.firstAddress =
-                  obj.rec.values[SML_CODES.CUSTOM_IF_IP_ADDRESS_1];
+                  obj.values[SML_CODES.CUSTOM_IF_IP_ADDRESS_1];
                 this.tabCustom.data.ipt.firstMask =
-                  obj.rec.values[SML_CODES.CUSTOM_IF_IP_MASK_1];
+                  obj.values[SML_CODES.CUSTOM_IF_IP_MASK_1];
                 //this.tabCustom.data.ipt.port = const
                 this.tabCustom.data.ipt.dhcp =
-                  obj.rec.values[SML_CODES.CUSTOM_IF_DHCP];
+                  obj.values[SML_CODES.CUSTOM_IF_DHCP];
                 this.tabCustom.data.ipt.secondAddress =
-                  obj.rec.values[SML_CODES.CUSTOM_IF_IP_ADDRESS_2];
+                  obj.values[SML_CODES.CUSTOM_IF_IP_ADDRESS_2];
                 this.tabCustom.data.ipt.secondMask =
-                  obj.rec.values[SML_CODES.CUSTOM_IF_IP_MASK_2];
-              } else if (obj.section[0] === SML_CODES.CODE_ROOT_CUSTOM_PARAM) {
-                console.log(obj.rec.values);
-                this.tabCustom.data.ipt.ep1 = obj.rec.values["810217070000"];
-                this.tabCustom.data.ipt.ep1 = obj.rec.values["810217070002"];
-              } else if (obj.section[0] === SML_CODES.CODE_ROOT_NMS) {
-                console.log(obj.rec.values);
-                this.tabCustom.data.nms.address =
-                  obj.rec.values["9200000001FF"];
-                this.tabCustom.data.nms.port = obj.rec.values["9200000002FF"];
-                this.tabCustom.data.nms.user = obj.rec.values["9200000003FF"];
-                this.tabCustom.data.nms.pwd = obj.rec.values["9200000004FF"];
-                this.tabCustom.data.nms.enabled =
-                  obj.rec.values["9200000005FF"];
+                  obj.values[SML_CODES.CUSTOM_IF_IP_MASK_2];
+              } else if (section === SML_CODES.CODE_ROOT_CUSTOM_PARAM) {
+                console.log(obj.values);
+                this.tabCustom.data.ipt.ep1 = obj.values["810217070000"];
+                this.tabCustom.data.ipt.ep1 = obj.values["810217070002"];
+              } else if (section === SML_CODES.CODE_ROOT_NMS) {
+                console.log(obj.values);
+                this.tabCustom.data.nms.address = obj.values["9200000001ff"];
+                this.tabCustom.data.nms.port = obj.values["9200000002ff"];
+                this.tabCustom.data.nms.user = obj.values["9200000003ff"];
+                this.tabCustom.data.nms.pwd = obj.values["9200000004ff"];
+                this.tabCustom.data.nms.enabled = obj.values["9200000005ff"];
               } else {
                 console.error(
                   "update channel " +
                     obj.channel +
                     " with unknown section " +
-                    obj.section
+                    section
                 );
               }
               this.tabCustom.dataItpUnchangedString = JSON.stringify(
@@ -2611,26 +2603,26 @@ export default Vue.extend({
                 this.tabCustom.data.nms
               );
             } else if (obj.channel === MESSAGE_RESPONSE.getProfileList) {
-              //console.log(obj.rec.values['8181C789E2FF'] + ", size: "+ this.tabOpLog.data.items.length);
+              //console.log(obj.values['8181C789E2FF'] + ", size: "+ this.tabOpLog.data.items.length);
               if (obj.section[0] === SML_CODES.CLASS_OP_LOG) {
                 //  get timestamp
                 const utc =
-                  obj.rec.values["010000090B00"] != null
-                    ? new Date(obj.rec.values["010000090B00"].substring(0, 19))
+                  obj.values["010000090b00"] != null
+                    ? new Date(obj.values["010000090b00"].substring(0, 19))
                     : new Date();
 
                 //  build record
                 let rec = {
                   index: this.tabOpLog.data.items.length,
-                  status: obj.rec.values.status,
-                  event: obj.rec.values["8181C789E2FF"],
-                  peer: obj.rec.values["8181000000FF"],
+                  status: obj.values.status,
+                  event: obj.values["8181c789e2ff"],
+                  peer: obj.values["8181000000ff"],
                   utc: utc,
-                  serverId: obj.rec.values["8181C78204FF"],
-                  target: obj.rec.values["8147170700FF"],
-                  //target: 'T:' + obj.rec.values.evtType + ' S:' + obj.rec.values.evtSource + ' L:' + obj.rec.values.evtLevel,
-                  pushNr: obj.rec.values["8181C78A01FF"],
-                  details: obj.rec.values["8181C78123FF"]
+                  serverId: obj.values["8181c78204ff"],
+                  target: obj.values["8147170700ff"],
+                  //target: 'T:' + obj.values.evtType + ' S:' + obj.values.evtSource + ' L:' + obj.values.evtLevel,
+                  pushNr: obj.values["8181c78a01ff"],
+                  details: obj.values["8181c78123ff"]
                 };
                 this.tabOpLog.data.items.push(rec);
                 //    update pagination
@@ -2655,7 +2647,7 @@ export default Vue.extend({
                 //  error
                 // this.meters.showAttentionFailure = true;
                 this.$toasted.global.sml_attention_error(
-                  obj.rec.srv + ": " + obj.rec.values
+                  obj.rec.srv + ": " + obj.values
                 );
               }
               //  hide loading spinner
@@ -2843,16 +2835,12 @@ export default Vue.extend({
         );
       } else if (smfContext === this.smfContext.ipt) {
         this.spinner.ipt = true;
+        //  SML_CODES.CODE_ROOT_IPT_STATE will be added automatically
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_ROOT_IPT_PARAM,
           [pkGateway],
           { path: [SML_CODES.CODE_ROOT_IPT_PARAM] }
-        );
-        this.ws_submit_request(
-          MESSAGE_REQUEST.getProcParameter,
-          SML_CODES.CODE_ROOT_IPT_STATE,
-          [pkGateway]
         );
       } else if (smfContext === this.smfContext.broker) {
         this.spinner.broker = true;
@@ -2891,12 +2879,12 @@ export default Vue.extend({
           [pkGateway],
           { path: [SML_CODES.CODE_ROOT_VISIBLE_DEVICES] }
         );
-        this.ws_submit_request(
-          MESSAGE_REQUEST.getProcParameter,
-          SML_CODES.CODE_ROOT_ACTIVE_DEVICES,
-          [pkGateway],
-          { path: [SML_CODES.CODE_ROOT_ACTIVE_DEVICES] }
-        );
+        //  this.ws_submit_request(
+        //    MESSAGE_REQUEST.getProcParameter,
+        //    SML_CODES.CODE_ROOT_ACTIVE_DEVICES,
+        //    [pkGateway],
+        //    { path: [SML_CODES.CODE_ROOT_ACTIVE_DEVICES] }
+        //  );
       } else if (smfContext === this.smfContext.wirlessMBus) {
         this.spinner.wmbus = true;
         this.ws_submit_request(
