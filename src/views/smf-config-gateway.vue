@@ -1221,7 +1221,7 @@
                       variant="primary"
                       v-b-tooltip.hover
                       title="Backup complete gateway configuration with setup service (not implemented yet)"
-                      v-on:click.stop="onProxyCacheSync"
+                      v-on:click.stop="onCreateSnapshot"
                       >Create Snapshot
                     </b-button>
                   </b-col>
@@ -1315,7 +1315,7 @@
                       :disabled="selected[0].online === 0"
                       type="submit"
                       variant="primary"
-                      v-on:click.stop="onProxyCacheSync"
+                      v-on:click.stop="onCreateSnapshot"
                       >Create Snapshot</b-button
                     >
                   </b-col>
@@ -3153,12 +3153,11 @@ export default Vue.extend({
     //    [SML_CODES.CODE_ROOT_ACCESS_RIGHTS]
     //  );
     //},
-    onProxyCacheSync() {
+    onCreateSnapshot() {
       //  create snapshot of current configuration
-      const tmpTag: string = this.form.tag == null ? "" : this.form.tag;
       this.ws_config(
         Cmd.backup,
-        tmpTag,
+        [this.form.tag!],
         {
           type: "gateway",
           id: this.form.serverId
