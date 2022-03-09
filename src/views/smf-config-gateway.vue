@@ -920,7 +920,7 @@
               <b-form
                 v-if="!spinner.iec"
                 @submit.prevent=""
-                v-bind:class="{ 'bg-warning': !iec.params['8181C79301FF'] }"
+                v-bind:class="{ 'bg-warning': !iec.params['8181c79301ff'] }"
               >
                 <b-row class="p-3">
                   <b-col md="3">
@@ -930,11 +930,11 @@
                     >
                       <b-form-checkbox
                         switch
-                        v-model="iec.params['8181C79301FF']"
+                        v-model="iec.params['8181c79301ff']"
                         name="smf-gw-iec-active"
                       >
                         {{
-                          iec.params["8181C79301FF"]
+                          iec.params["8181c79301ff"]
                             ? $t("config-gateway-59")
                             : $t("config-gateway-60")
                         }}
@@ -2217,7 +2217,7 @@ export default Vue.extend({
                   });
                 } else {
                   this.gw.status.push({
-                    value: "no IP-T master",
+                    value: "no IP-T server",
                     variant: "warning"
                   });
                 }
@@ -2307,7 +2307,7 @@ export default Vue.extend({
                 }
               } else if (section === SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
                 Object.values(obj.values).forEach((e: any) => {
-                  //console.log(e);
+                  console.log(e);
                   const lastSeenVisible =
                     e[SML_CODES.CURRENT_UTC] != null
                       ? new Date(e[SML_CODES.CURRENT_UTC].substring(0, 19))
@@ -2415,7 +2415,7 @@ export default Vue.extend({
                 this.wmbus.id = obj.values["810600000300"];
                 this.wmbus.firmware = obj.values["810600020000"];
                 this.wmbus.hardware = obj.values["8106000203ff"];
-              } else if (section === SML_CODES.CODE_IF_wMBUS) {
+              } else if (section === SML_CODES.CODE_ROOT_W_MBUS_PARAM) {
                 //  hide loading spinner
                 this.spinner.wmbus = false;
 
@@ -2873,31 +2873,21 @@ export default Vue.extend({
       } else if (smfContext === this.smfContext.devices) {
         this.meters.values = [];
         this.spinner.meters = true;
+        //  includes CODE_ROOT_ACTIVE_DEVICES
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_ROOT_VISIBLE_DEVICES,
           [pkGateway],
           { path: [SML_CODES.CODE_ROOT_VISIBLE_DEVICES] }
         );
-        //  this.ws_submit_request(
-        //    MESSAGE_REQUEST.getProcParameter,
-        //    SML_CODES.CODE_ROOT_ACTIVE_DEVICES,
-        //    [pkGateway],
-        //    { path: [SML_CODES.CODE_ROOT_ACTIVE_DEVICES] }
-        //  );
       } else if (smfContext === this.smfContext.wirlessMBus) {
         this.spinner.wmbus = true;
+        //  includes CODE_ROOT_W_MBUS_STATUS
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
-          SML_CODES.CODE_ROOT_W_MBUS_STATUS,
+          SML_CODES.CODE_ROOT_W_MBUS_PARAM,
           [pkGateway],
-          { path: [SML_CODES.CODE_ROOT_W_MBUS_STATUS] }
-        );
-        this.ws_submit_request(
-          MESSAGE_REQUEST.getProcParameter,
-          SML_CODES.CODE_IF_wMBUS,
-          [pkGateway],
-          { path: [SML_CODES.CODE_IF_wMBUS] }
+          { path: [SML_CODES.CODE_ROOT_W_MBUS_PARAM] }
         );
       } else if (smfContext === this.smfContext.iec) {
         this.spinner.iec = true;
@@ -3081,7 +3071,7 @@ export default Vue.extend({
     onWMbusUpdate() {
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
-        SML_CODES.CODE_IF_wMBUS,
+        SML_CODES.CODE_ROOT_W_MBUS_PARAM,
         [this.form.tag!],
         { wmbus: this.wmbus }
       );
@@ -3213,7 +3203,7 @@ export default Vue.extend({
     },
     btnUpdateTitle(): string {
       if (this.selected.length > 0) {
-        return "Update " + this.selected[0].serverId;
+        return "Update " + this.selected[0].serverId.toUpperCase();
       }
       return "Update";
     },
