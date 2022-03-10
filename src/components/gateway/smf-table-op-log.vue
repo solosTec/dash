@@ -86,27 +86,27 @@ export default Vue.extend({
           sortable: true,
           formatter: (value: string) => {
             if (value == "8101000000FF") return "ETH (ext)";
-            else if (value == "8102000000FF") return "ETH (custom)";
-            else if (value == "8103000000FF") return "RS232 (service)";
-            else if (value == "8104000000FF") return "ETH (WAN)";
-            else if (value == "8105000000FF") return "eHZ";
-            else if (value == "8106000000FF") return "W-MBus";
-            else if (value == "8141000000FF") return "IP";
+            else if (value == "8102000000ff") return "ETH (custom)";
+            else if (value == "8103000000ff") return "RS232 (service)";
+            else if (value == "8104000000ff") return "ETH (WAN)";
+            else if (value == "8105000000ff") return "eHZ";
+            else if (value == "8106000000ff") return "W-MBus";
+            else if (value == "8141000000ff") return "IP";
             else if (value == "814200000001") return "SML(ext)";
             else if (value == "814200000002") return "SML(custom)";
             else if (value == "814200000003") return "SML(service)";
             else if (value == "814200000004") return "SML(WAN)";
             else if (value == "814200000005") return "SML(eHZ)";
             else if (value == "814200000006") return "SML(W-MBUS)";
-            else if (value == "8145000000FF") return "Push(SML)";
-            else if (value == "8146000000FF") return "Push(IP-T source)";
-            else if (value == "8147000000FF") return "Push(IP-T target)";
+            else if (value == "8145000000ff") return "Push(SML)";
+            else if (value == "8146000000ff") return "Push(IP-T source)";
+            else if (value == "8147000000ff") return "Push(IP-T target)";
             else if (value == "814800000001") return "WAN(DHCP)";
             else if (value == "814800000002") return "WAN(IP)";
             else if (value == "814800000003") return "WAN(PPPoE)";
             else if (value == "814900000001") return "WAN(IP-T - Cntrl)";
             else if (value == "814900000002") return "WAN(IPT)";
-            else if (value == "814A000000FF") return "WAN(NTP)";
+            else if (value == "814a000000ff") return "WAN(NTP)";
             else if (value == "818100000001") return "OBISLOG";
             else if (value == "818100000002") return "SCM";
             else if (value == "818100000003") return "UPDATE";
@@ -116,19 +116,20 @@ export default Vue.extend({
             else if (value == "818100000007") return "AUTHC";
             else if (value == "818100000008") return "BSZ";
             else if (value == "818100000009") return "DATACOLL";
-            else if (value == "81810000000A") return "SHDL";
-            else if (value == "81810000000B") return "GPRS";
-            else if (value == "81810000000C") return "LEDIO";
-            else if (value == "81810000000D") return "LISTC";
-            else if (value == "81810000000E") return "SYNC_MUC";
-            else if (value == "81810000000F") return "SYNC_MUCDC";
+            else if (value == "81810000000a") return "SHDL";
+            else if (value == "81810000000b") return "GPRS";
+            else if (value == "81810000000c") return "LEDIO";
+            else if (value == "81810000000d") return "LISTC";
+            else if (value == "81810000000e") return "SYNC_MUC";
+            else if (value == "81810000000f") return "SYNC_MUCDC";
             else if (value == "818100000010") return "EHZIF";
             else if (value == "818100000011") return "USERIF";
             else if (value == "818100000012") return "WMBUS";
             else if (value == "818100000013") return "WANGSM";
             else if (value == "818100000014") return "WANPLC";
-            else if (value == "8181000000FF") return "adressed Profile";
-            else if (value == "8146000011FF")
+            else if (value == "8181000000ff") return "adressed Profile (?)";
+            else if (value == "8146000002ff") return "adressed Profile";
+            else if (value == "8146000011ff")
               return "Load switch module events";
             else if (value == "8146000012FF")
               return "Load switch module status";

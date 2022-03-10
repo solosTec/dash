@@ -2603,8 +2603,8 @@ export default Vue.extend({
                 this.tabCustom.data.nms
               );
             } else if (obj.channel === MESSAGE_RESPONSE.getProfileList) {
-              //console.log(obj.values['8181C789E2FF'] + ", size: "+ this.tabOpLog.data.items.length);
-              if (obj.section[0] === SML_CODES.CLASS_OP_LOG) {
+              //console.log("GET_PROFILE_LIST_RESPONSE: ", obj);
+              if (obj.section === SML_CODES.CLASS_OP_LOG) {
                 //  get timestamp
                 const utc =
                   obj.values["010000090b00"] != null
