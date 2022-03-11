@@ -307,14 +307,8 @@
                       <b-input-group>
                         <b-form-checkbox
                           switch
+                          disabled="true"
                           v-model="ipt.param[0].scrambled"
-                          v-on:change.native="
-                            onApplyIPT(
-                              $event,
-                              ['81490d070001', '8149633c0302'],
-                              ipt.param[0].scrambled
-                            )
-                          "
                         >
                           {{
                             wmbus.active
@@ -324,15 +318,6 @@
                         </b-form-checkbox>
                       </b-input-group>
                     </b-form-group>
-
-                    <!--<b-form-group label-cols-sm="4" label-cols-lg="3">
-                      <b-button
-                        type="submit"
-                        variant="primary"
-                        v-on:click.stop="onIPTUpdate($event, 0)"
-                        >{{ btnUpdateTitle }}</b-button
-                      >
-                    </b-form-group>-->
                   </b-card>
 
                   <b-card
@@ -472,14 +457,8 @@
                       <b-input-group>
                         <b-form-checkbox
                           switch
+                          disabled="true"
                           v-model="ipt.param[1].scrambled"
-                          v-on:change.native="
-                            onApplyIPT(
-                              $event,
-                              ['81490d070002', '8149633c0302'],
-                              ipt.param[1].scrambled
-                            )
-                          "
                         >
                           {{
                             wmbus.active
