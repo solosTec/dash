@@ -2258,7 +2258,7 @@ export default Vue.extend({
                   });
                 }
 
-                if (obj.values.word.WIRELESS_BUS_IF_AVAILABLE) {
+                if (obj.values.word.WIRELESS_MBUS_IF_AVAILABLE) {
                   this.gw.status.push({
                     value: "wireless M-Bus interface available",
                     variant: "success"
