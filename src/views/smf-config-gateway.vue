@@ -171,7 +171,7 @@
                   <b-card
                     :header="$t('config-gateway-94')"
                     :title="$t('config-gateway-91')"
-                    sub-title="Access Parameters"
+                    sub-title="Note: Any changes forces a new login"
                   >
                     <b-form-group
                       label="TCP/IP Address"
@@ -200,19 +200,27 @@
                           v-model.number="ipt.param[0].port"
                           required
                           min="1024"
-                          max="‭65535‬"
+                          max="65535"
                           :placeholder="
                             $t('config-gateway-14') | fmtPlaceholder
                           "
                         />
                         <b-input-group-append>
                           <b-button
-                            variant="info"
+                            variant="warning"
                             v-on:click.stop="
-                              ipt.param[0].port = 26862;
-                              ipt.param[0].host = 'localhost';
+                              onApplyIPT(
+                                $event,
+                                ['81490d070001', '814917070001'],
+                                ipt.param[0].host
+                              );
+                              onApplyIPT(
+                                $event,
+                                ['81490d070001', '81491a070002'],
+                                ipt.param[0].port
+                              );
                             "
-                            >{{ $t("com-default") }}</b-button
+                            >{{ $t("action-apply") }}</b-button
                           >
                         </b-input-group-append>
                       </b-input-group>
@@ -224,13 +232,30 @@
                       label-cols-lg="3"
                       description="Device Name"
                     >
-                      <b-form-input
-                        id="smf-gw-ipt-name-0"
-                        type="text"
-                        v-model="ipt.param[0].user"
-                        required
-                        :placeholder="$t('config-gateway-12') | fmtPlaceholder"
-                      />
+                      <b-input-group>
+                        <b-form-input
+                          id="smf-gw-ipt-name-0"
+                          type="text"
+                          v-model="ipt.param[0].user"
+                          required
+                          :placeholder="
+                            $t('config-gateway-12') | fmtPlaceholder
+                          "
+                        />
+                        <b-input-group-append>
+                          <b-button
+                            variant="warning"
+                            v-on:click.stop="
+                              onApplyIPT(
+                                $event,
+                                ['81490d070001', '8149633c0101'],
+                                ipt.param[0].user
+                              )
+                            "
+                            >{{ $t("action-apply") }}</b-button
+                          >
+                        </b-input-group-append>
+                      </b-input-group>
                     </b-form-group>
                     <b-form-group
                       :label="$t('config-gateway-16')"
@@ -256,6 +281,19 @@
                             >&#x21ba;</b-button
                           >
                         </b-input-group-append>
+                        <b-input-group-append>
+                          <b-button
+                            variant="warning"
+                            v-on:click.stop="
+                              onApplyIPT(
+                                $event,
+                                ['81490d070001', '8149633c0201'],
+                                ipt.param[0].pwd
+                              )
+                            "
+                            >{{ $t("action-apply") }}</b-button
+                          >
+                        </b-input-group-append>
                       </b-input-group>
                     </b-form-group>
 
@@ -270,6 +308,13 @@
                         <b-form-checkbox
                           switch
                           v-model="ipt.param[0].scrambled"
+                          v-on:change.native="
+                            onApplyIPT(
+                              $event,
+                              ['81490d070001', '8149633c0302'],
+                              ipt.param[0].scrambled
+                            )
+                          "
                         >
                           {{
                             wmbus.active
@@ -280,20 +325,20 @@
                       </b-input-group>
                     </b-form-group>
 
-                    <b-form-group label-cols-sm="4" label-cols-lg="3">
+                    <!--<b-form-group label-cols-sm="4" label-cols-lg="3">
                       <b-button
                         type="submit"
                         variant="primary"
                         v-on:click.stop="onIPTUpdate($event, 0)"
                         >{{ btnUpdateTitle }}</b-button
                       >
-                    </b-form-group>
+                    </b-form-group>-->
                   </b-card>
 
                   <b-card
                     :header="$t('config-gateway-95')"
                     :title="$t('config-gateway-92')"
-                    sub-title="Access Parameters"
+                    sub-title="Note: Any changes forces a new login"
                   >
                     <b-form-group
                       label="TCP/IP Address"
@@ -319,20 +364,29 @@
                           v-model.number="ipt.param[1].port"
                           required
                           min="1024"
-                          max="‭65535‬"
+                          max="65535"
                           :placeholder="
                             $t('config-gateway-14') | fmtPlaceholder
                           "
                         />
                         <b-input-group-append>
                           <b-button
-                            variant="info"
+                            variant="warning"
                             v-on:click.stop="
-                              ipt.param[1].port = 26863;
-                              ipt.param[1].host = 'localhost';
+                              onApplyIPT(
+                                $event,
+                                ['81490d070002', '814917070002'],
+                                ipt.param[1].host
+                              );
+                              onApplyIPT(
+                                $event,
+                                ['81490d070002', '81491a070002'],
+                                ipt.param[1].port
+                              );
                             "
-                            >{{ $t("com-default") }}</b-button
                           >
+                            {{ $t("action-apply") }}
+                          </b-button>
                         </b-input-group-append>
                       </b-input-group>
                     </b-form-group>
@@ -343,13 +397,30 @@
                       label-cols-lg="3"
                       description="Device Name"
                     >
-                      <b-form-input
-                        id="smf-gw-ipt-name-1"
-                        type="text"
-                        v-model="ipt.param[1].user"
-                        required
-                        :placeholder="$t('config-gateway-12') | fmtPlaceholder"
-                      />
+                      <b-input-group>
+                        <b-form-input
+                          id="smf-gw-ipt-name-1"
+                          type="text"
+                          v-model="ipt.param[1].user"
+                          required
+                          :placeholder="
+                            $t('config-gateway-12') | fmtPlaceholder
+                          "
+                        />
+                        <b-input-group-append>
+                          <b-button
+                            variant="warning"
+                            v-on:click.stop="
+                              onApplyIPT(
+                                $event,
+                                ['81490d070002', '8149633c0102'],
+                                ipt.param[1].user
+                              )
+                            "
+                            >{{ $t("action-apply") }}</b-button
+                          >
+                        </b-input-group-append>
+                      </b-input-group>
                     </b-form-group>
                     <b-form-group
                       :label="$t('config-gateway-16')"
@@ -375,6 +446,19 @@
                             >&#x21ba;</b-button
                           >
                         </b-input-group-append>
+                        <b-input-group-append>
+                          <b-button
+                            variant="warning"
+                            v-on:click.stop="
+                              onApplyIPT(
+                                $event,
+                                ['81490d070002', '8149633c0202'],
+                                ipt.param[1].pwd
+                              )
+                            "
+                            >{{ $t("action-apply") }}</b-button
+                          >
+                        </b-input-group-append>
                       </b-input-group>
                     </b-form-group>
 
@@ -389,6 +473,13 @@
                         <b-form-checkbox
                           switch
                           v-model="ipt.param[1].scrambled"
+                          v-on:change.native="
+                            onApplyIPT(
+                              $event,
+                              ['81490d070002', '8149633c0302'],
+                              ipt.param[1].scrambled
+                            )
+                          "
                         >
                           {{
                             wmbus.active
@@ -399,14 +490,14 @@
                       </b-input-group>
                     </b-form-group>
 
-                    <b-form-group label-cols-sm="4" label-cols-lg="3">
+                    <!--<b-form-group label-cols-sm="4" label-cols-lg="3">
                       <b-button
                         type="submit"
                         variant="primary"
                         v-on:click.stop="onIPTUpdate($event, 1)"
                         >{{ btnUpdateTitle }}</b-button
                       >
-                    </b-form-group>
+                    </b-form-group>-->
                   </b-card>
                 </b-card-group>
 
@@ -2282,7 +2373,7 @@ export default Vue.extend({
                   });
                 }
 
-                if (obj.values.word.WIRED_MBUS_IF_AVAILABLE) {
+                if (obj.values.word.WIRELESS_MBUS_IF_AVAILABLE) {
                   this.gw.status.push({
                     value: "wired M-Bus interface available",
                     variant: "success"
@@ -2976,14 +3067,14 @@ export default Vue.extend({
       this.currentPage = 1;
     },
 
-    onIPTUpdate(event: Event, index: number) {
+    onApplyIPT(event: Event, path: string[], value: string) {
       event.preventDefault();
-      //console.log(this.ipt.param[index]);
+      console.log("apply IP-T value[", path, "]: ", value);
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_ROOT_IPT_PARAM,
         [this.form.tag!],
-        { index: index + 1, ipt: this.ipt.param[index] }
+        { path: path, value: value }
       );
     },
     customIPTHasChanged() {
