@@ -307,7 +307,7 @@
                       <b-input-group>
                         <b-form-checkbox
                           switch
-                          disabled="true"
+                          disabled
                           v-model="ipt.param[0].scrambled"
                         >
                           {{
@@ -457,7 +457,7 @@
                       <b-input-group>
                         <b-form-checkbox
                           switch
-                          disabled="true"
+                          disabled
                           v-model="ipt.param[1].scrambled"
                         >
                           {{
@@ -1995,13 +1995,26 @@ export default Vue.extend({
           {
             key: "ident",
             label: "Ident",
-            sortable: true
+            sortable: true,
+            formatter: (value: string) => {
+              //  format: tt-mmmm-nnnnnnnn-vv-uu
+              let id = value ? value.toUpperCase() : "-";
+              if (id.length == 18) {
+                return (
+                  id.substring(0, 2) +
+                  "-" +
+                  id.substring(2, 6) +
+                  "-" +
+                  id.substring(6, 14) +
+                  "-" +
+                  id.substring(14, 16) +
+                  "-" +
+                  id.substring(16, 18)
+                );
+              }
+              return id;
+            }
           },
-          // {
-          //     key: 'meterId',
-          //     label: 'Meter ID',
-          //     sortable: true
-          // },
           {
             key: "meter",
             label: "Meter",
@@ -2074,7 +2087,10 @@ export default Vue.extend({
           {
             key: "serverId",
             label: "Server ID",
-            sortable: true
+            sortable: true,
+            formatter: (value: string) => {
+              return value ? value.toUpperCase() : "?";
+            }
           },
           {
             key: "edit",
@@ -2376,32 +2392,29 @@ export default Vue.extend({
                   });
                 }
               } else if (section === SML_CODES.CODE_ROOT_VISIBLE_DEVICES) {
-                Object.values(obj.values).forEach((e: any) => {
-                  console.log(e);
-                  const lastSeenVisible =
-                    e[SML_CODES.CURRENT_UTC] != null
-                      ? new Date(e[SML_CODES.CURRENT_UTC].substring(0, 19))
-                      : new Date();
+                const lastSeenVisible =
+                  obj.values[SML_CODES.CURRENT_UTC] != null
+                    ? new Date(
+                        obj.values[SML_CODES.CURRENT_UTC].substring(0, 19)
+                      )
+                    : new Date();
+                const recVisible = {
+                  tag: obj.values.tag,
+                  nr: obj.values.nr,
+                  ident: obj.values[SML_CODES.CODE_SERVER_ID],
+                  meter: obj.values.serial,
+                  maker: obj.values.maker,
+                  lastSeen: lastSeenVisible,
+                  type: obj.values.type,
+                  visible: true,
+                  active: false,
+                  serverId: obj.values.serverId //obj.rec.srv
+                } as any;
 
-                  const recVisible = {
-                    tag: e.tag[0],
-                    nr: e.nr,
-                    ident: e[SML_CODES.CODE_SERVER_ID],
-                    meter: e.serial,
-                    maker: e.maker,
-                    lastSeen: lastSeenVisible,
-                    type: e.type,
-                    visible: true,
-                    active: false,
-                    serverId: obj.rec.srv
-                  } as any;
-
-                  if (obj.values.type < 2) {
-                    recVisible["_rowVariant"] = "success";
-                  }
-                  //console.log("visisble ", recVisible);
-                  this.meters.values.push(recVisible);
-                });
+                if (obj.values.type < 2) {
+                  recVisible["_rowVariant"] = "success";
+                }
+                this.meters.values.push(recVisible);
               } else if (section === SML_CODES.CODE_ROOT_ACTIVE_DEVICES) {
                 //  hide loading spinner
                 this.spinner.meters = false;
