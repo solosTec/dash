@@ -2419,50 +2419,44 @@ export default Vue.extend({
                 //  hide loading spinner
                 this.spinner.meters = false;
 
-                Object.values(obj.values).forEach((e: any) => {
-                  //console.log("active", e);
-                  let recActive = this.meters.values.find((meter: any) => {
-                    //console.log('active device: compare ' + meter.ident + ' <> ' + e[SML_CODES.CODE_SERVER_ID]);
-                    if (meter.ident === e[SML_CODES.CODE_SERVER_ID]) {
-                      meter.active = true;
-                      meter.tag = obj.values.tag;
-                      meter.mc = obj.values.mc;
-                      return true;
-                    }
-                    return false;
-                  });
-
-                  //
-                  //  this meter is only active and not visible,
-                  //  therefore a new record have to be inserted
-                  //
-                  if (recActive === undefined) {
-                    const lastSeenVisible =
-                      e[SML_CODES.CURRENT_UTC] != null
-                        ? new Date(e[SML_CODES.CURRENT_UTC].substring(0, 19))
-                        : new Date();
-                    recActive = {
-                      nr: e.nr,
-                      ident: e[SML_CODES.CODE_SERVER_ID],
-                      meter: e.serial,
-                      maker: e.maker,
-                      lastSeen: lastSeenVisible,
-                      type: e.type,
-                      visible: false,
-                      active: true,
-                      serverId: obj.rec.srv,
-                      tag: e.tag[0],
-                      mc: e.mc
-                    };
-
-                    if (obj.values.type < 2) {
-                      recActive["_rowVariant"] = "success";
-                    }
-
-                    //console.log("active ", recActive);
-                    this.meters.values.push(recActive);
+                let recActive = this.meters.values.find((meter: any) => {
+                  //console.log('active device: compare ' + meter.ident + ' <> ' + obj.values[SML_CODES.CODE_SERVER_ID]);
+                  if (meter.ident === obj.values[SML_CODES.CODE_SERVER_ID]) {
+                    //console.log('found ' + meter.ident);
+                    meter.active = true;
+                    meter.tag = obj.values.tag;
+                    meter.mc = obj.values.mc ? obj.values.mc : "no-mc";
+                    return true;
                   }
+                  return false;
                 });
+                if (recActive === undefined) {
+                  const lastSeenVisible =
+                    obj.values[SML_CODES.CURRENT_UTC] != null
+                      ? new Date(
+                          obj.values[SML_CODES.CURRENT_UTC].substring(0, 19)
+                        )
+                      : new Date();
+                  recActive = {
+                    nr: obj.values.nr,
+                    ident: obj.values[SML_CODES.CODE_SERVER_ID],
+                    meter: obj.values.serial,
+                    maker: obj.values.maker,
+                    lastSeen: lastSeenVisible,
+                    type: obj.values.type,
+                    visible: false,
+                    active: true,
+                    serverId: obj.rec.srv,
+                    tag: obj.values.tag,
+                    mc: obj.values.mc ? obj.values.mc : "no-mc"
+                  };
+
+                  if (obj.values.type < 2) {
+                    recActive["_rowVariant"] = "success";
+                  }
+                  //console.log("active ", recActive);
+                  this.meters.values.push(recActive);
+                }
 
                 //
                 //  update download link
