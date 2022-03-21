@@ -260,6 +260,8 @@
   "config-gateway-98": "Клиентский интерфейс",
   "config-gateway-99": "Интерфейс конфигурации (JSON/NMS)",
   "config-gateway-100": "параметры TCP/IP",
+  "config-gateway-101": "NTP",
+  "config-gateway-102": "Time Server",
 
   "config-bridge-01": "пунктирная десятичная запись (IPv4/IPv6)",
   "config-bridge-02": "адрес TCP/IP",

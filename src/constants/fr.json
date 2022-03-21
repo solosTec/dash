@@ -260,6 +260,8 @@
   "config-gateway-98": "Interface client",
   "config-gateway-99": "Interface de configuration (JSON/NMS)",
   "config-gateway-100": "Paramètres TCP/IP",
+  "config-gateway-101": "NTP",
+  "config-gateway-102": "Time Server",
 
   "config-bridge-01": "Notation décimale en pointillés (IPv4/IPv6)",
   "config-bridge-02": "Adresse TCP/IP",

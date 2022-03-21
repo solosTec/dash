@@ -140,9 +140,9 @@
               </template>
               <b-list-group v-if="!spinner.status">
                 <template v-for="(state, index) in gw.status">
-                  <b-list-group-item :variant="state.variant" :key="index">{{
-                    state.value
-                  }}</b-list-group-item>
+                  <b-list-group-item :variant="state.variant" :key="index">
+                    {{ state.value }}
+                  </b-list-group-item>
                 </template>
               </b-list-group>
             </b-tab>
@@ -470,21 +470,21 @@
                     </b-form-group>
 
                     <!--<b-form-group label-cols-sm="4" label-cols-lg="3">
-                      <b-button
-                        type="submit"
-                        variant="primary"
-                        v-on:click.stop="onIPTUpdate($event, 1)"
-                        >{{ btnUpdateTitle }}</b-button
-                      >
-                    </b-form-group>-->
+                <b-button
+                  type="submit"
+                  variant="primary"
+                  v-on:click.stop="onIPTUpdate($event, 1)"
+                  >{{ btnUpdateTitle }}</b-button
+                >
+              </b-form-group>-->
                   </b-card>
                 </b-card-group>
 
                 <b-row class="pt-2">
                   <b-col md="12">
-                    <b-button v-b-toggle.sidebar-footer>{{
-                      $t("config-gateway-01")
-                    }}</b-button>
+                    <b-button v-b-toggle.sidebar-footer>
+                      {{ $t("config-gateway-01") }}
+                    </b-button>
                     <b-sidebar
                       id="sidebar-footer"
                       aria-label="Sidebar with custom footer"
@@ -496,9 +496,9 @@
                           class="d-flex bg-dark text-light align-items-center px-3 py-2"
                         >
                           <strong class="mr-auto">IP-T Connection State</strong>
-                          <b-button size="sm" @click="hide">{{
-                            $t("action-close")
-                          }}</b-button>
+                          <b-button size="sm" @click="hide">
+                            {{ $t("action-close") }}
+                          </b-button>
                         </div>
                       </template>
                       <div class="px-3 py-2">
@@ -565,26 +565,205 @@
             </b-tab>
 
             <!-- Broker -->
+            <!--<b-tab
+        :disabled="
+          selected[0].online === 0 ||
+            !(selected[0].model || '').startsWith('SMF-GW:')
+        "
+        no-body
+        :smf-context="smfContext.broker"
+      >
+        <template slot="title">
+          {{ $t("config-gateway-74x") }}
+          <b-spinner v-if="spinner.broker" type="grow" small />
+        </template>
+
+        <smfBrokerConfiguration
+          :gateway="selected[0]"
+          :brokers="brokers"
+          :brokerPorts="brokerPorts"
+          @brokersUpdate="onBrokersUpdate"
+          @brokerHardwarePortUpdate="onBrokerHardwarePortUpdate"
+        ></smfBrokerConfiguration>
+      </b-tab>-->
+            <!-- NTP -->
             <b-tab
-              :disabled="
-                selected[0].online === 0 ||
-                  !(selected[0].model || '').startsWith('SMF-GW:')
-              "
+              :disabled="selected[0].online === 0"
               no-body
-              :smf-context="smfContext.broker"
+              :smf-context="smfContext.ntp"
             >
               <template slot="title">
-                {{ $t("config-gateway-74") }}
-                <b-spinner v-if="spinner.broker" type="grow" small />
+                {{ $t("config-gateway-101") }}
+                <b-spinner v-if="spinner.firmware" type="grow" small />
               </template>
-
-              <smfBrokerConfiguration
-                :gateway="selected[0]"
-                :brokers="brokers"
-                :brokerPorts="brokerPorts"
-                @brokersUpdate="onBrokersUpdate"
-                @brokerHardwarePortUpdate="onBrokerHardwarePortUpdate"
-              ></smfBrokerConfiguration>
+              <b-form @submit.prevent="">
+                <b-row class="p-3">
+                  <b-col md="6">
+                    <b-form-group
+                      :label="$t('config-gateway-102') + 1"
+                      label-for="smf-gw-ntp-name-1"
+                      label-cols-sm="4"
+                      label-cols-lg="3"
+                      :description="$t('config-gateway-79')"
+                    >
+                      <b-input-group>
+                        <b-form-input
+                          id="smf-gw-ntp-name-1"
+                          type="text"
+                          v-model="ntp.srv1"
+                          required
+                          :placeholder="
+                            $t('config-gateway-102') | fmtPlaceholder
+                          "
+                        />
+                        <b-input-group-append>
+                          <b-button
+                            variant="info"
+                            v-on:click.stop="ntp.srv1 = 'pool.ntp.org'"
+                            >{{ $t("config-gateway-48") }}</b-button
+                          >
+                        </b-input-group-append>
+                        <b-input-group-append>
+                          <b-button
+                            variant="warning"
+                            v-on:click.stop="
+                              onApplyNTP(
+                                $event,
+                                ['8181c78802ff', '8181c7880201'],
+                                ntp.srv1
+                              )
+                            "
+                            >{{ $t("action-apply") }}</b-button
+                          >
+                        </b-input-group-append>
+                      </b-input-group>
+                    </b-form-group>
+                  </b-col>
+                  <b-col md="6">
+                    <b-form-group
+                      :label="$t('config-gateway-102') + 2"
+                      label-for="smf-gw-ntp-name-2"
+                      label-cols-sm="4"
+                      label-cols-lg="3"
+                      :description="$t('config-gateway-79')"
+                    >
+                      <b-input-group>
+                        <b-form-input
+                          id="smf-gw-ntp-name-2"
+                          type="text"
+                          v-model="ntp.srv2"
+                          required
+                          :placeholder="
+                            $t('config-gateway-102') | fmtPlaceholder
+                          "
+                        />
+                        <b-input-group-append>
+                          <b-button
+                            variant="info"
+                            v-on:click.stop="ntp.srv2 = '1.pool.ntp.org'"
+                            >{{ $t("config-gateway-48") }}</b-button
+                          >
+                        </b-input-group-append>
+                        <b-input-group-append>
+                          <b-button
+                            variant="warning"
+                            v-on:click.stop="
+                              onApplyNTP(
+                                $event,
+                                ['8181c78802ff', '8181c7880202'],
+                                ntp.srv2
+                              )
+                            "
+                            >{{ $t("action-apply") }}</b-button
+                          >
+                        </b-input-group-append>
+                      </b-input-group>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+                <b-row class="p-3">
+                  <b-col md="6">
+                    <b-form-group
+                      :label="$t('config-gateway-102') + 3"
+                      label-for="smf-gw-ntp-name-3"
+                      label-cols-sm="4"
+                      label-cols-lg="3"
+                      :description="$t('config-gateway-79')"
+                    >
+                      <b-input-group>
+                        <b-form-input
+                          id="smf-gw-ntp-name-3"
+                          type="text"
+                          v-model="ntp.srv3"
+                          required
+                          :placeholder="
+                            $t('config-gateway-102') | fmtPlaceholder
+                          "
+                        />
+                        <b-input-group-append>
+                          <b-button
+                            variant="info"
+                            v-on:click.stop="ntp.srv3 = '2.pool.ntp.org'"
+                            >{{ $t("config-gateway-48") }}</b-button
+                          >
+                        </b-input-group-append>
+                        <b-input-group-append>
+                          <b-button
+                            variant="warning"
+                            v-on:click.stop="
+                              onApplyNTP(
+                                $event,
+                                ['8181c78802ff', '8181c7880203'],
+                                ntp.srv3
+                              )
+                            "
+                            >{{ $t("action-apply") }}</b-button
+                          >
+                        </b-input-group-append>
+                      </b-input-group>
+                    </b-form-group>
+                  </b-col>
+                  <b-col md="6">
+                    <b-form-group
+                      :label="$t('config-gateway-14')"
+                      label-for="smf-gw-ntp-port"
+                      label-cols-sm="4"
+                      label-cols-lg="3"
+                      :description="$t('config-gateway-14')"
+                    >
+                      <b-input-group>
+                        <b-form-input
+                          id="smf-gw-ntp-port"
+                          type="number"
+                          v-model.number="ntp.port"
+                          required
+                          min="10"
+                          max="65535"
+                          :placeholder="
+                            $t('config-gateway-14') | fmtPlaceholder
+                          "
+                        />
+                        <b-input-group-append>
+                          <b-button
+                            variant="info"
+                            v-on:click.stop="ntp.port = 123"
+                            >{{ $t("config-gateway-48") }}</b-button
+                          >
+                        </b-input-group-append>
+                        <b-input-group-append>
+                          <b-button
+                            variant="warning"
+                            v-on:click.stop="
+                              onApplyNTP($event, ['8181c78803ff'], ntp.port)
+                            "
+                            >{{ $t("action-apply") }}</b-button
+                          >
+                        </b-input-group-append>
+                      </b-input-group>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+              </b-form>
             </b-tab>
 
             <!-- Firmware -->
@@ -732,7 +911,7 @@
                             type="number"
                             v-model.number="wmbus.reboot"
                             min="0"
-                            max="‭60000"
+                            max="60000"
                             step="60"
                             placeholder="<Reboot>"
                           />
@@ -976,6 +1155,7 @@
                 </b-form>
               </div>
             </b-tab>
+
             <!-- IEC -->
             <b-tab
               :disabled="selected[0].online === 0"
@@ -1767,18 +1947,19 @@ import store from "../store";
 import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import { generatePassword } from "@/shared/generate-password";
 import smfServerConfiguration from "@/components/gateway/smf-server-configuration.vue";
-import smfServerRootAccessRights from "@/components/gateway/smf-server-root-access-rights.vue";
-import smfMeterAccessRights from "@/components/gateway/smf-meter-access-rights.vue";
-import smfBrokerConfiguration from "@/components/gateway/smf-broker-configuration.vue";
+//import smfServerRootAccessRights from "@/components/gateway/smf-server-root-access-rights.vue";
+//import smfMeterAccessRights from "@/components/gateway/smf-meter-access-rights.vue";
+//import smfBrokerConfiguration from "@/components/gateway/smf-broker-configuration.vue";
+//import smfNTPConfiguration from "@/components/gateway/smf-ntp-configuration.vue";
 import mixins from "vue-typed-mixins";
-import {
-  UIRootAccessMeter,
-  UIRootAccessRightsRole,
-  UIRootAccessUser
-} from "@/api/root-access-rights";
+//import {
+//  UIRootAccessMeter,
+//  UIRootAccessRightsRole,
+//  UIRootAccessUser
+//} from "@/api/root-access-rights";
 import { BTabs } from "bootstrap-vue";
 import { Gateway } from "@/api/gateway";
-import { BBroker, BHardwarePorts } from "@/api/broker";
+//import { BBroker, BHardwarePorts } from "@/api/broker";
 
 const gatewayTableFields = [
   {
@@ -1860,7 +2041,8 @@ export default Vue.extend({
   components: {
     smfServerConfiguration,
     //    smfMeterAccessRights,
-    smfBrokerConfiguration,
+    //smfBrokerConfiguration,
+    //smfNTPConfiguration,
     opLog,
     snapshots,
     firmware
@@ -1918,13 +2100,14 @@ export default Vue.extend({
         configuration: "configuration",
         statusWord: "status-word",
         ipt: "ipt",
-        broker: "broker",
+        ntp: "ntp",
+        //        broker: "broker",
         firmware: "firmware",
         memoryUsage: "memory-usage",
         devices: "devices",
         wirlessMBus: "w-MBus",
         iec: "iec",
-        auth: "auth",
+        //        auth: "auth",
         log: "log",
         snapshots: "snapshots",
         custom: "custom interface"
@@ -1980,8 +2163,17 @@ export default Vue.extend({
           remote: 0
         }
       },
-      brokers: [] as BBroker[],
-      brokerPorts: null as null | BHardwarePorts,
+      //brokers: [] as BBroker[],
+      //brokerPorts: null as null | BHardwarePorts,
+
+      //ntps: [] as NTP[],
+      ntp: {
+        srv1: "ptbtime1.ptb.de",
+        srv2: "",
+        srv3: "",
+        port: 123
+      },
+
       meters: {
         values: [] as any,
         selected: [],
@@ -2487,6 +2679,19 @@ export default Vue.extend({
                 this.spinner.memory = false;
                 this.gw.memory.mirror = obj.values["0080800011ff"];
                 this.gw.memory.tmp = obj.values["0080800012ff"];
+              } else if (section === SML_CODES.CODE_ROOT_NTP) {
+                if (obj.values["8181c78802ff"]["8181c7880201"]) {
+                  this.ntp.srv1 = obj.values["8181c78802ff"]["8181c7880201"];
+                }
+                if (obj.values["8181c78802ff"]["8181c7880202"]) {
+                  this.ntp.srv2 = obj.values["8181c78802ff"]["8181c7880202"];
+                }
+                if (obj.values["8181c78802ff"]["8181c7880203"]) {
+                  this.ntp.srv3 = obj.values["8181c78802ff"]["8181c7880203"];
+                }
+                if (obj.values["8181c78803ff"]) {
+                  this.ntp.port = obj.values["8181c78803ff"];
+                }
               } else if (section === SML_CODES.CODE_ROOT_W_MBUS_STATUS) {
                 this.wmbus.type = obj.values["810600000100"];
                 this.wmbus.id = obj.values["810600000300"];
@@ -2557,13 +2762,13 @@ export default Vue.extend({
                   obj.values["81490d070002"]["8149633c0202"];
                 this.ipt.param[1].scrambled =
                   obj.values["81490d070002"]["8149633c0302"];
-              } else if (section === SML_CODES.CODE_ROOT_BROKER) {
-                //console.log(obj);
-                this.spinner.broker = false;
-                this.brokers = obj.values.brokers;
-              } else if (section === SML_CODES.CODE_ROOT_HARDWARE_PORT) {
-                //console.log(obj);
-                this.brokerPorts = obj.values;
+                //} else if (section === SML_CODES.CODE_ROOT_BROKER) {
+                //  //console.log(obj);
+                //  this.spinner.broker = false;
+                //  this.brokers = obj.values.brokers;
+                //} else if (section === SML_CODES.CODE_ROOT_HARDWARE_PORT) {
+                //  //console.log(obj);
+                //  this.brokerPorts = obj.values;
               } else if (section === SML_CODES.CODE_IF_1107) {
                 //  hide loading spinner
                 this.spinner.iec = false;
@@ -2919,18 +3124,26 @@ export default Vue.extend({
           [pkGateway],
           { path: [SML_CODES.CODE_ROOT_IPT_PARAM] }
         );
-      } else if (smfContext === this.smfContext.broker) {
-        this.spinner.broker = true;
+      } else if (smfContext === this.smfContext.ntp) {
+        //this.spinner.ntp = true;
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
-          SML_CODES.CODE_ROOT_BROKER,
-          [pkGateway]
+          SML_CODES.CODE_ROOT_NTP,
+          [pkGateway],
+          { path: [SML_CODES.CODE_ROOT_NTP] }
         );
-        this.ws_submit_request(
-          MESSAGE_REQUEST.getProcParameter,
-          SML_CODES.CODE_ROOT_HARDWARE_PORT,
-          [pkGateway]
-        );
+        //} else if (smfContext === this.smfContext.broker) {
+        //  this.spinner.broker = true;
+        //  this.ws_submit_request(
+        //    MESSAGE_REQUEST.getProcParameter,
+        //    SML_CODES.CODE_ROOT_BROKER,
+        //    [pkGateway]
+        //  );
+        //  this.ws_submit_request(
+        //    MESSAGE_REQUEST.getProcParameter,
+        //    SML_CODES.CODE_ROOT_HARDWARE_PORT,
+        //    [pkGateway]
+        //  );
       } else if (smfContext === this.smfContext.firmware) {
         this.fw.values = [];
         this.spinner.firmware = true;
@@ -2973,14 +3186,14 @@ export default Vue.extend({
           SML_CODES.CODE_IF_1107,
           [pkGateway]
         );
-      } else if (smfContext === this.smfContext.auth) {
-        this.spinner.auth = true;
-        this.ws_submit_request(
-          MESSAGE_REQUEST.getProcParameter,
-          SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
-          [pkGateway],
-          { serverId: this.form.serverId, path: [] }
-        );
+        //} else if (smfContext === this.smfContext.auth) {
+        //  this.spinner.auth = true;
+        //  this.ws_submit_request(
+        //    MESSAGE_REQUEST.getProcParameter,
+        //    SML_CODES.CODE_ROOT_ACCESS_RIGHTS,
+        //    [pkGateway],
+        //    { serverId: this.form.serverId, path: [] }
+        //  );
       } else if (smfContext === this.smfContext.log) {
         this.tabOpLog.data.items = [];
         this.spinner.log = true;
@@ -3055,10 +3268,20 @@ export default Vue.extend({
 
     onApplyIPT(event: Event, path: string[], value: string) {
       event.preventDefault();
-      console.log("apply IP-T value[", path, "]: ", value);
+      //console.log("apply IP-T value[", path, "]: ", value);
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,
         SML_CODES.CODE_ROOT_IPT_PARAM,
+        [this.form.tag!],
+        { path: path, value: value }
+      );
+    },
+    onApplyNTP(event: Event, path: string[], value: string) {
+      event.preventDefault();
+      console.log("apply NTP value[", path, "]: ", value);
+      this.ws_submit_request(
+        MESSAGE_REQUEST.setProcParameter,
+        SML_CODES.CODE_ROOT_NTP,
         [this.form.tag!],
         { path: path, value: value }
       );
@@ -3085,35 +3308,35 @@ export default Vue.extend({
         JSON.stringify(this.tabCustom.data.nms)
       );
     },
-    onCustomNMSUpdate(event: Event) {
-      event.preventDefault();
-      console.log(this.tabCustom.data.nms);
-      this.ws_submit_request(
-        MESSAGE_REQUEST.setProcParameter,
-        SML_CODES.CODE_ROOT_BROKER,
-        [this.form.tag!],
-        this.tabCustom.data.nms
-      );
-    },
-    onBrokersUpdate(brokers: BBroker[]) {
-      console.log(JSON.stringify(brokers));
-      this.ws_submit_request(
-        MESSAGE_REQUEST.setProcParameter,
-        SML_CODES.CODE_ROOT_BROKER,
-        [this.form.tag!],
-        { brokers }
-      );
-    },
-    onBrokerHardwarePortUpdate(hardwarePort: BHardwarePorts) {
-      console.log(JSON.stringify(hardwarePort));
-      //{ "COM3": { "databits": 8, "parity": "none", "flowcontrol": "none", "stopbits": "two", "baudrate": 57600 } }
-      this.ws_submit_request(
-        MESSAGE_REQUEST.setProcParameter,
-        SML_CODES.CODE_ROOT_HARDWARE_PORT,
-        [this.form.tag!],
-        hardwarePort
-      );
-    },
+    //onCustomNMSUpdate(event: Event) {
+    //  event.preventDefault();
+    //  console.log(this.tabCustom.data.nms);
+    //  this.ws_submit_request(
+    //    MESSAGE_REQUEST.setProcParameter,
+    //    SML_CODES.CODE_ROOT_BROKER,
+    //    [this.form.tag!],
+    //    this.tabCustom.data.nms
+    //  );
+    //},
+    //onBrokersUpdate(brokers: BBroker[]) {
+    //  console.log(JSON.stringify(brokers));
+    //  this.ws_submit_request(
+    //    MESSAGE_REQUEST.setProcParameter,
+    //    SML_CODES.CODE_ROOT_BROKER,
+    //    [this.form.tag!],
+    //    { brokers }
+    //  );
+    //},
+    //onBrokerHardwarePortUpdate(hardwarePort: BHardwarePorts) {
+    //  console.log(JSON.stringify(hardwarePort));
+    //  //{ "COM3": { "databits": 8, "parity": "none", "flowcontrol": "none", "stopbits": "two", "baudrate": 57600 } }
+    //  this.ws_submit_request(
+    //    MESSAGE_REQUEST.setProcParameter,
+    //    SML_CODES.CODE_ROOT_HARDWARE_PORT,
+    //    [this.form.tag!],
+    //    hardwarePort
+    //  );
+    //},
     onMeterDelete(item: any) {
       this.ws_submit_request(
         MESSAGE_REQUEST.setProcParameter,

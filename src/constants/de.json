@@ -169,7 +169,7 @@
   "config-gateway-08": "Passwort",
   "config-gateway-09": "Status",
   "config-gateway-10": "IP-T",
-  "config-gateway-11": "Host",
+  "config-gateway-11": "Host (IP-T Server)",
   "config-gateway-12": "Name",
   "config-gateway-14": "Port",
   "config-gateway-15": "Scramble Mode",
@@ -263,6 +263,8 @@
   "config-gateway-98": "Kundenschnittstelle",
   "config-gateway-99": "Konfigurationsschnittstelle (JSON/NMS)",
   "config-gateway-100": "TCP/IP-Einstellungen",
+  "config-gateway-101": "NTP",
+  "config-gateway-102": "Time Server",
 
   "config-bridge-01": "Dezimalnotation (IPv4/IPv6)",
   "config-bridge-02": "TCP/IP Addresse",

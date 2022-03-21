@@ -261,6 +261,8 @@
   "config-gateway-98": "Customer interface",
   "config-gateway-99": "Configuration interface (JSON/NMS)",
   "config-gateway-100": "TCP/IP settings",
+  "config-gateway-101": "NTP",
+  "config-gateway-102": "Time Server",
 
   "config-bridge-01": "Dotted decimal notation (IPv4/IPv6)",
   "config-bridge-02": "TCP/IP Address",
