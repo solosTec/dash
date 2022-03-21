@@ -335,6 +335,7 @@ export default mixins(webSocket, Vue).extend({
         fileReader.onloadend = () => {
           const data = {
             fileName: file.name,
+            fileSize: file.size,
             fileContent: btoa(fileReader.result as string),
             ...additionalInfo
           };
