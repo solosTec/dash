@@ -2168,7 +2168,7 @@ export default Vue.extend({
 
       //ntps: [] as NTP[],
       ntp: {
-        srv1: "ptbtime1.ptb.de",
+        srv1: "",
         srv2: "",
         srv3: "",
         port: 123
@@ -2680,18 +2680,18 @@ export default Vue.extend({
                 this.gw.memory.mirror = obj.values["0080800011ff"];
                 this.gw.memory.tmp = obj.values["0080800012ff"];
               } else if (section === SML_CODES.CODE_ROOT_NTP) {
-                if (obj.values["8181c78802ff"]["8181c7880201"]) {
-                  this.ntp.srv1 = obj.values["8181c78802ff"]["8181c7880201"];
-                }
-                if (obj.values["8181c78802ff"]["8181c7880202"]) {
-                  this.ntp.srv2 = obj.values["8181c78802ff"]["8181c7880202"];
-                }
-                if (obj.values["8181c78802ff"]["8181c7880203"]) {
-                  this.ntp.srv3 = obj.values["8181c78802ff"]["8181c7880203"];
-                }
-                if (obj.values["8181c78803ff"]) {
-                  this.ntp.port = obj.values["8181c78803ff"];
-                }
+                this.ntp.srv1 = obj.values["8181c78802ff"]["8181c7880201"]
+                  ? obj.values["8181c78802ff"]["8181c7880201"]
+                  : "";
+                this.ntp.srv2 = obj.values["8181c78802ff"]["8181c7880202"]
+                  ? obj.values["8181c78802ff"]["8181c7880202"]
+                  : "";
+                this.ntp.srv3 = obj.values["8181c78802ff"]["8181c7880203"]
+                  ? obj.values["8181c78802ff"]["8181c7880203"]
+                  : "";
+                this.ntp.port = obj.values["8181c78803ff"]
+                  ? obj.values["8181c78803ff"]
+                  : 123;
               } else if (section === SML_CODES.CODE_ROOT_W_MBUS_STATUS) {
                 this.wmbus.type = obj.values["810600000100"];
                 this.wmbus.id = obj.values["810600000300"];
