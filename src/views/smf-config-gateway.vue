@@ -855,7 +855,7 @@
                       variant="info"
                       v-b-tooltip.hover
                       :title="'meter code: ' + row.item.mc"
-                      :disabled="btnEditStatus(row.item.mc)"
+                      :disabled="btnEditStatus(row.item.mc, row.item.type)"
                       @click="onMeterEdit(row.item)"
                       >{{ btnEdit }}</b-button
                     >
@@ -2600,6 +2600,7 @@ export default Vue.extend({
                   type: obj.values.type,
                   visible: true,
                   active: false,
+                  stored: obj.values.stored ? obj.values.stored : false,
                   serverId: obj.values.serverId //obj.rec.srv
                 } as any;
 
@@ -2617,7 +2618,7 @@ export default Vue.extend({
                     //console.log('found ' + meter.ident);
                     meter.active = true;
                     meter.tag = obj.values.tag;
-                    meter.mc = obj.values.mc ? obj.values.mc : "no-mc";
+                    meter.mc = obj.values.mc ? obj.values.mc : "MC";
                     return true;
                   }
                   return false;
@@ -2638,9 +2639,10 @@ export default Vue.extend({
                     type: obj.values.type,
                     visible: false,
                     active: true,
-                    serverId: obj.rec.srv,
+                    stored: obj.values.stored ? obj.values.stored : false,
+                    serverId: obj.values.serverId,
                     tag: obj.values.tag,
-                    mc: obj.values.mc ? obj.values.mc : "no-mc"
+                    mc: obj.values.mc ? obj.values.mc : "MC"
                   };
 
                   if (obj.values.type < 2) {
@@ -3386,26 +3388,31 @@ export default Vue.extend({
     },
 
     meterTableComplete() {
-      let csv = "Ident;Meter;Maker;ServerId\n";
+      let csv = "Ident,Meter,Maker,ServerId,Tag,stored\n";
       this.meters.values.forEach(function(row: any) {
         //console.log(row.ident);
         csv +=
           row.ident +
-          ";" +
+          "," +
           row.meter +
-          ";" +
+          "," +
           row.maker +
-          ";" +
+          "," +
           row.serverId +
+          "," +
+          (row.tag ? row.tag : "") +
+          "," +
+          row.stored +
           "\n";
       });
       const data = new Blob([csv]);
       this.meters.csv = URL.createObjectURL(data);
     },
-    btnEditStatus(mc: any) {
-      // console.log("btnEditStatus " , mc);
+    btnEditStatus(mc: any, type: number) {
+      //console.log("btnEditStatus ", mc, ", type: ", type);
       if (typeof mc == "undefined") return true;
-      return mc.length > 2 && mc.startsWith("MC");
+      //return mc.length > 2 && mc.startsWith("MC");
+      return type > 4;
     },
     //onProxyCacheReset() {
     //  this.spinner.reset = true;
