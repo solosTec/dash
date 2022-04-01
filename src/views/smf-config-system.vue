@@ -540,9 +540,20 @@ export default mixins(webSocket, Vue).extend({
       this.ws_subscribe("config.system");
       this.ws_subscribe("table.gwIEC.count");
     },
+    timeSpanToMinutes(value: string) {
+      // 00:30:0.000000
+      if (value.length > 12) {
+        var tokens = value.split(":");
+        return tokens.length == 3
+          ? Number(tokens[0]) * 60 + Number(tokens[1])
+          : 20;
+      }
+      return 30;
+    },
     ws_on_data(obj: any) {
       if (obj.cmd != null) {
         // console.log(this.$options.name + ' websocket received ' + obj.cmd + ' / ' + obj.channel);
+        //console.log(this.$options.name, ": ", obj);
         if (obj.cmd == "insert") {
           if (obj.rec.key.key == "auto-login") {
             this.cfg.auto_login = obj.rec.data.value;
@@ -603,7 +614,10 @@ export default mixins(webSocket, Vue).extend({
           } else if (obj.rec.key.key == "compiler-version") {
             this.sys.compilerVersion = obj.rec.data.value;
           } else if (obj.rec.key.key == "def-IEC-interval") {
-            this.cfg.defIECInterval = obj.rec.data.value;
+            // 00:30:0.000000
+            this.cfg.defIECInterval = this.timeSpanToMinutes(
+              obj.rec.data.value
+            );
           } else {
             console.log(
               this.$options.name +
@@ -646,6 +660,9 @@ export default mixins(webSocket, Vue).extend({
             this.cfg.countryCode = obj.value.value;
           } else if (obj.key[0] == "language-code") {
             this.cfg.languageCode = obj.value.value;
+          } else if (obj.key[0] == "def-IEC-interval") {
+            // 00:30:0.000000
+            this.cfg.defIECInterval = this.timeSpanToMinutes(obj.value.value);
           }
         } else if (obj.cmd == "update") {
           if (obj.channel == "table.gwIEC.count") {
@@ -653,7 +670,7 @@ export default mixins(webSocket, Vue).extend({
           }
         }
         // eslint-disable-next-line
-               else if (obj.cmd == 'load') {
+           else if (obj.cmd == 'load') {
         }
       }
     },

@@ -3412,7 +3412,7 @@ export default Vue.extend({
       //console.log("btnEditStatus ", mc, ", type: ", type);
       if (typeof mc == "undefined") return true;
       //return mc.length > 2 && mc.startsWith("MC");
-      return type > 4;
+      return type > 4 || mc.startsWith("MC");
     },
     //onProxyCacheReset() {
     //  this.spinner.reset = true;
