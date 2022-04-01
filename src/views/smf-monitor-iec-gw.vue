@@ -191,11 +191,11 @@ export default mixins(webSocket, Vue).extend({
               case 0:
                 return "offline";
               case 1:
-                return "<b>waiting</b>";
+                return " &#9203; <b>waiting</b>";
               case 2:
-                return "<em>online</em>";
+                return "&#9889; <em>online</em>";
               case 3:
-                return "<em>reconnect</em>";
+                return "&#9208; <em>reconnect</em>";
               default:
                 break;
             }
