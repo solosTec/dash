@@ -324,7 +324,6 @@ export default mixins(webSocket, Vue).extend({
             this.gateways.find(function(rec) {
               if (rec.tag == obj.key[0]) {
                 console.log("modify record " + rec.tag);
-                rec.lastSeen = new Date();
                 if (obj.value.meterCounter != null) {
                   rec.meterCounter = obj.value.meterCounter;
                 } else if (obj.value.connectCounter != null) {
@@ -352,6 +351,7 @@ export default mixins(webSocket, Vue).extend({
                       break;
                     case 2:
                       rec["_rowVariant"] = "success";
+                      rec.lastSeen = new Date();
                       break;
                     default:
                       break;
