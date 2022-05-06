@@ -1043,12 +1043,12 @@ export default mixins(webSocket, Vue).extend({
         { value: "any", text: "any" },
         { value: "raw", text: "raw" },
         { value: "tcp", text: "tcp" },
-        { value: "IP-T:DIN-E43863-4", text: "IP-T:DIN-E43863-4" },
-        { value: "IEC:62056", text: "IEC:62056" },
+        { value: "IP-T-DIN-E43863-4", text: "IP-T:DIN-E43863-4" },
+        { value: "IEC-62056", text: "IEC-62056" },
         { value: "M-Bus", text: "M-Bus" },
-        { value: "wM-Bus:EN13757-4", text: "wM-Bus:EN13757-4" },
+        { value: "wM-Bus-EN13757-4", text: "wM-Bus:EN13757-4" },
         { value: "HDLC", text: "HDLC" },
-        { value: "SML", text: "SML" },
+        { value: "SMLv1.04", text: "SMLv1.04" },
         { value: "COSEM", text: "COSEM" }
       ]
     };
