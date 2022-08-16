@@ -159,7 +159,7 @@ export default (Vue as VueConstructor<
   data() {
     return {
       form: {
-        pk: "",
+        tag: "",
         serverId: "",
         manufacturer: "solos::Tec",
         descr: "",
@@ -176,7 +176,7 @@ export default (Vue as VueConstructor<
     onGatewayUpdate(event: Event) {
       event.preventDefault();
       this.wsDelegate.ws_submit_record("modify", "config.gateway", {
-        key: [this.form.pk],
+        key: [this.form.tag],
         data: {
           serverId: this.form.serverId,
           manufacturer: this.form.manufacturer,
