@@ -10,6 +10,10 @@ npm install -g npm
 ```
 ## Project setup
 ```
+npm install bootstrap
+```
+## Project setup
+```
 npm install
 ```
 ### Compiles and hot-reloads for development
