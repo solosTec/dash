@@ -1,27 +1,4 @@
-
-[![CircleCI](https://circleci.com/gh/solosTec/dash/tree/master.svg?style=shield)](https://circleci.com/gh/solosTec/dash/tree/master)
-
-# supported environment variables
-
-replace the smf server on development
-```
-VUE_APP_SMF_SERVER=host:port
-```
-
-do not ask for a config.user - use admin instead 
-```
-VUE_APP_SMF_NO_AUTH=true
-```
-
-This configuration can be stored in a file named .env.development.local
-
-# pre steps
-
-sudo npm install -g @vue/cli
-sudo chown -R username: /usr/local/lib/node_modules
-vue create dash
-
-# dash
+# segw
 
 ## Project setup
 ```
@@ -38,17 +15,6 @@ npm run serve
 npm run build
 ```
 
-Use the following command to build a version without authorization:
-
-```
-npm run build-no-auth 
-```
-
-### Run your tests
-```
-npm run test
-```
-
 ### Lints and fixes files
 ```
 npm run lint
@@ -56,35 +22,3 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
-# dependencies
-
-* [bootstrap](https://getbootstrap.com/)
-* [bootstrap-vue](https://bootstrap-vue.js.org/)
-* [vue-headful](https://github.com/troxler/vue-headful)
-* [vue-router](https://github.com/vuejs/vue-router#readme)
-* [vue-toasted](https://github.com/shakee93/vue-toasted#readme)
-* [vue-websocket](https://github.com/icebob/vue-websocket)
-* [vuex](https://github.com/vuejs/vuex#readme)
-* [vue-resource](https://github.com/pagekit/vue-resource)
-* [i18n](https://github.com/mashpie/i18n-node)
-* [vue-analytics](https://github.com/MatteoGabriele/vue-analytics)
-
-## install plugins
-
-```
-$ vue add bootstrap-vue 
-$ npm i vue-headful
-$ npm install i18n --save
-$ npm i vue-analytics
-$ npm i vue-resource
-$ npm i vue-router
-$ npm i vue-toasted
-```
-
-# create a docker container
-docker login -u "$DOCKER_USERNAME" --password-stdin
-docker build . -t solostec/smf -f docker/Dockerfile 
-docker push solostec/smf:latest
-
-

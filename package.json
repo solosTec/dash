@@ -1,64 +1,33 @@
 {
-  "name": "dash",
+  "name": "segw",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "build-docker": "vue-cli-service build --mode docker --dest dist-docker",
-    "build-docker-dev": "vue-cli-service build --mode docker-dev --dest dist-docker",
-    "build-no-auth": "vue-cli-service build --mode no-auth --dest dist-no-auth",
-    "update-browserlist": "npx browserslist@latest --update-db",
-    "pre-push": "npm run lint -- --fix && npm run test:unit && npm run build"
+    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
-    "bootstrap-vue": "^2.16.0",
-    "core-js": "^2.6.11",
-    "i18n": "^0.8.6",
-    "v-mask": "^2.2.3",
-    "vue": "^2.6.11",
-    "vue-analytics": "^5.22.1",
-    "vue-headful": "^2.1.0",
-    "vue-i18n": "^8.20.0",
-    "vue-resource": "^1.5.1",
-    "vue-router": "^3.3.4",
-    "vue-toasted": "^1.1.28",
-    "vue-typed-mixins": "^0.2.0",
-    "vuelidate": "^0.7.6",
-    "vuex": "^3.5.1"
+    "bootstrap": "^5.1.3",
+    "core-js": "^3.8.3",
+    "primeicons": "^5.0.0",
+    "primevue": "^3.15.0",
+    "vue": "^3.2.13",
+    "vue-i18n": "^9.1.0",
+    "vue-router": "^4.0.3"
   },
   "devDependencies": {
-    "@babel/polyfill": "^7.10.4",
-    "@types/jest": "^23.1.4",
-    "@types/vuelidate": "^0.7.13",
-    "@vue/cli-plugin-babel": "^3.12.1",
-    "@vue/cli-plugin-eslint": "^3.12.1",
-    "@vue/cli-plugin-typescript": "^4.5.6",
-    "@vue/cli-plugin-unit-jest": "^3.12.1",
-    "@vue/cli-service": "^3.12.1",
-    "@vue/eslint-config-prettier": "^5.0.0",
-    "@vue/eslint-config-typescript": "^4.0.0",
-    "@vue/test-utils": "1.0.0-beta.29",
-    "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.1.0",
-    "babel-jest": "^23.6.0",
-    "bootstrap": "^4.5.0",
-    "eslint": "^5.16.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "lint-staged": "^8.1.5",
-    "mutationobserver-shim": "^0.3.7",
-    "node-sass": "^5.0.0",
-    "popper.js": "^1.16.1",
-    "portal-vue": "^2.1.7",
-    "prettier": "^1.18.2",
-    "sass-loader": "^10.1.0",
-    "ts-jest": "^23.0.0",
-    "typescript": "3.5.3",
-    "vue-cli-plugin-bootstrap-vue": "^0.4.0",
-    "vue-template-compiler": "^2.6.11"
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@intlify/vue-i18n-loader": "^3.0.0",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "vue-cli-plugin-i18n": "~2.3.1"
   },
   "eslintConfig": {
     "root": true,
@@ -66,43 +35,18 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
-      "plugin:prettier/recommended",
-      "eslint:recommended",
-      "@vue/typescript"
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
     ],
-    "rules": {},
     "parserOptions": {
-      "parser": "@typescript-eslint/parser",
-      "allowImportExportEverywhere": true
+      "parser": "@babel/eslint-parser"
     },
-    "overrides": [
-      {
-        "files": [
-          "**/__tests__/*.{j,t}s?(x)"
-        ],
-        "env": {
-          "jest": true
-        }
-      }
-    ]
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
+    "rules": {}
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions"
-  ],
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,vue,ts}": [
-      "vue-cli-service lint",
-      "git add"
-    ]
-  }
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ]
 }

@@ -1,8 +1,7 @@
 .DS_Store
 node_modules
-package-lock.json
 /dist
-/dist-no-auth
+
 
 # local env files
 .env.local
@@ -12,27 +11,13 @@ package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
 # Editor directories and files
 .idea
 .vscode
-dash.njsproj.user
 *.suo
 *.ntvs*
+*.njsproj
+*.sln
 *.sw?
-*.njsproj.user
-/bin
-/obj/Debug
-/.vs/dash/v16
-/coverage
-/.env
-/dist.tar.gz
-/UpgradeLog.htm
-/src/shared/formatter/registerNames.js
-/src/shared/formatter/registerNames.js.map
-/debug.log
-/.vs/VSWorkspaceState.json
-/.vs/slnx.sqlite
-/.vs
-/admin.njsproj
-/admin.sln
