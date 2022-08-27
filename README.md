@@ -11,6 +11,7 @@ npm install -g npm
 ## Project setup
 ```
 npm install bootstrap
+npm install primevue
 ```
 ## Project setup
 ```
