@@ -1,9 +1,5 @@
 # dash vue3
 
-## Project setup
-```
-npm install
-```
 ## Install vue 3
 ```
 npm install -g @vue/cli
@@ -12,7 +8,10 @@ npm install -g @vue/cli
 ```
 npm install -g npm
 ```
-
+## Project setup
+```
+npm install
+```
 ### Compiles and hot-reloads for development
 ```
 npm run serve
