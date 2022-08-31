@@ -8,7 +8,8 @@ npm install -g @vue/cli
 ```
 npm install -g npm
 ```
-## Project setup
+## Project setup 
+See also [here](https://github.com/primefaces/primevue)
 ```
 npm install bootstrap
 npm install primevue
