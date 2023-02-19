@@ -470,13 +470,13 @@
                     </b-form-group>
 
                     <!--<b-form-group label-cols-sm="4" label-cols-lg="3">
-                <b-button
-                  type="submit"
-                  variant="primary"
-                  v-on:click.stop="onIPTUpdate($event, 1)"
-                  >{{ btnUpdateTitle }}</b-button
-                >
-              </b-form-group>-->
+            <b-button
+              type="submit"
+              variant="primary"
+              v-on:click.stop="onIPTUpdate($event, 1)"
+              >{{ btnUpdateTitle }}</b-button
+            >
+          </b-form-group>-->
                   </b-card>
                 </b-card-group>
 
@@ -566,26 +566,26 @@
 
             <!-- Broker -->
             <!--<b-tab
-        :disabled="
-          selected[0].online === 0 ||
-            !(selected[0].model || '').startsWith('SMF-GW:')
-        "
-        no-body
-        :smf-context="smfContext.broker"
-      >
-        <template slot="title">
-          {{ $t("config-gateway-74x") }}
-          <b-spinner v-if="spinner.broker" type="grow" small />
-        </template>
+    :disabled="
+      selected[0].online === 0 ||
+        !(selected[0].model || '').startsWith('SMF-GW:')
+    "
+    no-body
+    :smf-context="smfContext.broker"
+  >
+    <template slot="title">
+      {{ $t("config-gateway-74x") }}
+      <b-spinner v-if="spinner.broker" type="grow" small />
+    </template>
 
-        <smfBrokerConfiguration
-          :gateway="selected[0]"
-          :brokers="brokers"
-          :brokerPorts="brokerPorts"
-          @brokersUpdate="onBrokersUpdate"
-          @brokerHardwarePortUpdate="onBrokerHardwarePortUpdate"
-        ></smfBrokerConfiguration>
-      </b-tab>-->
+    <smfBrokerConfiguration
+      :gateway="selected[0]"
+      :brokers="brokers"
+      :brokerPorts="brokerPorts"
+      @brokersUpdate="onBrokersUpdate"
+      @brokerHardwarePortUpdate="onBrokerHardwarePortUpdate"
+    ></smfBrokerConfiguration>
+  </b-tab>-->
             <!-- NTP -->
             <b-tab
               :disabled="selected[0].online === 0"
@@ -594,7 +594,7 @@
             >
               <template slot="title">
                 {{ $t("config-gateway-101") }}
-                <b-spinner v-if="spinner.firmware" type="grow" small />
+                <b-spinner v-if="spinner.ntp" type="grow" small />
               </template>
               <b-form @submit.prevent="">
                 <b-row class="p-3">
@@ -999,21 +999,21 @@
                           v-model="wmbus.protocol"
                           name="smf-gw-wmbus-protocol"
                         >
-                          <b-form-radio value="T">{{
-                            $t("config-gateway-35")
-                          }}</b-form-radio>
-                          <b-form-radio value="S">{{
-                            $t("config-gateway-36")
-                          }}</b-form-radio>
+                          <b-form-radio value="T">
+                            {{ $t("config-gateway-35") }}
+                          </b-form-radio>
+                          <b-form-radio value="S">
+                            {{ $t("config-gateway-36") }}
+                          </b-form-radio>
                           <b-form-radio
                             value="A"
                             v-b-popover.hover="$t('config-gateway-37')"
                             title="T2/S2 Automatic"
                             >T2/S2 Automatic</b-form-radio
                           >
-                          <b-form-radio value="P">{{
-                            $t("config-gateway-38")
-                          }}</b-form-radio>
+                          <b-form-radio value="P">
+                            {{ $t("config-gateway-38") }}
+                          </b-form-radio>
                         </b-form-radio-group>
                       </b-form-group>
                     </b-card>
@@ -1051,18 +1051,18 @@
                           class="mb-3"
                           disabled
                         >
-                          <option value="low">{{
-                            $t("config-gateway-43-01")
-                          }}</option>
-                          <option value="basic">{{
-                            $t("config-gateway-43-02")
-                          }}</option>
-                          <option value="avg">{{
-                            $t("config-gateway-43-03")
-                          }}</option>
-                          <option value="strong">{{
-                            $t("config-gateway-43-04")
-                          }}</option>
+                          <option value="low">
+                            {{ $t("config-gateway-43-01") }}
+                          </option>
+                          <option value="basic">
+                            {{ $t("config-gateway-43-02") }}
+                          </option>
+                          <option value="avg">
+                            {{ $t("config-gateway-43-03") }}
+                          </option>
+                          <option value="strong">
+                            {{ $t("config-gateway-43-04") }}
+                          </option>
                         </b-form-select>
                       </b-form-group>
                     </b-card>
@@ -1072,9 +1072,9 @@
                 <b-form>
                   <b-row class="pt-4">
                     <b-col md="12">
-                      <b-button v-b-toggle.sidebar-footer>{{
-                        $t("config-gateway-03")
-                      }}</b-button>
+                      <b-button v-b-toggle.sidebar-footer>
+                        {{ $t("config-gateway-03") }}
+                      </b-button>
                       <b-sidebar
                         id="sidebar-footer"
                         aria-label="Sidebar with custom footer"
@@ -1086,9 +1086,9 @@
                             class="d-flex bg-dark text-light align-items-center px-3 py-2"
                           >
                             <strong class="mr-auto">M-Bus Hardware</strong>
-                            <b-button size="sm" @click="hide">{{
-                              $t("action-close")
-                            }}</b-button>
+                            <b-button size="sm" @click="hide">
+                              {{ $t("action-close") }}
+                            </b-button>
                           </div>
                         </template>
                         <div class="px-3 py-2">
@@ -1333,18 +1333,18 @@
                         class="mb-3"
                         disabled
                       >
-                        <option value="A">{{
-                          $t("config-gateway-70-01")
-                        }}</option>
-                        <option value="B">{{
-                          $t("config-gateway-70-02")
-                        }}</option>
-                        <option value="C">{{
-                          $t("config-gateway-70-03")
-                        }}</option>
-                        <option value="D">{{
-                          $t("config-gateway-70-04")
-                        }}</option>
+                        <option value="A">
+                          {{ $t("config-gateway-70-01") }}
+                        </option>
+                        <option value="B">
+                          {{ $t("config-gateway-70-02") }}
+                        </option>
+                        <option value="C">
+                          {{ $t("config-gateway-70-03") }}
+                        </option>
+                        <option value="D">
+                          {{ $t("config-gateway-70-04") }}
+                        </option>
                       </b-form-select>
                     </b-form-group>
                   </b-col>
@@ -1423,86 +1423,85 @@
 
             <!-- Access -->
             <!--<b-tab no-body :smf-context="smfContext.auth">
-              <template slot="title">
-                Access
-                <b-spinner v-if="spinner.auth" type="grow" small />
-              </template>
+    <template slot="title">
+      Access
+      <b-spinner v-if="spinner.auth" type="grow" small />
+    </template>
 
-              <smfServerRootAccessRights
-                class="smfServerRootAccessRights"
-                v-if="serverRootAccessRights"
-                :root-access-rights="serverRootAccessRights"
-                @queryMeter="onQueryMeter"
-              ></smfServerRootAccessRights>
-              <smf-meter-access-rights
-                v-if="meterAccessRights"
-                :meter-access-rights="meterAccessRights"
-              >
-              </smf-meter-access-rights>
+    <smfServerRootAccessRights
+      class="smfServerRootAccessRights"
+      v-if="serverRootAccessRights"
+      :root-access-rights="serverRootAccessRights"
+      @queryMeter="onQueryMeter"
+    ></smfServerRootAccessRights>
+    <smf-meter-access-rights
+      v-if="meterAccessRights"
+      :meter-access-rights="meterAccessRights"
+    >
+    </smf-meter-access-rights>
 
-              <b-form @submit.prevent="">
-                <b-row class="p-3">
-                  <b-col md="3">
-                    <b-button
-                      type="submit"
-                      variant="primary"
-                      v-b-tooltip.hover
-                      title="Clear cache and initialize it with gw/server ID"
-                      v-on:click.stop="onProxyCacheReset"
-                    >
-                      Reset Cache
-                      <b-spinner v-if="spinner.reset" type="grow" small />
-                    </b-button>
-                  </b-col>
-                  <b-col md="3">
-                    <b-button
-                      type="submit"
-                      variant="primary"
-                      v-b-tooltip.hover
-                      title="Fill cache with all access rights of the selected gateway"
-                      v-on:click.stop="onProxyCacheUpdate"
-                      >Update Cache</b-button
-                    >
-                  </b-col>
-                  <b-col md="3">
-                    <b-button
-                      :disabled="selected[0].online === 0"
-                      type="submit"
-                      variant="primary"
-                      v-b-tooltip.hover
-                      title="Backup complete gateway configuration with setup service (not implemented yet)"
-                      v-on:click.stop="onCreateSnapshot"
-                      >Create Snapshot
-                    </b-button>
-                  </b-col>
-                  <b-col md="3">
-                    <b-button
-                      type="submit"
-                      variant="outline-primary"
-                      v-b-tooltip.hover
-                      title="Get a list of all cached root sections"
-                      v-on:click.stop="onProxyCacheSections"
-                      >Get Sections</b-button
-                    >
-                  </b-col>
-                </b-row>
+    <b-form @submit.prevent="">
+      <b-row class="p-3">
+        <b-col md="3">
+          <b-button
+            type="submit"
+            variant="primary"
+            v-b-tooltip.hover
+            title="Clear cache and initialize it with gw/server ID"
+            v-on:click.stop="onProxyCacheReset"
+          >
+            Reset Cache
+            <b-spinner v-if="spinner.reset" type="grow" small />
+          </b-button>
+        </b-col>
+        <b-col md="3">
+          <b-button
+            type="submit"
+            variant="primary"
+            v-b-tooltip.hover
+            title="Fill cache with all access rights of the selected gateway"
+            v-on:click.stop="onProxyCacheUpdate"
+            >Update Cache</b-button
+          >
+        </b-col>
+        <b-col md="3">
+          <b-button
+            :disabled="selected[0].online === 0"
+            type="submit"
+            variant="primary"
+            v-b-tooltip.hover
+            title="Backup complete gateway configuration with setup service (not implemented yet)"
+            v-on:click.stop="onCreateSnapshot"
+            >Create Snapshot
+          </b-button>
+        </b-col>
+        <b-col md="3">
+          <b-button
+            type="submit"
+            variant="outline-primary"
+            v-b-tooltip.hover
+            title="Get a list of all cached root sections"
+            v-on:click.stop="onProxyCacheSections"
+            >Get Sections</b-button
+          >
+        </b-col>
+      </b-row>
 
-                <b-row class="p-3">
-                  <b-col md="3">
-                    <b-button
-                      type="submit"
-                      variant="outline-success"
-                      v-b-tooltip.hover
-                      title="Query cache for all access rights for all meters of the selected gateway"
-                      v-on:click.stop="onProxyCacheQuery"
-                      >Query Cache</b-button
-                    >
-                  </b-col>
-                  <b-col md="9"> </b-col>
-                </b-row>
-              </b-form>
-            </b-tab>-->
-
+      <b-row class="p-3">
+        <b-col md="3">
+          <b-button
+            type="submit"
+            variant="outline-success"
+            v-b-tooltip.hover
+            title="Query cache for all access rights for all meters of the selected gateway"
+            v-on:click.stop="onProxyCacheQuery"
+            >Query Cache</b-button
+          >
+        </b-col>
+        <b-col md="9"> </b-col>
+      </b-row>
+    </b-form>
+  </b-tab>-->
             <!-- logs -->
             <b-tab
               :disabled="selected[0].online === 0"
@@ -1571,362 +1570,6 @@
                   </b-col>
                 </b-row>
               </b-form>
-            </b-tab>
-
-            <!-- Custom Interface / NMS -->
-            <b-tab
-              no-body
-              title="Custom IF"
-              :disabled="selected[0].online === 0"
-              :smf-context="smfContext.custom"
-            >
-              <template slot="title">
-                {{ $t("config-gateway-75") }}
-                <b-spinner v-if="spinner.custom" type="grow" small />
-              </template>
-              <b-card-group deck class="pt-4" v-if="!spinner.custom">
-                <b-card
-                  header="IP-T"
-                  :title="$t('config-gateway-98')"
-                  :sub-title="$t('config-gateway-100')"
-                >
-                  <b-form-group
-                    :label="$t('config-gateway-84')"
-                    label-cols-sm="4"
-                    label-cols-lg="3"
-                    :description="$t('config-gateway-79')"
-                  >
-                    <b-input-group
-                      :prepend="$t('config-gateway-76')"
-                      class="mt-2"
-                    >
-                      <b-form-input
-                        id="smf-gw-custom-first-address"
-                        type="text"
-                        v-model="tabCustom.data.ipt.firstAddress"
-                        required
-                        v-b-popover.hover="'Specify bind address'"
-                        :title="$t('config-gateway-84')"
-                        :placeholder="$t('config-gateway-76') | fmtPlaceholder"
-                      />
-                      <b-form-input
-                        id="smf-gw-custom-ipt-port"
-                        type="number"
-                        v-model.number="tabCustom.data.ipt.port"
-                        min="1024"
-                        max="‭65535‬"
-                        disabled
-                      />
-
-                      <b-input-group-append>
-                        <b-button
-                          variant="info"
-                          v-on:click.stop="
-                            tabCustom.data.ipt.firstAddress = '192.168.1.229'
-                          "
-                          >{{ $t("com-default") }}</b-button
-                        >
-                      </b-input-group-append>
-                    </b-input-group>
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('config-gateway-86')"
-                    label-cols-sm="4"
-                    label-cols-lg="3"
-                    :description="$t('config-gateway-80')"
-                  >
-                    <b-input-group
-                      :prepend="$t('config-gateway-77')"
-                      class="mt-2"
-                    >
-                      <b-form-input
-                        id="smf-gw-custom-first-mask"
-                        type="text"
-                        v-model="tabCustom.data.ipt.firstMask"
-                        required
-                        v-b-popover.hover="
-                          'Specify a known hostname or an IPv4/IPv6 address'
-                        "
-                        :title="$t('config-gateway-86')"
-                        :placeholder="$t('config-gateway-11') | fmtPlaceholder"
-                      />
-                      <b-input-group-append>
-                        <b-button
-                          variant="info"
-                          v-on:click.stop="
-                            tabCustom.data.ipt.firstMask = '225.225.255.0'
-                          "
-                          >{{ $t("com-default") }}</b-button
-                        >
-                      </b-input-group-append>
-                    </b-input-group>
-                  </b-form-group>
-
-                  <b-form-group
-                    :label="$t('config-gateway-78')"
-                    label-for="smf-gw-ipt-scrambled-0"
-                    label-cols-sm="4"
-                    label-cols-lg="3"
-                    :description="$t('config-gateway-81')"
-                  >
-                    <b-input-group>
-                      <b-form-checkbox switch v-model="tabCustom.data.ipt.dhcp">
-                        {{
-                          tabCustom.data.ipt.dhcp
-                            ? $t("config-gateway-40")
-                            : $t("config-gateway-41")
-                        }}
-                      </b-form-checkbox>
-                    </b-input-group>
-                  </b-form-group>
-
-                  <b-form-group
-                    :label="$t('config-gateway-85')"
-                    label-cols-sm="4"
-                    label-cols-lg="3"
-                    :description="$t('config-gateway-79')"
-                  >
-                    <b-input-group
-                      :prepend="$t('config-gateway-76')"
-                      class="mt-2"
-                    >
-                      <b-form-input
-                        id="smf-gw-custom-second-address"
-                        type="text"
-                        v-model="tabCustom.data.ipt.secondAddress"
-                        required
-                        v-b-popover.hover="'Specify bind address'"
-                        :title="$t('config-gateway-85')"
-                        :placeholder="$t('config-gateway-11') | fmtPlaceholder"
-                      />
-                      <b-form-input
-                        id="smf-gw-custom-ipt-port-2"
-                        type="number"
-                        v-model.number="tabCustom.data.ipt.port"
-                        min="1024"
-                        max="‭65535‬"
-                        disabled
-                      />
-
-                      <b-input-group-append>
-                        <b-button
-                          variant="info"
-                          v-on:click.stop="
-                            tabCustom.data.ipt.secondAddress = '192.168.1.229'
-                          "
-                          >{{ $t("com-default") }}</b-button
-                        >
-                      </b-input-group-append>
-                    </b-input-group>
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('config-gateway-87')"
-                    label-cols-sm="4"
-                    label-cols-lg="3"
-                    :description="$t('config-gateway-80')"
-                  >
-                    <b-input-group
-                      :prepend="$t('config-gateway-77')"
-                      class="mt-2"
-                    >
-                      <b-form-input
-                        id="smf-gw-custom-ipt-mask-2"
-                        type="text"
-                        v-model="tabCustom.data.ipt.secondMask"
-                        required
-                        v-b-popover.hover="'Specify a subnet mask'"
-                        :title="$t('config-gateway-87')"
-                        :placeholder="$t('config-gateway-11') | fmtPlaceholder"
-                      />
-                      <b-input-group-append>
-                        <b-button
-                          variant="info"
-                          v-on:click.stop="
-                            tabCustom.data.ipt.secondMask = '225.225.255.0'
-                          "
-                          >{{ $t("com-default") }}</b-button
-                        >
-                      </b-input-group-append>
-                    </b-input-group>
-                  </b-form-group>
-                  <b-form-group label-cols-sm="4" label-cols-lg="3">
-                    <b-button
-                      type="submit"
-                      variant="primary"
-                      :disabled="!customIPTHasChanged()"
-                      v-on:click.stop="onCustomIPTUpdate($event)"
-                      >{{ btnUpdateTitle }}</b-button
-                    >
-                  </b-form-group>
-                </b-card>
-                <b-card
-                  header="NMS"
-                  :title="$t('config-gateway-99')"
-                  :sub-title="$t('config-gateway-100')"
-                >
-                  <b-form-group
-                    :label="$t('config-gateway-88')"
-                    label-cols-sm="4"
-                    label-cols-lg="3"
-                    :description="$t('config-gateway-79')"
-                  >
-                    <b-input-group prepend="Host" class="mt-2">
-                      <b-form-input
-                        id="smf-gw-custom-nms-address"
-                        type="text"
-                        v-model="tabCustom.data.nms.address"
-                        required
-                        v-b-popover.hover="'Specify bind address'"
-                        :title="$t('config-gateway-88')"
-                        :placeholder="$t('config-gateway-11') | fmtPlaceholder"
-                      />
-                      <b-form-input
-                        id="smf-gw-custom-nms-port"
-                        type="number"
-                        v-model.number="tabCustom.data.nms.port"
-                        min="1024"
-                        max="‭65535‬"
-                        required
-                      />
-
-                      <b-input-group-append>
-                        <b-button
-                          variant="info"
-                          v-on:click.stop="
-                            tabCustom.data.nms.address = '0.0.0.0'
-                          "
-                          >{{ $t("com-default") }}</b-button
-                        >
-                      </b-input-group-append>
-                    </b-input-group>
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('config-gateway-12')"
-                    label-for="smf-custom-nms-user"
-                    label-cols-sm="4"
-                    label-cols-lg="3"
-                    :description="$t('config-gateway-89')"
-                  >
-                    <b-form-input
-                      id="smf-custom-nms-user"
-                      type="text"
-                      v-model="tabCustom.data.nms.user"
-                      required
-                      :placeholder="$t('config-gateway-12') | fmtPlaceholder"
-                    />
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('config-gateway-16')"
-                    label-for="smf-custom-nms-pwd"
-                    label-cols-sm="4"
-                    label-cols-lg="3"
-                    :description="$t('config-gateway-90')"
-                  >
-                    <b-input-group>
-                      <b-form-input
-                        id="smf-custom-nms-pwd"
-                        type="text"
-                        v-model="tabCustom.data.nms.pwd"
-                        required
-                        :placeholder="$t('config-gateway-16') | fmtPlaceholder"
-                      />
-                      <b-input-group-append>
-                        <b-button
-                          variant="info"
-                          v-on:click.stop="generatePasswordNMS($event)"
-                          >&#x21ba;</b-button
-                        >
-                      </b-input-group-append>
-                    </b-input-group>
-                  </b-form-group>
-
-                  <b-form-group
-                    :label="$t('config-gateway-83')"
-                    label-for="smf-custom-nms-enabled"
-                    label-cols-sm="4"
-                    label-cols-lg="3"
-                    :description="$t('config-gateway-82')"
-                  >
-                    <b-input-group>
-                      <b-form-checkbox
-                        switch
-                        v-model="tabCustom.data.nms.enabled"
-                      >
-                        {{
-                          tabCustom.data.nms.enabled
-                            ? $t("config-gateway-40")
-                            : $t("config-gateway-41")
-                        }}
-                      </b-form-checkbox>
-                    </b-input-group>
-                  </b-form-group>
-                  <b-form-group label-cols-sm="4" label-cols-lg="3">
-                    <b-button
-                      type="submit"
-                      variant="primary"
-                      :disabled="!customNMSHasChanged()"
-                      v-on:click.stop="onCustomNMSUpdate($event)"
-                      >{{ btnUpdateTitle }}</b-button
-                    >
-                  </b-form-group>
-                </b-card>
-              </b-card-group>
-              <b-row class="pt-2">
-                <b-col md="12">
-                  <b-button v-b-toggle.sidebar-footer>
-                    {{ $t("config-gateway-01") }}
-                  </b-button>
-                  <b-sidebar
-                    id="sidebar-footer"
-                    aria-label="Sidebar with custom footer"
-                    no-header
-                    shadow="true"
-                  >
-                    <template v-slot:footer="{ hide }">
-                      <div
-                        class="d-flex bg-dark text-light align-items-center px-3 py-2"
-                      >
-                        <strong class="mr-auto">{{
-                          $t("config-gateway-97")
-                        }}</strong>
-                        <b-button size="sm" @click="hide">{{
-                          $t("action-close")
-                        }}</b-button>
-                      </div>
-                    </template>
-                    <div class="px-3 py-2">
-                      <b-form-group
-                        :label="$t('config-gateway-84')"
-                        label-for="smf-gw-custom-ep-1"
-                      >
-                        <b-form-input
-                          id="smf-gw-custom-ep-1"
-                          type="text"
-                          v-model="tabCustom.data.ipt.ep1"
-                          readonly
-                          :placeholder="
-                            $t('config-gateway-84') | fmtPlaceholder
-                          "
-                        />
-                      </b-form-group>
-                      <b-form-group
-                        :label="$t('config-gateway-85')"
-                        label-for="smf-gw-custom-ep-2"
-                      >
-                        <b-form-input
-                          id="smf-gw-custom-ep-2"
-                          type="text"
-                          v-model="tabCustom.data.ipt.ep2"
-                          readonly
-                          :placeholder="
-                            $t('config-gateway-85') | fmtPlaceholder
-                          "
-                        />
-                      </b-form-group>
-                    </div>
-                  </b-sidebar>
-                </b-col>
-              </b-row>
             </b-tab>
           </b-tabs>
         </b-col>
@@ -2071,7 +1714,8 @@ export default Vue.extend({
       spinner: {
         status: false,
         ipt: false,
-        broker: false,
+        //        broker: false,
+        ntp: false,
         firmware: false,
         memory: false,
         meters: false,
@@ -2682,6 +2326,7 @@ export default Vue.extend({
                 this.gw.memory.mirror = obj.values["0080800011ff"];
                 this.gw.memory.tmp = obj.values["0080800012ff"];
               } else if (section === SML_CODES.CODE_ROOT_NTP) {
+                this.spinner.ntp = false;
                 this.ntp.srv1 = obj.values["8181c78802ff"]["8181c7880201"]
                   ? obj.values["8181c78802ff"]["8181c7880201"]
                   : "";
@@ -2937,6 +2582,7 @@ export default Vue.extend({
               //  hide loading spinner
               this.spinner.status = false;
               this.spinner.ipt = false;
+              this.spinner.ntp = false;
               this.spinner.firmware = false;
               this.spinner.meters = false;
               this.spinner.wmbus = false;
@@ -3127,7 +2773,7 @@ export default Vue.extend({
           { path: [SML_CODES.CODE_ROOT_IPT_PARAM] }
         );
       } else if (smfContext === this.smfContext.ntp) {
-        //this.spinner.ntp = true;
+        this.spinner.ntp = true;
         this.ws_submit_request(
           MESSAGE_REQUEST.getProcParameter,
           SML_CODES.CODE_ROOT_NTP,
