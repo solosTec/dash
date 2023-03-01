@@ -132,8 +132,9 @@ import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
 import { TableChronographRefreshInSeconds } from "../constants/global-config";
-import { Session } from "@/api/session";
+//import { Session } from "@/api/statistics";
 import { BTableItem } from "@/shared/b-table-item";
+import { Statistics } from "@/api/statistics";
 
 interface UiStatistics extends BTableItem {
   pk: string;
@@ -235,9 +236,8 @@ export default mixins(webSocket, Vue).extend({
             obj.channel
         );
         if (obj.cmd == Cmd.insert) {
-          const insertResponse = obj as WSInsertResponse<Session>;
+          const insertResponse = obj as WSInsertResponse<Statistics>;
           const bSession = insertResponse.rec.data;
-          const loginTime = new Date(bSession.loginTime);
           const rec: UiStatistics = {
             pk: insertResponse.rec.key.tag as string,
             name: bSession.name,
@@ -260,19 +260,15 @@ export default mixins(webSocket, Vue).extend({
           console.log("delete index " + idx);
           this.statistics.splice(idx, 1);
         } else if (obj.cmd == Cmd.modify) {
-          const modResponse = obj as WSModifyResponse<Session>;
+          const modResponse = obj as WSModifyResponse<Statistics>;
           this.statistics.find(rec => {
             if (rec.pk == modResponse.key[0]) {
               // console.log('modify record ' + rec.name);
-              if (modResponse.value.rx != null) {
-                rec.rx = modResponse.value.rx;
-              } else if (modResponse.value.sx != null) {
-                rec.sx = modResponse.value.sx;
-              } else if (modResponse.value.px != null) {
-                rec.px = modResponse.value.px;
+              if (modResponse.value.loginCounter != null) {
+                rec.loginCounter = modResponse.value.loginCounter;
+              } else if (modResponse.value.lastLogin != null) {
+                rec.lastLogin = modResponse.value.lastLogin;
               }
-              //  update activity
-              rec.lastSeen = new Date();
             }
           });
         } else if (obj.cmd == Cmd.clear) {

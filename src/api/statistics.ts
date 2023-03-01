@@ -1,8 +1,8 @@
 export interface Statistics {
   tag: string;
   name: string;
-  initial: string;
-  lastLogin: string;
+  initial: Date;
+  lastLogin: Date;
   loginCounter: number;
   enabled: boolean;
 }
