@@ -17,7 +17,9 @@ var smf_status_targets_vue_1 = require("./views/smf-status-targets.vue");
 var smf_status_connections_vue_1 = require("./views/smf-status-connections.vue");
 var smf_monitor_system_vue_1 = require("./views/smf-monitor-system.vue");
 var smf_monitor_messages_vue_1 = require("./views/smf-monitor-messages.vue");
+var smf_monitor_statistics_vue_1 = require("./views/smf-monitor-statistics.vue");
 var smf_monitor_iec_gw_vue_1 = require("./views/smf-monitor-iec-gw.vue");
+var smf_monitor_wmbus_gw_vue_1 = require("./views/smf-monitor-wmbus-gw.vue");
 var smf_monitor_lora_vue_1 = require("./views/smf-monitor-lora.vue");
 var smf_collector_mbus_radio_vue_1 = require("./views/smf-collector-mbus-radio.vue");
 var smf_collector_iec_vue_1 = require("./views/smf-collector-iec.vue");
@@ -149,9 +151,19 @@ exports.default = new vue_router_1.default({
       component: smf_monitor_messages_vue_1.default
     },
     {
+      path: "/monitor/statistics",
+      name: "smfMonitorStatistics",
+      component: smf_monitor_statistics_vue_1.default
+    },
+    {
       path: "/monitor/IECgw",
       name: "smfMonitorIECgw",
       component: smf_monitor_iec_gw_vue_1.default
+    },
+    {
+      path: "/monitor/wMBusgw",
+      name: "smfMonitorWMBusgw",
+      component: smf_monitor_wmbus_gw_vue_1.default
     },
     //
     //  tasks

@@ -126,6 +126,11 @@
             >
             <b-dropdown-item
               :disabled="!hasPrivs(MODULES.MONITOR_MESSAGES, PRIVILEGES.VIEW)"
+              to="/monitor/statistics"
+              >{{ $t("nav-statistics") }}</b-dropdown-item
+            >
+            <b-dropdown-item
+              :disabled="!hasPrivs(MODULES.MONITOR_MESSAGES, PRIVILEGES.VIEW)"
               to="/monitor/IECgw"
             >
               {{ $t("nav-status-iec") }}
