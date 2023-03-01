@@ -4,4 +4,5 @@ export interface Statistics {
   initial: string;
   lastLogin: string;
   loginCounter: number;
+  enabled: boolean;
 }

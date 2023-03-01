@@ -141,6 +141,7 @@ interface UiStatistics extends BTableItem {
   initial?: Date;
   lastLogin: Date;
   loginCounter: number;
+  enabled: boolean;
 }
 let tmpStatistics = [] as UiStatistics[];
 
@@ -171,6 +172,11 @@ export default mixins(webSocket, Vue).extend({
           sortable: true
         },
         {
+          key: "name",
+          label: "Name",
+          sortable: true
+        },
+        {
           key: "initial",
           label: "Initial",
           sortable: true
@@ -185,6 +191,13 @@ export default mixins(webSocket, Vue).extend({
           label: "Login Counter",
           sortable: true,
           class: "text-right"
+        },
+        {
+          key: "enabled",
+          label: "Enabled",
+          sortable: true,
+          class: "text-right",
+          formatter: (value: boolean) => (value ? "true" : "false")
         }
       ],
       // ToDo: define UiStatistics
@@ -209,7 +222,7 @@ export default mixins(webSocket, Vue).extend({
     ws_on_open() {
       //  clear table
       this.statistics = [];
-      this.ws_subscribe("config.statistics");
+      this.ws_subscribe("monitor.statistics");
       this.ws_subscribe("table.device.count");
     },
     ws_on_data(obj: WSResponse) {
@@ -222,10 +235,6 @@ export default mixins(webSocket, Vue).extend({
             obj.channel
         );
         if (obj.cmd == Cmd.insert) {
-          // {"cmd": "insert", "channel": "monitor.statistics",
-          //  "rec":
-          //  { "key": { "tag": "a835c092-c479-4237-aae4-02e597eff01c" },
-          //  "data": { "gen": 15, "initial": null, "lastLogin": "2023-03-01 18:35:56", "loginCounter": 12 }
           const insertResponse = obj as WSInsertResponse<Session>;
           const bSession = insertResponse.rec.data;
           const loginTime = new Date(bSession.loginTime);
@@ -234,7 +243,8 @@ export default mixins(webSocket, Vue).extend({
             name: bSession.name,
             initial: bSession.initial,
             lastLogin: bSession.lastLogin,
-            loginCounter: bSession.loginCounter
+            loginCounter: bSession.loginCounter,
+            enabled: bSession.enabled
           };
           if (this.isBusy) {
             //  bulk insert
