@@ -96,13 +96,24 @@
               {{ data.index + 1 + perPage * (currentPage - 1) }}
             </template>
 
-            <template v-slot:cell(login)="row">
+            <template v-slot:cell(lastLogin)="row">
               <div
                 v-b-tooltip.hover
-                :title="row.item.login | fmtChronographWithDateTime"
+                :title="row.item.lastLogin | fmtChronographWithDateTime"
               >
-                {{ row.item.login | fmtChronographRelative($i18n.locale) }}
+                {{ row.item.lastLogin | fmtChronographRelative($i18n.locale) }}
               </div>
+            </template>
+
+            <template v-slot:cell(reset)="row">
+              <b-button
+                class="shadow"
+                size="sm"
+                variant="warning"
+                @click="onStatisticsReset(row.item)"
+              >
+                Reset
+              </b-button>
             </template>
 
             <!-- loading slot -->
@@ -132,7 +143,6 @@ import { MODULES, NO_ACCESS_ROUTE, PRIVILEGES } from "@/store/modules/user";
 import mixins from "vue-typed-mixins";
 import Vue from "vue";
 import { TableChronographRefreshInSeconds } from "../constants/global-config";
-//import { Session } from "@/api/statistics";
 import { BTableItem } from "@/shared/b-table-item";
 import { Statistics } from "@/api/statistics";
 
@@ -167,11 +177,11 @@ export default mixins(webSocket, Vue).extend({
           class: "text-right small text-muted"
         },
         //  UUID
-        {
-          key: "pk",
-          label: "Key",
-          sortable: true
-        },
+        //{
+        //  key: "pk",
+        //  label: "Key",
+        //  sortable: true
+        //},
         {
           key: "name",
           label: "Name",
@@ -180,7 +190,8 @@ export default mixins(webSocket, Vue).extend({
         {
           key: "initial",
           label: "Initial",
-          sortable: true
+          sortable: true,
+          formatter: (value: Date) => value.toLocaleString()
         },
         {
           key: "lastLogin",
@@ -199,6 +210,11 @@ export default mixins(webSocket, Vue).extend({
           sortable: true,
           class: "text-right",
           formatter: (value: boolean) => (value ? "true" : "false")
+        },
+        {
+          key: "reset",
+          label: "Action",
+          class: "text-center"
         }
       ],
       // ToDo: define UiStatistics
@@ -238,11 +254,15 @@ export default mixins(webSocket, Vue).extend({
         if (obj.cmd == Cmd.insert) {
           const insertResponse = obj as WSInsertResponse<Statistics>;
           const bSession = insertResponse.rec.data;
+          //const loginTime = new Date(bSession.loginTime);
           const rec: UiStatistics = {
             pk: insertResponse.rec.key.tag as string,
             name: bSession.name,
-            initial: bSession.initial,
-            lastLogin: bSession.lastLogin,
+            initial:
+              bSession.initial == null
+                ? new Date()
+                : new Date(bSession.initial),
+            lastLogin: new Date(bSession.lastLogin),
             loginCounter: bSession.loginCounter,
             enabled: bSession.enabled
           };
@@ -268,7 +288,13 @@ export default mixins(webSocket, Vue).extend({
                 rec.loginCounter = modResponse.value.loginCounter;
               } else if (modResponse.value.lastLogin != null) {
                 rec.lastLogin = modResponse.value.lastLogin;
+              } else if (modResponse.value.enabled != null) {
+                rec.enabled = modResponse.value.enabled;
+              } else if (modResponse.value.initial != null) {
+                rec.initial = new Date(modResponse.value.initial);
               }
+            } else if (modResponse.value.lastLogin != null) {
+              rec.lastLogin = new Date(modResponse.value.lastLogin);
             }
           });
         } else if (obj.cmd == Cmd.clear) {
@@ -301,6 +327,10 @@ export default mixins(webSocket, Vue).extend({
     },
     rowSelected(items: any[]) {
       this.selected = items;
+    },
+    onStatisticsReset(item: any) {
+      console.log("reset session " + item.pk);
+      this.ws_submit_key("reset", "monitor.statistics", [item.pk]);
     }
   },
 
